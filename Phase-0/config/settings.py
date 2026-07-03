@@ -1,7 +1,8 @@
 """Configuration settings for the Engineering Book RAG Assistant.
 
 Loads environment variables from .env and defines constants for
-TOC extraction, heading detection, and image processing.
+TOC extraction, heading detection, section splitting, image/equation
+extraction, and index building.
 """
 
 import os
@@ -47,17 +48,6 @@ HEADING_FONT_RATIO_L2: float = 1.3   # Level 2 heading threshold
 MIN_BOOKMARK_ENTRIES: int = 3
 
 # ---------------------------------------------------------------------------
-# Image extraction constants
-# ---------------------------------------------------------------------------
-# Minimum width or height (pixels) to keep an extracted image.
-MIN_IMAGE_SIZE: int = 50
-
-# ---------------------------------------------------------------------------
-# Keyword extraction
-# ---------------------------------------------------------------------------
-TOP_N_KEYWORDS: int = 15
-
-# ---------------------------------------------------------------------------
 # Heading regex patterns  →  heading level
 # Ordered most-specific first: sub-subsection → subsection → chapter/part
 # so that e.g. "3.2.1 ..." isn't caught by the "\d+\.\d+" pattern.
@@ -69,3 +59,82 @@ HEADING_REGEX_PATTERNS: list[tuple[re.Pattern, int]] = [
     (re.compile(r"^Part\s+\d+",   re.IGNORECASE), 1),
     (re.compile(r"^\d+\s+[A-Z]"),         1),   # chapter number + title
 ]
+
+# ---------------------------------------------------------------------------
+# Section splitting constants
+# ---------------------------------------------------------------------------
+# Sections with fewer characters than this are auto-merged into the next
+# sibling (or folded into the parent chapter).
+MIN_SECTION_CHARS: int = 200
+
+# How many pages to sample from the start of a page to detect repeating
+# headers/footers.  We check the first and last N lines of each page.
+HEADER_FOOTER_LINES: int = 3
+
+# Minimum fraction of pages a line must appear on to be classified as a
+# repeating header/footer and stripped from the extracted text.
+HEADER_FOOTER_MIN_RATIO: float = 0.4
+
+# Section length outlier thresholds (ratio to median section length).
+# Sections outside this range are flagged in the QA report.
+SECTION_OUTLIER_LONG: float = 3.0    # > 3× median → suspiciously long
+SECTION_OUTLIER_SHORT: float = 0.15  # < 0.15× median → suspiciously short
+
+# ---------------------------------------------------------------------------
+# Image & visual-region extraction constants
+# ---------------------------------------------------------------------------
+# Minimum width or height (pixels) to keep an extracted raster image.
+MIN_IMAGE_SIZE: int = 50
+
+# DPI for rasterizing vector diagrams and equation regions.
+RASTERIZE_DPI: int = 200
+
+# Minimum number of vector drawing paths in a cluster to qualify as a diagram.
+DIAGRAM_MIN_PATHS: int = 5
+
+# Maximum gap (in PDF points) between drawing paths to merge them into the
+# same cluster.  72 pt = 1 inch.
+DIAGRAM_CLUSTER_GAP: float = 30.0
+
+# Minimum area (in sq PDF points) for a diagram region to be kept.
+DIAGRAM_MIN_AREA: float = 5000.0
+
+# ---------------------------------------------------------------------------
+# Equation detection
+# ---------------------------------------------------------------------------
+# Regex for numbered display equations like "(3.14)" at end of line.
+EQUATION_NUMBER_RE: re.Pattern = re.compile(
+    r"\((\d+[\.\-]\d+(?:[\.\-]\d+)?)\)\s*$"
+)
+
+# Regex for figure/diagram captions: "Figure 2.1", "Fig. 2.1", "FIGURE 2.1"
+FIGURE_CAPTION_RE: re.Pattern = re.compile(
+    r"(?:Figure|Fig\.?|FIGURE|FIG\.?)\s*(\d+[\.\-]\d+(?:[a-z])?)",
+    re.IGNORECASE,
+)
+
+# Unicode code-point ranges for common math symbols.
+# Used to detect lines with high math-symbol density.
+MATH_SYMBOL_CHARS: set[str] = set(
+    "∀∃∄∅∆∇∈∉∊∋∌∍∎∏∐∑−∓∔∕∖∗∘∙√∛∜∝∞∟∠∡∢∣∤∥∦∧∨∩∪∫∬∭∮∯∰∱∲∳"
+    "∴∵∶∷∸∹∺∻∼∽∾∿≀≁≂≃≄≅≆≇≈≉≊≋≌≍≎≏≐≑≒≓≔≕≖≗≘≙≚≛≜≝≞≟≠≡≢≣≤≥≦≧≨≩"
+    "≪≫≬≭≮≯≰≱≲≳≴≵≶≷≸≹≺≻≼≽≾≿⊀⊁⊂⊃⊄⊅⊆⊇⊈⊉⊊⊋⊌⊍⊎⊏⊐⊑⊒⊓⊔⊕⊖⊗⊘⊙"
+    "αβγδεζηθικλμνξοπρστυφχψωΓΔΘΛΞΠΣΦΨΩ"
+    "×÷±≈≠≤≥→←↑↓↔⇒⇐⇔∂∇"
+)
+
+# Math font name fragments (case-insensitive search in span font name).
+MATH_FONT_FRAGMENTS: list[str] = [
+    "symbol", "math", "cmmi", "cmsy", "cmex", "cmr",
+    "msam", "msbm", "eufm", "rsfs", "stix",
+]
+
+# ---------------------------------------------------------------------------
+# Keyword / index extraction
+# ---------------------------------------------------------------------------
+TOP_N_KEYWORDS: int = 15
+
+# Whether to generate LLM-based section abstracts at index-build time.
+# Requires a valid LLM_API_KEY.  Falls back to TF-IDF-only if disabled
+# or if no API key is configured.
+LLM_ABSTRACTS_ENABLED: bool = os.getenv("LLM_ABSTRACTS_ENABLED", "false").lower() in ("true", "1", "yes")

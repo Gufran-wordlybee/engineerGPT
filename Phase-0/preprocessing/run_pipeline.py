@@ -107,15 +107,15 @@ def process_book(pdf_path: str, *, force: bool = False) -> None:
         )
         return
 
-    # 5. Step 2 — Split sections
+    # 5. Step 2 — Split sections (with hierarchy, cleanup, QA)
     print("[Step 2/4] Splitting sections …")
     sections = split_sections(pdf_path, toc, str(output_dir))
 
-    # 6. Step 3 — Extract images
-    print("[Step 3/4] Extracting images …")
-    image_count = extract_images(pdf_path, str(output_dir), sections)
+    # 6. Step 3 — Extract visuals (raster images + vector diagrams + equations)
+    print("[Step 3/4] Extracting visuals …")
+    visual_count = extract_images(pdf_path, str(output_dir), sections)
 
-    # 7. Step 4 — Build index
+    # 7. Step 4 — Build index (hierarchical, TF-IDF, abstracts)
     print("[Step 4/4] Building index …")
     index = build_index(human_name, str(output_dir))
 
@@ -125,8 +125,9 @@ def process_book(pdf_path: str, *, force: bool = False) -> None:
 
     print(f"\n  Summary for '{human_name}':")
     print(f"    Sections : {section_count}")
-    print(f"    Images   : {image_count}")
+    print(f"    Visuals  : {visual_count} (raster + diagrams + equations)")
     print(f"    Output   : {output_dir}")
+    print(f"    Reports  : qa_report.txt, confusable_pairs.json")
     print(f"    Elapsed  : {elapsed:.1f}s")
     print(f"{'=' * 50}")
     print(f"  Done: {human_name}")
