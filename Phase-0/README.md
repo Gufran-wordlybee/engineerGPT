@@ -51,23 +51,42 @@ python -m preprocessing.run_pipeline books/raw/your_book.pdf --force
 python -m preprocessing.extract_toc books/raw/your_book.pdf
 ```
 
+### Phase 1: Route a Question
+
+After preprocessing, route student questions to the best-matching section(s):
+
+```bash
+# Route a single question
+python -m core.router fluid_mechanics "What is Bernoulli's equation?"
+
+# Evaluate router accuracy (needs test_questions.json)
+python -m core.eval_router fluid_mechanics
+```
+
 ## Folder Structure
 
 ```
 books/raw/           → Drop clean text-based PDFs here (input)
 books/processed/     → Pipeline output: sections, images, index per book
-preprocessing/       → Runs once per book (weekly): TOC, split, images, index
-core/                → Runs per query: router, generator, pipeline
+  └── <book>/
+      ├── index.json              → Hierarchical section index (router input)
+      ├── confusable_pairs.json   → Sibling sections with high keyword overlap
+      ├── test_questions.json     → Hand-written eval questions (15-20 per book)
+      └── sections/               → Per-section JSON files
+preprocessing/       → Runs once per book: TOC, split, images, index
+core/                → Runs per query: router, LLM client, eval harness
 interfaces/          → CLI and Streamlit entrypoints
 config/              → Centralized settings and constants
 ```
+
+See per-folder README files for detailed documentation.
 
 ## Phase Roadmap
 
 | Phase | Status | Description |
 |-------|--------|-------------|
 | **0 — Preprocessing** | ✅ Built | TOC extraction, section splitting, image extraction, index building |
-| **1 — Router** | 🔲 Planned | LLM-based section selection from index.json |
+| **1 — Router** | ✅ Built | Two-stage LLM routing, confusable-pair disambiguation, TF-IDF fallback, eval harness |
 | **2 — Generator** | 🔲 Planned | Answer generation with vision model support |
 | **3 — CLI** | 🔲 Planned | Interactive command-line question/answer loop |
 | **4 — Weekly Updates** | 🔲 Planned | Drop-in book addition workflow |
@@ -78,3 +97,4 @@ config/              → Centralized settings and constants
 - Python 3.10+
 - PyMuPDF (for PDF processing)
 - python-dotenv (for environment management)
+- openai >= 1.0.0 (for LLM calls — router + index builder)

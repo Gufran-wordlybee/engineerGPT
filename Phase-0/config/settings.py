@@ -24,6 +24,15 @@ LLM_API_KEY: str = os.getenv("LLM_API_KEY", "")
 LLM_MODEL_NAME: str = os.getenv("LLM_MODEL_NAME", "")
 VISION_MODEL_NAME: str = os.getenv("VISION_MODEL_NAME", "")
 
+# Provider selection — auto-detected from model name if not set.
+# Valid values: "gemini", "groq", "openai", "anthropic"
+# Gemini and Groq have FREE tiers — recommended for getting started.
+LLM_PROVIDER: str = os.getenv("LLM_PROVIDER", "")
+
+# Custom base URL for OpenAI-compatible providers (e.g. local Ollama).
+# Leave empty to use the default URL for the detected provider.
+LLM_BASE_URL: str = os.getenv("LLM_BASE_URL", "")
+
 # ---------------------------------------------------------------------------
 # Paths
 # ---------------------------------------------------------------------------
@@ -138,3 +147,22 @@ TOP_N_KEYWORDS: int = 15
 # Requires a valid LLM_API_KEY.  Falls back to TF-IDF-only if disabled
 # or if no API key is configured.
 LLM_ABSTRACTS_ENABLED: bool = os.getenv("LLM_ABSTRACTS_ENABLED", "false").lower() in ("true", "1", "yes")
+
+# ---------------------------------------------------------------------------
+# Router settings (Phase 1)
+# ---------------------------------------------------------------------------
+# Model name for routing calls.  Defaults to the same model used for
+# abstracts, but can be overridden to use a cheaper/faster model for
+# routing while keeping a stronger model for generation.
+ROUTER_MODEL_NAME: str = os.getenv("ROUTER_MODEL_NAME", "") or LLM_MODEL_NAME
+
+# Deterministic routing — temperature=0 avoids creative variation.
+ROUTER_TEMPERATURE: float = float(os.getenv("ROUTER_TEMPERATURE", "0"))
+
+# Books with more than this many sections use two-stage routing
+# (chapter pick → section pick).  Smaller books use a single flat prompt.
+TWO_STAGE_THRESHOLD: int = int(os.getenv("TWO_STAGE_THRESHOLD", "30"))
+
+# Default number of sections returned by the router.
+ROUTER_TOP_K_DEFAULT: int = int(os.getenv("ROUTER_TOP_K_DEFAULT", "2"))
+

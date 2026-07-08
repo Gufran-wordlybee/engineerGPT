@@ -26,6 +26,7 @@ import json
 import math
 import re
 import time
+import warnings
 from collections import Counter
 from pathlib import Path
 from typing import Any
@@ -36,6 +37,7 @@ from config.settings import (
     LLM_API_KEY,
     LLM_MODEL_NAME,
 )
+from core.llm_client import call_llm as _call_llm
 
 # ═══════════════════════════════════════════════════════════════════════════
 # Stopwords
@@ -181,57 +183,6 @@ def _text_based_abstract(text: str) -> str:
     return " ".join(meaningful[:2]) if meaningful else text[:300]
 
 
-def _call_llm(prompt: str) -> str | None:
-    """Call the configured LLM.  Returns response text or None on failure.
-
-    Auto-detects provider from LLM_MODEL_NAME.
-    """
-    if not LLM_API_KEY or not LLM_MODEL_NAME:
-        return None
-
-    model = LLM_MODEL_NAME.lower()
-
-    # Try OpenAI-compatible API (covers OpenAI, most providers)
-    if "claude" not in model:
-        try:
-            from openai import OpenAI
-            client = OpenAI(api_key=LLM_API_KEY)
-            resp = client.chat.completions.create(
-                model=LLM_MODEL_NAME,
-                messages=[{"role": "user", "content": prompt}],
-                temperature=0.3,
-                max_tokens=500,
-            )
-            return resp.choices[0].message.content
-        except ImportError:
-            pass
-        except Exception as exc:
-            warnings.warn(f"[INDEX] OpenAI call failed: {exc}", stacklevel=2)
-            return None
-
-    # Try Anthropic API
-    try:
-        import anthropic
-        client = anthropic.Anthropic(api_key=LLM_API_KEY)
-        resp = client.messages.create(
-            model=LLM_MODEL_NAME,
-            max_tokens=500,
-            messages=[{"role": "user", "content": prompt}],
-        )
-        return resp.content[0].text
-    except ImportError:
-        warnings.warn(
-            "[INDEX] Neither 'openai' nor 'anthropic' package installed. "
-            "Falling back to text-based abstracts.",
-            stacklevel=2,
-        )
-        return None
-    except Exception as exc:
-        warnings.warn(f"[INDEX] Anthropic call failed: {exc}", stacklevel=2)
-        return None
-
-
-import warnings
 
 
 def _generate_abstract(section: dict[str, Any]) -> str:
