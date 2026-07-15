@@ -138,3 +138,89 @@ TOP_N_KEYWORDS: int = 15
 # Requires a valid LLM_API_KEY.  Falls back to TF-IDF-only if disabled
 # or if no API key is configured.
 LLM_ABSTRACTS_ENABLED: bool = os.getenv("LLM_ABSTRACTS_ENABLED", "false").lower() in ("true", "1", "yes")
+
+# ---------------------------------------------------------------------------
+# Scanned-PDF detection
+# ---------------------------------------------------------------------------
+# If the average number of extractable characters per sampled page is
+# below this threshold, the PDF is classified as "scanned" and routed
+# through the Marker OCR path instead of the pymupdf text-extraction path.
+#
+# Typical values:
+#   - Pure scanned PDFs (image-only): ~0 chars/page
+#   - Partial-OCR scans (garbled text layer): 5–20 chars/page
+#   - Text-based PDFs: hundreds to thousands of chars/page
+#   - Tune this after testing against your actual book library.
+SCANNED_DETECTION_MIN_CHARS_PER_PAGE: int = int(
+    os.getenv("SCANNED_DETECTION_MIN_CHARS_PER_PAGE", "25")
+)
+
+# If avg chars/page is below THIS threshold, we consider the PDF a "true
+# image-only scan" with no usable text layer at all.  Marker should be told
+# to force a full re-OCR (--force_ocr) in this case.
+#
+# If avg chars/page is BETWEEN this and SCANNED_DETECTION_MIN_CHARS_PER_PAGE,
+# the PDF has a partial/garbled text layer.  Marker can try to use whatever
+# text layer exists first, which is significantly faster than re-OCR'ing
+# every page from scratch.
+#
+# Example with defaults (FORCE_OCR=5, MIN_CHARS=25):
+#   avg 0–5   → force_ocr=True   (pure image scan, no text at all)
+#   avg 5–25  → force_ocr=False  (has some text, let Marker decide per-page)
+#   avg 25+   → pymupdf path     (good text layer, no OCR needed)
+FORCE_OCR_MAX_CHARS_PER_PAGE: int = int(
+    os.getenv("FORCE_OCR_MAX_CHARS_PER_PAGE", "5")
+)
+
+# ---------------------------------------------------------------------------
+# Marker OCR settings (for scanned-PDF preprocessing)
+# ---------------------------------------------------------------------------
+# Path or name of the Marker CLI binary.  Override via environment variable
+# if marker_single isn't on your PATH or has a different name.
+MARKER_CLI_BINARY: str = os.getenv("MARKER_CLI_BINARY", "marker_single")
+
+# Output format for Marker.  Must be "json" for our parser to work.
+# Don't change this unless Marker's format naming changes in a future version.
+MARKER_OUTPUT_FORMAT: str = os.getenv("MARKER_OUTPUT_FORMAT", "json")
+
+# Force a full re-OCR even if the PDF has an existing (possibly garbled)
+# text layer.  Now defaults to False — the pipeline decides automatically
+# based on FORCE_OCR_MAX_CHARS_PER_PAGE.  Set to True here only if you
+# want to unconditionally re-OCR every scanned book regardless.
+MARKER_FORCE_OCR: bool = os.getenv("MARKER_FORCE_OCR", "false").lower() in ("true", "1", "yes")
+
+# Enable LLM-assisted extraction (better table merging, inline math).
+# Requires GOOGLE_API_KEY (Gemini) or an Ollama backend.
+# Opt-in only — adds cost, latency, and an external API dependency.
+MARKER_USE_LLM: bool = os.getenv("MARKER_USE_LLM", "false").lower() in ("true", "1", "yes")
+
+# ---------------------------------------------------------------------------
+# Marker chunking settings
+# ---------------------------------------------------------------------------
+# Instead of processing the entire PDF in one subprocess call (which means
+# losing ALL progress if you Cmd+C or the process dies), we split the book
+# into page-range chunks and process each chunk separately.
+#
+# Benefits:
+#   - A crash/timeout only loses the CURRENT chunk (~50 pages), not the
+#     whole 600-page book.
+#   - Completed chunks are cached to disk, so re-running automatically
+#     resumes from where it left off.
+#   - Each chunk has its own timeout, so one stuck chunk doesn't block
+#     the rest.
+#
+# How many pages per chunk.  50 is a good default for CPU.
+# On GPU (Colab), you can increase this to 100–200 for fewer subprocess
+# calls with minimal risk, since GPU processing is much faster.
+MARKER_CHUNK_SIZE_PAGES: int = int(
+    os.getenv("MARKER_CHUNK_SIZE_PAGES", "50")
+)
+
+# Timeout in seconds PER CHUNK (not per book).
+# 50 pages on M3 CPU ≈ 5–10 minutes, so 900s (15 min) gives generous
+# headroom.  If a chunk times out, it's logged and skipped — the rest of
+# the book continues processing.
+MARKER_CHUNK_TIMEOUT_SECONDS: int = int(
+    os.getenv("MARKER_CHUNK_TIMEOUT_SECONDS", "900")
+)
+

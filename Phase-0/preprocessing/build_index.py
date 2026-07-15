@@ -7,9 +7,11 @@ Upgrades over the original flat bag-of-nouns index:
    actual hierarchy.  Enables two-stage routing (chapter → section).
 2. **TF-IDF keywords** — corpus-aware distinctiveness so common words like
    "algorithm" get down-weighted while locally unique terms get boosted.
+   (niche smjhaya hai same chiz cmts me)
 3. **LLM-generated abstracts** (optional) — rich semantic descriptions for
    each section, generated once at build time.  Falls back to first-2-sentence
    extraction when disabled.
+   (niche smjhaya hai same chiz cmts me, if llm good else 2 lines fallback)
 4. **Confusable-pair detection** — flags sibling sections with high keyword
    overlap so you can verify the split quality.
 5. **has_visuals flag** — lets the router know which sections have diagrams
@@ -18,6 +20,8 @@ Upgrades over the original flat bag-of-nouns index:
 Public API
 ----------
 build_index(book_name, output_dir) -> dict
+
+build_index.py converts hundreds of section JSON files into a single smart, hierarchical index.json that the router later uses to decide which chapter/section should answer the user's question.
 """
 
 from __future__ import annotations
@@ -36,6 +40,23 @@ from config.settings import (
     LLM_API_KEY,
     LLM_MODEL_NAME,
 )
+# ═══════════════════════════════════════════════════════════════════════════
+# Step 1 - raw_sections = _load_sections(sections_dir)
+# this is the main function that reads/loads the sections like sect1,sect2 and so on and builds the index.json file
+def _load_sections(sections_dir: Path) -> list[dict[str, Any]]:
+    """Load all section JSONs, sorted by start_page."""
+    sections: list[dict[str, Any]] = []
+    if not sections_dir.is_dir():
+        print(f"[INDEX] Warning: sections directory not found — {sections_dir}")
+        return sections
+
+    for json_path in sorted(sections_dir.glob("*.json")):
+        with open(json_path, "r", encoding="utf-8") as fh:
+            sections.append(json.load(fh))
+
+    sections.sort(key=lambda s: s.get("start_page", 0))
+    return sections
+# ═══════════════════════════════════════════════════════════════════════════
 
 # ═══════════════════════════════════════════════════════════════════════════
 # Stopwords
@@ -98,8 +119,11 @@ _TOKEN_RE = re.compile(r"[a-zA-Z0-9]+")
 
 
 # ═══════════════════════════════════════════════════════════════════════════
+# Step 2 - tfidf_map = _compute_tfidf_keywords(...)
 # Tokenization & keywords
-# ═══════════════════════════════════════════════════════════════════════════
+# _compute_tfidf_keywords : we have sect1, sect2, sect3, sect4, sect5, sect6, sect7, sect8, sect9, sect10 and so on 
+# sect1 has keywords: [a, b, c, d, e], sect2 has keywords: [c, d, e, f, g] so what it doesTF-IDF says sect1 and sect2 have 3 keywords in common, so a,b, f,g are unique keywords for sect1 and sect2 respectively. So it will return a dict with sect1: [a,b] and sect2: [f,g] as unique keywords.
+
 
 def _tokenize(text: str) -> list[str]:
     """Split on whitespace/punctuation and lowercase."""
@@ -166,11 +190,13 @@ def _compute_tfidf_keywords(
         result[sid] = sorted_terms[:top_n]
 
     return result
+# ═══════════════════════════════════════════════════════════════════════════
 
 
 # ═══════════════════════════════════════════════════════════════════════════
+# Step 3 - _generate_abstract()
 # Abstracts
-# ═══════════════════════════════════════════════════════════════════════════
+# Makes a short summary.Instead of storing 15 pages of text it stores "This section explains Binary Search on sorted arrays..." Router can understand the section faster.If LLM is disabled -> First two sentences become summary.
 
 def _text_based_abstract(text: str) -> str:
     """Extract the first 2 meaningful sentences as a fallback abstract."""
@@ -274,54 +300,40 @@ def _generate_abstract(section: dict[str, Any]) -> str:
             return result   # Use raw LLM response
 
     return _text_based_abstract(text)
-
-
-# ═══════════════════════════════════════════════════════════════════════════
-# Confusable pairs
 # ═══════════════════════════════════════════════════════════════════════════
 
-def _detect_confusable_pairs(
-    index: dict[str, Any],
-) -> list[dict[str, Any]]:
-    """Find sibling section pairs with > 60% keyword overlap."""
-    confusable: list[dict[str, Any]] = []
+# ══════════════════════════════════════════════════════════════════════════
+# Step 4 - _build_tree()
+# TREE BUILDING
+"""
+Suppose sections are
+Chapter 1
 
-    def _check_children(children: list[dict[str, Any]]) -> None:
-        """Check all pairs among a list of sibling sections."""
-        for i in range(len(children)):
-            kw_a = set(children[i].get("keywords", []) +
-                       children[i].get("tfidf_keywords", []))
-            for j in range(i + 1, len(children)):
-                kw_b = set(children[j].get("keywords", []) +
-                           children[j].get("tfidf_keywords", []))
-                if not kw_a or not kw_b:
-                    continue
-                shared = kw_a & kw_b
-                overlap = len(shared) / max(len(kw_a), len(kw_b))
-                if overlap > 0.6:
-                    confusable.append({
-                        "section_a": children[i]["section_id"],
-                        "section_b": children[j]["section_id"],
-                        "overlap": round(overlap, 2),
-                        "shared_keywords": sorted(shared),
-                    })
-
-            # Recurse into grandchildren
-            if children[i].get("children"):
-                _check_children(children[i]["children"])
-
-    for chapter in index.get("chapters", []):
-        if chapter.get("children"):
-            _check_children(chapter["children"])
-        # Also check chapter-level siblings
-    _check_children(index.get("chapters", []))
-
-    return confusable
-
-
-# ═══════════════════════════════════════════════════════════════════════════
-# Hierarchy builder
-# ═══════════════════════════════════════════════════════════════════════════
+   1.1
+   1.2
+      1.2.1
+      1.2.2
+Instead of storing (what we are calling flat againngain)
+1
+1.1
+1.2
+1.2.1
+it creates 
+1
+├──1.1
+└──1.2
+      ├──1.2.1
+      └──1.2.2
+"""
+""" {
+   "title":"Binary Search",
+   "keywords":[...],
+   "tfidf_keywords":[...],
+   "abstract":"...",
+   "has_visuals":true,
+   "children":[...]
+}"""
+# Notice, No actual textbook text is stored. Only metadata. 
 
 def _build_tree(
     sections: list[dict[str, Any]],
@@ -372,25 +384,49 @@ def _build_tree(
             roots.append(node)
 
     return roots
-
-
-# ═══════════════════════════════════════════════════════════════════════════
-# File I/O
 # ═══════════════════════════════════════════════════════════════════════════
 
-def _load_sections(sections_dir: Path) -> list[dict[str, Any]]:
-    """Load all section JSONs, sorted by start_page."""
-    sections: list[dict[str, Any]] = []
-    if not sections_dir.is_dir():
-        print(f"[INDEX] Warning: sections directory not found — {sections_dir}")
-        return sections
+# ═══════════════════════════════════════════════════════════════════════════
+#Step 5 - Confusable pair detection
 
-    for json_path in sorted(sections_dir.glob("*.json")):
-        with open(json_path, "r", encoding="utf-8") as fh:
-            sections.append(json.load(fh))
+def _detect_confusable_pairs(
+    index: dict[str, Any],
+) -> list[dict[str, Any]]:
+    """Find sibling section pairs with > 60% keyword overlap."""
+    confusable: list[dict[str, Any]] = []
 
-    sections.sort(key=lambda s: s.get("start_page", 0))
-    return sections
+    def _check_children(children: list[dict[str, Any]]) -> None:
+        """Check all pairs among a list of sibling sections."""
+        for i in range(len(children)):
+            kw_a = set(children[i].get("keywords", []) +
+                       children[i].get("tfidf_keywords", []))
+            for j in range(i + 1, len(children)):
+                kw_b = set(children[j].get("keywords", []) +
+                           children[j].get("tfidf_keywords", []))
+                if not kw_a or not kw_b:
+                    continue
+                shared = kw_a & kw_b
+                overlap = len(shared) / max(len(kw_a), len(kw_b))
+                if overlap > 0.6:
+                    confusable.append({
+                        "section_a": children[i]["section_id"],
+                        "section_b": children[j]["section_id"],
+                        "overlap": round(overlap, 2),
+                        "shared_keywords": sorted(shared),
+                    })
+
+            # Recurse into grandchildren
+            if children[i].get("children"):
+                _check_children(children[i]["children"])
+
+    for chapter in index.get("chapters", []):
+        if chapter.get("children"):
+            _check_children(chapter["children"])
+        # Also check chapter-level siblings
+    _check_children(index.get("chapters", []))
+
+    return confusable
+# ═══════════════════════════════════════════════════════════════════════════
 
 
 # ═══════════════════════════════════════════════════════════════════════════
