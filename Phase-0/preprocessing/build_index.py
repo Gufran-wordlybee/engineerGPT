@@ -27,20 +27,27 @@ build_index.py converts hundreds of section JSON files into a single smart, hier
 from __future__ import annotations
 
 import json
+import os
+import warnings
 import math
 import re
 import time
 from collections import Counter
 from pathlib import Path
 from typing import Any
-
+_BASE_URLS = {
+    "gemini": "https://generativelanguage.googleapis.com/v1beta/openai/",
+    "groq": "https://api.groq.com/openai/v1",
+}
 from config.settings import (
     TOP_N_KEYWORDS,
     LLM_ABSTRACTS_ENABLED,
-    LLM_API_KEY,
-    LLM_MODEL_NAME,
+    GEMENI_LLM_API_KEY,
+    GROQ_LLM_API_KEY,
+    GEMENI_LLM_MODEL_NAME,
+    GROQ_LLM_MODEL_NAME,
 )
-# ═══════════════════════════════════════════════════════════════════════════
+# ══════════════════════════════════════════════════════════════════════════
 # Step 1 - raw_sections = _load_sections(sections_dir)
 # this is the main function that reads/loads the sections like sect1,sect2 and so on and builds the index.json file
 def _load_sections(sections_dir: Path) -> list[dict[str, Any]]:
@@ -196,7 +203,7 @@ def _compute_tfidf_keywords(
 # ═══════════════════════════════════════════════════════════════════════════
 # Step 3 - _generate_abstract()
 # Abstracts
-# Makes a short summary.Instead of storing 15 pages of text it stores "This section explains Binary Search on sorted arrays..." Router can understand the section faster.If LLM is disabled -> First two sentences become summary.
+# Makes a short summary.Instead of storing 15 pages of text it stores "This section explains Binary Search on sorted arrays..." Router can understand the section faster. If LLM is disabled -> First two sentences become summary.
 
 def _text_based_abstract(text: str) -> str:
     """Extract the first 2 meaningful sentences as a fallback abstract."""
@@ -208,63 +215,58 @@ def _text_based_abstract(text: str) -> str:
 
 
 def _call_llm(prompt: str) -> str | None:
-    """Call the configured LLM.  Returns response text or None on failure.
+    """Call the configured LLM with Groq 
 
-    Auto-detects provider from LLM_MODEL_NAME.
+    Both providers are OpenAI-compatible, so we just swap base_url + key.
+    Returns response text, or None if both providers fail.
     """
-    if not LLM_API_KEY or not LLM_MODEL_NAME:
+    try:
+        from openai import OpenAI
+    except ImportError:
+        warnings.warn(
+            "[INDEX] 'openai' package not installed. "
+            "Falling back to text-based abstracts.",
+            stacklevel=2,
+        )
         return None
 
-    model = LLM_MODEL_NAME.lower()
+    # if GEMENI_LLM_API_KEY and GEMENI_LLM_MODEL_NAME:
+        # providers.append(("gemini", GEMENI_LLM_API_KEY, GEMENI_LLM_MODEL_NAME))
 
-    # Try OpenAI-compatible API (covers OpenAI, most providers)
-    if "claude" not in model:
+    providers = [
+        ("groq", GROQ_LLM_API_KEY, GROQ_LLM_MODEL_NAME)
+                 ]
+    for name, api_key, model_name in providers:
         try:
-            from openai import OpenAI
-            client = OpenAI(api_key=LLM_API_KEY)
+            client = OpenAI(api_key=api_key, base_url=_BASE_URLS[name])
             resp = client.chat.completions.create(
-                model=LLM_MODEL_NAME,
+                model=model_name,
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.3,
                 max_tokens=500,
             )
             return resp.choices[0].message.content
-        except ImportError:
-            pass
         except Exception as exc:
-            warnings.warn(f"[INDEX] OpenAI call failed: {exc}", stacklevel=2)
-            return None
+            # warnings.warn(
+            #     f"[INDEX] {name} call failed ({model_name}): {exc}. "
+            #     + ("Trying fallback..." if name == "gemini" and len(providers) > 1 else "No more providers."),
+            #     stacklevel=2,
+            # )
+            warnings.warn(f"Groq call failed: {exc}")
+            continue
 
-    # Try Anthropic API
-    try:
-        import anthropic
-        client = anthropic.Anthropic(api_key=LLM_API_KEY)
-        resp = client.messages.create(
-            model=LLM_MODEL_NAME,
-            max_tokens=500,
-            messages=[{"role": "user", "content": prompt}],
-        )
-        return resp.content[0].text
-    except ImportError:
-        warnings.warn(
-            "[INDEX] Neither 'openai' nor 'anthropic' package installed. "
-            "Falling back to text-based abstracts.",
-            stacklevel=2,
-        )
-        return None
-    except Exception as exc:
-        warnings.warn(f"[INDEX] Anthropic call failed: {exc}", stacklevel=2)
-        return None
-
-
-import warnings
+    return None
 
 
 def _generate_abstract(section: dict[str, Any]) -> str:
     """Generate a section abstract — LLM if enabled, else text-based."""
     text = section.get("text", "")
 
-    if not LLM_ABSTRACTS_ENABLED or not LLM_API_KEY:
+    # llm_configured = (GEMENI_LLM_API_KEY and GEMENI_LLM_MODEL_NAME) or (
+        # GROQ_LLM_API_KEY and GROQ_LLM_MODEL_NAME
+    llm_configured = ( GROQ_LLM_API_KEY and GROQ_LLM_MODEL_NAME)
+
+    if not LLM_ABSTRACTS_ENABLED or not llm_configured:
         return _text_based_abstract(text)
 
     prompt = (
@@ -286,7 +288,11 @@ def _generate_abstract(section: dict[str, Any]) -> str:
     if result:
         # Try to extract description from JSON response
         try:
-            parsed = json.loads(result)
+            # Strip markdown code fences if the model wrapped the JSON in them
+            cleaned = result.strip()
+            if cleaned.startswith("```"):
+                cleaned = re.sub(r"^```(?:json)?\s*|\s*```$", "", cleaned)
+            parsed = json.loads(cleaned)
             desc = parsed.get("description", "")
             concepts = parsed.get("concepts", [])
             questions = parsed.get("example_questions", [])
@@ -460,12 +466,16 @@ def build_index(book_name: str, output_dir: str) -> dict[str, Any]:
     tfidf_map = _compute_tfidf_keywords(raw_sections, TOP_N_KEYWORDS)
 
     # 3. Log abstract mode
-    if LLM_ABSTRACTS_ENABLED and LLM_API_KEY:
-        print(f"[INDEX] Generating LLM abstracts (model: {LLM_MODEL_NAME})...")
+    llm_configured = (GEMENI_LLM_API_KEY and GEMENI_LLM_MODEL_NAME) or (
+        GROQ_LLM_API_KEY and GROQ_LLM_MODEL_NAME
+    )
+    if LLM_ABSTRACTS_ENABLED and llm_configured:
+        primary = "gemini" if (GEMENI_LLM_API_KEY and GEMENI_LLM_MODEL_NAME) else "groq"
+        primary_model = GEMENI_LLM_MODEL_NAME if primary == "gemini" else GROQ_LLM_MODEL_NAME
+        print(f"[INDEX] Generating LLM abstracts (primary: {primary} / {primary_model})...")
     else:
         print("[INDEX] LLM abstracts disabled — using text-based abstracts")
-
-    # 4. Build hierarchical tree
+            # 4. Build hierarchical tree
     chapters = _build_tree(raw_sections, tfidf_map)
 
     # 5. Assemble index

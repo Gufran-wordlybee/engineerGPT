@@ -232,6 +232,21 @@ python -m preprocessing.marker_ocr books/raw/book.pdf output/ --force-ocr
 python -m preprocessing.marker_ocr books/raw/book.pdf output/ --chunk-size 30
 ```
 
+### Phase 1 Router Evaluation
+
+```bash
+# Check hand-labeled questions without making API calls
+python -m evaluation.eval_router --all --validate-only
+
+# Run live router accuracy evaluation
+python -m evaluation.eval_router --all
+
+# Evaluate a single book with detailed misses
+python -m evaluation.eval_router --book ai --verbose
+```
+
+The hard Phase 1 gate is top-1 accuracy of at least 90% on each book's hand-written question set. Validation-only mode is useful before spending API calls: it confirms every `expected_sections` label exists in the flattened, routable index.
+
 ---
 
 ## Using Google Colab for Heavy Scanned Books (Recommended)
@@ -457,11 +472,31 @@ This is what `build_index.py` reads. As long as the field names match, it works 
 |-------|--------|-------------|
 | **0 — Preprocessing** | ✅ Built | TOC extraction, section splitting, image extraction, index building |
 | **0.5 — Scanned OCR** | ✅ Built | Marker-based OCR path for scanned PDFs (chunked, smart OCR, Colab GPU support) |
-| **1 — Router** | 🔲 Planned | LLM-based section selection from index.json |
-| **2 — Generator** | 🔲 Planned | Answer generation with vision model support |
+| **1 — Router** | ✅ Built, needs live accuracy eval | LLM-based section selection from index.json |
+| **2 — Generator** | ✅ Built, needs live API validation | Grounded answers with optional visuals |
 | **3 — CLI** | 🔲 Planned | Interactive command-line question/answer loop |
 | **4 — Weekly Updates** | 🔲 Planned | Drop-in book addition workflow |
 | **5 — Streamlit** | 🔲 Planned | Web UI for browser-based access |
+
+## Phase 2: Answer Generation
+
+`core.pipeline.run_query(book_name, question)` is the single application API.
+It routes with `GROQ_LLM_MODEL_NAME` (for example `openai/gpt-oss-120b`), then
+answers from the selected section JSON with `GENERATE_LLM_MODEL`.
+
+The generator uses Groq's OpenAI-compatible endpoint, so no second SDK is
+needed. In `Phase-0/.env`, set `GENERATE_LLM_MODEL` to the Qwen model you want
+and either set `GENERATE_LLM_Model_API` or leave it blank to reuse
+`GROQ_LLM_API_KEY`. Visuals are attached only from the routed sections. Qwen
+3.6 permits three images, but this project defaults to one image and 12K source
+characters to fit the current 8K TPM account limit; raise the `.env` limits
+only after confirming your Groq tier can accommodate the larger request.
+
+```bash
+cd Phase-0
+python -m core.generator  # local image-gate self-check
+python -c 'from core.pipeline import run_query; print(run_query("coa", "What is a multiplexer used for")["answer"])'
+```
 
 ---
 
@@ -477,6 +512,8 @@ After setting up, verify the pipeline works correctly:
 - [ ] Confirm every `Figure`/`Picture` block has a corresponding image saved under `images/`
 - [ ] Confirm every `Equation` block lands in `equations`, not `images`
 - [ ] Run `build_index.py` (unmodified) against Marker output and confirm `index.json` matches the structure of a text-based book
+- [ ] Run `python -m evaluation.eval_router --all --validate-only` to confirm every hand-labeled router question points to a real routable section
+- [ ] Run `python -m evaluation.eval_router --all` with network/API access and confirm top-1 router accuracy is at least 90%
 
 ---
 

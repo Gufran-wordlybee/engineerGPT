@@ -50,11 +50,12 @@ Run once per book (not per query). This is the foundation everything else depend
 **Exit criteria:** Any section of the book can be reliably retrieved as clean text + linked images, verified across at least 3 different books.
 
 ### Phase 1 — Section Router
-Replaces vector search with structure-aware retrieval.
+Built as `core/router.py`; live accuracy evaluation is still required before Phase 2.
 
-1. Build a flattened index per book from the TOC: `{section_id, title, keywords, page_range}`.
-2. On a query, an LLM reads this index (not the full book) and returns the best-matching section(s).
-3. Router must support returning multiple sections for cross-chapter/comparison questions.
+1. Builds an in-memory flattened index per book from the hierarchical `index.json`.
+2. On a query, an LLM reads the compact section catalog (not the full book) and returns the best-matching section(s).
+3. Supports returning multiple sections for cross-chapter/comparison questions.
+4. Evaluation lives in `evaluation/eval_router.py` with hand-labeled question sets under `evaluation/questions/`.
 
 **Exit criteria:** On 15-20 sample questions per book, router selects the correct section 90%+ of the time. This is the single most important accuracy checkpoint in the project — test manually before proceeding.
 
@@ -136,8 +137,10 @@ engineering-rag-assistant/
 ## Environment Variables
 
 ```
-LLM_API_KEY=              # provider API key (OpenAI/Anthropic/etc.)
-LLM_MODEL_NAME=            # model string, kept configurable
+GROQ_LLM_API_KEY=          # Groq API key for index abstracts/router
+GROQ_LLM_MODEL_NAME=       # Groq model string, kept configurable
+ROUTER_LLM_MODEL_NAME=     # optional router-specific override
+ROUTER_TOP_K=3             # optional router result count
 VISION_MODEL_NAME=         # may be same as above if provider handles both text+vision
 BOOKS_RAW_PATH=./books/raw
 BOOKS_PROCESSED_PATH=./books/processed
@@ -150,7 +153,7 @@ No database URL needed — everything is stored as JSON/files on disk, consisten
 | Phase | Estimate | Notes |
 |---|---|---|
 | Phase 0 — Preprocessing | 4-6 days | Hardest part; TOC detection varies across book formats |
-| Phase 1 — Router | 2-3 days | Mostly prompt engineering + testing |
+| Phase 1 — Router | Built, eval pending | Needs live 90%+ accuracy run |
 | Phase 2 — Generation | 3-4 days | Vision model integration + prompt tuning |
 | Phase 3 — CLI | 1 day | Should be fast if Phase 0-2 work |
 | Phase 4 — Weekly updates | 1 day | Confirming reusability of Phase 0 |

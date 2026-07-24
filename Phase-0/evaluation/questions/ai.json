@@ -1,0 +1,123 @@
+[
+  {
+    "question": "What is the Bellman equation and how is it used in value iteration?",
+    "expected_sections": ["17-2-value-iteration"],
+    "difficulty": "easy",
+    "type": "single-topic"
+  },
+  {
+    "question": "Explain the difference between value iteration and policy iteration for MDPs.",
+    "expected_sections": ["17-2-value-iteration", "17-3-policy-iteration"],
+    "difficulty": "medium",
+    "type": "comparison",
+    "notes": "Known confusable pair — tests cross-section routing"
+  },
+  {
+    "question": "How does A* search work and why is it optimal?",
+    "expected_sections": ["3-5-informed-heuristic-search-strategies"],
+    "difficulty": "easy",
+    "type": "single-topic"
+  },
+  {
+    "question": "What are Bayesian networks and how do they represent conditional dependencies?",
+    "expected_sections": ["14-1-representing-knowledge-in-an-uncertain-domain"],
+    "difficulty": "easy",
+    "type": "single-topic"
+  },
+  {
+    "question": "How does the minimax algorithm work in adversarial game playing?",
+    "expected_sections": ["5-2-optimal-decisions-in-games"],
+    "difficulty": "easy",
+    "type": "single-topic"
+  },
+  {
+    "question": "Explain alpha-beta pruning and its advantage over plain minimax search.",
+    "expected_sections": ["5-3-alphabeta-pruning"],
+    "difficulty": "easy",
+    "type": "single-topic"
+  },
+  {
+    "question": "What is the difference between breadth-first search and depth-first search?",
+    "expected_sections": ["3-4-uninformed-search-strategies"],
+    "difficulty": "easy",
+    "type": "single-topic"
+  },
+  {
+    "question": "How do Hidden Markov Models work for temporal reasoning?",
+    "expected_sections": ["15-3-hidden-markov-models"],
+    "difficulty": "easy",
+    "type": "single-topic"
+  },
+  {
+    "question": "What is a Kalman filter and when would you use it instead of an HMM?",
+    "expected_sections": ["15-4-kalman-filters"],
+    "difficulty": "medium",
+    "type": "single-topic"
+  },
+  {
+    "question": "Explain constraint satisfaction problems and how backtracking search solves them.",
+    "expected_sections": ["6-3-backtracking-search-for-csps"],
+    "difficulty": "easy",
+    "type": "single-topic"
+  },
+  {
+    "question": "How does the resolution algorithm prove theorems in propositional logic?",
+    "expected_sections": ["7-5-propositional-theorem-proving"],
+    "difficulty": "medium",
+    "type": "single-topic"
+  },
+  {
+    "question": "What is unification in first-order logic inference?",
+    "expected_sections": ["9-2-unification-and-lifting"],
+    "difficulty": "easy",
+    "type": "single-topic"
+  },
+  {
+    "question": "Explain how decision trees learn and what overfitting means in that context.",
+    "expected_sections": ["18-3-learning-decision-trees"],
+    "difficulty": "easy",
+    "type": "single-topic"
+  },
+  {
+    "question": "What are support vector machines and how do they find the maximum-margin hyperplane?",
+    "expected_sections": ["18-9-support-vector-machines"],
+    "difficulty": "easy",
+    "type": "single-topic"
+  },
+  {
+    "question": "How does reinforcement learning differ from supervised learning?",
+    "expected_sections": ["21-1-introduction"],
+    "difficulty": "medium",
+    "type": "single-topic"
+  },
+  {
+    "question": "Compare forward chaining and backward chaining in first-order logic.",
+    "expected_sections": ["9-3-forward-chaining", "9-4-backward-chaining"],
+    "difficulty": "medium",
+    "type": "comparison"
+  },
+  {
+    "question": "What is the EM algorithm and how does it handle hidden variables?",
+    "expected_sections": ["20-3-learning-with-hidden-variables-the-em-algorithm"],
+    "difficulty": "easy",
+    "type": "single-topic"
+  },
+  {
+    "question": "How does natural language parsing work using phrase structure grammars?",
+    "expected_sections": ["23-1-phrase-structure-grammars"],
+    "difficulty": "easy",
+    "type": "single-topic"
+  },
+  {
+    "question": "What ethical concerns exist around developing artificial intelligence?",
+    "expected_sections": ["26-3-the-ethics-and-risks-of-developing-artificial-intellige"],
+    "difficulty": "easy",
+    "type": "single-topic"
+  },
+  {
+    "question": "Compare passive reinforcement learning and active reinforcement learning approaches.",
+    "expected_sections": ["21-2-passive-reinforcement-learning", "21-3-active-reinforcement-learning"],
+    "difficulty": "medium",
+    "type": "comparison"
+  }
+]

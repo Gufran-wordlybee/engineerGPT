@@ -20,9 +20,49 @@ load_dotenv(PROJECT_ROOT / ".env")
 # ---------------------------------------------------------------------------
 # LLM / API settings
 # ---------------------------------------------------------------------------
-LLM_API_KEY: str = os.getenv("LLM_API_KEY", "")
-LLM_MODEL_NAME: str = os.getenv("LLM_MODEL_NAME", "")
-VISION_MODEL_NAME: str = os.getenv("VISION_MODEL_NAME", "")
+GEMENI_LLM_API_KEY: str = os.getenv("GEMENI_LLM_API_KEY", "")
+GROQ_LLM_API_KEY: str = os.getenv("GROQ_LLM_API_KEY", "")
+GEMENI_LLM_MODEL_NAME: str = os.getenv("GEMENI_LLM_MODEL_NAME", "")
+GROQ_LLM_MODEL_NAME: str = os.getenv("GROQ_LLM_MODEL_NAME", "")
+
+# Phase 2 uses the same Groq OpenAI-compatible API as the router. Keep a
+# separate model/key so routing can stay on OSS-120B while answers use Qwen.
+# The mixed-case API variable is supported because it is the name used in the
+# project .env; the uppercase alias is accepted for shell-friendly deployments.
+GENERATE_LLM_MODEL: str = os.getenv(
+    "GENERATE_LLM_MODEL",
+    os.getenv("GENERATOR_LLM_MODEL_NAME", "qwen/qwen3.6-27b"),
+)
+GENERATE_LLM_MODEL_API: str = (
+    os.getenv("GENERATE_LLM_Model_API")
+    or os.getenv("GENERATE_LLM_MODEL_API")
+    or GROQ_LLM_API_KEY
+)
+GENERATOR_LLM_TIMEOUT_SECONDS: float = float(
+    os.getenv("GENERATOR_LLM_TIMEOUT_SECONDS", "45")
+)
+GENERATOR_MAX_TOKENS: int = int(os.getenv("GENERATOR_MAX_TOKENS", "2000"))
+GENERATOR_TEMPERATURE: float = float(os.getenv("GENERATOR_TEMPERATURE", "0.3"))
+GENERATOR_MAX_CONTEXT_CHARS: int = int(
+    os.getenv("GENERATOR_MAX_CONTEXT_CHARS", "12000")
+)
+VISION_MODEL_NAME: str = os.getenv("VISION_MODEL_NAME", GENERATE_LLM_MODEL)
+VISION_MAX_IMAGES_PER_REQUEST: int = int(
+    os.getenv("VISION_MAX_IMAGES_PER_REQUEST", "1")
+)
+VISION_MAX_IMAGE_SIZE_MB: int = int(os.getenv("VISION_MAX_IMAGE_SIZE_MB", "20"))
+
+# Router-specific settings. These reuse the Groq/OpenAI-compatible setup used
+# by index abstract generation, so Phase 1 does not introduce another provider.
+ROUTER_TOP_K: int = int(os.getenv("ROUTER_TOP_K", "3"))
+ROUTER_SHORTLIST_N: int = int(os.getenv("ROUTER_SHORTLIST_N", "20"))
+ROUTER_LLM_MODEL_NAME: str = os.getenv(
+    "ROUTER_LLM_MODEL_NAME",
+    GROQ_LLM_MODEL_NAME,
+)
+ROUTER_LLM_TIMEOUT_SECONDS: float = float(
+    os.getenv("ROUTER_LLM_TIMEOUT_SECONDS", "20")
+)
 
 # ---------------------------------------------------------------------------
 # Paths
@@ -135,8 +175,8 @@ MATH_FONT_FRAGMENTS: list[str] = [
 TOP_N_KEYWORDS: int = 15
 
 # Whether to generate LLM-based section abstracts at index-build time.
-# Requires a valid LLM_API_KEY.  Falls back to TF-IDF-only if disabled
-# or if no API key is configured.
+# Requires a configured Groq/Gemini-compatible LLM key. Falls back to
+# TF-IDF-only if disabled or if no API key is configured.
 LLM_ABSTRACTS_ENABLED: bool = os.getenv("LLM_ABSTRACTS_ENABLED", "false").lower() in ("true", "1", "yes")
 
 # ---------------------------------------------------------------------------
@@ -223,4 +263,3 @@ MARKER_CHUNK_SIZE_PAGES: int = int(
 MARKER_CHUNK_TIMEOUT_SECONDS: int = int(
     os.getenv("MARKER_CHUNK_TIMEOUT_SECONDS", "900")
 )
-

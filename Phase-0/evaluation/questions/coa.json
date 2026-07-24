@@ -1,0 +1,122 @@
+[
+  {
+    "question": "What are logic gates and how do AND, OR, and NOT gates work?",
+    "expected_sections": ["1-2-logic-gates"],
+    "difficulty": "easy",
+    "type": "single-topic"
+  },
+  {
+    "question": "How does Boolean algebra simplify logic expressions?",
+    "expected_sections": ["1-3-boolean-algebra"],
+    "difficulty": "easy",
+    "type": "single-topic"
+  },
+  {
+    "question": "What is a Karnaugh map and how is it used for simplification?",
+    "expected_sections": ["1-4-map-simplification"],
+    "difficulty": "easy",
+    "type": "single-topic"
+  },
+  {
+    "question": "Explain the difference between a half-adder and a full-adder.",
+    "expected_sections": ["half-adder", "full-adder"],
+    "difficulty": "medium",
+    "type": "comparison"
+  },
+  {
+    "question": "What are flip-flops and what types exist (SR, D, JK, T)?",
+    "expected_sections": ["1-6-flip-flops"],
+    "difficulty": "easy",
+    "type": "single-topic"
+  },
+  {
+    "question": "How do decoders work in digital circuits?",
+    "expected_sections": ["2-2-decoders"],
+    "difficulty": "easy",
+    "type": "single-topic"
+  },
+  {
+    "question": "What is register transfer language and how are microoperations described?",
+    "expected_sections": ["4-1-register-transfer-language"],
+    "difficulty": "easy",
+    "type": "single-topic"
+  },
+  {
+    "question": "How does the instruction cycle work in a basic computer?",
+    "expected_sections": ["5-5-instruction-cycle"],
+    "difficulty": "easy",
+    "type": "single-topic"
+  },
+  {
+    "question": "What are the different addressing modes in computer architecture?",
+    "expected_sections": ["8-5-addressing-modes"],
+    "difficulty": "easy",
+    "type": "single-topic"
+  },
+  {
+    "question": "How does pipelining improve processor performance?",
+    "expected_sections": ["9-2-pipelining"],
+    "difficulty": "easy",
+    "type": "single-topic"
+  },
+  {
+    "question": "What is the Booth multiplication algorithm?",
+    "expected_sections": ["booth-multiplication-algorithm"],
+    "difficulty": "easy",
+    "type": "single-topic"
+  },
+  {
+    "question": "How does cache memory work and what are the mapping techniques?",
+    "expected_sections": ["12-5-cache-memory"],
+    "difficulty": "easy",
+    "type": "single-topic"
+  },
+  {
+    "question": "Compare direct mapping and set-associative mapping in cache memory.",
+    "expected_sections": ["direct-mapping", "set-associative-mapping"],
+    "difficulty": "medium",
+    "type": "comparison"
+  },
+  {
+    "question": "What is virtual memory and how does address mapping using pages work?",
+    "expected_sections": ["12-6-virtual-memory"],
+    "difficulty": "easy",
+    "type": "single-topic"
+  },
+  {
+    "question": "What is DMA and how does it transfer data without CPU intervention?",
+    "expected_sections": ["11-6-direct-memory-access-dma"],
+    "difficulty": "easy",
+    "type": "single-topic"
+  },
+  {
+    "question": "How does the priority interrupt system handle multiple interrupt requests?",
+    "expected_sections": ["11-5-priority-interrupt"],
+    "difficulty": "easy",
+    "type": "single-topic"
+  },
+  {
+    "question": "What is the difference between RISC and CISC architectures?",
+    "expected_sections": ["8-8-reduced-instruction-set-computer-risc"],
+    "difficulty": "medium",
+    "type": "single-topic"
+  },
+  {
+    "question": "Explain the memory hierarchy in computer organization.",
+    "expected_sections": ["12-1-memory-hierarchy"],
+    "difficulty": "easy",
+    "type": "single-topic"
+  },
+  {
+    "question": "What is microprogrammed control and how does control memory work?",
+    "expected_sections": ["7-1-control-memory"],
+    "difficulty": "easy",
+    "type": "single-topic"
+  },
+  {
+    "question": "How does the stack organization work for evaluating arithmetic expressions?",
+    "expected_sections": ["8-3-stack-organization"],
+    "difficulty": "easy",
+    "type": "single-topic"
+  }
+]
