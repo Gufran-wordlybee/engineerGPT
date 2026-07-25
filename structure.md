@@ -1,6 +1,8 @@
 .
 ├── Phase-0
+│   ├── README.md
 │   ├── books
+│   │   ├── README.md
 │   │   ├── processed
 │   │   │   ├── ai
 │   │   │   │   ├── confusable_pairs.json
@@ -2587,7 +2589,6 @@
 │   │   │   │   │   ├── 9-6-summary-bibliographical-and-historical-notes-exercises_eq_7.png
 │   │   │   │   │   ├── 9-6-summary-bibliographical-and-historical-notes-exercises_eq_8.png
 │   │   │   │   │   ├── 9-6-summary-bibliographical-and-historical-notes-exercises_eq_9.png
-│   │   │   │   │   ├── a_eq_1.png
 │   │   │   │   │   ├── a-1-complexity-analysis-and-o-notation_eq_1.png
 │   │   │   │   │   ├── a-1-complexity-analysis-and-o-notation_eq_2.png
 │   │   │   │   │   ├── a-2-vectors-matrices-and-linear-algebra_eq_1.png
@@ -2630,6 +2631,7 @@
 │   │   │   │   │   ├── a-3-probability-distributions_eq_8.png
 │   │   │   │   │   ├── a-3-probability-distributions_eq_9.png
 │   │   │   │   │   ├── a-mathematical-background_eq_1.png
+│   │   │   │   │   ├── a_eq_1.png
 │   │   │   │   │   ├── b-3-online-help_eq_1.png
 │   │   │   │   │   ├── b-3-online-help_eq_2.png
 │   │   │   │   │   ├── copyright_diagram_1.png
@@ -2888,175 +2890,575 @@
 │   │   │   │       ├── x.json
 │   │   │   │       ├── y.json
 │   │   │   │       └── z.json
-│   │   │   ├── ece
-│   │   │   │   ├── images
-│   │   │   │   │   └── solution-manual-for-communication-systems-4th-edition-simon-_img_1.png
-│   │   │   │   ├── index.json
-│   │   │   │   ├── qa_report.txt
-│   │   │   │   └── sections
-│   │   │   │       └── solution-manual-for-communication-systems-4th-edition-simon-.json
-│   │   │   └── letusc
+│   │   │   └── coa
+│   │   │       ├── confusable_pairs.json
 │   │   │       ├── images
-│   │   │       │   ├── 1-getting-started_diagram_12.png
-│   │   │       │   ├── 1-getting-started_eq_1.png
-│   │   │       │   ├── 1-getting-started_fig_1-1.png
-│   │   │       │   ├── 1-getting-started_fig_1-10.png
-│   │   │       │   ├── 1-getting-started_fig_1-11.png
-│   │   │       │   ├── 1-getting-started_fig_1-12.png
-│   │   │       │   ├── 1-getting-started_fig_1-2.png
-│   │   │       │   ├── 1-getting-started_fig_1-4.png
-│   │   │       │   ├── 1-getting-started_fig_1-5.png
-│   │   │       │   ├── 1-getting-started_fig_1-6.png
-│   │   │       │   ├── 1-getting-started_fig_1-7.png
-│   │   │       │   ├── 1-getting-started_fig_1-8.png
-│   │   │       │   ├── 1-getting-started_fig_1-9.png
-│   │   │       │   ├── 10-structures_fig_10-1.png
-│   │   │       │   ├── 10-structures_fig_10-2.png
-│   │   │       │   ├── 11-console-input-output_fig_11-1.png
-│   │   │       │   ├── 11-console-input-output_fig_11-2.png
-│   │   │       │   ├── 11-console-input-output_fig_11-4.png
-│   │   │       │   ├── 12-file-inputoutput_fig_12-1.png
-│   │   │       │   ├── 12-file-inputoutput_fig_12-2.png
-│   │   │       │   ├── 13-more-issues-in-io_fig_13-1.png
-│   │   │       │   ├── 14-operations-on-bits_fig_14-1.png
-│   │   │       │   ├── 14-operations-on-bits_fig_14-10.png
-│   │   │       │   ├── 14-operations-on-bits_fig_14-11.png
-│   │   │       │   ├── 14-operations-on-bits_fig_14-12.png
-│   │   │       │   ├── 14-operations-on-bits_fig_14-13.png
-│   │   │       │   ├── 14-operations-on-bits_fig_14-2.png
-│   │   │       │   ├── 14-operations-on-bits_fig_14-3.png
-│   │   │       │   ├── 14-operations-on-bits_fig_14-4.png
-│   │   │       │   ├── 14-operations-on-bits_fig_14-5.png
-│   │   │       │   ├── 14-operations-on-bits_fig_14-6.png
-│   │   │       │   ├── 14-operations-on-bits_fig_14-7.png
-│   │   │       │   ├── 14-operations-on-bits_fig_14-8.png
-│   │   │       │   ├── 14-operations-on-bits_fig_14-9.png
-│   │   │       │   ├── 16-c-under-windows_fig_16-1.png
-│   │   │       │   ├── 16-c-under-windows_fig_16-2.png
-│   │   │       │   ├── 16-c-under-windows_fig_16-3.png
-│   │   │       │   ├── 16-c-under-windows_fig_16-4.png
-│   │   │       │   ├── 16-c-under-windows_fig_16-5.png
-│   │   │       │   ├── 16-c-under-windows_img_1.jpeg
-│   │   │       │   ├── 16-c-under-windows_img_2.jpeg
-│   │   │       │   ├── 16-c-under-windows_img_3.jpeg
-│   │   │       │   ├── 16-c-under-windows_img_4.jpeg
-│   │   │       │   ├── 17-windows-programming_fig_17-5.png
-│   │   │       │   ├── 17-windows-programming_img_1.png
-│   │   │       │   ├── 17-windows-programming_img_2.png
-│   │   │       │   ├── 17-windows-programming_img_3.png
-│   │   │       │   ├── 17-windows-programming_img_4.png
-│   │   │       │   ├── 18-graphics-under-windows_fig_18-6.png
-│   │   │       │   ├── 18-graphics-under-windows_fig_18-7.png
-│   │   │       │   ├── 18-graphics-under-windows_img_1.jpeg
-│   │   │       │   ├── 18-graphics-under-windows_img_2.jpeg
-│   │   │       │   ├── 18-graphics-under-windows_img_3.jpeg
-│   │   │       │   ├── 18-graphics-under-windows_img_4.jpeg
-│   │   │       │   ├── 18-graphics-under-windows_img_5.jpeg
-│   │   │       │   ├── 18-graphics-under-windows_img_6.jpeg
-│   │   │       │   ├── 18-graphics-under-windows_img_7.jpeg
-│   │   │       │   ├── 19-interaction-with-hardware_fig_19-1.png
-│   │   │       │   ├── 19-interaction-with-hardware_fig_19-2.png
-│   │   │       │   ├── 19-interaction-with-hardware_fig_19-3.png
-│   │   │       │   ├── 19-interaction-with-hardware_fig_19-4.png
-│   │   │       │   ├── 19-interaction-with-hardware_fig_19-5.png
-│   │   │       │   ├── 19-interaction-with-hardware_fig_19-6.png
-│   │   │       │   ├── 19-interaction-with-hardware_fig_19-7.png
-│   │   │       │   ├── 19-interaction-with-hardware_img_1.jpeg
-│   │   │       │   ├── 2-the-decision-control-structure_diagram_10.png
-│   │   │       │   ├── 2-the-decision-control-structure_diagram_9.png
-│   │   │       │   ├── 2-the-decision-control-structure_fig_2-1.png
-│   │   │       │   ├── 2-the-decision-control-structure_fig_2-2.png
-│   │   │       │   ├── 2-the-decision-control-structure_fig_2-3.png
-│   │   │       │   ├── 2-the-decision-control-structure_fig_2-4.png
-│   │   │       │   ├── 2-the-decision-control-structure_fig_2-5.png
-│   │   │       │   ├── 2-the-decision-control-structure_fig_2-6.png
-│   │   │       │   ├── 2-the-decision-control-structure_fig_2-7.png
-│   │   │       │   ├── 2-the-decision-control-structure_fig_2-8.png
-│   │   │       │   ├── 21-more-linux-programming_img_1.png
-│   │   │       │   ├── 21-more-linux-programming_img_2.png
-│   │   │       │   ├── 3-the-loop-control-structure_eq_1.png
-│   │   │       │   ├── 3-the-loop-control-structure_eq_2.png
-│   │   │       │   ├── 3-the-loop-control-structure_eq_3.png
-│   │   │       │   ├── 3-the-loop-control-structure_fig_3-1.png
-│   │   │       │   ├── 3-the-loop-control-structure_fig_3-2.png
-│   │   │       │   ├── 3-the-loop-control-structure_fig_3-3.png
-│   │   │       │   ├── 3-the-loop-control-structure_fig_3-4.png
-│   │   │       │   ├── 3-the-loop-control-structure_fig_3-5.png
-│   │   │       │   ├── 4-the-case-control-structure_fig_4-1.png
-│   │   │       │   ├── 5-functions-pointers_diagram_6.png
-│   │   │       │   ├── 5-functions-pointers_fig_5-1.png
-│   │   │       │   ├── 5-functions-pointers_fig_5-2.png
-│   │   │       │   ├── 5-functions-pointers_fig_5-3.png
-│   │   │       │   ├── 5-functions-pointers_fig_5-4.png
-│   │   │       │   ├── 5-functions-pointers_fig_5-5.png
-│   │   │       │   ├── 6-data-types-revisited_eq_1.png
-│   │   │       │   ├── 6-data-types-revisited_eq_2.png
-│   │   │       │   ├── 6-data-types-revisited_fig_6-1.png
-│   │   │       │   ├── 6-data-types-revisited_fig_6-2.png
-│   │   │       │   ├── 7-the-c-preprocessor_fig_7-2.png
-│   │   │       │   ├── 8-arrays_diagram_12.png
-│   │   │       │   ├── 8-arrays_fig_8-1.png
-│   │   │       │   ├── 8-arrays_fig_8-10.png
-│   │   │       │   ├── 8-arrays_fig_8-11.png
-│   │   │       │   ├── 8-arrays_fig_8-12.png
-│   │   │       │   ├── 8-arrays_fig_8-2.png
-│   │   │       │   ├── 8-arrays_fig_8-3.png
-│   │   │       │   ├── 8-arrays_fig_8-4.png
-│   │   │       │   ├── 8-arrays_fig_8-6.png
-│   │   │       │   ├── 8-arrays_fig_8-7.png
-│   │   │       │   ├── 8-arrays_fig_8-8.png
-│   │   │       │   ├── 8-arrays_fig_8-9.png
-│   │   │       │   ├── 9-puppetting-on-strings_diagram_2.png
-│   │   │       │   ├── 9-puppetting-on-strings_diagram_6.png
-│   │   │       │   ├── 9-puppetting-on-strings_fig_9-1.png
-│   │   │       │   ├── 9-puppetting-on-strings_fig_9-2.png
-│   │   │       │   ├── 9-puppetting-on-strings_fig_9-3.png
-│   │   │       │   ├── 9-puppetting-on-strings_fig_9-4.png
-│   │   │       │   ├── ascii-chart_diagram_1.png
-│   │   │       │   ├── ascii-chart_diagram_2.png
-│   │   │       │   ├── boot-parameters_diagram_1.png
-│   │   │       │   ├── boot-parameters_diagram_2.png
-│   │   │       │   ├── boot-parameters_diagram_3.png
-│   │   │       │   ├── boot-parameters_diagram_4.png
-│   │   │       │   ├── hexadecimal-numbering_diagram_1.png
-│   │   │       │   ├── precedence-table_diagram_1.png
-│   │   │       │   └── precedence-table_diagram_2.png
+│   │   │       │   ├── 1-1-digital-computers_img_1.png
+│   │   │       │   ├── 1-3-boolean-algebra_img_1.png
+│   │   │       │   ├── 1-3-boolean-algebra_img_2.png
+│   │   │       │   ├── 1-3-boolean-algebra_img_3.png
+│   │   │       │   ├── 1-4-map-simplification_img_1.png
+│   │   │       │   ├── 1-4-map-simplification_img_2.png
+│   │   │       │   ├── 1-4-map-simplification_img_3.png
+│   │   │       │   ├── 1-5-combinational-circuits_img_1.png
+│   │   │       │   ├── 10-6-decimal-arithmetic-unit_img_1.png
+│   │   │       │   ├── 10-7-decimal-arithmetic-operations_img_1.png
+│   │   │       │   ├── 11-6-direct-memory-access-dma_img_1.png
+│   │   │       │   ├── 12-1-memory-hierarchy_img_1.png
+│   │   │       │   ├── 12-3-auxiliary-memory_img_1.png
+│   │   │       │   ├── 12-5-cache-memory_img_1.png
+│   │   │       │   ├── 2-2-decoders_img_1.png
+│   │   │       │   ├── 2-3-multiplexers_img_1.png
+│   │   │       │   ├── 2-3-multiplexers_img_2.png
+│   │   │       │   ├── 2-4-registers_img_1.png
+│   │   │       │   ├── 2-6-binary-counters_img_1.png
+│   │   │       │   ├── 2-7-memory-unit_img_1.png
+│   │   │       │   ├── 3-6-error-detection-codes_img_1.png
+│   │   │       │   ├── 4-2-register-transfer_img_1.png
+│   │   │       │   ├── 4-3-bus-and-memory-transfers_img_1.png
+│   │   │       │   ├── 4-6-shift-microoperations_img_1.png
+│   │   │       │   ├── 4-7-arithmetic-logic-shift-unit_img_1.png
+│   │   │       │   ├── 5-2-computer-registers_img_1.png
+│   │   │       │   ├── 5-3-computer-instructions_img_1.png
+│   │   │       │   ├── 5-4-timing-and-control_img_1.png
+│   │   │       │   ├── 5-4-timing-and-control_img_2.png
+│   │   │       │   ├── 5-9-design-of-basic-computer_img_1.png
+│   │   │       │   ├── 7-1-control-memory_img_1.png
+│   │   │       │   ├── 7-4-design-of-control-unit_img_1.png
+│   │   │       │   ├── 8-1-introduction_img_1.png
+│   │   │       │   ├── 8-2-general-register-organization_img_1.png
+│   │   │       │   ├── 9-2-pipelining_img_1.png
+│   │   │       │   ├── 9-3-arithmetic-pipeline_img_1.png
+│   │   │       │   ├── adder-and-logic-circuit_img_1.png
+│   │   │       │   ├── addition-and-subtraction-with-signed-2s-complement-data_img_1.png
+│   │   │       │   ├── addition-and-subtraction-with-signed-2s-complement-data_img_2.png
+│   │   │       │   ├── addition-and-subtraction_img_1.png
+│   │   │       │   ├── address-mapping-using-pages_img_1.png
+│   │   │       │   ├── address-mapping-using-pages_img_2.png
+│   │   │       │   ├── address-space-and-memory-space_img_1.png
+│   │   │       │   ├── address-space-and-memory-space_img_2.png
+│   │   │       │   ├── arithmetic-circuit_img_1.png
+│   │   │       │   ├── array-multiplier_img_1.png
+│   │   │       │   ├── array-multiplier_img_2.png
+│   │   │       │   ├── associative-memory-page-table_img_1.png
+│   │   │       │   ├── asynchronous-communication-interface_img_1.png
+│   │   │       │   ├── bcd-adder_img_1.png
+│   │   │       │   ├── berkelev-risc-i_img_1.png
+│   │   │       │   ├── berkelev-risc-i_img_2.png
+│   │   │       │   ├── bidirectional-shift-register-with-parallel-load_img_1.png
+│   │   │       │   ├── binary-adder-subtractor_img_1.png
+│   │   │       │   ├── binary-adder_img_1.png
+│   │   │       │   ├── binary-incrementer_img_1.png
+│   │   │       │   ├── bit-oriented-protocol_img_1.png
+│   │   │       │   ├── booth-multiplication-algorithm_img_1.png
+│   │   │       │   ├── booth-multiplication-algorithm_img_2.png
+│   │   │       │   ├── bsa-branch-and-save-return-address_img_1.png
+│   │   │       │   ├── common-bus-system_img_1.png
+│   │   │       │   ├── computer-configuration_img_1.png
+│   │   │       │   ├── computer-system-rchitecture_img_1.png
+│   │   │       │   ├── computer-system-rchitecture_img_2.png
+│   │   │       │   ├── conditional-branching_img_1.png
+│   │   │       │   ├── control-flowchart_img_1.png
+│   │   │       │   ├── control-of-ac-register_img_1.png
+│   │   │       │   ├── control-of-common-bus_img_1.png
+│   │   │       │   ├── control-of-common-bus_img_2.png
+│   │   │       │   ├── control-of-registers-and-memory_img_1.png
+│   │   │       │   ├── cpu-iop-communication_img_1.png
+│   │   │       │   ├── d-flip-flop_img_1.png
+│   │   │       │   ├── daisy-chaining-priority_img_1.png
+│   │   │       │   ├── decoder-expansion_img_1.png
+│   │   │       │   ├── design-example_img_1.png
+│   │   │       │   ├── design-example_img_2.png
+│   │   │       │   ├── design-example_img_3.png
+│   │   │       │   ├── determine-the-type-of-instruction_img_1.png
+│   │   │       │   ├── direct-mapping_img_1.png
+│   │   │       │   ├── direct-mapping_img_2.png
+│   │   │       │   ├── direct-mapping_img_3.png
+│   │   │       │   ├── division_img_1.png
+│   │   │       │   ├── dont-care-conditions_img_1.png
+│   │   │       │   ├── dont-care-conditions_img_2.png
+│   │   │       │   ├── dont-care-conditions_img_3.png
+│   │   │       │   ├── edge-triggered-flip-flops_img_1.png
+│   │   │       │   ├── example-four-segment-instruction-pipeline_img_1.png
+│   │   │       │   ├── example-of-io-interface_img_1.png
+│   │   │       │   ├── example-of-programmed-io_img_1.png
+│   │   │       │   ├── example-of-programmed-io_img_2.png
+│   │   │       │   ├── fetch-and-decode_img_1.png
+│   │   │       │   ├── first-in-first-out-buffer_img_1.png
+│   │   │       │   ├── first-pass_img_1.png
+│   │   │       │   ├── flip-flop-input-equations_img_1.png
+│   │   │       │   ├── flip-flop-input-equations_img_2.png
+│   │   │       │   ├── full-adder_img_1.png
+│   │   │       │   ├── full-adder_img_2.png
+│   │   │       │   ├── general-considerations_img_1.png
+│   │   │       │   ├── general-considerations_img_2.png
+│   │   │       │   ├── general-considerations_img_3.png
+│   │   │       │   ├── half-adder_img_1.png
+│   │   │       │   ├── handshaking_img_1.png
+│   │   │       │   ├── handshaking_img_2.png
+│   │   │       │   ├── handshaking_img_3.png
+│   │   │       │   ├── hardware-algorithm_img_1.png
+│   │   │       │   ├── hardware-implementation-for-signed-magnitude-data_img_1.png
+│   │   │       │   ├── hardware-implementation_img_1.png
+│   │   │       │   ├── hardware-organization_img_1.png
+│   │   │       │   ├── hardware-organization_img_2.png
+│   │   │       │   ├── hypercube-interconnection_img_1.png
+│   │   │       │   ├── ibm-370-io-channel_img_1.png
+│   │   │       │   ├── ibm-370-io-channel_img_2.png
+│   │   │       │   ├── ibm-370-io-channel_img_3.png
+│   │   │       │   ├── ibm-370-io-channel_img_4.png
+│   │   │       │   ├── indirect-address_img_1.png
+│   │   │       │   ├── input-output-configuration_img_1.png
+│   │   │       │   ├── intel-8089-iop_img_1.png
+│   │   │       │   ├── intel-8089-iop_img_2.png
+│   │   │       │   ├── io-bus-and-interface-modules_img_1.png
+│   │   │       │   ├── magnetic-disks_img_1.png
+│   │   │       │   ├── match-logic_img_1.png
+│   │   │       │   ├── matrix-multiplication_img_1.png
+│   │   │       │   ├── memory-address-map_img_1.png
+│   │   │       │   ├── memory-interleaving_img_1.png
+│   │   │       │   ├── memory-modules_img_1.png
+│   │   │       │   ├── memory-modules_img_2.png
+│   │   │       │   ├── memory-stack_img_1.png
+│   │   │       │   ├── microprogram-sequencer_img_1.png
+│   │   │       │   ├── multiplication-program_img_1.png
+│   │   │       │   ├── multiplication_img_1.png
+│   │   │       │   ├── multiplication_img_2.png
+│   │   │       │   ├── multiplication_img_3.png
+│   │   │       │   ├── multiplication_img_4.png
+│   │   │       │   ├── multiplication_img_5.png
+│   │   │       │   ├── multiport-memory_img_1.png
+│   │   │       │   ├── multistage-switching-network_img_1.png
+│   │   │       │   ├── multistage-switching-network_img_2.png
+│   │   │       │   ├── multistage-switching-network_img_3.png
+│   │   │       │   ├── nand-gate-decoder_img_1.png
+│   │   │       │   ├── numerical-example_img_1.png
+│   │   │       │   ├── numerical-example_img_2.png
+│   │   │       │   ├── octal-and-hexadecimal-numbers_img_1.png
+│   │   │       │   ├── overlapped-register-windows_img_1.png
+│   │   │       │   ├── parallel-arbitration-logic_img_1.png
+│   │   │       │   ├── parallel-priority-interrupt_img_1.png
+│   │   │       │   ├── parallel-priority-interrupt_img_2.png
+│   │   │       │   ├── product-of-sums-simplification_img_1.png
+│   │   │       │   ├── product-of-sums-simplification_img_2.png
+│   │   │       │   ├── program-interrupt_img_1.png
+│   │   │       │   ├── ram-and-rom-chips_img_1.png
+│   │   │       │   ├── random-access-memory_img_1.png
+│   │   │       │   ├── read-only-memory_img_1.png
+│   │   │       │   ├── read-operation_img_1.png
+│   │   │       │   ├── register-configuration_img_1.png
+│   │   │       │   ├── register-stack_img_1.png
+│   │   │       │   ├── second-pass_img_1.png
+│   │   │       │   ├── segmented-page-mapping_img_1.png
+│   │   │       │   ├── segmented-page-mapping_img_2.png
+│   │   │       │   ├── serial-arbitration-procedure_img_1.png
+│   │   │       │   ├── simd-array-processor_img_1.png
+│   │   │       │   ├── simd-array-processor_img_2.png
+│   │   │       │   ├── software-routines_img_1.png
+│   │   │       │   ├── solutions-to-the-cache-coherence-problem_img_1.png
+│   │   │       │   ├── solutions-to-the-cache-coherence-problem_img_2.png
+│   │   │       │   ├── sr-flip-flop_img_1.png
+│   │   │       │   ├── state-diagram_img_1.png
+│   │   │       │   ├── status-bit-conditions_img_1.png
+│   │   │       │   ├── stored-program-organization_img_1.png
+│   │   │       │   ├── strobe-control_img_1.png
+│   │   │       │   ├── strobe-control_img_2.png
+│   │   │       │   ├── t-flip-flop_img_1.png
+│   │   │       │   ├── t-flip-flop_img_2.png
+│   │   │       │   ├── three-state-bus-buffers_img_1.png
+│   │   │       │   ├── three-state-bus-buffers_img_2.png
+│   │   │       │   ├── time-shared-common-bus_img_1.png
+│   │   │       │   └── time-shared-common-bus_img_2.png
 │   │   │       ├── index.json
-│   │   │       ├── qa_report.txt
+│   │   │       ├── marker_raw
+│   │   │       │   └── merged
+│   │   │       │       ├── coa.json
+│   │   │       │       └── images
 │   │   │       └── sections
-│   │   │           ├── 1-getting-started.json
-│   │   │           ├── 10-structures.json
-│   │   │           ├── 11-console-input-output.json
-│   │   │           ├── 12-file-inputoutput.json
-│   │   │           ├── 13-more-issues-in-io.json
-│   │   │           ├── 14-operations-on-bits.json
-│   │   │           ├── 16-c-under-windows.json
-│   │   │           ├── 17-windows-programming.json
-│   │   │           ├── 18-graphics-under-windows.json
-│   │   │           ├── 19-interaction-with-hardware.json
-│   │   │           ├── 2-the-decision-control-structure.json
-│   │   │           ├── 20-c-under-linux.json
-│   │   │           ├── 21-more-linux-programming.json
-│   │   │           ├── 3-the-loop-control-structure.json
-│   │   │           ├── 4-the-case-control-structure.json
-│   │   │           ├── 5-functions-pointers.json
-│   │   │           ├── 6-data-types-revisited.json
-│   │   │           ├── 7-the-c-preprocessor.json
-│   │   │           ├── 8-arrays.json
-│   │   │           ├── 9-puppetting-on-strings.json
-│   │   │           ├── ascii-chart.json
-│   │   │           ├── boot-parameters.json
+│   │   │           ├── 0000-0111-1000-0110.json
+│   │   │           ├── 0111-1000-0110-0000.json
+│   │   │           ├── 1-1-digital-computers.json
+│   │   │           ├── 1-2-logic-gates.json
+│   │   │           ├── 1-3-boolean-algebra.json
+│   │   │           ├── 1-4-map-simplification.json
+│   │   │           ├── 1-5-combinational-circuits.json
+│   │   │           ├── 1-6-flip-flops.json
+│   │   │           ├── 1-7-sequential-circuits.json
+│   │   │           ├── 10-1-introduction.json
+│   │   │           ├── 10-2-addition-and-subtraction.json
+│   │   │           ├── 10-3-multiplication-algorithms.json
+│   │   │           ├── 10-4-division-algorithms.json
+│   │   │           ├── 10-5-floating-point-arithmetic-operations.json
+│   │   │           ├── 10-6-decimal-arithmetic-unit.json
+│   │   │           ├── 10-7-decimal-arithmetic-operations.json
+│   │   │           ├── 11-1-peripheral-devices.json
+│   │   │           ├── 11-2-input-output-interface.json
+│   │   │           ├── 11-3-asynchronous-data-transfer.json
+│   │   │           ├── 11-4-modes-of-transfer.json
+│   │   │           ├── 11-5-priority-interrupt.json
+│   │   │           ├── 11-6-direct-memory-access-dma.json
+│   │   │           ├── 11-8-serial-communication.json
+│   │   │           ├── 12-1-memory-hierarchy.json
+│   │   │           ├── 12-2-main-memory.json
+│   │   │           ├── 12-3-auxiliary-memory.json
+│   │   │           ├── 12-4-associative-memory.json
+│   │   │           ├── 12-5-cache-memory.json
+│   │   │           ├── 12-6-virtual-memory.json
+│   │   │           ├── 12-7-memory-management-hardware.json
+│   │   │           ├── 13-1-characteristics-of-multiprocessors.json
+│   │   │           ├── 13-2-interconnection-structures.json
+│   │   │           ├── 13-3-interprocessor-arbitration.json
+│   │   │           ├── 13-4-interprocessor-communication-and-synchronization.json
+│   │   │           ├── 13-5-cache-coherence.json
+│   │   │           ├── 2-1-integrated-circuits.json
+│   │   │           ├── 2-2-decoders.json
+│   │   │           ├── 2-3-multiplexers.json
+│   │   │           ├── 2-4-registers.json
+│   │   │           ├── 2-5-shift-registers.json
+│   │   │           ├── 2-6-binary-counters.json
+│   │   │           ├── 2-7-memory-unit.json
+│   │   │           ├── 3-1-data-types.json
+│   │   │           ├── 3-2-complements.json
+│   │   │           ├── 3-3-fixed-point-representation.json
+│   │   │           ├── 3-4-floating-point-representation.json
+│   │   │           ├── 3-5-other-binary-codes.json
+│   │   │           ├── 3-6-error-detection-codes.json
+│   │   │           ├── 4-1-register-transfer-language.json
+│   │   │           ├── 4-2-0-1-2-6-1-4-0-1-0-2-3-5-7.json
+│   │   │           ├── 4-2-register-transfer.json
+│   │   │           ├── 4-3-bus-and-memory-transfers.json
+│   │   │           ├── 4-5-logic-microoperations.json
+│   │   │           ├── 4-6-shift-microoperations.json
+│   │   │           ├── 4-7-arithmetic-logic-shift-unit.json
+│   │   │           ├── 5-1-instruction-codes.json
+│   │   │           ├── 5-10-design-of-accumulator-logic.json
+│   │   │           ├── 5-2-computer-registers.json
+│   │   │           ├── 5-3-computer-instructions.json
+│   │   │           ├── 5-4-timing-and-control.json
+│   │   │           ├── 5-5-instruction-cycle.json
+│   │   │           ├── 5-6-memory-reference-instructions.json
+│   │   │           ├── 5-7-input-output-and-interrupt.json
+│   │   │           ├── 5-8-complete-computer-description.json
+│   │   │           ├── 5-9-design-of-basic-computer.json
+│   │   │           ├── 6-1-introduction.json
+│   │   │           ├── 6-2-machine-language.json
+│   │   │           ├── 6-3-assembly-language.json
+│   │   │           ├── 6-4-the-assembler.json
+│   │   │           ├── 6-5-program-loops.json
+│   │   │           ├── 6-7-subroutines.json
+│   │   │           ├── 6-8-input-output-programming.json
+│   │   │           ├── 7-1-control-memory.json
+│   │   │           ├── 7-15-the-computer-of-sec-7-3-has-the-following-binary-microp.json
+│   │   │           ├── 7-2-address-sequencing.json
+│   │   │           ├── 7-3-microprogram-example.json
+│   │   │           ├── 7-4-design-of-control-unit.json
+│   │   │           ├── 8-1-introduction.json
+│   │   │           ├── 8-2-general-register-organization.json
+│   │   │           ├── 8-3-stack-organization.json
+│   │   │           ├── 8-4-instruction-formats.json
+│   │   │           ├── 8-5-addressing-modes.json
+│   │   │           ├── 8-6-data-transfer-and-manipulation.json
+│   │   │           ├── 8-7-program-control.json
+│   │   │           ├── 8-8-reduced-instruction-set-computer-risc.json
+│   │   │           ├── 9-1-parallel-processing.json
+│   │   │           ├── 9-2-pipelining.json
+│   │   │           ├── 9-3-arithmetic-pipeline.json
+│   │   │           ├── 9-4-instruction-pipeline.json
+│   │   │           ├── 9-5-risc-pipeline.json
+│   │   │           ├── 9-6-vector-processing.json
+│   │   │           ├── 9-7-array-processors.json
+│   │   │           ├── a-instruction-format.json
+│   │   │           ├── a-segment-and-page-table-mapping.json
+│   │   │           ├── acknowledgments.json
+│   │   │           ├── add-to-ac.json
+│   │   │           ├── adder-and-logic-circuit.json
+│   │   │           ├── addition-and-subtraction-1.json
+│   │   │           ├── addition-and-subtraction-with-signed-2s-complement-data.json
+│   │   │           ├── addition-and-subtraction-with-signed-magnitude-data.json
+│   │   │           ├── addition-and-subtraction.json
+│   │   │           ├── address-mapping-using-pages.json
+│   │   │           ├── address-space-and-memory-space.json
+│   │   │           ├── alphanumeric-representation.json
+│   │   │           ├── an-example.json
+│   │   │           ├── and-to-ac.json
+│   │   │           ├── arithmetic-addition.json
+│   │   │           ├── arithmetic-circuit.json
+│   │   │           ├── arithmetic-instructions.json
+│   │   │           ├── arithmetic-subtraction.json
+│   │   │           ├── array-multiplier.json
+│   │   │           ├── ascii-alphanumeric-characters.json
+│   │   │           ├── associative-mapping.json
+│   │   │           ├── associative-memory-page-table.json
+│   │   │           ├── asynchronous-communication-interface.json
+│   │   │           ├── attached-array-processor.json
+│   │   │           ├── basic-computer-organization-and-design.json
+│   │   │           ├── basic-considerations.json
+│   │   │           ├── bcd-adder.json
+│   │   │           ├── bcd-subtraction.json
+│   │   │           ├── berkelev-risc-i.json
+│   │   │           ├── bidirectional-shift-register-with-parallel-load.json
+│   │   │           ├── binary-adder-subtractor.json
+│   │   │           ├── binary-adder.json
+│   │   │           ├── binary-counter-with-parallel-load.json
+│   │   │           ├── binary-incrementer.json
+│   │   │           ├── binary-microprogram.json
+│   │   │           ├── bit-oriented-protocol.json
+│   │   │           ├── booth-multiplication-algorithm.json
+│   │   │           ├── bsa-branch-and-save-return-address.json
+│   │   │           ├── bun-branch-unconditionally.json
+│   │   │           ├── cache-initialization.json
+│   │   │           ├── central-processing-unit.json
+│   │   │           ├── chapter-five.json
+│   │   │           ├── chapter-four.json
+│   │   │           ├── chapter-nine.json
+│   │   │           ├── chapter-six.json
+│   │   │           ├── chapter-ten.json
+│   │   │           ├── chapter-thirteen.json
+│   │   │           ├── chapter-three.json
+│   │   │           ├── chapter-twelve.json
+│   │   │           ├── chapterone.json
+│   │   │           ├── character-manipulation.json
+│   │   │           ├── character-oriented-protocol.json
+│   │   │           ├── cisc-characteristics.json
+│   │   │           ├── common-bus-system.json
+│   │   │           ├── complement-of-a-function.json
+│   │   │           ├── computer-arithmetic.json
+│   │   │           ├── computer-configuration.json
+│   │   │           ├── computer-system-rchitecture.json
+│   │   │           ├── conditional-branch-instructions.json
+│   │   │           ├── conditional-branching.json
+│   │   │           ├── conditions-for-incoherence.json
 │   │   │           ├── contents.json
-│   │   │           ├── creating-libraries.json
-│   │   │           ├── helper-h-file.json
-│   │   │           ├── hexadecimal-numbering.json
-│   │   │           ├── precedence-table.json
-│   │   │           └── standard-library-functions.json
+│   │   │           ├── control-flowchart.json
+│   │   │           ├── control-logic-gates.json
+│   │   │           ├── control-of-ac-register.json
+│   │   │           ├── control-of-common-bus.json
+│   │   │           ├── control-of-registers-and-memory.json
+│   │   │           ├── control-of-single-flip-flops.json
+│   │   │           ├── control-word.json
+│   │   │           ├── cpu-iop-communication.json
+│   │   │           ├── crossbar-switch.json
+│   │   │           ├── d-flip-flop.json
+│   │   │           ├── daisy-chaining-priority.json
+│   │   │           ├── data-dependency.json
+│   │   │           ├── data-manipulation-instructions.json
+│   │   │           ├── data-representation.json
+│   │   │           ├── data-transfer-instructions.json
+│   │   │           ├── data-transparency.json
+│   │   │           ├── decimal-fixed-point-representation.json
+│   │   │           ├── decimal-representation.json
+│   │   │           ├── decoder-expansion.json
+│   │   │           ├── delayed-branch.json
+│   │   │           ├── delayed-load.json
+│   │   │           ├── design-example.json
+│   │   │           ├── design-procedure.json
+│   │   │           ├── determine-the-type-of-instruction.json
+│   │   │           ├── digital-components.json
+│   │   │           ├── digital-logic-circuits.json
+│   │   │           ├── direct-mapping.json
+│   │   │           ├── divide-overflow.json
+│   │   │           ├── division-1.json
+│   │   │           ├── division.json
+│   │   │           ├── dont-care-conditions.json
+│   │   │           ├── double-precision-addition.json
+│   │   │           ├── dynamic-arbitration-algorithms.json
+│   │   │           ├── edge-triggered-flip-flops.json
+│   │   │           ├── encoders.json
+│   │   │           ├── evaluation-of-arithmetic-expressions.json
+│   │   │           ├── example-four-segment-instruction-pipeline.json
+│   │   │           ├── example-of-io-interface.json
+│   │   │           ├── example-of-programmed-io.json
+│   │   │           ├── example-three-segment-instruction-pipeline.json
+│   │   │           ├── examples-of-microoperations.json
+│   │   │           ├── excitation-tables.json
+│   │   │           ├── fetch-and-decode.json
+│   │   │           ├── first-in-first-out-buffer.json
+│   │   │           ├── first-pass.json
+│   │   │           ├── flip-flop-input-equations.json
+│   │   │           ├── floating-point-operations.json
+│   │   │           ├── front-matter.json
+│   │   │           ├── full-adder.json
+│   │   │           ├── general-considerations.json
+│   │   │           ├── gray-code.json
+│   │   │           ├── half-adder.json
+│   │   │           ├── handling-of-branch-instructions.json
+│   │   │           ├── handshaking.json
+│   │   │           ├── hardware-algorithm-1.json
+│   │   │           ├── hardware-algorithm-2.json
+│   │   │           ├── hardware-algorithm.json
+│   │   │           ├── hardware-implementation-1.json
+│   │   │           ├── hardware-implementation-2.json
+│   │   │           ├── hardware-implementation-for-signed-magnitude-data-1.json
+│   │   │           ├── hardware-implementation-for-signed-magnitude-data.json
+│   │   │           ├── hardware-implementation.json
+│   │   │           ├── hardware-organization.json
+│   │   │           ├── hypercube-interconnection.json
+│   │   │           ├── ibm-370-io-channel.json
+│   │   │           ├── in-this-chapter-1.json
+│   │   │           ├── in-this-chapter-10.json
+│   │   │           ├── in-this-chapter-11.json
+│   │   │           ├── in-this-chapter-12.json
+│   │   │           ├── in-this-chapter-2.json
+│   │   │           ├── in-this-chapter-3.json
+│   │   │           ├── in-this-chapter-4.json
+│   │   │           ├── in-this-chapter-5.json
+│   │   │           ├── in-this-chapter-6.json
+│   │   │           ├── in-this-chapter-7.json
+│   │   │           ├── in-this-chapter-8.json
+│   │   │           ├── in-this-chapter-9.json
+│   │   │           ├── in-this-chapter.json
+│   │   │           ├── index.json
+│   │   │           ├── indirect-address.json
+│   │   │           ├── initial-and-final-operations.json
+│   │   │           ├── input-output-configuration.json
+│   │   │           ├── input-output-instructions.json
+│   │   │           ├── input-output-organization.json
+│   │   │           ├── instruction-set-completeness.json
+│   │   │           ├── integer-representation.json
+│   │   │           ├── intel-8089-iop.json
+│   │   │           ├── interprocessor-synchronization.json
+│   │   │           ├── interrupt-cycle-1.json
+│   │   │           ├── interrupt-cycle.json
+│   │   │           ├── interrupt-initiated-io.json
+│   │   │           ├── io-bus-and-interface-modules.json
+│   │   │           ├── io-versus-memory-bus.json
+│   │   │           ├── isolated-versus-memory-mapped-io.json
+│   │   │           ├── isz-increment-and-skip-if-zero.json
+│   │   │           ├── jk-flip-flop.json
+│   │   │           ├── lda-load-to-ac.json
+│   │   │           ├── list-of-logic-microoperations.json
+│   │   │           ├── logic-operations.json
+│   │   │           ├── logical-and-bit-manipulation-instructions.json
+│   │   │           ├── magnetic-disks.json
+│   │   │           ├── magnetic-tape.json
+│   │   │           ├── mapping-of-instruction.json
+│   │   │           ├── match-logic.json
+│   │   │           ├── matrix-multiplication.json
+│   │   │           ├── memory-address-map.json
+│   │   │           ├── memory-connection-to-cpu.json
+│   │   │           ├── memory-interleaving.json
+│   │   │           ├── memory-modules.json
+│   │   │           ├── memory-organization.json
+│   │   │           ├── memory-protection.json
+│   │   │           ├── memory-stack.json
+│   │   │           ├── memory-transfer.json
+│   │   │           ├── microinstruction-format.json
+│   │   │           ├── microprogram-sequencer.json
+│   │   │           ├── microprogrammed-control.json
+│   │   │           ├── multiplication-1.json
+│   │   │           ├── multiplication-program.json
+│   │   │           ├── multiplication.json
+│   │   │           ├── multiport-memory.json
+│   │   │           ├── multiprocessors.json
+│   │   │           ├── multistage-switching-network.json
+│   │   │           ├── mutual-exclusion-with-a-semaphore.json
+│   │   │           ├── nand-gate-decoder.json
+│   │   │           ├── number-systems.json
+│   │   │           ├── numerical-example-1.json
+│   │   │           ├── numerical-example.json
+│   │   │           ├── octal-and-hexadecimal-numbers.json
+│   │   │           ├── one-address-instructions.json
+│   │   │           ├── other-algorithms.json
+│   │   │           ├── other-alphanumeric-codes.json
+│   │   │           ├── other-decimal-codes.json
+│   │   │           ├── overflow.json
+│   │   │           ├── overlapped-register-windows.json
+│   │   │           ├── page-replacement.json
+│   │   │           ├── parallel-arbitration-logic.json
+│   │   │           ├── parallel-priority-interrupt.json
+│   │   │           ├── pipeline-and-vector-processing.json
+│   │   │           ├── priority-encoder.json
+│   │   │           ├── problems-1.json
+│   │   │           ├── problems-10.json
+│   │   │           ├── problems-11.json
+│   │   │           ├── problems-2.json
+│   │   │           ├── problems-3.json
+│   │   │           ├── problems-4.json
+│   │   │           ├── problems-5.json
+│   │   │           ├── problems-6.json
+│   │   │           ├── problems-7.json
+│   │   │           ├── problems-8.json
+│   │   │           ├── problems-9.json
+│   │   │           ├── problems.json
+│   │   │           ├── product-of-sums-simplification.json
+│   │   │           ├── program-counter-pc.json
+│   │   │           ├── program-interrupt-1.json
+│   │   │           ├── program-interrupt-2.json
+│   │   │           ├── program-interrupt.json
+│   │   │           ├── programming-the-basic-computer.json
+│   │   │           ├── r-1s-complement.json
+│   │   │           ├── ram-and-rom-chips.json
+│   │   │           ├── random-access-memory.json
+│   │   │           ├── read-only-memory.json
+│   │   │           ├── read-operation.json
+│   │   │           ├── references-1.json
+│   │   │           ├── references-10.json
+│   │   │           ├── references-11.json
+│   │   │           ├── references-12.json
+│   │   │           ├── references-2.json
+│   │   │           ├── references-3.json
+│   │   │           ├── references-4.json
+│   │   │           ├── references-5.json
+│   │   │           ├── references-6.json
+│   │   │           ├── references-7.json
+│   │   │           ├── references-8.json
+│   │   │           ├── references-9.json
+│   │   │           ├── references.json
+│   │   │           ├── register-configuration.json
+│   │   │           ├── register-reference-instructions.json
+│   │   │           ├── register-stack.json
+│   │   │           ├── register-transfer-and-microoperations.json
+│   │   │           ├── register-with-parallel-load.json
+│   │   │           ├── representation-of-symbolic-program-in-memory.json
+│   │   │           ├── reverse-polish-notation.json
+│   │   │           ├── risc-characteristics.json
+│   │   │           ├── risc-instructions.json
+│   │   │           ├── rs-complement.json
+│   │   │           ├── rules-of-the-language.json
+│   │   │           ├── second-pass.json
+│   │   │           ├── segmented-page-mapping.json
+│   │   │           ├── serial-arbitration-procedure.json
+│   │   │           ├── set-associative-mapping.json
+│   │   │           ├── shift-instructions.json
+│   │   │           ├── shift-operations.json
+│   │   │           ├── simd-array-processor.json
+│   │   │           ├── software-considerations.json
+│   │   │           ├── software-routines.json
+│   │   │           ├── solutions-to-the-cache-coherence-problem.json
+│   │   │           ├── some-applications.json
+│   │   │           ├── sr-flip-flop.json
+│   │   │           ├── sta-store-ac.json
+│   │   │           ├── state-diagram.json
+│   │   │           ├── state-table.json
+│   │   │           ├── status-bit-conditions.json
+│   │   │           ├── stored-program-organization.json
+│   │   │           ├── strobe-control.json
+│   │   │           ├── subroutine-call-and-return.json
+│   │   │           ├── subroutine-parameters-and-data-linkage.json
+│   │   │           ├── subroutines.json
+│   │   │           ├── subtraction-of-unsigned-numbers.json
+│   │   │           ├── supercomputers.json
+│   │   │           ├── symbolic-microinstructions.json
+│   │   │           ├── symbolic-microprogram.json
+│   │   │           ├── system-bus.json
+│   │   │           ├── t-flip-flop.json
+│   │   │           ├── the-fetch-routine.json
+│   │   │           ├── three-address-instructions.json
+│   │   │           ├── three-state-bus-buffers.json
+│   │   │           ├── time-shared-common-bus.json
+│   │   │           ├── translation-to-binary.json
+│   │   │           ├── transmission-example.json
+│   │   │           ├── two-address-instructions.json
+│   │   │           ├── types-of-interrupts.json
+│   │   │           ├── types-of-roms.json
+│   │   │           ├── vector-operations.json
+│   │   │           ├── write-operation.json
+│   │   │           ├── writing-into-cache.json
+│   │   │           ├── z.json
+│   │   │           └── zero-address-instructions.json
 │   │   └── raw
-│   │       ├── AI.pdf
-│   │       ├── coa.pdf
-│   │       ├── ece.pdf
-│   │       └── letusc.pdf
+│   ├── colab
+│   │   └── marker_colab_runner.ipynb
 │   ├── config
 │   │   ├── __init__.py
 │   │   ├── __pycache__
@@ -3065,13 +3467,52 @@
 │   │   └── settings.py
 │   ├── core
 │   │   ├── __init__.py
+│   │   ├── __pycache__
+│   │   │   ├── __init__.cpython-311.pyc
+│   │   │   ├── generator.cpython-311.pyc
+│   │   │   ├── pipeline.cpython-311.pyc
+│   │   │   ├── retrieval.cpython-311.pyc
+│   │   │   ├── router.cpython-311.pyc
+│   │   │   ├── tester.cpython-311.pyc
+│   │   │   └── tester_gen.cpython-311.pyc
+│   │   ├── del.py
 │   │   ├── generator.py
 │   │   ├── pipeline.py
-│   │   └── router.py
+│   │   ├── retrieval.py
+│   │   ├── router.py
+│   │   ├── tester.py
+│   │   └── tester_gen.py
+│   ├── evaluation
+│   │   ├── __init__.py
+│   │   ├── __pycache__
+│   │   │   ├── __init__.cpython-311.pyc
+│   │   │   └── eval_router.cpython-311.pyc
+│   │   ├── eval_router.py
+│   │   ├── questions
+│   │   │   ├── ai.json
+│   │   │   └── coa.json
+│   │   └── results
+│   │       ├── ai_misses.json
+│   │       └── ai_results.json
 │   ├── interfaces
 │   │   ├── __init__.py
+│   │   ├── __pycache__
+│   │   │   ├── __init__.cpython-311.pyc
+│   │   │   ├── app_streamlit.cpython-311.pyc
+│   │   │   ├── cli.cpython-311.pyc
+│   │   │   ├── db.cpython-311.pyc
+│   │   │   ├── register_book.cpython-311.pyc
+│   │   │   ├── streamlit_app.cpython-311.pyc
+│   │   │   ├── ui_chat.cpython-311.pyc
+│   │   │   └── ui_sidebar.cpython-311.pyc
 │   │   ├── app_streamlit.py
-│   │   └── cli.py
+│   │   ├── cli.py
+│   │   ├── db.py
+│   │   ├── register_book.py
+│   │   ├── schema.sql
+│   │   ├── streamlit_app.py
+│   │   ├── ui_chat.py
+│   │   └── ui_sidebar.py
 │   ├── preprocessing
 │   │   ├── __init__.py
 │   │   ├── __pycache__
@@ -3079,15 +3520,838 @@
 │   │   │   ├── build_index.cpython-311.pyc
 │   │   │   ├── extract_images.cpython-311.pyc
 │   │   │   ├── extract_toc.cpython-311.pyc
+│   │   │   ├── marker_ocr.cpython-311.pyc
+│   │   │   ├── parse_marker_output.cpython-311.pyc
 │   │   │   ├── run_pipeline.cpython-311.pyc
+│   │   │   ├── scanned_detector.cpython-311.pyc
 │   │   │   └── split_sections.cpython-311.pyc
 │   │   ├── build_index.py
 │   │   ├── extract_images.py
 │   │   ├── extract_toc.py
+│   │   ├── marker_ocr.py
+│   │   ├── parse_marker_output.py
 │   │   ├── run_pipeline.py
+│   │   ├── scanned_detector.py
 │   │   └── split_sections.py
-│   └── README.md
+│   └── requirements.txt
+├── README.md
+├── node_modules
+│   ├── @supabase
+│   │   ├── auth-js
+│   │   │   ├── AGENTS.md
+│   │   │   ├── LICENSE
+│   │   │   ├── README.md
+│   │   │   ├── dist
+│   │   │   │   ├── main
+│   │   │   │   │   ├── AuthAdminApi.d.ts
+│   │   │   │   │   ├── AuthAdminApi.d.ts.map
+│   │   │   │   │   ├── AuthAdminApi.js
+│   │   │   │   │   ├── AuthAdminApi.js.map
+│   │   │   │   │   ├── AuthClient.d.ts
+│   │   │   │   │   ├── AuthClient.d.ts.map
+│   │   │   │   │   ├── AuthClient.js
+│   │   │   │   │   ├── AuthClient.js.map
+│   │   │   │   │   ├── GoTrueAdminApi.d.ts
+│   │   │   │   │   ├── GoTrueAdminApi.d.ts.map
+│   │   │   │   │   ├── GoTrueAdminApi.js
+│   │   │   │   │   ├── GoTrueAdminApi.js.map
+│   │   │   │   │   ├── GoTrueClient.d.ts
+│   │   │   │   │   ├── GoTrueClient.d.ts.map
+│   │   │   │   │   ├── GoTrueClient.js
+│   │   │   │   │   ├── GoTrueClient.js.map
+│   │   │   │   │   ├── index.d.ts
+│   │   │   │   │   ├── index.d.ts.map
+│   │   │   │   │   ├── index.js
+│   │   │   │   │   ├── index.js.map
+│   │   │   │   │   └── lib
+│   │   │   │   │       ├── base64url.d.ts
+│   │   │   │   │       ├── base64url.d.ts.map
+│   │   │   │   │       ├── base64url.js
+│   │   │   │   │       ├── base64url.js.map
+│   │   │   │   │       ├── constants.d.ts
+│   │   │   │   │       ├── constants.d.ts.map
+│   │   │   │   │       ├── constants.js
+│   │   │   │   │       ├── constants.js.map
+│   │   │   │   │       ├── error-codes.d.ts
+│   │   │   │   │       ├── error-codes.d.ts.map
+│   │   │   │   │       ├── error-codes.js
+│   │   │   │   │       ├── error-codes.js.map
+│   │   │   │   │       ├── errors.d.ts
+│   │   │   │   │       ├── errors.d.ts.map
+│   │   │   │   │       ├── errors.js
+│   │   │   │   │       ├── errors.js.map
+│   │   │   │   │       ├── fetch.d.ts
+│   │   │   │   │       ├── fetch.d.ts.map
+│   │   │   │   │       ├── fetch.js
+│   │   │   │   │       ├── fetch.js.map
+│   │   │   │   │       ├── helpers.d.ts
+│   │   │   │   │       ├── helpers.d.ts.map
+│   │   │   │   │       ├── helpers.js
+│   │   │   │   │       ├── helpers.js.map
+│   │   │   │   │       ├── local-storage.d.ts
+│   │   │   │   │       ├── local-storage.d.ts.map
+│   │   │   │   │       ├── local-storage.js
+│   │   │   │   │       ├── local-storage.js.map
+│   │   │   │   │       ├── locks.d.ts
+│   │   │   │   │       ├── locks.d.ts.map
+│   │   │   │   │       ├── locks.js
+│   │   │   │   │       ├── locks.js.map
+│   │   │   │   │       ├── polyfills.d.ts
+│   │   │   │   │       ├── polyfills.d.ts.map
+│   │   │   │   │       ├── polyfills.js
+│   │   │   │   │       ├── polyfills.js.map
+│   │   │   │   │       ├── types.d.ts
+│   │   │   │   │       ├── types.d.ts.map
+│   │   │   │   │       ├── types.js
+│   │   │   │   │       ├── types.js.map
+│   │   │   │   │       ├── version.d.ts
+│   │   │   │   │       ├── version.d.ts.map
+│   │   │   │   │       ├── version.js
+│   │   │   │   │       ├── version.js.map
+│   │   │   │   │       ├── web3
+│   │   │   │   │       │   ├── ethereum.d.ts
+│   │   │   │   │       │   ├── ethereum.d.ts.map
+│   │   │   │   │       │   ├── ethereum.js
+│   │   │   │   │       │   ├── ethereum.js.map
+│   │   │   │   │       │   ├── solana.d.ts
+│   │   │   │   │       │   ├── solana.d.ts.map
+│   │   │   │   │       │   ├── solana.js
+│   │   │   │   │       │   └── solana.js.map
+│   │   │   │   │       ├── webauthn.d.ts
+│   │   │   │   │       ├── webauthn.d.ts.map
+│   │   │   │   │       ├── webauthn.dom.d.ts
+│   │   │   │   │       ├── webauthn.dom.d.ts.map
+│   │   │   │   │       ├── webauthn.dom.js
+│   │   │   │   │       ├── webauthn.dom.js.map
+│   │   │   │   │       ├── webauthn.errors.d.ts
+│   │   │   │   │       ├── webauthn.errors.d.ts.map
+│   │   │   │   │       ├── webauthn.errors.js
+│   │   │   │   │       ├── webauthn.errors.js.map
+│   │   │   │   │       ├── webauthn.js
+│   │   │   │   │       └── webauthn.js.map
+│   │   │   │   ├── module
+│   │   │   │   │   ├── AuthAdminApi.d.ts
+│   │   │   │   │   ├── AuthAdminApi.d.ts.map
+│   │   │   │   │   ├── AuthAdminApi.js
+│   │   │   │   │   ├── AuthAdminApi.js.map
+│   │   │   │   │   ├── AuthClient.d.ts
+│   │   │   │   │   ├── AuthClient.d.ts.map
+│   │   │   │   │   ├── AuthClient.js
+│   │   │   │   │   ├── AuthClient.js.map
+│   │   │   │   │   ├── GoTrueAdminApi.d.ts
+│   │   │   │   │   ├── GoTrueAdminApi.d.ts.map
+│   │   │   │   │   ├── GoTrueAdminApi.js
+│   │   │   │   │   ├── GoTrueAdminApi.js.map
+│   │   │   │   │   ├── GoTrueClient.d.ts
+│   │   │   │   │   ├── GoTrueClient.d.ts.map
+│   │   │   │   │   ├── GoTrueClient.js
+│   │   │   │   │   ├── GoTrueClient.js.map
+│   │   │   │   │   ├── index.d.ts
+│   │   │   │   │   ├── index.d.ts.map
+│   │   │   │   │   ├── index.js
+│   │   │   │   │   ├── index.js.map
+│   │   │   │   │   └── lib
+│   │   │   │   │       ├── base64url.d.ts
+│   │   │   │   │       ├── base64url.d.ts.map
+│   │   │   │   │       ├── base64url.js
+│   │   │   │   │       ├── base64url.js.map
+│   │   │   │   │       ├── constants.d.ts
+│   │   │   │   │       ├── constants.d.ts.map
+│   │   │   │   │       ├── constants.js
+│   │   │   │   │       ├── constants.js.map
+│   │   │   │   │       ├── error-codes.d.ts
+│   │   │   │   │       ├── error-codes.d.ts.map
+│   │   │   │   │       ├── error-codes.js
+│   │   │   │   │       ├── error-codes.js.map
+│   │   │   │   │       ├── errors.d.ts
+│   │   │   │   │       ├── errors.d.ts.map
+│   │   │   │   │       ├── errors.js
+│   │   │   │   │       ├── errors.js.map
+│   │   │   │   │       ├── fetch.d.ts
+│   │   │   │   │       ├── fetch.d.ts.map
+│   │   │   │   │       ├── fetch.js
+│   │   │   │   │       ├── fetch.js.map
+│   │   │   │   │       ├── helpers.d.ts
+│   │   │   │   │       ├── helpers.d.ts.map
+│   │   │   │   │       ├── helpers.js
+│   │   │   │   │       ├── helpers.js.map
+│   │   │   │   │       ├── local-storage.d.ts
+│   │   │   │   │       ├── local-storage.d.ts.map
+│   │   │   │   │       ├── local-storage.js
+│   │   │   │   │       ├── local-storage.js.map
+│   │   │   │   │       ├── locks.d.ts
+│   │   │   │   │       ├── locks.d.ts.map
+│   │   │   │   │       ├── locks.js
+│   │   │   │   │       ├── locks.js.map
+│   │   │   │   │       ├── polyfills.d.ts
+│   │   │   │   │       ├── polyfills.d.ts.map
+│   │   │   │   │       ├── polyfills.js
+│   │   │   │   │       ├── polyfills.js.map
+│   │   │   │   │       ├── types.d.ts
+│   │   │   │   │       ├── types.d.ts.map
+│   │   │   │   │       ├── types.js
+│   │   │   │   │       ├── types.js.map
+│   │   │   │   │       ├── version.d.ts
+│   │   │   │   │       ├── version.d.ts.map
+│   │   │   │   │       ├── version.js
+│   │   │   │   │       ├── version.js.map
+│   │   │   │   │       ├── web3
+│   │   │   │   │       │   ├── ethereum.d.ts
+│   │   │   │   │       │   ├── ethereum.d.ts.map
+│   │   │   │   │       │   ├── ethereum.js
+│   │   │   │   │       │   ├── ethereum.js.map
+│   │   │   │   │       │   ├── solana.d.ts
+│   │   │   │   │       │   ├── solana.d.ts.map
+│   │   │   │   │       │   ├── solana.js
+│   │   │   │   │       │   └── solana.js.map
+│   │   │   │   │       ├── webauthn.d.ts
+│   │   │   │   │       ├── webauthn.d.ts.map
+│   │   │   │   │       ├── webauthn.dom.d.ts
+│   │   │   │   │       ├── webauthn.dom.d.ts.map
+│   │   │   │   │       ├── webauthn.dom.js
+│   │   │   │   │       ├── webauthn.dom.js.map
+│   │   │   │   │       ├── webauthn.errors.d.ts
+│   │   │   │   │       ├── webauthn.errors.d.ts.map
+│   │   │   │   │       ├── webauthn.errors.js
+│   │   │   │   │       ├── webauthn.errors.js.map
+│   │   │   │   │       ├── webauthn.js
+│   │   │   │   │       └── webauthn.js.map
+│   │   │   │   ├── tsconfig.module.tsbuildinfo
+│   │   │   │   └── tsconfig.tsbuildinfo
+│   │   │   ├── migrations
+│   │   │   │   ├── README.md
+│   │   │   │   └── lockless-coordination.md
+│   │   │   ├── package.json
+│   │   │   └── src
+│   │   │       ├── AuthAdminApi.ts
+│   │   │       ├── AuthClient.ts
+│   │   │       ├── GoTrueAdminApi.ts
+│   │   │       ├── GoTrueClient.ts
+│   │   │       ├── index.ts
+│   │   │       └── lib
+│   │   │           ├── base64url.ts
+│   │   │           ├── constants.ts
+│   │   │           ├── error-codes.ts
+│   │   │           ├── errors.ts
+│   │   │           ├── fetch.ts
+│   │   │           ├── helpers.ts
+│   │   │           ├── local-storage.ts
+│   │   │           ├── locks.ts
+│   │   │           ├── polyfills.ts
+│   │   │           ├── types.ts
+│   │   │           ├── version.ts
+│   │   │           ├── web3
+│   │   │           │   ├── ethereum.ts
+│   │   │           │   └── solana.ts
+│   │   │           ├── webauthn.dom.ts
+│   │   │           ├── webauthn.errors.ts
+│   │   │           └── webauthn.ts
+│   │   ├── functions-js
+│   │   │   ├── AGENTS.md
+│   │   │   ├── LICENSE
+│   │   │   ├── README.md
+│   │   │   ├── dist
+│   │   │   │   ├── main
+│   │   │   │   │   ├── FunctionsClient.d.ts
+│   │   │   │   │   ├── FunctionsClient.d.ts.map
+│   │   │   │   │   ├── FunctionsClient.js
+│   │   │   │   │   ├── FunctionsClient.js.map
+│   │   │   │   │   ├── helper.d.ts
+│   │   │   │   │   ├── helper.d.ts.map
+│   │   │   │   │   ├── helper.js
+│   │   │   │   │   ├── helper.js.map
+│   │   │   │   │   ├── index.d.ts
+│   │   │   │   │   ├── index.d.ts.map
+│   │   │   │   │   ├── index.js
+│   │   │   │   │   ├── index.js.map
+│   │   │   │   │   ├── types.d.ts
+│   │   │   │   │   ├── types.d.ts.map
+│   │   │   │   │   ├── types.js
+│   │   │   │   │   ├── types.js.map
+│   │   │   │   │   ├── version.d.ts
+│   │   │   │   │   ├── version.d.ts.map
+│   │   │   │   │   ├── version.js
+│   │   │   │   │   └── version.js.map
+│   │   │   │   ├── module
+│   │   │   │   │   ├── FunctionsClient.d.ts
+│   │   │   │   │   ├── FunctionsClient.d.ts.map
+│   │   │   │   │   ├── FunctionsClient.js
+│   │   │   │   │   ├── FunctionsClient.js.map
+│   │   │   │   │   ├── helper.d.ts
+│   │   │   │   │   ├── helper.d.ts.map
+│   │   │   │   │   ├── helper.js
+│   │   │   │   │   ├── helper.js.map
+│   │   │   │   │   ├── index.d.ts
+│   │   │   │   │   ├── index.d.ts.map
+│   │   │   │   │   ├── index.js
+│   │   │   │   │   ├── index.js.map
+│   │   │   │   │   ├── types.d.ts
+│   │   │   │   │   ├── types.d.ts.map
+│   │   │   │   │   ├── types.js
+│   │   │   │   │   ├── types.js.map
+│   │   │   │   │   ├── version.d.ts
+│   │   │   │   │   ├── version.d.ts.map
+│   │   │   │   │   ├── version.js
+│   │   │   │   │   └── version.js.map
+│   │   │   │   ├── tsconfig.module.tsbuildinfo
+│   │   │   │   └── tsconfig.tsbuildinfo
+│   │   │   ├── migrations
+│   │   │   │   └── README.md
+│   │   │   ├── package.json
+│   │   │   └── src
+│   │   │       ├── FunctionsClient.ts
+│   │   │       ├── edge-runtime.d.ts
+│   │   │       ├── helper.ts
+│   │   │       ├── index.ts
+│   │   │       ├── types.ts
+│   │   │       └── version.ts
+│   │   ├── phoenix
+│   │   │   ├── LICENSE.md
+│   │   │   ├── README.md
+│   │   │   ├── assets
+│   │   │   │   └── js
+│   │   │   │       └── phoenix
+│   │   │   │           ├── ajax.js
+│   │   │   │           ├── channel.js
+│   │   │   │           ├── constants.js
+│   │   │   │           ├── index.js
+│   │   │   │           ├── longpoll.js
+│   │   │   │           ├── presence.js
+│   │   │   │           ├── push.js
+│   │   │   │           ├── serializer.js
+│   │   │   │           ├── socket.js
+│   │   │   │           ├── timer.js
+│   │   │   │           ├── types.js
+│   │   │   │           └── utils.js
+│   │   │   ├── package.json
+│   │   │   ├── priv
+│   │   │   │   └── static
+│   │   │   │       ├── favicon.ico
+│   │   │   │       ├── phoenix-orange.png
+│   │   │   │       ├── phoenix.cjs.js
+│   │   │   │       ├── phoenix.cjs.js.map
+│   │   │   │       ├── phoenix.js
+│   │   │   │       ├── phoenix.min.js
+│   │   │   │       ├── phoenix.mjs
+│   │   │   │       ├── phoenix.mjs.map
+│   │   │   │       ├── phoenix.png
+│   │   │   │       └── types
+│   │   │   │           ├── ajax.d.ts
+│   │   │   │           ├── ajax.d.ts.map
+│   │   │   │           ├── channel.d.ts
+│   │   │   │           ├── channel.d.ts.map
+│   │   │   │           ├── constants.d.ts
+│   │   │   │           ├── constants.d.ts.map
+│   │   │   │           ├── index.d.ts
+│   │   │   │           ├── index.d.ts.map
+│   │   │   │           ├── longpoll.d.ts
+│   │   │   │           ├── longpoll.d.ts.map
+│   │   │   │           ├── presence.d.ts
+│   │   │   │           ├── presence.d.ts.map
+│   │   │   │           ├── push.d.ts
+│   │   │   │           ├── push.d.ts.map
+│   │   │   │           ├── serializer.d.ts
+│   │   │   │           ├── serializer.d.ts.map
+│   │   │   │           ├── socket.d.ts
+│   │   │   │           ├── socket.d.ts.map
+│   │   │   │           ├── timer.d.ts
+│   │   │   │           ├── timer.d.ts.map
+│   │   │   │           ├── types.d.ts
+│   │   │   │           ├── types.d.ts.map
+│   │   │   │           ├── utils.d.ts
+│   │   │   │           └── utils.d.ts.map
+│   │   │   └── tsconfig.json
+│   │   ├── postgrest-js
+│   │   │   ├── AGENTS.md
+│   │   │   ├── LICENSE
+│   │   │   ├── README.md
+│   │   │   ├── dist
+│   │   │   │   ├── index.cjs
+│   │   │   │   ├── index.cjs.map
+│   │   │   │   ├── index.d.cts
+│   │   │   │   ├── index.d.cts.map
+│   │   │   │   ├── index.d.mts
+│   │   │   │   ├── index.d.mts.map
+│   │   │   │   ├── index.mjs
+│   │   │   │   └── index.mjs.map
+│   │   │   ├── migrations
+│   │   │   │   └── README.md
+│   │   │   ├── package.json
+│   │   │   └── src
+│   │   │       ├── PostgrestBuilder.ts
+│   │   │       ├── PostgrestClient.ts
+│   │   │       ├── PostgrestError.ts
+│   │   │       ├── PostgrestFilterBuilder.ts
+│   │   │       ├── PostgrestQueryBuilder.ts
+│   │   │       ├── PostgrestTransformBuilder.ts
+│   │   │       ├── constants.ts
+│   │   │       ├── index.ts
+│   │   │       ├── select-query-parser
+│   │   │       │   ├── parser.ts
+│   │   │       │   ├── result.ts
+│   │   │       │   ├── types.ts
+│   │   │       │   └── utils.ts
+│   │   │       ├── types
+│   │   │       │   ├── common
+│   │   │       │   │   ├── common.ts
+│   │   │       │   │   └── rpc.ts
+│   │   │       │   ├── feature-flags.ts
+│   │   │       │   └── types.ts
+│   │   │       └── version.ts
+│   │   ├── realtime-js
+│   │   │   ├── AGENTS.md
+│   │   │   ├── LICENSE
+│   │   │   ├── README.md
+│   │   │   ├── dist
+│   │   │   │   ├── main
+│   │   │   │   │   ├── RealtimeChannel.d.ts
+│   │   │   │   │   ├── RealtimeChannel.d.ts.map
+│   │   │   │   │   ├── RealtimeChannel.js
+│   │   │   │   │   ├── RealtimeChannel.js.map
+│   │   │   │   │   ├── RealtimeClient.d.ts
+│   │   │   │   │   ├── RealtimeClient.d.ts.map
+│   │   │   │   │   ├── RealtimeClient.js
+│   │   │   │   │   ├── RealtimeClient.js.map
+│   │   │   │   │   ├── RealtimePostgresFilterBuilder.d.ts
+│   │   │   │   │   ├── RealtimePostgresFilterBuilder.d.ts.map
+│   │   │   │   │   ├── RealtimePostgresFilterBuilder.js
+│   │   │   │   │   ├── RealtimePostgresFilterBuilder.js.map
+│   │   │   │   │   ├── RealtimePresence.d.ts
+│   │   │   │   │   ├── RealtimePresence.d.ts.map
+│   │   │   │   │   ├── RealtimePresence.js
+│   │   │   │   │   ├── RealtimePresence.js.map
+│   │   │   │   │   ├── index.d.ts
+│   │   │   │   │   ├── index.d.ts.map
+│   │   │   │   │   ├── index.js
+│   │   │   │   │   ├── index.js.map
+│   │   │   │   │   ├── lib
+│   │   │   │   │   │   ├── constants.d.ts
+│   │   │   │   │   │   ├── constants.d.ts.map
+│   │   │   │   │   │   ├── constants.js
+│   │   │   │   │   │   ├── constants.js.map
+│   │   │   │   │   │   ├── normalizeChannelError.d.ts
+│   │   │   │   │   │   ├── normalizeChannelError.d.ts.map
+│   │   │   │   │   │   ├── normalizeChannelError.js
+│   │   │   │   │   │   ├── normalizeChannelError.js.map
+│   │   │   │   │   │   ├── serializer.d.ts
+│   │   │   │   │   │   ├── serializer.d.ts.map
+│   │   │   │   │   │   ├── serializer.js
+│   │   │   │   │   │   ├── serializer.js.map
+│   │   │   │   │   │   ├── transformers.d.ts
+│   │   │   │   │   │   ├── transformers.d.ts.map
+│   │   │   │   │   │   ├── transformers.js
+│   │   │   │   │   │   ├── transformers.js.map
+│   │   │   │   │   │   ├── version.d.ts
+│   │   │   │   │   │   ├── version.d.ts.map
+│   │   │   │   │   │   ├── version.js
+│   │   │   │   │   │   ├── version.js.map
+│   │   │   │   │   │   ├── websocket-factory.d.ts
+│   │   │   │   │   │   ├── websocket-factory.d.ts.map
+│   │   │   │   │   │   ├── websocket-factory.js
+│   │   │   │   │   │   └── websocket-factory.js.map
+│   │   │   │   │   └── phoenix
+│   │   │   │   │       ├── channelAdapter.d.ts
+│   │   │   │   │       ├── channelAdapter.d.ts.map
+│   │   │   │   │       ├── channelAdapter.js
+│   │   │   │   │       ├── channelAdapter.js.map
+│   │   │   │   │       ├── presenceAdapter.d.ts
+│   │   │   │   │       ├── presenceAdapter.d.ts.map
+│   │   │   │   │       ├── presenceAdapter.js
+│   │   │   │   │       ├── presenceAdapter.js.map
+│   │   │   │   │       ├── socketAdapter.d.ts
+│   │   │   │   │       ├── socketAdapter.d.ts.map
+│   │   │   │   │       ├── socketAdapter.js
+│   │   │   │   │       ├── socketAdapter.js.map
+│   │   │   │   │       ├── types.d.ts
+│   │   │   │   │       ├── types.d.ts.map
+│   │   │   │   │       ├── types.js
+│   │   │   │   │       └── types.js.map
+│   │   │   │   ├── module
+│   │   │   │   │   ├── RealtimeChannel.d.ts
+│   │   │   │   │   ├── RealtimeChannel.d.ts.map
+│   │   │   │   │   ├── RealtimeChannel.js
+│   │   │   │   │   ├── RealtimeChannel.js.map
+│   │   │   │   │   ├── RealtimeClient.d.ts
+│   │   │   │   │   ├── RealtimeClient.d.ts.map
+│   │   │   │   │   ├── RealtimeClient.js
+│   │   │   │   │   ├── RealtimeClient.js.map
+│   │   │   │   │   ├── RealtimePostgresFilterBuilder.d.ts
+│   │   │   │   │   ├── RealtimePostgresFilterBuilder.d.ts.map
+│   │   │   │   │   ├── RealtimePostgresFilterBuilder.js
+│   │   │   │   │   ├── RealtimePostgresFilterBuilder.js.map
+│   │   │   │   │   ├── RealtimePresence.d.ts
+│   │   │   │   │   ├── RealtimePresence.d.ts.map
+│   │   │   │   │   ├── RealtimePresence.js
+│   │   │   │   │   ├── RealtimePresence.js.map
+│   │   │   │   │   ├── index.d.ts
+│   │   │   │   │   ├── index.d.ts.map
+│   │   │   │   │   ├── index.js
+│   │   │   │   │   ├── index.js.map
+│   │   │   │   │   ├── lib
+│   │   │   │   │   │   ├── constants.d.ts
+│   │   │   │   │   │   ├── constants.d.ts.map
+│   │   │   │   │   │   ├── constants.js
+│   │   │   │   │   │   ├── constants.js.map
+│   │   │   │   │   │   ├── normalizeChannelError.d.ts
+│   │   │   │   │   │   ├── normalizeChannelError.d.ts.map
+│   │   │   │   │   │   ├── normalizeChannelError.js
+│   │   │   │   │   │   ├── normalizeChannelError.js.map
+│   │   │   │   │   │   ├── serializer.d.ts
+│   │   │   │   │   │   ├── serializer.d.ts.map
+│   │   │   │   │   │   ├── serializer.js
+│   │   │   │   │   │   ├── serializer.js.map
+│   │   │   │   │   │   ├── transformers.d.ts
+│   │   │   │   │   │   ├── transformers.d.ts.map
+│   │   │   │   │   │   ├── transformers.js
+│   │   │   │   │   │   ├── transformers.js.map
+│   │   │   │   │   │   ├── version.d.ts
+│   │   │   │   │   │   ├── version.d.ts.map
+│   │   │   │   │   │   ├── version.js
+│   │   │   │   │   │   ├── version.js.map
+│   │   │   │   │   │   ├── websocket-factory.d.ts
+│   │   │   │   │   │   ├── websocket-factory.d.ts.map
+│   │   │   │   │   │   ├── websocket-factory.js
+│   │   │   │   │   │   └── websocket-factory.js.map
+│   │   │   │   │   └── phoenix
+│   │   │   │   │       ├── channelAdapter.d.ts
+│   │   │   │   │       ├── channelAdapter.d.ts.map
+│   │   │   │   │       ├── channelAdapter.js
+│   │   │   │   │       ├── channelAdapter.js.map
+│   │   │   │   │       ├── presenceAdapter.d.ts
+│   │   │   │   │       ├── presenceAdapter.d.ts.map
+│   │   │   │   │       ├── presenceAdapter.js
+│   │   │   │   │       ├── presenceAdapter.js.map
+│   │   │   │   │       ├── socketAdapter.d.ts
+│   │   │   │   │       ├── socketAdapter.d.ts.map
+│   │   │   │   │       ├── socketAdapter.js
+│   │   │   │   │       ├── socketAdapter.js.map
+│   │   │   │   │       ├── types.d.ts
+│   │   │   │   │       ├── types.d.ts.map
+│   │   │   │   │       ├── types.js
+│   │   │   │   │       └── types.js.map
+│   │   │   │   ├── tsconfig.module.tsbuildinfo
+│   │   │   │   └── tsconfig.tsbuildinfo
+│   │   │   ├── migrations
+│   │   │   │   ├── README.md
+│   │   │   │   └── httpsend-server-version.md
+│   │   │   ├── package.json
+│   │   │   └── src
+│   │   │       ├── RealtimeChannel.ts
+│   │   │       ├── RealtimeClient.ts
+│   │   │       ├── RealtimePostgresFilterBuilder.ts
+│   │   │       ├── RealtimePresence.ts
+│   │   │       ├── index.ts
+│   │   │       ├── lib
+│   │   │       │   ├── constants.ts
+│   │   │       │   ├── normalizeChannelError.ts
+│   │   │       │   ├── serializer.ts
+│   │   │       │   ├── transformers.ts
+│   │   │       │   ├── version.ts
+│   │   │       │   └── websocket-factory.ts
+│   │   │       └── phoenix
+│   │   │           ├── channelAdapter.ts
+│   │   │           ├── presenceAdapter.ts
+│   │   │           ├── socketAdapter.ts
+│   │   │           └── types.ts
+│   │   ├── server
+│   │   │   ├── LICENSE
+│   │   │   ├── README.md
+│   │   │   ├── dist
+│   │   │   │   ├── adapters
+│   │   │   │   │   ├── elysia
+│   │   │   │   │   │   ├── index.cjs
+│   │   │   │   │   │   ├── index.d.cts
+│   │   │   │   │   │   ├── index.d.mts
+│   │   │   │   │   │   └── index.mjs
+│   │   │   │   │   ├── h3
+│   │   │   │   │   │   ├── index.cjs
+│   │   │   │   │   │   ├── index.d.cts
+│   │   │   │   │   │   ├── index.d.mts
+│   │   │   │   │   │   └── index.mjs
+│   │   │   │   │   ├── hono
+│   │   │   │   │   │   ├── index.cjs
+│   │   │   │   │   │   ├── index.d.cts
+│   │   │   │   │   │   ├── index.d.mts
+│   │   │   │   │   │   └── index.mjs
+│   │   │   │   │   └── nestjs
+│   │   │   │   │       ├── index.cjs
+│   │   │   │   │       ├── index.d.cts
+│   │   │   │   │       ├── index.d.mts
+│   │   │   │   │       └── index.mjs
+│   │   │   │   ├── core
+│   │   │   │   │   ├── index.cjs
+│   │   │   │   │   ├── index.d.cts
+│   │   │   │   │   ├── index.d.mts
+│   │   │   │   │   └── index.mjs
+│   │   │   │   ├── create-supabase-context-B0ArH_k6.cjs
+│   │   │   │   ├── create-supabase-context-tDtxd9x2.mjs
+│   │   │   │   ├── errors-CVZ6SLe5.d.mts
+│   │   │   │   ├── errors-pFJgU6dQ.d.cts
+│   │   │   │   ├── index.cjs
+│   │   │   │   ├── index.d.cts
+│   │   │   │   ├── index.d.mts
+│   │   │   │   ├── index.mjs
+│   │   │   │   ├── peer
+│   │   │   │   │   └── supabase-js
+│   │   │   │   │       ├── index.cjs
+│   │   │   │   │       ├── index.d.cts
+│   │   │   │   │       ├── index.d.mts
+│   │   │   │   │       └── index.mjs
+│   │   │   │   ├── types-CbQmV2hf.d.mts
+│   │   │   │   ├── types-CdVYmHsj.d.cts
+│   │   │   │   ├── verify-auth-BR55XdDQ.cjs
+│   │   │   │   └── verify-auth-CfilsSKk.mjs
+│   │   │   ├── docs
+│   │   │   │   ├── adapters
+│   │   │   │   │   ├── elysia.md
+│   │   │   │   │   ├── h3.md
+│   │   │   │   │   ├── hono.md
+│   │   │   │   │   └── nestjs.md
+│   │   │   │   ├── api-reference.md
+│   │   │   │   ├── auth-modes.md
+│   │   │   │   ├── core-primitives.md
+│   │   │   │   ├── environment-variables.md
+│   │   │   │   ├── error-handling.md
+│   │   │   │   ├── getting-started.md
+│   │   │   │   ├── security.md
+│   │   │   │   ├── ssr-frameworks.md
+│   │   │   │   └── typescript-generics.md
+│   │   │   ├── package.json
+│   │   │   └── skills
+│   │   │       └── supabase-server
+│   │   │           └── SKILL.md
+│   │   ├── storage-js
+│   │   │   ├── AGENTS.md
+│   │   │   ├── LICENSE
+│   │   │   ├── README.md
+│   │   │   ├── dist
+│   │   │   │   ├── index.cjs
+│   │   │   │   ├── index.cjs.map
+│   │   │   │   ├── index.d.cts
+│   │   │   │   ├── index.d.cts.map
+│   │   │   │   ├── index.d.mts
+│   │   │   │   ├── index.d.mts.map
+│   │   │   │   ├── index.mjs
+│   │   │   │   ├── index.mjs.map
+│   │   │   │   └── umd
+│   │   │   │       └── supabase.js
+│   │   │   ├── migrations
+│   │   │   │   └── README.md
+│   │   │   ├── package.json
+│   │   │   └── src
+│   │   │       ├── StorageClient.ts
+│   │   │       ├── index.ts
+│   │   │       ├── lib
+│   │   │       │   ├── common
+│   │   │       │   │   ├── BaseApiClient.ts
+│   │   │       │   │   ├── errors.ts
+│   │   │       │   │   ├── fetch.ts
+│   │   │       │   │   ├── headers.ts
+│   │   │       │   │   └── helpers.ts
+│   │   │       │   ├── constants.ts
+│   │   │       │   ├── types.ts
+│   │   │       │   └── version.ts
+│   │   │       └── packages
+│   │   │           ├── BlobDownloadBuilder.ts
+│   │   │           ├── StorageAnalyticsClient.ts
+│   │   │           ├── StorageBucketApi.ts
+│   │   │           ├── StorageFileApi.ts
+│   │   │           ├── StorageVectorsClient.ts
+│   │   │           ├── StreamDownloadBuilder.ts
+│   │   │           ├── VectorBucketApi.ts
+│   │   │           ├── VectorDataApi.ts
+│   │   │           └── VectorIndexApi.ts
+│   │   └── supabase-js
+│   │       ├── AGENTS.md
+│   │       ├── LICENSE
+│   │       ├── README.md
+│   │       ├── dist
+│   │       │   ├── cors.cjs
+│   │       │   ├── cors.cjs.map
+│   │       │   ├── cors.d.cts
+│   │       │   ├── cors.d.cts.map
+│   │       │   ├── cors.d.mts
+│   │       │   ├── cors.d.mts.map
+│   │       │   ├── cors.mjs
+│   │       │   ├── cors.mjs.map
+│   │       │   ├── index.cjs
+│   │       │   ├── index.cjs.map
+│   │       │   ├── index.d.cts
+│   │       │   ├── index.d.cts.map
+│   │       │   ├── index.d.mts
+│   │       │   ├── index.d.mts.map
+│   │       │   ├── index.mjs
+│   │       │   ├── index.mjs.map
+│   │       │   └── umd
+│   │       │       └── supabase.js
+│   │       ├── migrations
+│   │       │   └── README.md
+│   │       ├── package.json
+│   │       └── src
+│   │           ├── SupabaseClient.ts
+│   │           ├── cors.ts
+│   │           ├── index.ts
+│   │           └── lib
+│   │               ├── SupabaseAuthClient.ts
+│   │               ├── constants.ts
+│   │               ├── fetch.ts
+│   │               ├── helpers.ts
+│   │               ├── rest
+│   │               │   └── types
+│   │               │       └── common
+│   │               │           ├── common.ts
+│   │               │           └── rpc.ts
+│   │               ├── types.ts
+│   │               └── version.ts
+│   ├── iceberg-js
+│   │   ├── LICENSE
+│   │   ├── README.md
+│   │   ├── dist
+│   │   │   ├── index.cjs
+│   │   │   ├── index.cjs.map
+│   │   │   ├── index.d.cts
+│   │   │   ├── index.d.ts
+│   │   │   ├── index.mjs
+│   │   │   └── index.mjs.map
+│   │   └── package.json
+│   ├── jose
+│   │   ├── LICENSE.md
+│   │   ├── README.md
+│   │   ├── dist
+│   │   │   ├── types
+│   │   │   │   ├── index.d.ts
+│   │   │   │   ├── jwe
+│   │   │   │   │   ├── compact
+│   │   │   │   │   │   ├── decrypt.d.ts
+│   │   │   │   │   │   └── encrypt.d.ts
+│   │   │   │   │   ├── flattened
+│   │   │   │   │   │   ├── decrypt.d.ts
+│   │   │   │   │   │   └── encrypt.d.ts
+│   │   │   │   │   └── general
+│   │   │   │   │       ├── decrypt.d.ts
+│   │   │   │   │       └── encrypt.d.ts
+│   │   │   │   ├── jwk
+│   │   │   │   │   ├── embedded.d.ts
+│   │   │   │   │   └── thumbprint.d.ts
+│   │   │   │   ├── jwks
+│   │   │   │   │   ├── local.d.ts
+│   │   │   │   │   └── remote.d.ts
+│   │   │   │   ├── jws
+│   │   │   │   │   ├── compact
+│   │   │   │   │   │   ├── sign.d.ts
+│   │   │   │   │   │   └── verify.d.ts
+│   │   │   │   │   ├── flattened
+│   │   │   │   │   │   ├── sign.d.ts
+│   │   │   │   │   │   └── verify.d.ts
+│   │   │   │   │   └── general
+│   │   │   │   │       ├── sign.d.ts
+│   │   │   │   │       └── verify.d.ts
+│   │   │   │   ├── jwt
+│   │   │   │   │   ├── decrypt.d.ts
+│   │   │   │   │   ├── encrypt.d.ts
+│   │   │   │   │   ├── sign.d.ts
+│   │   │   │   │   ├── unsecured.d.ts
+│   │   │   │   │   └── verify.d.ts
+│   │   │   │   ├── key
+│   │   │   │   │   ├── export.d.ts
+│   │   │   │   │   ├── generate_key_pair.d.ts
+│   │   │   │   │   ├── generate_secret.d.ts
+│   │   │   │   │   └── import.d.ts
+│   │   │   │   ├── types.d.ts
+│   │   │   │   └── util
+│   │   │   │       ├── base64url.d.ts
+│   │   │   │       ├── decode_jwt.d.ts
+│   │   │   │       ├── decode_protected_header.d.ts
+│   │   │   │       └── errors.d.ts
+│   │   │   └── webapi
+│   │   │       ├── index.js
+│   │   │       ├── jwe
+│   │   │       │   ├── compact
+│   │   │       │   │   ├── decrypt.js
+│   │   │       │   │   └── encrypt.js
+│   │   │       │   ├── flattened
+│   │   │       │   │   ├── decrypt.js
+│   │   │       │   │   └── encrypt.js
+│   │   │       │   └── general
+│   │   │       │       ├── decrypt.js
+│   │   │       │       └── encrypt.js
+│   │   │       ├── jwk
+│   │   │       │   ├── embedded.js
+│   │   │       │   └── thumbprint.js
+│   │   │       ├── jwks
+│   │   │       │   ├── local.js
+│   │   │       │   └── remote.js
+│   │   │       ├── jws
+│   │   │       │   ├── compact
+│   │   │       │   │   ├── sign.js
+│   │   │       │   │   └── verify.js
+│   │   │       │   ├── flattened
+│   │   │       │   │   ├── sign.js
+│   │   │       │   │   └── verify.js
+│   │   │       │   └── general
+│   │   │       │       ├── sign.js
+│   │   │       │       └── verify.js
+│   │   │       ├── jwt
+│   │   │       │   ├── decrypt.js
+│   │   │       │   ├── encrypt.js
+│   │   │       │   ├── sign.js
+│   │   │       │   ├── unsecured.js
+│   │   │       │   └── verify.js
+│   │   │       ├── key
+│   │   │       │   ├── export.js
+│   │   │       │   ├── generate_key_pair.js
+│   │   │       │   ├── generate_secret.js
+│   │   │       │   └── import.js
+│   │   │       ├── lib
+│   │   │       │   ├── aesgcmkw.js
+│   │   │       │   ├── aeskw.js
+│   │   │       │   ├── asn1.js
+│   │   │       │   ├── base64.js
+│   │   │       │   ├── buffer_utils.js
+│   │   │       │   ├── check_key_type.js
+│   │   │       │   ├── content_encryption.js
+│   │   │       │   ├── crypto_key.js
+│   │   │       │   ├── deflate.js
+│   │   │       │   ├── ecdhes.js
+│   │   │       │   ├── helpers.js
+│   │   │       │   ├── invalid_key_input.js
+│   │   │       │   ├── is_key_like.js
+│   │   │       │   ├── jwk_to_key.js
+│   │   │       │   ├── jwt_claims_set.js
+│   │   │       │   ├── key_management.js
+│   │   │       │   ├── key_to_jwk.js
+│   │   │       │   ├── normalize_key.js
+│   │   │       │   ├── pbes2kw.js
+│   │   │       │   ├── rsaes.js
+│   │   │       │   ├── signing.js
+│   │   │       │   ├── type_checks.js
+│   │   │       │   ├── validate_algorithms.js
+│   │   │       │   └── validate_crit.js
+│   │   │       └── util
+│   │   │           ├── base64url.js
+│   │   │           ├── decode_jwt.js
+│   │   │           ├── decode_protected_header.js
+│   │   │           └── errors.js
+│   │   └── package.json
+│   └── tslib
+│       ├── CopyrightNotice.txt
+│       ├── LICENSE.txt
+│       ├── README.md
+│       ├── SECURITY.md
+│       ├── modules
+│       │   ├── index.d.ts
+│       │   ├── index.js
+│       │   └── package.json
+│       ├── package.json
+│       ├── tslib.d.ts
+│       ├── tslib.es6.html
+│       ├── tslib.es6.js
+│       ├── tslib.es6.mjs
+│       ├── tslib.html
+│       └── tslib.js
+├── package-lock.json
+├── package.json
 ├── requirements.txt
 └── structure.md
 
-20 directories, 3071 files
+139 directories, 4216 files
