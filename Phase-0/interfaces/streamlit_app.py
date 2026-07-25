@@ -21,7 +21,11 @@ from interfaces.ui_chat import answer_with_sources, render_messages  # noqa: E40
 from interfaces.ui_sidebar import has_book_content  # noqa: E402
 
 
-st.set_page_config(page_title="EngineerGPT", page_icon="📘", layout="wide")
+st.set_page_config(
+    page_title="EngineerGPT",
+    page_icon=Path(__file__).resolve().parents[1] / "imgs" / "engineerGPT.png",
+    layout="wide",
+)
 st.title("EngineerGPT")
 
 
