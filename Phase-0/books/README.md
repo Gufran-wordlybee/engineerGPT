@@ -29,7 +29,7 @@ The folder contains the textbook itself. The database only says that the folder 
 ```toml
 GROQ_LLM_API_KEY = "gsk_..."
 GROQ_LLM_MODEL_NAME = "llama-3.3-70b-versatile"
-GENERATE_LLM_MODEL = "qwen/qwen3.6-27b"
+GENERATE_LLM_MODEL = "qwen/qwen3.6-27b"df
 SUPABASE_URL = "https://your-project.supabase.co"
 SUPABASE_SERVICE_ROLE_KEY = "your-service-role-key"
 ```

@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 import os
-
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import streamlit as st
-
 # Streamlit Cloud exposes secrets through st.secrets, while the existing core
 # reads environment variables. Copying them here keeps the backend unchanged.
 try:
@@ -14,7 +15,6 @@ except FileNotFoundError:  # Local first run: show a useful database error below
     secrets = []
 for key, value in secrets:
     os.environ.setdefault(key, str(value))
-
 from core.pipeline import run_query  # noqa: E402 - secrets must be loaded first
 from interfaces import db  # noqa: E402
 from interfaces.ui_chat import answer_with_sources, render_messages  # noqa: E402
