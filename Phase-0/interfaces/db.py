@@ -45,6 +45,11 @@ def rename_thread(thread_id: str, title: str) -> None:
     _client().table("threads").update({"title": title}).eq("thread_id", thread_id).execute()
 
 
+def delete_thread(thread_id: str) -> None:
+    """Delete a chat; its messages cascade through the database foreign key."""
+    _client().table("threads").delete().eq("thread_id", thread_id).execute()
+
+
 def list_messages(thread_id: str) -> list[dict]:
     return _client().table("messages").select("*").eq("thread_id", thread_id).order(
         "created_at"

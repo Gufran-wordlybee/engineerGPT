@@ -72,8 +72,33 @@ def select_thread(book_id: str) -> dict | None:
         format_func=lambda thread_id: next(thread["title"] for thread in threads if thread["thread_id"] == thread_id),
         label_visibility="collapsed",
     )
+    if chosen_id != st.session_state.thread_id:
+        st.session_state.pop("delete_thread_id", None)
     st.session_state.thread_id = chosen_id
-    return next(thread for thread in threads if thread["thread_id"] == chosen_id)
+    thread = next(thread for thread in threads if thread["thread_id"] == chosen_id)
+
+    with st.sidebar.form("rename_chat"):
+        title = st.text_input("Rename chat", value=thread["title"], key=f"rename_chat_{chosen_id}")
+        if st.form_submit_button("Rename", use_container_width=True):
+            if title := title.strip():
+                db.rename_thread(chosen_id, title)
+                st.rerun()
+            st.warning("Enter a chat title.")
+
+    if st.sidebar.button("Delete chat", use_container_width=True):
+        st.session_state.delete_thread_id = chosen_id
+    if st.session_state.get("delete_thread_id") == chosen_id:
+        st.sidebar.warning("Delete this chat permanently?")
+        confirm, cancel = st.sidebar.columns(2)
+        if confirm.button("Delete", type="primary", use_container_width=True):
+            db.delete_thread(chosen_id)
+            st.session_state.pop("thread_id", None)
+            st.session_state.pop("delete_thread_id", None)
+            st.rerun()
+        if cancel.button("Cancel", use_container_width=True):
+            st.session_state.pop("delete_thread_id", None)
+            st.rerun()
+    return thread
 
 
 try:
