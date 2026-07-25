@@ -1,0 +1,20 @@
+{
+  "section_id": "10-classical-planning",
+  "title": "10 Classical Planning",
+  "level": 2,
+  "chapter": "III: Knowledge, reasoning, and planning",
+  "parent_id": "iii-knowledge-reasoning-and-planning",
+  "children": [
+    "10-1-definition-of-classical-planning",
+    "10-2-algorithms-for-planning-as-state-space-search",
+    "10-3-planning-graphs",
+    "10-4-other-classical-planning-approaches",
+    "10-5-analysis-of-planning-approaches",
+    "10-6-summary-bibliographical-and-historical-notes-exercises"
+  ],
+  "start_page": 384,
+  "end_page": 384,
+  "text": "10\nCLASSICAL PLANNING\nIn which we see how an agent can take advantage of the structure of a problem to\nconstruct complex plans of action.\nWe have deﬁned AI as the study of rational action, which means that planning—devising a\nplan of action to achieve one’s goals—is a critical part of AI. We have seen two examples\nof planning agents so far: the search-based problem-solving agent of Chapter 3 and the hy-\nbrid logical agent of Chapter 7. In this chapter we introduce a representation for planning\nproblems that scales up to problems that could not be handled by those earlier approaches.\nSection 10.1 develops an expressive yet carefully constrained language for representing\nplanning problems. Section 10.2 shows how forward and backward search algorithms can\ntake advantage of this representation, primarily through accurate heuristics that can be derived\nautomatically from the structure of the representation. (This is analogous to the way in which\neffective domain-independent heuristics were constructed for constraint satisfaction problems\nin Chapter 6.) Section 10.3 shows how a data structure called the planning graph can make the\nsearch for a plan more efﬁcient. We then describe a few of the other approaches to planning,\nand conclude by comparing the various approaches.\nThis chapter covers fully observable, deterministic, static environments with single\nagents. Chapters 11 and 17 cover partially observable, stochastic, dynamic environments\nwith multiple agents.\n10.1\nDEFINITION OF CLASSICAL PLANNING\nThe problem-solving agent of Chapter 3 can ﬁnd sequences of actions that result in a goal\nstate. But it deals with atomic representations of states and thus needs good domain-speciﬁc\nheuristics to perform well. The hybrid propositional logical agent of Chapter 7 can ﬁnd plans\nwithout domain-speciﬁc heuristics because it uses domain-independent heuristics based on\nthe logical structure of the problem. But it relies on ground (variable-free) propositional\ninference, which means that it may be swamped when there are many actions and states. For\nexample, in the wumpus world, the simple action of moving a step forward had to be repeated\nfor all four agent orientations, T time steps, and n2 current locations.\n366",
+  "images": [],
+  "equations": []
+}

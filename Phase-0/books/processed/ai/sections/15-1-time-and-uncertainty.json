@@ -1,0 +1,65 @@
+{
+  "section_id": "15-1-time-and-uncertainty",
+  "title": "15.1 Time and Uncertainty",
+  "level": 3,
+  "chapter": "IV: Uncertain knowledge and reasoning",
+  "parent_id": "15-probabilistic-reasoning-over-time",
+  "children": [],
+  "start_page": 584,
+  "end_page": 587,
+  "text": "15\nPROBABILISTIC\nREASONING OVER TIME\nIn which we try to interpret the present, understand the past, and perhaps predict\nthe future, even when very little is crystal clear.\nAgents in partially observable environments must be able to keep track of the current state, to\nthe extent that their sensors allow. In Section 4.4 we showed a methodology for doing that: an\nagent maintains a belief state that represents which states of the world are currently possible.\nFrom the belief state and a transition model, the agent can predict how the world might\nevolve in the next time step. From the percepts observed and a sensor model, the agent can\nupdate the belief state. This is a pervasive idea: in Chapter 4 belief states were represented by\nexplicitly enumerated sets of states, whereas in Chapters 7 and 11 they were represented by\nlogical formulas. Those approaches deﬁned belief states in terms of which world states were\npossible, but could say nothing about which states were likely or unlikely. In this chapter, we\nuse probability theory to quantify the degree of belief in elements of the belief state.\nAs we show in Section 15.1, time itself is handled in the same way as in Chapter 7: a\nchanging world is modeled using a variable for each aspect of the world state at each point in\ntime. The transition and sensor models may be uncertain: the transition model describes the\nprobability distribution of the variables at time t, given the state of the world at past times,\nwhile the sensor model describes the probability of each percept at time t, given the current\nstate of the world. Section 15.2 deﬁnes the basic inference tasks and describes the gen-\neral structure of inference algorithms for temporal models. Then we describe three speciﬁc\nkinds of models: hidden Markov models, Kalman ﬁlters, and dynamic Bayesian net-\nworks (which include hidden Markov models and Kalman ﬁlters as special cases). Finally,\nSection 15.6 examines the problems faced when keeping track of more than one thing.\n15.1\nTIME AND UNCERTAINTY\nWe have developed our techniques for probabilistic reasoning in the context of static worlds,\nin which each random variable has a single ﬁxed value. For example, when repairing a car,\nwe assume that whatever is broken remains broken during the process of diagnosis; our job\nis to infer the state of the car from observed evidence, which also remains ﬁxed.\n566\nSection 15.1.\nTime and Uncertainty\n567\nNow consider a slightly different problem: treating a diabetic patient. As in the case of\ncar repair, we have evidence such as recent insulin doses, food intake, blood sugar measure-\nments, and other physical signs. The task is to assess the current state of the patient, including\nthe actual blood sugar level and insulin level. Given this information, we can make a deci-\nsion about the patient’s food intake and insulin dose. Unlike the case of car repair, here the\ndynamic aspects of the problem are essential. Blood sugar levels and measurements thereof\ncan change rapidly over time, depending on recent food intake and insulin doses, metabolic\nactivity, the time of day, and so on. To assess the current state from the history of evidence\nand to predict the outcomes of treatment actions, we must model these changes.\nThe same considerations arise in many other contexts, such as tracking the location of\na robot, tracking the economic activity of a nation, and making sense of a spoken or written\nsequence of words. How can dynamic situations like these be modeled?\n15.1.1\nStates and observations\nWe view the world as a series of snapshots, or time slices, each of which contains a set of\nTIME SLICE\nrandom variables, some observable and some not.1 For simplicity, we will assume that the\nsame subset of variables is observable in each time slice (although this is not strictly necessary\nin anything that follows). We will use Xt to denote the set of state variables at time t, which\nare assumed to be unobservable, and Et to denote the set of observable evidence variables.\nThe observation at time t is Et = et for some set of values et.\nConsider the following example: You are the security guard stationed at a secret under-\nground installation. You want to know whether it’s raining today, but your only access to the\noutside world occurs each morning when you see the director coming in with, or without, an\numbrella. For each day t, the set Et thus contains a single evidence variable Umbrellat or Ut\nfor short (whether the umbrella appears), and the set Xt contains a single state variable Raint\nor Rt for short (whether it is raining). Other problems can involve larger sets of variables. In\nthe diabetes example, we might have evidence variables, such as MeasuredBloodSugar t and\nPulseRatet, and state variables, such as BloodSugar t and StomachContents t. (Notice that\nBloodSugar t and MeasuredBloodSugar t are not the same variable; this is how we deal with\nnoisy measurements of actual quantities.)\nThe interval between time slices also depends on the problem. For diabetes monitoring,\na suitable interval might be an hour rather than a day. In this chapter we assume the interval\nbetween slices is ﬁxed, so we can label times by integers. We will assume that the state\nsequence starts at t = 0; for various uninteresting reasons, we will assume that evidence starts\narriving at t = 1 rather than t = 0. Hence, our umbrella world is represented by state variables\nR0, R1, R2, . . . and evidence variables U1, U2, . . .. We will use the notation a:b to denote\nthe sequence of integers from a to b (inclusive), and the notation Xa:b to denote the set of\nvariables from Xa to Xb. For example, U1:3 corresponds to the variables U1, U2, U3.\n1 Uncertainty over continuous time can be modeled by stochastic differential equations (SDEs). The models\nstudied in this chapter can be viewed as discrete-time approximations to SDEs.\n568\n15.\nProbabilistic Reasoning over Time\nXt–2\nXt–1\nXt\n(a)\n(b)\nXt+1\nXt+2\nXt–2\nXt–1\nXt\nXt+1\nXt+2\nFigure 15.1\n(a) Bayesian network structure corresponding to a ﬁrst-order Markov process\nwith state deﬁned by the variables Xt. (b) A second-order Markov process.\n15.1.2\nTransition and sensor models\nWith the set of state and evidence variables for a given problem decided on, the next step is\nto specify how the world evolves (the transition model) and how the evidence variables get\ntheir values (the sensor model).\nThe transition model speciﬁes the probability distribution over the latest state variables,\ngiven the previous values, that is, P(Xt | X0:t−1). Now we face a problem: the set X0:t−1 is\nunbounded in size as t increases. We solve the problem by making a Markov assumption—\nMARKOV\nASSUMPTION\nthat the current state depends on only a ﬁnite ﬁxed number of previous states. Processes sat-\nisfying this assumption were ﬁrst studied in depth by the Russian statistician Andrei Markov\n(1856–1922) and are called Markov processes or Markov chains. They come in various ﬂa-\nMARKOV PROCESS\nvors; the simplest is the ﬁrst-order Markov process, in which the current state depends only\nFIRST-ORDER\nMARKOV PROCESS\non the previous state and not on any earlier states. In other words, a state provides enough\ninformation to make the future conditionally independent of the past, and we have\nP(Xt | X0:t−1) = P(Xt | Xt−1) .\n(15.1)\nHence, in a ﬁrst-order Markov process, the transition model is the conditional distribution\nP(Xt | Xt−1). The transition model for a second-order Markov process is the conditional\ndistribution P(Xt | Xt−2, Xt−1). Figure 15.1 shows the Bayesian network structures corre-\nsponding to ﬁrst-order and second-order Markov processes.\nEven with the Markov assumption there is still a problem: there are inﬁnitely many\npossible values of t. Do we need to specify a different distribution for each time step? We\navoid this problem by assuming that changes in the world state are caused by a stationary\nprocess—that is, a process of change that is governed by laws that do not themselves change\nSTATIONARY\nPROCESS\nover time. (Don’t confuse stationary with static: in a static process, the state itself does not\nchange.) In the umbrella world, then, the conditional probability of rain, P(Rt | Rt−1), is the\nsame for all t, and we only have to specify one conditional probability table.\nNow for the sensor model. The evidence variables Et could depend on previous vari-\nables as well as the current state variables, but any state that’s worth its salt should sufﬁce to\ngenerate the current sensor values. Thus, we make a sensor Markov assumption as follows:\nSENSOR MARKOV\nASSUMPTION\nP(Et | X0:t, E0:t−1) = P(Et | Xt) .\n(15.2)\nThus, P(Et | Xt) is our sensor model (sometimes called the observation model). Figure 15.2\nshows both the transition model and the sensor model for the umbrella example. Notice the\nSection 15.1.\nTime and Uncertainty\n569\nRaint\nUmbrellat\nRaint–1\nUmbrellat–1\nRaint+1\nUmbrellat+1\nRt -1\nt\nP(R )\n0.3\nf\n0.7\nt\nt\nR\nt\nP(U  )\n0.9\nt\n0.2\nf\nFigure 15.2\nBayesian network structure and conditional distributions describing the\numbrella world.\nThe transition model is P(Raint | Raint−1) and the sensor model is\nP(Umbrellat | Raint).\ndirection of the dependence between state and sensors: the arrows go from the actual state\nof the world to sensor values because the state of the world causes the sensors to take on\nparticular values: the rain causes the umbrella to appear. (The inference process, of course,\ngoes in the other direction; the distinction between the direction of modeled dependencies\nand the direction of inference is one of the principal advantages of Bayesian networks.)\nIn addition to specifying the transition and sensor models, we need to say how every-\nthing gets started—the prior probability distribution at time 0, P(X0). With that, we have a\nspeciﬁcation of the complete joint distribution over all the variables, using Equation (14.2).\nFor any t,\nP(X0:t, E1:t) = P(X0)\nt\u0019\ni = 1\nP(Xi | Xi−1) P(Ei | Xi) .\n(15.3)\nThe three terms on the right-hand side are the initial state model P(X0), the transition model\nP(Xi | Xi−1), and the sensor model P(Ei | Xi).\nThe structure in Figure 15.2 is a ﬁrst-order Markov process—the probability of rain is\nassumed to depend only on whether it rained the previous day. Whether such an assumption\nis reasonable depends on the domain itself. The ﬁrst-order Markov assumption says that the\nstate variables contain all the information needed to characterize the probability distribution\nfor the next time slice. Sometimes the assumption is exactly true—for example, if a particle\nis executing a random walk along the x-axis, changing its position by ±1 at each time step,\nthen using the x-coordinate as the state gives a ﬁrst-order Markov process. Sometimes the\nassumption is only approximate, as in the case of predicting rain only on the basis of whether\nit rained the previous day. There are two ways to improve the accuracy of the approximation:\n1. Increasing the order of the Markov process model. For example, we could make a\nsecond-order model by adding Raint−2 as a parent of Raint, which might give slightly\nmore accurate predictions. For example, in Palo Alto, California, it very rarely rains\nmore than two days in a row.\n2. Increasing the set of state variables. For example, we could add Seasont to allow",
+  "images": [
+    {
+      "path": "images/15-1-time-and-uncertainty_fig_15-1.png",
+      "type": "diagram",
+      "caption": "Figure 15.1"
+    },
+    {
+      "path": "images/15-1-time-and-uncertainty_fig_15-2.png",
+      "type": "diagram",
+      "caption": "Figure 15.2"
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/15-1-time-and-uncertainty_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-1-time-and-uncertainty_eq_15-1.png",
+      "type": "equation",
+      "label": "15.1"
+    },
+    {
+      "path": "images/15-1-time-and-uncertainty_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-1-time-and-uncertainty_eq_15-2.png",
+      "type": "equation",
+      "label": "15.2"
+    },
+    {
+      "path": "images/15-1-time-and-uncertainty_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-1-time-and-uncertainty_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-1-time-and-uncertainty_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-1-time-and-uncertainty_eq_15-3.png",
+      "type": "equation",
+      "label": "15.3"
+    }
+  ]
+}

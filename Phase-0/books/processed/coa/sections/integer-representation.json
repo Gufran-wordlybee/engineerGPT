@@ -1,0 +1,13 @@
+{
+  "section_id": "integer-representation",
+  "title": "Integer Representation",
+  "level": 4,
+  "chapter": "Data Representation",
+  "parent_id": "3-3-fixed-point-representation",
+  "children": [],
+  "start_page": 90,
+  "end_page": 91,
+  "text": "signed numbers\nWhen an integer binary number is positive, the sign is represented by 0 and the magnitude by a positive binary number. When the number is negative, the sign is represented by 1 but the rest of the number may be represented in one of three possible ways:\n1. Signed-magnitude representation\n2. Signed-1's complement representation\n3. Signed 2's complement representation\nThe signed-magnitude representation of a negative number consists of the magnitude and a negative sign. In the other two representations, the negative number is represented in either the 1's or 2's complement of its positive value. As an example, consider the signed number 14 stored in an 8-bit register. +14 is represented by a sign bit of 0 in the leftmost position followed by the binary equivalent of 14: 00001110. Note that each of the eight bits of the register must have a value and therefore 0's must be inserted in the most significant positions following the sign bit. Although there is only one way to represent +14, there are three different ways to represent -14 with eight bits.\nIn signed-magnitude representation 1 0001110\nIn signed-1's complement representation 1 1110001\nIn signed-2's complement representation 1 1110010\nThe signed-magnitude representation of -14 is obtained from +14 by complementing only the sign bit. The signed-1's complement representation of -14 is obtained by complementing all the bits of +14, including the sign bit. The signed-2's complement representation is obtained by taking the 2's complement of the positive number, including its sign bit.\nThe signed-magnitude system is used in ordinary arithmetic but is awkward when employed in computer arithmetic. Therefore, the signed-complement is normally used. The 1's complement imposes difficulties because it\nhas two representations of 0 (+0 and -0). It is seldom used for arithmetic operations except in some older computers. The 1's complement is useful as a logical operation since the change of 1 to 0 or 0 to 1 is equivalent to a logical complement operation. The following discussion of signed binary arithmetic deals exclusively with the signed-2's complement representation of negative numbers",
+  "images": [],
+  "equations": []
+}

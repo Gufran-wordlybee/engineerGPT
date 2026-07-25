@@ -1,0 +1,425 @@
+{
+  "section_id": "18-6-regression-and-classification-with-linear-models",
+  "title": "18.6 Regression and Classification with Linear Models",
+  "level": 3,
+  "chapter": "V: Learning",
+  "parent_id": "18-learning-from-examples",
+  "children": [],
+  "start_page": 735,
+  "end_page": 744,
+  "text": "Section 18.6.\nRegression and Classiﬁcation with Linear Models\n717\nfunction DECISION-LIST-LEARNING(examples) returns a decision list, or failure\nif examples is empty then return the trivial decision list No\nt ←a test that matches a nonempty subset examplest of examples\nsuch that the members of examplest are all positive or all negative\nif there is no such t then return failure\nif the examples in examplest are positive then o ←Yes else o ←No\nreturn a decision list with initial test t and outcome o and remaining tests given by\nDECISION-LIST-LEARNING(examples −examplest)\nFigure 18.11\nAn algorithm for learning decision lists.\n0.4\n0.5\n0.6\n0.7\n0.8\n0.9\n1\n0\n20\n40\n60\n80\n100\nProportion correct on test set\nTraining set size\nDecision tree\nDecision list\nFigure 18.12\nLearning curve for DECISION-LIST-LEARNING algorithm on the restaurant\ndata. The curve for DECISION-TREE-LEARNING is shown for comparison.\ntest that agrees exactly with some subset of the training set. Once it ﬁnds such a test, it\nadds it to the decision list under construction and removes the corresponding examples. It\nthen constructs the remainder of the decision list, using just the remaining examples. This is\nrepeated until there are no examples left. The algorithm is shown in Figure 18.11.\nThis algorithm does not specify the method for selecting the next test to add to the\ndecision list. Although the formal results given earlier do not depend on the selection method,\nit would seem reasonable to prefer small tests that match large sets of uniformly classiﬁed\nexamples, so that the overall decision list will be as compact as possible. The simplest strategy\nis to ﬁnd the smallest test t that matches any uniformly classiﬁed subset, regardless of the size\nof the subset. Even this approach works quite well, as Figure 18.12 suggests.\n18.6\nREGRESSION AND CLASSIFICATION WITH LINEAR MODELS\nNow it is time to move on from decision trees and lists to a different hypothesis space, one\nthat has been used for hundred of years: the class of linear functions of continuous-valued\nLINEAR FUNCTION\n718\n18.\nLearning from Examples\n 300\n 400\n 500\n 600\n 700\n 800\n 900\n 1000\n 500\n 1000 1500 2000 2500 3000 3500\nHouse price in $1000\nHouse size in square feet\nw0\nw1\nLoss\n(a)\n(b)\nFigure 18.13\n(a) Data points of price versus ﬂoor space of houses for sale in Berkeley,\nCA, in July 2009, along with the linear function hypothesis that minimizes squared error\nloss: y = 0.232x + 246. (b) Plot of the loss function \u0002\nj(w1xj + w0 −yj)2 for various\nvalues of w0, w1. Note that the loss function is convex, with a single global minimum.\ninputs. We’ll start with the simplest case: regression with a univariate linear function, oth-\nerwise known as “ﬁtting a straight line.” Section 18.6.2 covers the multivariate case. Sec-\ntions 18.6.3 and 18.6.4 show how to turn linear functions into classiﬁers by applying hard\nand soft thresholds.\n18.6.1\nUnivariate linear regression\nA univariate linear function (a straight line) with input x and output y has the form y = w1x+\nw0, where w0 and w1 are real-valued coefﬁcients to be learned. We use the letter w because\nwe think of the coefﬁcients as weights; the value of y is changed by changing the relative\nWEIGHT\nweight of one term or another. We’ll deﬁne w to be the vector [w0, w1], and deﬁne\nhw(x) = w1x + w0 .\nFigure 18.13(a) shows an example of a training set of n points in the x, y plane, each point\nrepresenting the size in square feet and the price of a house offered for sale. The task of\nﬁnding the hw that best ﬁts these data is called linear regression. To ﬁt a line to the data, all\nLINEAR REGRESSION\nwe have to do is ﬁnd the values of the weights [w0, w1] that minimize the empirical loss. It is\ntraditional (going back to Gauss3) to use the squared loss function, L2, summed over all the\ntraining examples:\nLoss(hw) =\nN\n\n\nj = 1\nL2(yj, hw(xj)) =\nN\n\n\nj = 1\n(yj −hw(xj))2 =\nN\n\n\nj = 1\n(yj −(w1xj + w0))2 .\n3 Gauss showed that if the yj values have normally distributed noise, then the most likely values of w1 and w0\nare obtained by minimizing the sum of the squares of the errors.\nSection 18.6.\nRegression and Classiﬁcation with Linear Models\n719\nWe would like to ﬁnd w∗= argminw Loss(hw). The sum \u0002N\nj = 1(yj −(w1xj + w0))2 is\nminimized when its partial derivatives with respect to w0 and w1 are zero:\n∂\n∂w0\nN\n\n\nj = 1\n(yj −(w1xj + w0))2 = 0 and\n∂\n∂w1\nN\n\n\nj = 1\n(yj −(w1xj + w0))2 = 0 .\n(18.2)\nThese equations have a unique solution:\nw1 = N(\u0002 xjyj) −(\u0002 xj)(\u0002 yj)\nN(\u0002 x2\nj) −(\u0002 xj)2\n; w0 = (\n\n\nyj −w1(\n\n\nxj))/N .\n(18.3)\nFor the example in Figure 18.13(a), the solution is w1 = 0.232, w0 = 246, and the line with\nthose weights is shown as a dashed line in the ﬁgure.\nMany forms of learning involve adjusting weights to minimize a loss, so it helps to\nhave a mental picture of what’s going on in weight space—the space deﬁned by all possible\nWEIGHT SPACE\nsettings of the weights. For univariate linear regression, the weight space deﬁned by w0 and\nw1 is two-dimensional, so we can graph the loss as a function of w0 and w1 in a 3D plot (see\nFigure 18.13(b)). We see that the loss function is convex, as deﬁned on page 133; this is true\nfor every linear regression problem with an L2 loss function, and implies that there are no\nlocal minima. In some sense that’s the end of the story for linear models; if we need to ﬁt\nlines to data, we apply Equation (18.3).4\nTo go beyond linear models, we will need to face the fact that the equations deﬁning\nminimum loss (as in Equation (18.2)) will often have no closed-form solution. Instead, we\nwill face a general optimization search problem in a continuous weight space. As indicated\nin Section 4.2 (page 129), such problems can be addressed by a hill-climbing algorithm that\nfollows the gradient of the function to be optimized. In this case, because we are trying to\nminimize the loss, we will use gradient descent. We choose any starting point in weight\nGRADIENT DESCENT\nspace—here, a point in the (w0, w1) plane—and then move to a neighboring point that is\ndownhill, repeating until we converge on the minimum possible loss:\nw ←any point in the parameter space\nloop until convergence do\nfor each wi in w do\nwi ←wi −α ∂\n∂wi\nLoss(w)\n(18.4)\nThe parameter α, which we called the step size in Section 4.2, is usually called the learning\nrate when we are trying to minimize loss in a learning problem. It can be a ﬁxed constant, or\nLEARNING RATE\nit can decay over time as the learning process proceeds.\nFor univariate regression, the loss function is a quadratic function, so the partial deriva-\ntive will be a linear function. (The only calculus you need to know is that\n∂\n∂xx2 = 2x and\n∂\n∂xx = 1.) Let’s ﬁrst work out the partial derivatives—the slopes—in the simpliﬁed case of\n4 With some caveats: the L2 loss function is appropriate when there is normally-distributed noise that is inde-\npendent of x; all results rely on the stationarity assumption; etc.\n720\n18.\nLearning from Examples\nonly one training example, (x, y):\n∂\n∂wi\nLoss(w) =\n∂\n∂wi\n(y −hw(x))2\n= 2(y −hw(x)) ×\n∂\n∂wi\n(y −hw(x))\n= 2(y −hw(x)) ×\n∂\n∂wi\n(y −(w1x + w0)) ,\n(18.5)\napplying this to both w0 and w1 we get:\n∂\n∂w0\nLoss(w) = −2(y −hw(x)) ;\n∂\n∂w1\nLoss(w) = −2(y −hw(x)) × x\nThen, plugging this back into Equation (18.4), and folding the 2 into the unspeciﬁed learning\nrate α, we get the following learning rule for the weights:\nw0 ←w0 + α (y −hw(x)) ;\nw1 ←w1 + α (y −hw(x)) × x\nThese updates make intuitive sense: if hw(x) > y, i.e., the output of the hypothesis is too\nlarge, reduce w0 a bit, and reduce w1 if x was a positive input but increase w1 if x was a\nnegative input.\nThe preceding equations cover one training example. For N training examples, we want\nto minimize the sum of the individual losses for each example. The derivative of a sum is the\nsum of the derivatives, so we have:\nw0 ←w0 + α\n\n\nj\n(yj −hw(xj)) ;\nw1 ←w1 + α\n\n\nj\n(yj −hw(xj)) × xj .\nThese updates constitute the batch gradient descent learning rule for univariate linear re-\nBATCH GRADIENT\nDESCENT\ngression. Convergence to the unique global minimum is guaranteed (as long as we pick α\nsmall enough) but may be very slow: we have to cycle through all the training data for every\nstep, and there may be many steps.\nThere is another possibility, called stochastic gradient descent, where we consider\nSTOCHASTIC\nGRADIENT DESCENT\nonly a single training point at a time, taking a step after each one using Equation (18.5).\nStochastic gradient descent can be used in an online setting, where new data are coming in\none at a time, or ofﬂine, where we cycle through the same data as many times as is neces-\nsary, taking a step after considering each single example. It is often faster than batch gradient\ndescent. With a ﬁxed learning rate α, however, it does not guarantee convergence; it can os-\ncillate around the minimum without settling down. In some cases, as we see later, a schedule\nof decreasing learning rates (as in simulated annealing) does guarantee convergence.\n18.6.2\nMultivariate linear regression\nWe can easily extend to multivariate linear regression problems, in which each example xj\nMULTIVARIATE\nLINEAR REGRESSION\nis an n-element vector.5 Our hypothesis space is the set of functions of the form\nhsw(xj) = w0 + w1xj,1 + · · · + wnxj,n = w0 +\n\n\ni\nwixj,i .\n5 The reader may wish to consult Appendix A for a brief summary of linear algebra.\nSection 18.6.\nRegression and Classiﬁcation with Linear Models\n721\nThe w0 term, the intercept, stands out as different from the others. We can ﬁx that by inventing\na dummy input attribute, xj,0, which is deﬁned as always equal to 1. Then h is simply the\ndot product of the weights and the input vector (or equivalently, the matrix product of the\ntranspose of the weights and the input vector):\nhsw(xj) = w · xj = w⊤xj =\n\n\ni\nwixj,i .\nThe best vector of weights, w∗, minimizes squared-error loss over the examples:\nw∗= argmin\nw\n\n\nj\nL2(yj, w · xj) .\nMultivariate linear regression is actually not much more complicated than the univariate case\nwe just covered. Gradient descent will reach the (unique) minimum of the loss function; the\nupdate equation for each weight wi is\nwi ←wi + α\n\n\nj\nxj,i(yj −hw(xj)) .\n(18.6)\nIt is also possible to solve analytically for the w that minimizes loss. Let y be the vector of\noutputs for the training examples, and X be the data matrix, i.e., the matrix of inputs with\nDATA MATRIX\none n-dimensional example per row. Then the solution\nw∗= (X⊤X)−1X⊤y\nminimizes the squared error.\nWith univariate linear regression we didn’t have to worry about overﬁtting. But with\nmultivariate linear regression in high-dimensional spaces it is possible that some dimension\nthat is actually irrelevant appears by chance to be useful, resulting in overﬁtting.\nThus, it is common to use regularization on multivariate linear functions to avoid over-\nﬁtting. Recall that with regularization we minimize the total cost of a hypothesis, counting\nboth the empirical loss and the complexity of the hypothesis:\nCost(h) = EmpLoss(h) + λ Complexity(h) .\nFor linear functions the complexity can be speciﬁed as a function of the weights. We can\nconsider a family of regularization functions:\nComplexity(hw) = Lq(w) =\n\n\ni\n|wi|q .\nAs with loss functions,6 with q = 1 we have L1 regularization, which minimizes the sum of\nthe absolute values; with q = 2, L2 regularization minimizes the sum of squares. Which reg-\nularization function should you pick? That depends on the speciﬁc problem, but L1 regular-\nization has an important advantage: it tends to produce a sparse model. That is, it often sets\nSPARSE MODEL\nmany weights to zero, effectively declaring the corresponding attributes to be irrelevant—just\nas DECISION-TREE-LEARNING does (although by a different mechanism). Hypotheses that\ndiscard attributes can be easier for a human to understand, and may be less likely to overﬁt.\n6 It is perhaps confusing that L1 and L2 are used for both loss functions and regularization functions. They need\nnot be used in pairs: you could use L2 loss with L1 regularization, or vice versa.\n722\n18.\nLearning from Examples\nw1\nw2\nw*\nw1\nw2\nw*\nFigure 18.14\nWhy L1 regularization tends to produce a sparse model. (a) With L1 regu-\nlarization (box), the minimal achievable loss (concentric contours) often occurs on an axis,\nmeaning a weight of zero. (b) With L2 regularization (circle), the minimal loss is likely to\noccur anywhere on the circle, giving no preference to zero weights.\nFigure 18.14 gives an intuitive explanation of why L1 regularization leads to weights of\nzero, while L2 regularization does not. Note that minimizing Loss(w) + λComplexity(w)\nis equivalent to minimizing Loss(w) subject to the constraint that Complexity(w) ≤c, for\nsome constant c that is related to λ. Now, in Figure 18.14(a) the diamond-shaped box repre-\nsents the set of points w in two-dimensional weight space that have L1 complexity less than\nc; our solution will have to be somewhere inside this box. The concentric ovals represent\ncontours of the loss function, with the minimum loss at the center. We want to ﬁnd the point\nin the box that is closest to the minimum; you can see from the diagram that, for an arbitrary\nposition of the minimum and its contours, it will be common for the corner of the box to ﬁnd\nits way closest to the minimum, just because the corners are pointy. And of course the corners\nare the points that have a value of zero in some dimension. In Figure 18.14(b), we’ve done\nthe same for the L2 complexity measure, which represents a circle rather than a diamond.\nHere you can see that, in general, there is no reason for the intersection to appear on one of\nthe axes; thus L2 regularization does not tend to produce zero weights. The result is that the\nnumber of examples required to ﬁnd a good h is linear in the number of irrelevant features for\nL2 regularization, but only logarithmic with L1 regularization. Empirical evidence on many\nproblems supports this analysis.\nAnother way to look at it is that L1 regularization takes the dimensional axes seriously,\nwhile L2 treats them as arbitrary. The L2 function is spherical, which makes it rotationally\ninvariant: Imagine a set of points in a plane, measured by their x and y coordinates. Now\nimagine rotating the axes by 45o. You’d get a different set of (x′, y′) values representing\nthe same points. If you apply L2 regularization before and after rotating, you get exactly\nthe same point as the answer (although the point would be described with the new (x′, y′)\ncoordinates). That is appropriate when the choice of axes really is arbitrary—when it doesn’t\nmatter whether your two dimensions are distances north and east; or distances north-east and\nSection 18.6.\nRegression and Classiﬁcation with Linear Models\n723\nsouth-east. With L1 regularization you’d get a different answer, because the L1 function is not\nrotationally invariant. That is appropriate when the axes are not interchangeable; it doesn’t\nmake sense to rotate “number of bathrooms” 45o towards “lot size.”\n18.6.3\nLinear classiﬁers with a hard threshold\nLinear functions can be used to do classiﬁcation as well as regression. For example, Fig-\nure 18.15(a) shows data points of two classes: earthquakes (which are of interest to seismolo-\ngists) and underground explosions (which are of interest to arms control experts). Each point\nis deﬁned by two input values, x1 and x2, that refer to body and surface wave magnitudes\ncomputed from the seismic signal. Given these training data, the task of classiﬁcation is to\nlearn a hypothesis h that will take new (x1, x2) points and return either 0 for earthquakes or\n1 for explosions.\n 2.5\n 3\n 3.5\n 4\n 4.5\n 5\n 5.5\n 6\n 6.5\n 7\n 7.5\n 4.5\n 5\n 5.5\n 6\n 6.5\n 7\nx2\nx1\n 2.5\n 3\n 3.5\n 4\n 4.5\n 5\n 5.5\n 6\n 6.5\n 7\n 7.5\n 4.5\n 5\n 5.5\n 6\n 6.5\n 7\nx2\nx1\n(a)\n(b)\nFigure 18.15\n(a) Plot of two seismic data parameters, body wave magnitude x1 and sur-\nface wave magnitude x2, for earthquakes (white circles) and nuclear explosions (black cir-\ncles) occurring between 1982 and 1990 in Asia and the Middle East (Kebeasy et al., 1998).\nAlso shown is a decision boundary between the classes. (b) The same domain with more data\npoints. The earthquakes and explosions are no longer linearly separable.\nA decision boundary is a line (or a surface, in higher dimensions) that separates the\nDECISION\nBOUNDARY\ntwo classes. In Figure 18.15(a), the decision boundary is a straight line. A linear decision\nboundary is called a linear separator and data that admit such a separator are called linearly\nLINEAR SEPARATOR\nseparable. The linear separator in this case is deﬁned by\nLINEAR\nSEPARABILITY\nx2 = 1.7x1 −4.9\nor\n−4.9 + 1.7x1 −x2 = 0 .\nThe explosions, which we want to classify with value 1, are to the right of this line with higher\nvalues of x1 and lower values of x2, so they are points for which −4.9 + 1.7x1 −x2 > 0,\nwhile earthquakes have −4.9 + 1.7x1 −x2 < 0. Using the convention of a dummy input\nx0 = 1, we can write the classiﬁcation hypothesis as\nhw(x) = 1 if w · x ≥0 and 0 otherwise.\n724\n18.\nLearning from Examples\nAlternatively, we can think of h as the result of passing the linear function w · x through a\nthreshold function:\nTHRESHOLD\nFUNCTION\nhw(x) = Threshold(w · x) where Threshold(z) = 1 if z ≥0 and 0 otherwise.\nThe threshold function is shown in Figure 18.17(a).\nNow that the hypothesis hw(x) has a well-deﬁned mathematical form, we can think\nabout choosing the weights w to minimize the loss. In Sections 18.6.1 and 18.6.2, we did\nthis both in closed form (by setting the gradient to zero and solving for the weights) and\nby gradient descent in weight space. Here, we cannot do either of those things because the\ngradient is zero almost everywhere in weight space except at those points where w · x = 0,\nand at those points the gradient is undeﬁned.\nThere is, however, a simple weight update rule that converges to a solution—that is, a\nlinear separator that classiﬁes the data perfectly–provided the data are linearly separable. For\na single example (x, y), we have\nwi ←wi + α (y −hw(x)) × xi\n(18.7)\nwhich is essentially identical to the Equation (18.6), the update rule for linear regression! This\nrule is called the perceptron learning rule, for reasons that will become clear in Section 18.7.\nPERCEPTRON\nLEARNING RULE\nBecause we are considering a 0/1 classiﬁcation problem, however, the behavior is somewhat\ndifferent. Both the true value y and the hypothesis output hw(x) are either 0 or 1, so there are\nthree possibilities:\n• If the output is correct, i.e., y = hw(x), then the weights are not changed.\n• If y is 1 but hw(x) is 0, then wi is increased when the corresponding input xi is positive\nand decreased when xi is negative. This makes sense, because we want to make w · x\nbigger so that hw(x) outputs a 1.\n• If y is 0 but hw(x) is 1, then wi is decreased when the corresponding input xi is positive\nand increased when xi is negative. This makes sense, because we want to make w · x\nsmaller so that hw(x) outputs a 0.\nTypically the learning rule is applied one example at a time, choosing examples at random\n(as in stochastic gradient descent). Figure 18.16(a) shows a training curve for this learning\nTRAINING CURVE\nrule applied to the earthquake/explosion data shown in Figure 18.15(a). A training curve\nmeasures the classiﬁer performance on a ﬁxed training set as the learning process proceeds\non that same training set. The curve shows the update rule converging to a zero-error linear\nseparator. The “convergence” process isn’t exactly pretty, but it always works. This particular\nrun takes 657 steps to converge, for a data set with 63 examples, so each example is presented\nroughly 10 times on average. Typically, the variation across runs is very large.\nWe have said that the perceptron learning rule converges to a perfect linear separator\nwhen the data points are linearly separable, but what if they are not? This situation is all\ntoo common in the real world. For example, Figure 18.15(b) adds back in the data points\nleft out by Kebeasy et al. (1998) when they plotted the data shown in Figure 18.15(a). In\nFigure 18.16(b), we show the perceptron learning rule failing to converge even after 10,000\nsteps: even though it hits the minimum-error solution (three errors) many times, the algo-\nrithm keeps changing the weights. In general, the perceptron rule may not converge to a\nSection 18.6.\nRegression and Classiﬁcation with Linear Models\n725\n 0.4\n 0.5\n 0.6\n 0.7\n 0.8\n 0.9\n 1\n 0\n 100 200 300 400 500 600 700\nProportion correct\nNumber of weight updates\n 0.4\n 0.5\n 0.6\n 0.7\n 0.8\n 0.9\n 1\n 0\n 20000 40000 60000 80000 100000\nProportion correct\nNumber of weight updates\n 0.4\n 0.5\n 0.6\n 0.7\n 0.8\n 0.9\n 1\n 0\n 20000 40000 60000 80000 100000\nProportion correct\nNumber of weight updates\n(a)\n(b)\n(c)\nFigure 18.16\n(a) Plot of total training-set accuracy vs. number of iterations through the\ntraining set for the perceptron learning rule, given the earthquake/explosion data in Fig-\nure 18.15(a). (b) The same plot for the noisy, non-separable data in Figure 18.15(b); note\nthe change in scale of the x-axis. (c) The same plot as in (b), with a learning rate schedule\nα(t) = 1000/(1000 + t).\nstable solution for ﬁxed learning rate α, but if α decays as O(1/t) where t is the iteration\nnumber, then the rule can be shown to converge to a minimum-error solution when examples\nare presented in a random sequence.7 It can also be shown that ﬁnding the minimum-error\nsolution is NP-hard, so one expects that many presentations of the examples will be required\nfor convergence to be achieved. Figure 18.16(b) shows the training process with a learning\nrate schedule α(t) = 1000/(1000 + t): convergence is not perfect after 100,000 iterations,\nbut it is much better than the ﬁxed-α case.\n18.6.4\nLinear classiﬁcation with logistic regression\nWe have seen that passing the output of a linear function through the threshold function\ncreates a linear classiﬁer; yet the hard nature of the threshold causes some problems: the\nhypothesis hw(x) is not differentiable and is in fact a discontinuous function of its inputs and\nits weights; this makes learning with the perceptron rule a very unpredictable adventure. Fur-\nthermore, the linear classiﬁer always announces a completely conﬁdent prediction of 1 or 0,\neven for examples that are very close to the boundary; in many situations, we really need\nmore gradated predictions.\nAll of these issues can be resolved to a large extent by softening the threshold function—\napproximating the hard threshold with a continuous, differentiable function. In Chapter 14\n(page 522), we saw two functions that look like soft thresholds: the integral of the standard\nnormal distribution (used for the probit model) and the logistic function (used for the logit\nmodel). Although the two functions are very similar in shape, the logistic function\nLogistic(z) =\n1\n1 + e−z\n7 Technically, we require that P∞\nt = 1 α(t) = ∞and P∞\nt = 1 α2(t) < ∞. The decay α(t) = O(1/t) satisﬁes\nthese conditions.\n726\n18.\nLearning from Examples\n 0\n 0.5\n 1\n-8 -6 -4 -2 0 2 4 6 8\n 0\n 0.5\n 1\n-6 -4 -2 0\n 2\n 4\n 6\n-2\n 0\n 2\n 4\n 6\n-4\n-2\n 0\n 2\n 4\n 6\n 8\n 10\n 0\n 0.2\n 0.4\n 0.6\n 0.8\n 1\nx1\nx2\n(a)\n(b)\n(c)\nFigure 18.17\n(a) The hard threshold function Threshold(z) with 0/1 output.\nNote\nthat the function is nondifferentiable at z = 0. (b) The logistic function, Logistic(z) =\n1\n1+e−z , also known as the sigmoid function. (c) Plot of a logistic regression hypothesis\nhw(x) = Logistic(w · x) for the data shown in Figure 18.15(b).\nhas more convenient mathematical properties. The function is shown in Figure 18.17(b).\nWith the logistic function replacing the threshold function, we now have\nhw(x) = Logistic(w · x) =\n1\n1 + e−w·x .\nAn example of such a hypothesis for the two-input earthquake/explosion problem is shown in\nFigure 18.17(c). Notice that the output, being a number between 0 and 1, can be interpreted\nas a probability of belonging to the class labeled 1. The hypothesis forms a soft boundary\nin the input space and gives a probability of 0.5 for any input at the center of the boundary\nregion, and approaches 0 or 1 as we move away from the boundary.\nThe process of ﬁtting the weights of this model to minimize loss on a data set is called\nlogistic regression. There is no easy closed-form solution to ﬁnd the optimal value of w with\nLOGISTIC\nREGRESSION\nthis model, but the gradient descent computation is straightforward. Because our hypotheses\nno longer output just 0 or 1, we will use the L2 loss function; also, to keep the formulas\nreadable, we’ll use g to stand for the logistic function, with g′ its derivative.\nFor a single example (x, y), the derivation of the gradient is the same as for linear\nregression (Equation (18.5)) up to the point where the actual form of h is inserted. (For this\nderivation, we will need the chain rule: ∂g(f(x))/∂x = g′(f(x)) ∂f(x)/∂x.) We have\nCHAIN RULE\n∂\n∂wi\nLoss(w) =\n∂\n∂wi\n(y −hw(x))2\n= 2(y −hw(x)) ×\n∂\n∂wi\n(y −hw(x))\n= −2(y −hw(x)) × g′(w · x) × ∂\n∂wi\nw · x\n= −2(y −hw(x)) × g′(w · x) × xi .",
+  "images": [
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_diagram_1.png",
+      "type": "diagram",
+      "caption": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_fig_18-14.png",
+      "type": "diagram",
+      "caption": "Figure 18.14"
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_fig_18-14.png",
+      "type": "diagram",
+      "caption": "Figure 18.14"
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_diagram_4.png",
+      "type": "diagram",
+      "caption": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_diagram_5.png",
+      "type": "diagram",
+      "caption": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_fig_18-17.png",
+      "type": "diagram",
+      "caption": "Figure 18.17"
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_18-2.png",
+      "type": "equation",
+      "label": "18.2"
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_18.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_19.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_20.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_21.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_22.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_18-3.png",
+      "type": "equation",
+      "label": "18.3"
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_24.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_25.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_18-4.png",
+      "type": "equation",
+      "label": "18.4"
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_27.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_28.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_29.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_30.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_31.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_32.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_33.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_34.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_35.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_36.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_18-5.png",
+      "type": "equation",
+      "label": "18.5"
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_38.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_39.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_40.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_41.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_42.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_43.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_44.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_45.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_46.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_47.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_48.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_49.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_50.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_51.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_52.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_53.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_54.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_55.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_18-6.png",
+      "type": "equation",
+      "label": "18.6"
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_57.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_58.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_59.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_60.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_61.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_18-7.png",
+      "type": "equation",
+      "label": "18.7"
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_63.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_64.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_65.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_66.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_67.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_68.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_69.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_70.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_71.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_72.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_73.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_74.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_75.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-6-regression-and-classification-with-linear-models_eq_76.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

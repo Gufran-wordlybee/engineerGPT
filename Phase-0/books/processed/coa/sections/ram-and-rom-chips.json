@@ -1,0 +1,19 @@
+{
+  "section_id": "ram-and-rom-chips",
+  "title": "RAM and ROM Chips",
+  "level": 2,
+  "chapter": "12-2 Main Memory",
+  "parent_id": "12-2-main-memory",
+  "children": [],
+  "start_page": 450,
+  "end_page": 451,
+  "text": "A RAM chip is better suited for communication with the CPU if it has one or more control inputs that select the chip only when needed. Another common feature is a bidirectional data bus that allows the transfer of data either from memory to CPU during a read operation, or from CPU to memory during a write operation. A bidirectional bus can be constructed with three-state buffers. A three-state buffer output can be placed in one of three possible states: a signal equivalent to logic 1, a signal equivalent to logic 0, or a high-impedance state. The logic 1 and 0 are normal digital signals. The high-impedance state behaves like an open circuit, which means that the output\ndoes not carry a signal and has no logic significance.\n\nThe block diagram of a RAM chip is shown in Fig. 12-2. The capacity of the memory is 128 words of eight bits (one byte) per word. This requires a 7-bit\nCSI CS2 RD WR Memory function State of data bus 0 Inhibit High-impedance 0 1 × ¥ Inhibit High-impedance 0 n Inhibit 1 0 High-impedance 0 0 1 Write Input data to RAM O Output data from RAM × Read × Inhibit High-impedance\n(b) Function table\nhidirectional hus\naddress and an 8-bit bidirectional data bus. The read and write inputs specific the memory operation and the two chips select (CS) control inputs are for enabling the chip only when it is selected by the microprocessor. The availability of more than one control input to select the chip facilitates the decoding of the address lines when multiple chips are used in the microcomputer. The read and write inputs are sometimes combined into one line labeled R/W. When the chip is selected, the two binary states in this line specify the two operations of read or write.\nThe function table listed in Fig. 12-2(b) specifies the operation of the RAM chip. The unit is in operation only when CS1=1 and \\overline{CS2}=0. The bar on top of the second select variable indicates that this input is enabled when it is equato 0. If the chip select inputs are not enabled, or if they are enabled but the read or write inputs are not enabled, the memory is inhibited and its data bus is in a high-impedance state. When CS1=1 and \\overline{CS2}=0, the memory can be placed in a write or read mode. When the WR input is enabled, the memory stores a byte from the data bus into a location specified by the address input lines. When the RD input is enabled, the content of the selected byte is placed into the data bus. The RD and WR signals control the memory operation as well as the bus buffers associated with the bidirectional data bus.\nA ROM chip is organized externally in a similar manner. However, since a ROM can only read, the data bus can only be in an output mode. The block diagram of a ROM chip is shown in Fig. 12-3. For the same-size chip, it is possible to have more bits of ROM than of RAM, because the internal binary cells in ROM occupy less space than in RAM. For this reason, the diagram specifies a 512-byte ROM, while the RAM has only 128 bytes.\nThe nine address lines in the ROM chip specify any one of the 512 bytes stored in it. The two chip select inputs must be CS1 = 1 and \\overline{CS2} = 0 for the unit to operate. Otherwise, the data bus is in a high-impedance state. There is no need for a read or write control because the unit can only read. Thus when the chip is enabled by the two select inputs, the byte selected by the address lines appears on the data bus.",
+  "images": [
+    {
+      "path": "images/ram-and-rom-chips_img_1.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

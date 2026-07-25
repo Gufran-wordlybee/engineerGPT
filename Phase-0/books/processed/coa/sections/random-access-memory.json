@@ -1,0 +1,19 @@
+{
+  "section_id": "random-access-memory",
+  "title": "Random-Access Memory",
+  "level": 2,
+  "chapter": "Digital Components",
+  "parent_id": "digital-components",
+  "children": [],
+  "start_page": 73,
+  "end_page": 74,
+  "text": "RAM\nIn random-access memory (RAM) the memory cells can be accessed for information transfer from any desired random location. That is, the process of locating a word in memory is the same and requires an equal amount of time no matter where the cells are located physically in memory: thus the name \"random access.\"\nCommunication between a memory and its environment is achieved through data input and output lines, address selection lines, and control lines that specify the direction of transfer. A block diagram of a RAM unit is shown in Fig. 2-12. The n data input lines provide the information to be stored in memory, and the n data output lines supply the information coming out of memory. The k address lines provide a binary number of k bits that specify a particular word chosen among the 2^k available inside the memory. The two control inputs specify the direction of transfer desired.\nThe two operations that a random-access memory can perform are the write and read operations. The write signal specifies a transfer-in operation and the read signal specifies a transfer-out operation. On accepting one of these control signals, the internal circuits inside the memory provide the desired function. The steps that must be taken for the purpose of transferring a new word to be stored into memory are as follows:\n1. Apply the binary address of the desired word into the address lines.\nwrite and read operations\nFigure 2-12 Block diagram of random access memory (RAM).\nApply the data bits that must be stored in memory into the data input lines.\n3. Activate the write input.\nThe memory unit will then take the bits presently available in the input data lines and store them in the word specified by the address lines.\nThe steps that must be taken for the purpose of transferring a stored word out of memory are as follows:\n1. Apply the binary address of the desired word into the address lines.\n2. Activate the read input.\nThe memory unit will then take the bits from the word that has been selected by the address and apply them into the output data lines. The content of the selected word does not change after reading.",
+  "images": [
+    {
+      "path": "images/random-access-memory_img_1.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

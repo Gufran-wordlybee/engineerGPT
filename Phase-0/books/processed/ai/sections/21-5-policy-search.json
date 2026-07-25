@@ -1,0 +1,109 @@
+{
+  "section_id": "21-5-policy-search",
+  "title": "21.5 Policy Search",
+  "level": 3,
+  "chapter": "V: Learning",
+  "parent_id": "21-reinforcement-learning",
+  "children": [],
+  "start_page": 866,
+  "end_page": 867,
+  "text": "848\n21.\nReinforcement Learning\nobservable variables, then we can ﬁx the structure of a dynamic Bayesian network and use the\nEM algorithm to learn the parameters, as was described in Chapter 20. Inventing the hidden\nvariables and learning the model structure are still open problems. Some practical examples\nare described in Section 21.6.\n21.5\nPOLICY SEARCH\nThe ﬁnal approach we will consider for reinforcement learning problems is called policy\nsearch. In some ways, policy search is the simplest of all the methods in this chapter: the\nPOLICY SEARCH\nidea is to keep twiddling the policy as long as its performance improves, then stop.\nLet us begin with the policies themselves. Remember that a policy π is a function that\nmaps states to actions. We are interested primarily in parameterized representations of π that\nhave far fewer parameters than there are states in the state space (just as in the preceding\nsection). For example, we could represent π by a collection of parameterized Q-functions,\none for each action, and take the action with the highest predicted value:\nπ(s) = max\na\nˆQθ(s, a) .\n(21.14)\nEach Q-function could be a linear function of the parameters θ, as in Equation (21.10),\nor it could be a nonlinear function such as a neural network. Policy search will then ad-\njust the parameters θ to improve the policy. Notice that if the policy is represented by Q-\nfunctions, then policy search results in a process that learns Q-functions. This process is\nnot the same as Q-learning! In Q-learning with function approximation, the algorithm ﬁnds\na value of θ such that ˆQθ is “close” to Q∗, the optimal Q-function. Policy search, on the\nother hand, ﬁnds a value of θ that results in good performance; the values found by the two\nmethods may differ very substantially. (For example, the approximate Q-function deﬁned\nby ˆQθ(s, a) = Q∗(s, a)/10 gives optimal performance, even though it is not at all close to\nQ∗.) Another clear instance of the difference is the case where π(s) is calculated using, say,\ndepth-10 look-ahead search with an approximate utility function ˆUθ. A value of θ that gives\ngood results may be a long way from making ˆUθ resemble the true utility function.\nOne problem with policy representations of the kind given in Equation (21.14) is that\nthe policy is a discontinuous function of the parameters when the actions are discrete. (For a\ncontinuous action space, the policy can be a smooth function of the parameters.) That is, there\nwill be values of θ such that an inﬁnitesimal change in θ causes the policy to switch from one\naction to another. This means that the value of the policy may also change discontinuously,\nwhich makes gradient-based search difﬁcult. For this reason, policy search methods often use\na stochastic policy representation πθ(s, a), which speciﬁes the probability of selecting action\nSTOCHASTIC POLICY\na in state s. One popular representation is the softmax function:\nSOFTMAX FUNCTION\nπθ(s, a) = e\nˆQθ(s,a)/\n\n\na′\ne\nˆQθ(s,a′) .\nSoftmax becomes nearly deterministic if one action is much better than the others, but it\nalways gives a differentiable function of θ; hence, the value of the policy (which depends in\nSection 21.5.\nPolicy Search\n849\na continuous fashion on the action selection probabilities) is a differentiable function of θ.\nSoftmax is a generalization of the logistic function (page 725) to multiple variables.\nNow let us look at methods for improving the policy. We start with the simplest case: a\ndeterministic policy and a deterministic environment. Let ρ(θ) be the policy value, i.e., the\nPOLICY VALUE\nexpected reward-to-go when πθ is executed. If we can derive an expression for ρ(θ) in closed\nform, then we have a standard optimization problem, as described in Chapter 4. We can follow\nthe policy gradient vector ∇θρ(θ) provided ρ(θ) is differentiable. Alternatively, if ρ(θ) is\nPOLICY GRADIENT\nnot available in closed form, we can evaluate πθ simply by executing it and observing the\naccumulated reward. We can follow the empirical gradient by hill climbing—i.e., evaluating\nthe change in policy value for small increments in each parameter. With the usual caveats,\nthis process will converge to a local optimum in policy space.\nWhen the environment (or the policy) is stochastic, things get more difﬁcult. Suppose\nwe are trying to do hill climbing, which requires comparing ρ(θ) and ρ(θ + Δθ) for some\nsmall Δθ. The problem is that the total reward on each trial may vary widely, so estimates\nof the policy value from a small number of trials will be quite unreliable; trying to compare\ntwo such estimates will be even more unreliable. One solution is simply to run lots of trials,\nmeasuring the sample variance and using it to determine that enough trials have been run\nto get a reliable indication of the direction of improvement for ρ(θ). Unfortunately, this is\nimpractical for many real problems where each trial may be expensive, time-consuming, and\nperhaps even dangerous.\nFor the case of a stochastic policy πθ(s, a), it is possible to obtain an unbiased estimate\nof the gradient at θ, ∇θρ(θ), directly from the results of trials executed at θ. For simplicity,\nwe will derive this estimate for the simple case of a nonsequential environment in which the\nreward R(a) is obtained immediately after doing action a in the start state s0. In this case,\nthe policy value is just the expected value of the reward, and we have\n∇θρ(θ) = ∇θ\n\n\na\nπθ(s0, a)R(a) =\n\n\na\n(∇θπθ(s0, a))R(a) .\nNow we perform a simple trick so that this summation can be approximated by samples\ngenerated from the probability distribution deﬁned by πθ(s0, a). Suppose that we have N\ntrials in all and the action taken on the jth trial is aj. Then\n∇θρ(θ) =\n\n\na\nπθ(s0, a) · (∇θπθ(s0, a))R(a)\nπθ(s0, a)\n≈1\nN\nN\n\n\nj = 1\n(∇θπθ(s0, aj))R(aj)\nπθ(s0, aj)\n.\nThus, the true gradient of the policy value is approximated by a sum of terms involving\nthe gradient of the action-selection probability in each trial. For the sequential case, this\ngeneralizes to\n∇θρ(θ) ≈1\nN\nN\n\n\nj = 1\n(∇θπθ(s, aj))Rj(s)\nπθ(s, aj)\nfor each state s visited, where aj is executed in s on the jth trial and Rj(s) is the total\nreward received from state s onwards in the jth trial.\nThe resulting algorithm is called\nREINFORCE (Williams, 1992); it is usually much more effective than hill climbing using\nlots of trials at each value of θ. It is still much slower than necessary, however.",
+  "images": [],
+  "equations": [
+    {
+      "path": "images/21-5-policy-search_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-5-policy-search_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-5-policy-search_eq_21-14.png",
+      "type": "equation",
+      "label": "21.14"
+    },
+    {
+      "path": "images/21-5-policy-search_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-5-policy-search_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-5-policy-search_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-5-policy-search_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-5-policy-search_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-5-policy-search_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-5-policy-search_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-5-policy-search_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-5-policy-search_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-5-policy-search_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-5-policy-search_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-5-policy-search_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-5-policy-search_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-5-policy-search_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-5-policy-search_eq_18.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-5-policy-search_eq_19.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

@@ -1,0 +1,150 @@
+{
+  "section_id": "7-4-propositional-logic-a-very-simple-logic",
+  "title": "7.4 Propositional Logic: A Very Simple Logic",
+  "level": 3,
+  "chapter": "III: Knowledge, reasoning, and planning",
+  "parent_id": "7-logical-agents",
+  "children": [],
+  "start_page": 261,
+  "end_page": 266,
+  "text": "Section 7.4.\nPropositional Logic: A Very Simple Logic\n243\nFollows\nSentences\nSentence\nEntails\nSemantics\nSemantics\nRepresentation\nWorld\nAspects of the\n    real world\nAspect of the\n   real world\nFigure 7.6\nSentences are physical conﬁgurations of the agent, and reasoning is a process\nof constructing new physical conﬁgurations from old ones. Logical reasoning should en-\nsure that the new conﬁgurations represent aspects of the world that actually follow from the\naspects that the old conﬁgurations represent.\nto the real-world relationship whereby some aspect of the real world is the case6 by virtue\nof other aspects of the real world being the case. This correspondence between world and\nrepresentation is illustrated in Figure 7.6.\nThe ﬁnal issue to consider is grounding—the connection between logical reasoning\nGROUNDING\nprocesses and the real environment in which the agent exists. In particular, how do we know\nthat KB is true in the real world? (After all, KB is just “syntax” inside the agent’s head.)\nThis is a philosophical question about which many, many books have been written. (See\nChapter 26.) A simple answer is that the agent’s sensors create the connection. For example,\nour wumpus-world agent has a smell sensor. The agent program creates a suitable sentence\nwhenever there is a smell. Then, whenever that sentence is in the knowledge base, it is\ntrue in the real world. Thus, the meaning and truth of percept sentences are deﬁned by the\nprocesses of sensing and sentence construction that produce them. What about the rest of the\nagent’s knowledge, such as its belief that wumpuses cause smells in adjacent squares? This\nis not a direct representation of a single percept, but a general rule—derived, perhaps, from\nperceptual experience but not identical to a statement of that experience. General rules like\nthis are produced by a sentence construction process called learning, which is the subject\nof Part V. Learning is fallible. It could be the case that wumpuses cause smells except on\nFebruary 29 in leap years, which is when they take their baths. Thus, KB may not be true in\nthe real world, but with good learning procedures, there is reason for optimism.\n7.4\nPROPOSITIONAL LOGIC: A VERY SIMPLE LOGIC\nWe now present a simple but powerful logic called propositional logic. We cover the syntax\nPROPOSITIONAL\nLOGIC\nof propositional logic and its semantics—the way in which the truth of sentences is deter-\nmined. Then we look at entailment—the relation between a sentence and another sentence\nthat follows from it—and see how this leads to a simple algorithm for logical inference. Ev-\nerything takes place, of course, in the wumpus world.\n6 As Wittgenstein (1922) put it in his famous Tractatus: “The world is everything that is the case.”\n244\n7.\nLogical Agents\n7.4.1\nSyntax\nThe syntax of propositional logic deﬁnes the allowable sentences. The atomic sentences\nATOMIC SENTENCES\nconsist of a single proposition symbol. Each such symbol stands for a proposition that can\nPROPOSITION\nSYMBOL\nbe true or false. We use symbols that start with an uppercase letter and may contain other\nletters or subscripts, for example: P, Q, R, W1,3 and North. The names are arbitrary but\nare often chosen to have some mnemonic value—we use W1,3 to stand for the proposition\nthat the wumpus is in [1,3]. (Remember that symbols such as W1,3 are atomic, i.e., W, 1,\nand 3 are not meaningful parts of the symbol.) There are two proposition symbols with ﬁxed\nmeanings: True is the always-true proposition and False is the always-false proposition.\nComplex sentences are constructed from simpler sentences, using parentheses and logical\nCOMPLEX\nSENTENCES\nconnectives. There are ﬁve connectives in common use:\nLOGICAL\nCONNECTIVES\n¬ (not). A sentence such as ¬W1,3 is called the negation of W1,3. A literal is either an\nNEGATION\nLITERAL\natomic sentence (a positive literal) or a negated atomic sentence (a negative literal).\n∧(and). A sentence whose main connective is ∧, such as W1,3 ∧P3,1, is called a con-\njunction; its parts are the conjuncts. (The ∧looks like an “A” for “And.”)\nCONJUNCTION\n∨(or). A sentence using ∨, such as (W1,3∧P3,1)∨W2,2, is a disjunction of the disjuncts\nDISJUNCTION\n(W1,3 ∧P3,1) and W2,2. (Historically, the ∨comes from the Latin “vel,” which means\n“or.” For most people, it is easier to remember ∨as an upside-down ∧.)\n⇒(implies). A sentence such as (W1,3 ∧P3,1) ⇒¬W2,2 is called an implication (or con-\nIMPLICATION\nditional). Its premise or antecedent is (W1,3 ∧P3,1), and its conclusion or consequent\nPREMISE\nCONCLUSION\nis ¬W2,2. Implications are also known as rules or if–then statements. The implication\nRULES\nsymbol is sometimes written in other books as ⊃or →.\n⇔(if and only if). The sentence W1,3 ⇔¬W2,2 is a biconditional. Some other books\nBICONDITIONAL\nwrite this as ≡.\nSentence\n→\nAtomicSentence | ComplexSentence\nAtomicSentence\n→\nTrue | False | P | Q | R | . . .\nComplexSentence\n→\n( Sentence ) | [ Sentence ]\n|\n¬ Sentence\n|\nSentence ∧Sentence\n|\nSentence ∨Sentence\n|\nSentence\n⇒Sentence\n|\nSentence\n⇔\nSentence\nOPERATOR PRECEDENCE\n:\n¬, ∧, ∨, ⇒, ⇔\nFigure 7.7\nA BNF (Backus–Naur Form) grammar of sentences in propositional logic,\nalong with operator precedences, from highest to lowest.\nSection 7.4.\nPropositional Logic: A Very Simple Logic\n245\nFigure 7.7 gives a formal grammar of propositional logic; see page 1060 if you are not\nfamiliar with the BNF notation. The BNF grammar by itself is ambiguous; a sentence with\nseveral operators can be parsed by the grammar in multiple ways. To eliminate the ambiguity\nwe deﬁne a precedence for each operator. The “not” operator (¬) has the highest precedence,\nwhich means that in the sentence ¬A ∧B the ¬ binds most tightly, giving us the equivalent\nof (¬A)∧B rather than ¬(A∧B). (The notation for ordinary arithmetic is the same: −2+4\nis 2, not –6.) When in doubt, use parentheses to make sure of the right interpretation. Square\nbrackets mean the same thing as parentheses; the choice of square brackets or parentheses is\nsolely to make it easier for a human to read a sentence.\n7.4.2\nSemantics\nHaving speciﬁed the syntax of propositional logic, we now specify its semantics. The se-\nmantics deﬁnes the rules for determining the truth of a sentence with respect to a particular\nmodel. In propositional logic, a model simply ﬁxes the truth value—true or false—for ev-\nTRUTH VALUE\nery proposition symbol. For example, if the sentences in the knowledge base make use of the\nproposition symbols P1,2, P2,2, and P3,1, then one possible model is\nm1 = {P1,2 = false, P2,2 = false, P3,1 = true} .\nWith three proposition symbols, there are 23 = 8 possible models—exactly those depicted\nin Figure 7.5. Notice, however, that the models are purely mathematical objects with no\nnecessary connection to wumpus worlds. P1,2 is just a symbol; it might mean “there is a pit\nin [1,2]” or “I’m in Paris today and tomorrow.”\nThe semantics for propositional logic must specify how to compute the truth value of\nany sentence, given a model. This is done recursively. All sentences are constructed from\natomic sentences and the ﬁve connectives; therefore, we need to specify how to compute the\ntruth of atomic sentences and how to compute the truth of sentences formed with each of the\nﬁve connectives. Atomic sentences are easy:\n• True is true in every model and False is false in every model.\n• The truth value of every other proposition symbol must be speciﬁed directly in the\nmodel. For example, in the model m1 given earlier, P1,2 is false.\nFor complex sentences, we have ﬁve rules, which hold for any subsentences P and Q in any\nmodel m (here “iff” means “if and only if”):\n• ¬P is true iff P is false in m.\n• P ∧Q is true iff both P and Q are true in m.\n• P ∨Q is true iff either P or Q is true in m.\n• P ⇒Q is true unless P is true and Q is false in m.\n• P ⇔Q is true iff P and Q are both true or both false in m.\nThe rules can also be expressed with truth tables that specify the truth value of a complex\nTRUTH TABLE\nsentence for each possible assignment of truth values to its components. Truth tables for the\nﬁve connectives are given in Figure 7.8. From these tables, the truth value of any sentence s\ncan be computed with respect to any model m by a simple recursive evaluation. For example,\n246\n7.\nLogical Agents\nP\nQ\n¬P\nP ∧Q\nP ∨Q\nP ⇒Q\nP ⇔Q\nfalse\nfalse\ntrue\nfalse\nfalse\ntrue\ntrue\nfalse\ntrue\ntrue\nfalse\ntrue\ntrue\nfalse\ntrue\nfalse\nfalse\nfalse\ntrue\nfalse\nfalse\ntrue\ntrue\nfalse\ntrue\ntrue\ntrue\ntrue\nFigure 7.8\nTruth tables for the ﬁve logical connectives. To use the table to compute, for\nexample, the value of P ∨Q when P is true and Q is false, ﬁrst look on the left for the row\nwhere P is true and Q is false (the third row). Then look in that row under the P ∨Q column\nto see the result: true.\nthe sentence ¬P1,2 ∧(P2,2 ∨P3,1), evaluated in m1, gives true ∧(false ∨true) = true ∧\ntrue = true. Exercise 7.3 asks you to write the algorithm PL-TRUE?(s, m), which computes\nthe truth value of a propositional logic sentence s in a model m.\nThe truth tables for “and,” “or,” and “not” are in close accord with our intuitions about\nthe English words. The main point of possible confusion is that P ∨Q is true when P is true\nor Q is true or both. A different connective, called “exclusive or” (“xor” for short), yields\nfalse when both disjuncts are true.7 There is no consensus on the symbol for exclusive or;\nsome choices are ˙∨or̸ = or ⊕.\nThe truth table for ⇒may not quite ﬁt one’s intuitive understanding of “P implies Q”\nor “if P then Q.” For one thing, propositional logic does not require any relation of causation\nor relevance between P and Q. The sentence “5 is odd implies Tokyo is the capital of Japan”\nis a true sentence of propositional logic (under the normal interpretation), even though it is\na decidedly odd sentence of English. Another point of confusion is that any implication is\ntrue whenever its antecedent is false. For example, “5 is even implies Sam is smart” is true,\nregardless of whether Sam is smart. This seems bizarre, but it makes sense if you think of\n“P ⇒Q” as saying, “If P is true, then I am claiming that Q is true. Otherwise I am making\nno claim.” The only way for this sentence to be false is if P is true but Q is false.\nThe biconditional, P ⇔Q, is true whenever both P ⇒Q and Q ⇒P are true. In\nEnglish, this is often written as “P if and only if Q.” Many of the rules of the wumpus world\nare best written using ⇔. For example, a square is breezy if a neighboring square has a pit,\nand a square is breezy only if a neighboring square has a pit. So we need a biconditional,\nB1,1 ⇔(P1,2 ∨P2,1) ,\nwhere B1,1 means that there is a breeze in [1,1].\n7.4.3\nA simple knowledge base\nNow that we have deﬁned the semantics for propositional logic, we can construct a knowledge\nbase for the wumpus world. We focus ﬁrst on the immutable aspects of the wumpus world,\nleaving the mutable aspects for a later section. For now, we need the following symbols for\neach [x, y] location:\n7 Latin has a separate word, aut, for exclusive or.\nSection 7.4.\nPropositional Logic: A Very Simple Logic\n247\nPx,y is true if there is a pit in [x, y].\nWx,y is true if there is a wumpus in [x, y], dead or alive.\nBx,y is true if the agent perceives a breeze in [x, y].\nSx,y is true if the agent perceives a stench in [x, y].\nThe sentences we write will sufﬁce to derive ¬P1,2 (there is no pit in [1,2]), as was done\ninformally in Section 7.3. We label each sentence Ri so that we can refer to them:\n• There is no pit in [1,1]:\nR1 :\n¬P1,1 .\n• A square is breezy if and only if there is a pit in a neighboring square. This has to be\nstated for each square; for now, we include just the relevant squares:\nR2 :\nB1,1\n⇔\n(P1,2 ∨P2,1) .\nR3 :\nB2,1\n⇔\n(P1,1 ∨P2,2 ∨P3,1) .\n• The preceding sentences are true in all wumpus worlds. Now we include the breeze\npercepts for the ﬁrst two squares visited in the speciﬁc world the agent is in, leading up\nto the situation in Figure 7.3(b).\nR4 :\n¬B1,1 .\nR5 :\nB2,1 .\n7.4.4\nA simple inference procedure\nOur goal now is to decide whether KB |= α for some sentence α. For example, is ¬P1,2\nentailed by our KB? Our ﬁrst algorithm for inference is a model-checking approach that is a\ndirect implementation of the deﬁnition of entailment: enumerate the models, and check that\nα is true in every model in which KB is true. Models are assignments of true or false to\nevery proposition symbol. Returning to our wumpus-world example, the relevant proposi-\ntion symbols are B1,1, B2,1, P1,1, P1,2, P2,1, P2,2, and P3,1. With seven symbols, there are\n27 = 128 possible models; in three of these, KB is true (Figure 7.9). In those three models,\n¬P1,2 is true, hence there is no pit in [1,2]. On the other hand, P2,2 is true in two of the three\nmodels and false in one, so we cannot yet tell whether there is a pit in [2,2].\nFigure 7.9 reproduces in a more precise form the reasoning illustrated in Figure 7.5. A\ngeneral algorithm for deciding entailment in propositional logic is shown in Figure 7.10. Like\nthe BACKTRACKING-SEARCH algorithm on page 215, TT-ENTAILS? performs a recursive\nenumeration of a ﬁnite space of assignments to symbols. The algorithm is sound because it\nimplements directly the deﬁnition of entailment, and complete because it works for any KB\nand α and always terminates—there are only ﬁnitely many models to examine.\nOf course, “ﬁnitely many” is not always the same as “few.” If KB and α contain n\nsymbols in all, then there are 2n models. Thus, the time complexity of the algorithm is\nO(2n). (The space complexity is only O(n) because the enumeration is depth-ﬁrst.) Later in\nthis chapter we show algorithms that are much more efﬁcient in many cases. Unfortunately,\npropositional entailment is co-NP-complete (i.e., probably no easier than NP-complete—see\nAppendix A), so every known inference algorithm for propositional logic has a worst-case\ncomplexity that is exponential in the size of the input.\n248\n7.\nLogical Agents\nB1,1\nB2,1\nP1,1\nP1,2\nP2,1\nP2,2\nP3,1\nR1\nR2\nR3\nR4\nR5\nKB\nfalse\nfalse\nfalse\nfalse\nfalse\nfalse\nfalse\ntrue\ntrue\ntrue\ntrue\nfalse\nfalse\nfalse\nfalse\nfalse\nfalse\nfalse\nfalse\ntrue\ntrue\ntrue\nfalse\ntrue\nfalse\nfalse\n...\n...\n...\n...\n...\n...\n...\n...\n...\n...\n...\n...\n...\nfalse\ntrue\nfalse\nfalse\nfalse\nfalse\nfalse\ntrue\ntrue\nfalse\ntrue\ntrue\nfalse\nfalse\ntrue\nfalse\nfalse\nfalse\nfalse\ntrue\ntrue\ntrue\ntrue\ntrue\ntrue\ntrue\nfalse\ntrue\nfalse\nfalse\nfalse\ntrue\nfalse\ntrue\ntrue\ntrue\ntrue\ntrue\ntrue\nfalse\ntrue\nfalse\nfalse\nfalse\ntrue\ntrue\ntrue\ntrue\ntrue\ntrue\ntrue\ntrue\nfalse\ntrue\nfalse\nfalse\ntrue\nfalse\nfalse\ntrue\nfalse\nfalse\ntrue\ntrue\nfalse\n...\n...\n...\n...\n...\n...\n...\n...\n...\n...\n...\n...\n...\ntrue\ntrue\ntrue\ntrue\ntrue\ntrue\ntrue\nfalse\ntrue\ntrue\nfalse\ntrue\nfalse\nFigure 7.9\nA truth table constructed for the knowledge base given in the text. KB is true\nif R1 through R5 are true, which occurs in just 3 of the 128 rows (the ones underlined in the\nright-hand column). In all 3 rows, P1,2 is false, so there is no pit in [1,2]. On the other hand,\nthere might (or might not) be a pit in [2,2].\nfunction TT-ENTAILS?(KB,α) returns true or false\ninputs: KB, the knowledge base, a sentence in propositional logic\nα, the query, a sentence in propositional logic\nsymbols ←a list of the proposition symbols in KB and α\nreturn TT-CHECK-ALL(KB,α,symbols,{ })\nfunction TT-CHECK-ALL(KB,α,symbols,model) returns true or false\nif EMPTY?(symbols) then\nif PL-TRUE?(KB,model) then return PL-TRUE?(α,model)\nelse return true // when KB is false, always return true\nelse do\nP ←FIRST(symbols)\nrest ←REST(symbols)\nreturn (TT-CHECK-ALL(KB,α,rest,model ∪{P = true})\nand\nTT-CHECK-ALL(KB,α,rest,model ∪{P = false }))\nFigure 7.10\nA truth-table enumeration algorithm for deciding propositional entailment.\n(TT stands for truth table.) PL-TRUE? returns true if a sentence holds within a model. The\nvariable model represents a partial model—an assignment to some of the symbols. The key-\nword “and” is used here as a logical operation on its two arguments, returning true or false.",
+  "images": [
+    {
+      "path": "images/7-4-propositional-logic-a-very-simple-logic_fig_7-6.png",
+      "type": "diagram",
+      "caption": "Figure 7.6"
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/7-4-propositional-logic-a-very-simple-logic_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-4-propositional-logic-a-very-simple-logic_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-4-propositional-logic-a-very-simple-logic_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-4-propositional-logic-a-very-simple-logic_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-4-propositional-logic-a-very-simple-logic_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-4-propositional-logic-a-very-simple-logic_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-4-propositional-logic-a-very-simple-logic_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-4-propositional-logic-a-very-simple-logic_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-4-propositional-logic-a-very-simple-logic_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-4-propositional-logic-a-very-simple-logic_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-4-propositional-logic-a-very-simple-logic_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-4-propositional-logic-a-very-simple-logic_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-4-propositional-logic-a-very-simple-logic_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-4-propositional-logic-a-very-simple-logic_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-4-propositional-logic-a-very-simple-logic_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-4-propositional-logic-a-very-simple-logic_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-4-propositional-logic-a-very-simple-logic_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-4-propositional-logic-a-very-simple-logic_eq_18.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-4-propositional-logic-a-very-simple-logic_eq_19.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-4-propositional-logic-a-very-simple-logic_eq_20.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-4-propositional-logic-a-very-simple-logic_eq_21.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-4-propositional-logic-a-very-simple-logic_eq_22.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-4-propositional-logic-a-very-simple-logic_eq_23.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-4-propositional-logic-a-very-simple-logic_eq_24.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-4-propositional-logic-a-very-simple-logic_eq_25.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-4-propositional-logic-a-very-simple-logic_eq_26.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

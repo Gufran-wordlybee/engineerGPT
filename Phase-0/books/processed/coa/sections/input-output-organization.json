@@ -1,0 +1,23 @@
+{
+  "section_id": "input-output-organization",
+  "title": "Input-Output Organization",
+  "level": 1,
+  "chapter": "Input-Output Organization",
+  "parent_id": null,
+  "children": [
+    "in-this-chapter-10",
+    "11-1-peripheral-devices",
+    "ascii-alphanumeric-characters",
+    "11-2-input-output-interface",
+    "io-versus-memory-bus",
+    "11-3-asynchronous-data-transfer",
+    "asynchronous-communication-interface",
+    "11-4-modes-of-transfer",
+    "example-of-programmed-io"
+  ],
+  "start_page": 388,
+  "end_page": 388,
+  "text": "",
+  "images": [],
+  "equations": []
+}

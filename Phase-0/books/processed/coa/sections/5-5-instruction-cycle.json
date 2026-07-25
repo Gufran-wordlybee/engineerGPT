@@ -1,0 +1,15 @@
+{
+  "section_id": "5-5-instruction-cycle",
+  "title": "5-5 Instruction Cycle",
+  "level": 1,
+  "chapter": "5-5 Instruction Cycle",
+  "parent_id": null,
+  "children": [
+    "fetch-and-decode"
+  ],
+  "start_page": 149,
+  "end_page": 149,
+  "text": "A program residing in the memory unit of the computer consists of a sequence of instructions. The program is executed in the computer by going through a cycle for each instruction. Each instruction cycle in turn is subdivided into a sequence of subcycles or phases. In the basic computer each instruction cycle consists of the following phases:\n1. Fetch an instruction from memory.\nDecode the instruction.\nRead the effective address from memory if the instruction has an indirect address.\n4. Execute the instruction.\nUpon the completion of step 4, the control goes back to step 1 to fetch, decode, and execute the next instruction. This process continues indefinitely unless a HALT instruction is encountered.",
+  "images": [],
+  "equations": []
+}

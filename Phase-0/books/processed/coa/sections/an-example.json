@@ -1,0 +1,15 @@
+{
+  "section_id": "an-example",
+  "title": "An Example",
+  "level": 1,
+  "chapter": "An Example",
+  "parent_id": null,
+  "children": [
+    "translation-to-binary"
+  ],
+  "start_page": 190,
+  "end_page": 191,
+  "text": "The program of Table 6-8 is an example of an assembly language program. The first line has the pseudoinstruction ORG to define the origin of the program at memory location (100)<sub>16</sub>. The next six lines define machine instructions, and the last four have pseudoinstructions. Three symbolic addresses have been used and each is listed in column 1 as a label and in column 2 as an address of a memory-reference instruction. Three of the pseudoinstructions specify operands, and the last one signifies the END of the program.\nWhen the program is translated into binary code and executed by the computer it will perform a subtraction between two numbers. The subtraction is performed by adding the minuend to the 2's complement of the subtrahend. The subtrahend is a negative number. It is converted into a binary number in signed-2's complement representation because we dictate that all negative numbers be in their 2's complement form. When the 2's complement of the subtrahend is taken (by complementing and incrementing the AC), -23 converts to +23 and the difference is 83 + (2's complement of -23) = 83 + 23 = 106.\n\n[Table]\nTABLE 6-8 Assembly Language Program to Subtract Two Numıbers\n\n\n[Table]\nMIN,SUB,DIF,ORG 100LDA SUBCMAINCADD MINSTA DIFHLTDEC 83DEC -23HEX 0END/Origin of program is location 100\n/Load subtrahend to AC\n/Complement AC\n/Increment AC\n/Add minuend to AC\n/Store difference\n/Halt computer\n/Minuend\n/Subtrahend\n/Difference stored here\n/End of symbolic program",
+  "images": [],
+  "equations": []
+}

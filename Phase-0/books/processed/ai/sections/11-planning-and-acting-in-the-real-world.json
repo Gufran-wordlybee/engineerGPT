@@ -1,0 +1,19 @@
+{
+  "section_id": "11-planning-and-acting-in-the-real-world",
+  "title": "11 Planning and Acting in the Real World",
+  "level": 2,
+  "chapter": "III: Knowledge, reasoning, and planning",
+  "parent_id": "iii-knowledge-reasoning-and-planning",
+  "children": [
+    "11-1-time-schedules-and-resources",
+    "11-2-hierarchical-planning",
+    "11-3-planning-and-acting-in-nondeterministic-domains",
+    "11-4-multiagent-planning",
+    "11-5-summary-bibliographical-and-historical-notes-exercises"
+  ],
+  "start_page": 419,
+  "end_page": 419,
+  "text": "11\nPLANNING AND ACTING\nIN THE REAL WORLD\nIn which we see how more expressive representations and more interactive agent\narchitectures lead to planners that are useful in the real world.\nThe previous chapter introduced the most basic concepts, representations, and algorithms for\nplanning. Planners that are are used in the real world for planning and scheduling the oper-\nations of spacecraft, factories, and military campaigns are more complex; they extend both\nthe representation language and the way the planner interacts with the environment. This\nchapter shows how. Section 11.1 extends the classical language for planning to talk about\nactions with durations and resource constraints. Section 11.2 describes methods for con-\nstructing plans that are organized hierarchically. This allows human experts to communicate\nto the planner what they know about how to solve the problem. Hierarchy also lends itself to\nefﬁcient plan construction because the planner can solve a problem at an abstract level before\ndelving into details. Section 11.3 presents agent architectures that can handle uncertain envi-\nronments and interleave deliberation with execution, and gives some examples of real-world\nsystems. Section 11.4 shows how to plan when the environment contains other agents.\n11.1\nTIME, SCHEDULES, AND RESOURCES\nThe classical planning representation talks about what to do, and in what order, but the repre-\nsentation cannot talk about time: how long an action takes and when it occurs. For example,\nthe planners of Chapter 10 could produce a schedule for an airline that says which planes are\nassigned to which ﬂights, but we really need to know departure and arrival times as well. This\nis the subject matter of scheduling. The real world also imposes many resource constraints;\nfor example, an airline has a limited number of staff—and staff who are on one ﬂight cannot\nbe on another at the same time. This section covers methods for representing and solving\nplanning problems that include temporal and resource constraints.\nThe approach we take in this section is “plan ﬁrst, schedule later”: that is, we divide\nthe overall problem into a planning phase in which actions are selected, with some ordering\nconstraints, to meet the goals of the problem, and a later scheduling phase, in which tempo-\nral information is added to the plan to ensure that it meets resource and deadline constraints.\n401",
+  "images": [],
+  "equations": []
+}

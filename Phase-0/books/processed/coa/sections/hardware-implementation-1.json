@@ -1,0 +1,19 @@
+{
+  "section_id": "hardware-implementation-1",
+  "title": "Hardware Implementation",
+  "level": 1,
+  "chapter": "Hardware Implementation",
+  "parent_id": null,
+  "children": [],
+  "start_page": 125,
+  "end_page": 126,
+  "text": "A possible choice for a shift unit would be a bidirectional shift register with parallel load (see Fig. 2-9). Information can be transferred to the register in parallel and then shifted to the right or left. In this type of configuration, a clock pulse is needed for loading the data into the register, and another pulse is needed to initiate the shift. In a processor unit with many registers it is more efficient to implement the shift operation with a combinational circuit. In this way the content of a register that has to be shifted is first placed onto a common bus whose output is connected to the combinational shifter, and the shifted number is then loaded back into the register. This requires only one clock pulse for loading the shifted value into the register.\nA combinational circuit shifter can be constructed with multiplexers as shown in Fig. 4-12. The 4-bit shifter has four data inputs, A_0 through A_3, and four data outputs, H_0 through H_3. There are two serial inputs, one for shift left\nshifter\nFigure 4-12 4-bit combinational circuit shifter.\n(I_L) and the other for shift right (I_L). When the selection input S=0, the input data are shifted right (down in the diagram). When S=1, the input data are shifted left (up in the diagram). The function table in Fig. 4-12 shows which input goes to each output after the shift. A shifter with n data inputs and outputs requires n multiplexers. The two serial inputs can be controlled by another multiplexer to provide the three possible types of shifts.",
+  "images": [
+    {
+      "path": "images/hardware-implementation_img_1.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

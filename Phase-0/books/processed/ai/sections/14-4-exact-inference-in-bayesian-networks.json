@@ -1,0 +1,400 @@
+{
+  "section_id": "14-4-exact-inference-in-bayesian-networks",
+  "title": "14.4 Exact Inference in Bayesian Networks",
+  "level": 3,
+  "chapter": "IV: Uncertain knowledge and reasoning",
+  "parent_id": "14-probabilistic-reasoning",
+  "children": [],
+  "start_page": 540,
+  "end_page": 547,
+  "text": "522\n14.\nProbabilistic Reasoning\n 0\n 0.2\n 0.4\n 0.6\n 0.8\n 1\n 0\n 2\n 4\n 6\n 8\n 10\n 12\nP(c)\nCost c\n 0\n 0.2\n 0.4\n 0.6\n 0.8\n 1\n 0\n 2\n 4\n 6\n 8\n 10\n 12\nP(buys | c)\nCost c\nLogit\nProbit\n(a)\n(b)\nFigure 14.7\n(a) A normal (Gaussian) distribution for the cost threshold, centered on\nμ = 6.0 with standard deviation σ = 1.0. (b) Logit and probit distributions for the probability\nof buys given cost, for the parameters μ = 6.0 and σ = 1.0.\nbution (pronounced “pro-bit” and short for “probability unit”) is illustrated in Figure 14.7(a).\nPROBIT\nDISTRIBUTION\nThe form can be justiﬁed by proposing that the underlying decision process has a hard thresh-\nold, but that the precise location of the threshold is subject to random Gaussian noise.\nAn alternative to the probit model is the logit distribution (pronounced “low-jit”). It\nLOGIT DISTRIBUTION\nuses the logistic function 1/(1 + e−x) to produce a soft threshold:\nLOGISTIC FUNCTION\nP(buys | Cost = c) =\n1\n1 + exp(−2−c+μ\nσ\n) .\nThis is illustrated in Figure 14.7(b). The two distributions look similar, but the logit actually\nhas much longer “tails.” The probit is often a better ﬁt to real situations, but the logit is some-\ntimes easier to deal with mathematically. It is used widely in neural networks (Chapter 20).\nBoth probit and logit can be generalized to handle multiple continuous parents by taking a\nlinear combination of the parent values.\n14.4\nEXACT INFERENCE IN BAYESIAN NETWORKS\nThe basic task for any probabilistic inference system is to compute the posterior probability\ndistribution for a set of query variables, given some observed event—that is, some assign-\nEVENT\nment of values to a set of evidence variables. To simplify the presentation, we will consider\nonly one query variable at a time; the algorithms can easily be extended to queries with mul-\ntiple variables. We will use the notation from Chapter 13: X denotes the query variable; E\ndenotes the set of evidence variables E1, . . . , Em, and e is a particular observed event; Y will\ndenotes the nonevidence, nonquery variables Y1, . . . , Yl (called the hidden variables). Thus,\nHIDDEN VARIABLE\nthe complete set of variables is X = {X} ∪E ∪Y. A typical query asks for the posterior\nprobability distribution P(X | e).\nSection 14.4.\nExact Inference in Bayesian Networks\n523\nIn the burglary network, we might observe the event in which JohnCalls = true and\nMaryCalls = true. We could then ask for, say, the probability that a burglary has occurred:\nP(Burglary | JohnCalls = true, MaryCalls = true) = ⟨0.284, 0.716⟩.\nIn this section we discuss exact algorithms for computing posterior probabilities and will\nconsider the complexity of this task. It turns out that the general case is intractable, so Sec-\ntion 14.5 covers methods for approximate inference.\n14.4.1\nInference by enumeration\nChapter 13 explained that any conditional probability can be computed by summing terms\nfrom the full joint distribution. More speciﬁcally, a query P(X | e) can be answered using\nEquation (13.9), which we repeat here for convenience:\nP(X | e) = α P(X, e) = α\n\n\ny\nP(X, e, y) .\nNow, a Bayesian network gives a complete representation of the full joint distribution. More\nspeciﬁcally, Equation (14.2) on page 513 shows that the terms P(x, e, y) in the joint distri-\nbution can be written as products of conditional probabilities from the network. Therefore, a\nquery can be answered using a Bayesian network by computing sums of products of condi-\ntional probabilities from the network.\nConsider the query P(Burglary | JohnCalls = true, MaryCalls = true). The hidden\nvariables for this query are Earthquake and Alarm. From Equation (13.9), using initial\nletters for the variables to shorten the expressions, we have4\nP(B | j, m) = α P(B, j, m) = α\n\n\ne\n\n\na\nP(B, j, m, e, a, ) .\nThe semantics of Bayesian networks (Equation (14.2)) then gives us an expression in terms\nof CPT entries. For simplicity, we do this just for Burglary = true:\nP(b | j, m) = α\n\n\ne\n\n\na\nP(b)P(e)P(a | b, e)P(j | a)P(m | a) .\nTo compute this expression, we have to add four terms, each computed by multiplying ﬁve\nnumbers. In the worst case, where we have to sum out almost all the variables, the complexity\nof the algorithm for a network with n Boolean variables is O(n2n).\nAn improvement can be obtained from the following simple observations: the P(b)\nterm is a constant and can be moved outside the summations over a and e, and the P(e) term\ncan be moved outside the summation over a. Hence, we have\nP(b | j, m) = α P(b)\n\n\ne\nP(e)\n\n\na\nP(a | b, e)P(j | a)P(m | a) .\n(14.4)\nThis expression can be evaluated by looping through the variables in order, multiplying CPT\nentries as we go. For each summation, we also need to loop over the variable’s possible\n4 An expression such as P\ne P(a, e) means to sum P(A = a, E = e) for all possible values of e. When E is\nBoolean, there is an ambiguity in that P(e) is used to mean both P(E = true) and P(E = e), but it should be\nclear from context which is intended; in particular, in the context of a sum the latter is intended.\n524\n14.\nProbabilistic Reasoning\nvalues. The structure of this computation is shown in Figure 14.8. Using the numbers from\nFigure 14.2, we obtain P(b | j, m) = α × 0.00059224. The corresponding computation for\n¬b yields α × 0.0014919; hence,\nP(B | j, m) = α ⟨0.00059224, 0.0014919⟩≈⟨0.284, 0.716⟩.\nThat is, the chance of a burglary, given calls from both neighbors, is about 28%.\nThe evaluation process for the expression in Equation (14.4) is shown as an expression\ntree in Figure 14.8. The ENUMERATION-ASK algorithm in Figure 14.9 evaluates such trees\nusing depth-ﬁrst recursion. The algorithm is very similar in structure to the backtracking al-\ngorithm for solving CSPs (Figure 6.5) and the DPLL algorithm for satisﬁability (Figure 7.17).\nThe space complexity of ENUMERATION-ASK is only linear in the number of variables:\nthe algorithm sums over the full joint distribution without ever constructing it explicitly. Un-\nfortunately, its time complexity for a network with n Boolean variables is always O(2n)—\nbetter than the O(n 2n) for the simple approach described earlier, but still rather grim.\nNote that the tree in Figure 14.8 makes explicit the repeated subexpressions evalu-\nated by the algorithm. The products P(j | a)P(m | a) and P(j | ¬a)P(m | ¬a) are computed\ntwice, once for each value of e. The next section describes a general method that avoids such\nwasted computations.\n14.4.2\nThe variable elimination algorithm\nThe enumeration algorithm can be improved substantially by eliminating repeated calcula-\ntions of the kind illustrated in Figure 14.8. The idea is simple: do the calculation once and\nsave the results for later use. This is a form of dynamic programming. There are several ver-\nsions of this approach; we present the variable elimination algorithm, which is the simplest.\nVARIABLE\nELIMINATION\nVariable elimination works by evaluating expressions such as Equation (14.4) in right-to-left\norder (that is, bottom up in Figure 14.8). Intermediate results are stored, and summations over\neach variable are done only for those portions of the expression that depend on the variable.\nLet us illustrate this process for the burglary network. We evaluate the expression\nP(B | j, m) = α P(B)\n\u001b \n\n \n\nf1(B)\n\n\ne\nP(e)\n\u001b\n\n\n\nf2(E)\n\n\na\nP(a | B, e)\n\u001b\n\n\n\n\n\nf3(A,B,E)\nP(j | a)\n\u001b \n\n \n\nf4(A)\nP(m | a)\n\u001b\n\n\n\n\n\nf5(A)\n.\nNotice that we have annotated each part of the expression with the name of the corresponding\nfactor; each factor is a matrix indexed by the values of its argument variables. For example,\nFACTOR\nthe factors f4(A) and f5(A) corresponding to P(j | a) and P(m | a) depend just on A because\nJ and M are ﬁxed by the query. They are therefore two-element vectors:\nf4(A) =\n\n P(j | a)\nP(j | ¬a)\n\u000e\n=\n\n 0.90\n0.05\n\u000e\nf5(A) =\n\n P(m | a)\nP(m | ¬a)\n\u000e\n=\n\n 0.70\n0.01\n\u000e\n.\nf3(A, B, E) will be a 2 × 2 × 2 matrix, which is hard to show on the printed page. (The “ﬁrst”\nelement is given by P(a | b, e) = 0.95 and the “last” by P(¬a | ¬b, ¬e) = 0.999.) In terms of\nfactors, the query expression is written as\nP(B | j, m) = α f1(B) ×\n\n\ne\nf2(E) ×\n\n\na\nf3(A, B, E) × f4(A) × f5(A)\nSection 14.4.\nExact Inference in Bayesian Networks\n525\nP(j|a)\n.90\nP(m|a)\n.70\n.01\nP(m|¬a)\n.05\nP( j|¬a)\nP( j|a)\n.90\nP(m|a)\n.70\n.01\nP(m|¬a)\n.05\nP( j|¬a)\nP(b)\n.001\nP(e)\n.002\nP(¬e)\n.998\nP(a|b,e)\n.95\n.06\nP(¬a|b,¬e)\n.05\nP(¬a|b,e)\n.94\nP(a|b,¬e)\nFigure 14.8\nThe structure of the expression shown in Equation (14.4). The evaluation\nproceeds top down, multiplying values along each path and summing at the “+” nodes. Notice\nthe repetition of the paths for j and m.\nfunction ENUMERATION-ASK(X ,e,bn) returns a distribution over X\ninputs: X , the query variable\ne, observed values for variables E\nbn, a Bayes net with variables {X} ∪E ∪Y\n/* Y = hidden variables */\nQ(X ) ←a distribution over X , initially empty\nfor each value xi of X do\nQ(xi) ←ENUMERATE-ALL(bn.VARS,exi)\nwhere exi is e extended with X = xi\nreturn NORMALIZE(Q(X))\nfunction ENUMERATE-ALL(vars,e) returns a real number\nif EMPTY?(vars) then return 1.0\nY ←FIRST(vars)\nif Y has value y in e\nthen return P(y | parents(Y )) × ENUMERATE-ALL(REST(vars),e)\nelse return \u0002\ny P(y | parents(Y )) × ENUMERATE-ALL(REST(vars),ey)\nwhere ey is e extended with Y = y\nFigure 14.9\nThe enumeration algorithm for answering queries on Bayesian networks.\n526\n14.\nProbabilistic Reasoning\nwhere the “×” operator is not ordinary matrix multiplication but instead the pointwise prod-\nuct operation, to be described shortly.\nPOINTWISE\nPRODUCT\nThe process of evaluation is a process of summing out variables (right to left) from\npointwise products of factors to produce new factors, eventually yielding a factor that is the\nsolution, i.e., the posterior distribution over the query variable. The steps are as follows:\n• First, we sum out A from the product of f3, f4, and f5. This gives us a new 2 × 2 factor\nf6(B, E) whose indices range over just B and E:\nf6(B, E) =\n\n\na\nf3(A, B, E) × f4(A) × f5(A)\n= (f3(a, B, E) × f4(a) × f5(a)) + (f3(¬a, B, E) × f4(¬a) × f5(¬a)) .\nNow we are left with the expression\nP(B | j, m) = α f1(B) ×\n\n\ne\nf2(E) × f6(B, E) .\n• Next, we sum out E from the product of f2 and f6:\nf7(B) =\n\n\ne\nf2(E) × f6(B, E)\n= f2(e) × f6(B, e) + f2(¬e) × f6(B, ¬e) .\nThis leaves the expression\nP(B | j, m) = α f1(B) × f7(B)\nwhich can be evaluated by taking the pointwise product and normalizing the result.\nExamining this sequence, we see that two basic computational operations are required: point-\nwise product of a pair of factors, and summing out a variable from a product of factors. The\nnext section describes each of these operations.\nOperations on factors\nThe pointwise product of two factors f1 and f2 yields a new factor f whose variables are\nthe union of the variables in f1 and f2 and whose elements are given by the product of the\ncorresponding elements in the two factors. Suppose the two factors have variables Y1, . . . , Yk\nin common. Then we have\nf(X1 . . . Xj, Y1 . . . Yk, Z1 . . . Zl) = f1(X1 . . . Xj, Y1 . . . Yk) f2(Y1 . . . Yk, Z, . . . Zl).\nIf all the variables are binary, then f1 and f2 have 2j+k and 2k+l entries, respectively, and\nthe pointwise product has 2j+k+l entries.\nFor example, given two factors f1(A, B) and\nf2(B, C), the pointwise product f1 × f2 = f3(A, B, C) has 21+1+1 = 8 entries, as illustrated\nin Figure 14.10. Notice that the factor resulting from a pointwise product can contain more\nvariables than any of the factors being multiplied and that the size of a factor is exponential in\nthe number of variables. This is where both space and time complexity arise in the variable\nelimination algorithm.\nSection 14.4.\nExact Inference in Bayesian Networks\n527\nA\nB\nf1(A, B)\nB\nC\nf2(B, C)\nA\nB\nC\nf3(A, B, C)\nT\nT\n.3\nT\nT\n.2\nT\nT\nT\n.3 × .2 = .06\nT\nF\n.7\nT\nF\n.8\nT\nT\nF\n.3 × .8 = .24\nF\nT\n.9\nF\nT\n.6\nT\nF\nT\n.7 × .6 = .42\nF\nF\n.1\nF\nF\n.4\nT\nF\nF\n.7 × .4 = .28\nF\nT\nT\n.9 × .2 = .18\nF\nT\nF\n.9 × .8 = .72\nF\nF\nT\n.1 × .6 = .06\nF\nF\nF\n.1 × .4 = .04\nFigure 14.10\nIllustrating pointwise multiplication: f1(A, B) × f2(B, C) = f3(A, B, C).\nSumming out a variable from a product of factors is done by adding up the submatrices\nformed by ﬁxing the variable to each of its values in turn. For example, to sum out A from\nf3(A, B, C), we write\nf(B, C) =\n\n\na\nf3(A, B, C) = f3(a, B, C) + f3(¬a, B, C)\n=\n\n .06 .24\n.42 .28\n\u000e\n+\n\n .18 .72\n.06 .04\n\u000e\n=\n\n .24 .96\n.48 .32\n\u000e\n.\nThe only trick is to notice that any factor that does not depend on the variable to be summed\nout can be moved outside the summation. For example, if we were to sum out E ﬁrst in the\nburglary network, the relevant part of the expression would be\n\n\ne\nf2(E) × f3(A, B, E) × f4(A) × f5(A) = f4(A) × f5(A) ×\n\n\ne\nf2(E) × f3(A, B, E) .\nNow the pointwise product inside the summation is computed, and the variable is summed\nout of the resulting matrix.\nNotice that matrices are not multiplied until we need to sum out a variable from the\naccumulated product. At that point, we multiply just those matrices that include the variable\nto be summed out. Given functions for pointwise product and summing out, the variable\nelimination algorithm itself can be written quite simply, as shown in Figure 14.11.\nVariable ordering and variable relevance\nThe algorithm in Figure 14.11 includes an unspeciﬁed ORDER function to choose an ordering\nfor the variables. Every choice of ordering yields a valid algorithm, but different orderings\ncause different intermediate factors to be generated during the calculation. For example, in\nthe calculation shown previously, we eliminated A before E; if we do it the other way, the\ncalculation becomes\nP(B | j, m) = α f1(B) ×\n\n\na\nf4(A) × f5(A) ×\n\n\ne\nf2(E) × f3(A, B, E) ,\nduring which a new factor f6(A, B) will be generated.\nIn general, the time and space requirements of variable elimination are dominated by\nthe size of the largest factor constructed during the operation of the algorithm. This in turn\n528\n14.\nProbabilistic Reasoning\nfunction ELIMINATION-ASK(X ,e,bn) returns a distribution over X\ninputs: X , the query variable\ne, observed values for variables E\nbn, a Bayesian network specifying joint distribution P(X1, . . . , Xn)\nfactors ←[ ]\nfor each var in ORDER(bn.VARS) do\nfactors ←[MAKE-FACTOR(var, e)|factors]\nif var is a hidden variable then factors ←SUM-OUT(var,factors)\nreturn NORMALIZE(POINTWISE-PRODUCT(factors))\nFigure 14.11\nThe variable elimination algorithm for inference in Bayesian networks.\nis determined by the order of elimination of variables and by the structure of the network.\nIt turns out to be intractable to determine the optimal ordering, but several good heuristics\nare available. One fairly effective method is a greedy one: eliminate whichever variable\nminimizes the size of the next factor to be constructed.\nLet us consider one more query: P(JohnCalls | Burglary = true). As usual, the ﬁrst\nstep is to write out the nested summation:\nP(J | b) = α P(b)\n\n\ne\nP(e)\n\n\na\nP(a | b, e)P(J | a)\n\n\nm\nP(m | a) .\nEvaluating this expression from right to left, we notice something interesting: \u0002\nm P(m | a)\nis equal to 1 by deﬁnition! Hence, there was no need to include it in the ﬁrst place; the vari-\nable M is irrelevant to this query. Another way of saying this is that the result of the query\nP(JohnCalls | Burglary = true) is unchanged if we remove MaryCalls from the network\naltogether. In general, we can remove any leaf node that is not a query variable or an evidence\nvariable. After its removal, there may be some more leaf nodes, and these too may be irrele-\nvant. Continuing this process, we eventually ﬁnd that every variable that is not an ancestor\nof a query variable or evidence variable is irrelevant to the query. A variable elimination\nalgorithm can therefore remove all these variables before evaluating the query.\n14.4.3\nThe complexity of exact inference\nThe complexity of exact inference in Bayesian networks depends strongly on the structure of\nthe network. The burglary network of Figure 14.2 belongs to the family of networks in which\nthere is at most one undirected path between any two nodes in the network. These are called\nsingly connected networks or polytrees, and they have a particularly nice property: The time\nSINGLY CONNECTED\nPOLYTREE\nand space complexity of exact inference in polytrees is linear in the size of the network. Here,\nthe size is deﬁned as the number of CPT entries; if the number of parents of each node is\nbounded by a constant, then the complexity will also be linear in the number of nodes.\nFor multiply connected networks, such as that of Figure 14.12(a), variable elimination\nMULTIPLY\nCONNECTED\ncan have exponential time and space complexity in the worst case, even when the number\nof parents per node is bounded. This is not surprising when one considers that because it\nSection 14.4.\nExact Inference in Bayesian Networks\n529\nP(C)=.5\nC\nP(R)\nt\nf\n.80\n.20\nC\nP(S)\nt\nf\n.10\n.50\nS\nR\nt\nt\nt\nf\nf\nt\nf\nf\n.90\n.90\n.00\n.99\nCloudy\nRain\nSprinkler\n Wet\nGrass\nP(W)\nP(C)=.5\nt\nf\n.08 .02 .72 .18\nP(S+R=x)\nS+R\nP(W)\nt t\nt f\nf t\nf f\n.90\n.90\n.00\n.99\nCloudy\nSpr+Rain\n Wet\nGrass\n.10 .40 .10 .40\nC\nt t\nt f\nf t\nf f\n(a)\n(b)\nFigure 14.12\n(a) A multiply connected network with conditional probability tables. (b) A\nclustered equivalent of the multiply connected network.\nincludes inference in propositional logic as a special case, inference in Bayesian networks is\nNP-hard. In fact, it can be shown (Exercise 14.16) that the problem is as hard as that of com-\nputing the number of satisfying assignments for a propositional logic formula. This means\nthat it is #P-hard (“number-P hard”)—that is, strictly harder than NP-complete problems.\nThere is a close connection between the complexity of Bayesian network inference and\nthe complexity of constraint satisfaction problems (CSPs). As we discussed in Chapter 6,\nthe difﬁculty of solving a discrete CSP is related to how “treelike” its constraint graph is.\nMeasures such as tree width, which bound the complexity of solving a CSP, can also be\napplied directly to Bayesian networks. Moreover, the variable elimination algorithm can be\ngeneralized to solve CSPs as well as Bayesian networks.\n14.4.4\nClustering algorithms\nThe variable elimination algorithm is simple and efﬁcient for answering individual queries. If\nwe want to compute posterior probabilities for all the variables in a network, however, it can\nbe less efﬁcient. For example, in a polytree network, one would need to issue O(n) queries\ncosting O(n) each, for a total of O(n2) time. Using clustering algorithms (also known as\nCLUSTERING\njoin tree algorithms), the time can be reduced to O(n). For this reason, these algorithms are\nJOIN TREE\nwidely used in commercial Bayesian network tools.\nThe basic idea of clustering is to join individual nodes of the network to form clus-\nter nodes in such a way that the resulting network is a polytree. For example, the multiply\nconnected network shown in Figure 14.12(a) can be converted into a polytree by combin-\ning the Sprinkler and Rain node into a cluster node called Sprinkler+Rain, as shown in\nFigure 14.12(b). The two Boolean nodes are replaced by a “meganode” that takes on four\npossible values: tt, tf, ft, and ff. The meganode has only one parent, the Boolean variable\nCloudy, so there are two conditioning cases. Although this example doesn’t show it, the\nprocess of clustering often produces meganodes that share some variables.",
+  "images": [
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_diagram_1.png",
+      "type": "diagram",
+      "caption": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_fig_14-8.png",
+      "type": "diagram",
+      "caption": "Figure 14.8"
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_fig_14-12.png",
+      "type": "diagram",
+      "caption": "Figure 14.12"
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_14-4.png",
+      "type": "equation",
+      "label": "14.4"
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_18.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_19.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_20.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_21.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_22.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_23.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_24.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_25.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_26.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_27.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_28.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_29.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_30.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_31.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_32.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_33.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_34.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_35.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_36.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_37.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_38.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_39.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_40.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_41.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_42.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_43.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_44.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_45.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_46.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_47.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_48.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_49.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_50.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_51.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_52.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_53.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_54.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_55.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_56.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_57.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_58.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_59.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_60.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_61.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_62.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_63.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_64.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_65.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_66.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_67.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_68.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_69.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_70.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_71.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_72.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_73.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-4-exact-inference-in-bayesian-networks_eq_74.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

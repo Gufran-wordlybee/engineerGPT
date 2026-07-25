@@ -1,0 +1,23 @@
+{
+  "section_id": "5-adversarial-search",
+  "title": "5 Adversarial Search",
+  "level": 2,
+  "chapter": "II: Problem-solving",
+  "parent_id": "ii-problem-solving",
+  "children": [
+    "5-1-games",
+    "5-2-optimal-decisions-in-games",
+    "5-3-alphabeta-pruning",
+    "5-4-imperfect-real-time-decisions",
+    "5-5-stochastic-games",
+    "5-6-partially-observable-games",
+    "5-7-state-of-the-art-game-programs",
+    "5-8-alternative-approaches",
+    "5-9-summary-bibliographical-and-historical-notes-exercises"
+  ],
+  "start_page": 179,
+  "end_page": 179,
+  "text": "5\nADVERSARIAL SEARCH\nIn which we examine the problems that arise when we try to plan ahead in a world\nwhere other agents are planning against us.\n5.1\nGAMES\nChapter 2 introduced multiagent environments, in which each agent needs to consider the\nactions of other agents and how they affect its own welfare. The unpredictability of these\nother agents can introduce contingencies into the agent’s problem-solving process, as dis-\ncussed in Chapter 4. In this chapter we cover competitive environments, in which the agents’\ngoals are in conﬂict, giving rise to adversarial search problems—often known as games.\nGAME\nMathematical game theory, a branch of economics, views any multiagent environment\nas a game, provided that the impact of each agent on the others is “signiﬁcant,” regardless\nof whether the agents are cooperative or competitive.1 In AI, the most common games are\nof a rather specialized kind—what game theorists call deterministic, turn-taking, two-player,\nzero-sum games of perfect information (such as chess). In our terminology, this means\nZERO-SUM GAMES\nPERFECT\nINFORMATION\ndeterministic, fully observable environments in which two agents act alternately and in which\nthe utility values at the end of the game are always equal and opposite. For example, if one\nplayer wins a game of chess, the other player necessarily loses. It is this opposition between\nthe agents’ utility functions that makes the situation adversarial.\nGames have engaged the intellectual faculties of humans—sometimes to an alarming\ndegree—for as long as civilization has existed. For AI researchers, the abstract nature of\ngames makes them an appealing subject for study. The state of a game is easy to represent,\nand agents are usually restricted to a small number of actions whose outcomes are deﬁned by\nprecise rules. Physical games, such as croquet and ice hockey, have much more complicated\ndescriptions, a much larger range of possible actions, and rather imprecise rules deﬁning\nthe legality of actions. With the exception of robot soccer, these physical games have not\nattracted much interest in the AI community.\n1 Environments with very many agents are often viewed as economies rather than games.\n161",
+  "images": [],
+  "equations": []
+}

@@ -1,0 +1,22 @@
+{
+  "section_id": "12-knowledge-representation",
+  "title": "12 Knowledge Representation",
+  "level": 2,
+  "chapter": "III: Knowledge, reasoning, and planning",
+  "parent_id": "iii-knowledge-reasoning-and-planning",
+  "children": [
+    "12-1-ontological-engineering",
+    "12-2-categories-and-objects",
+    "12-3-events",
+    "12-4-mental-events-and-mental-objects",
+    "12-5-reasoning-systems-for-categories",
+    "12-6-reasoning-with-default-information",
+    "12-7-the-internet-shopping-world",
+    "12-8-summary-bibliographical-and-historical-notes-exercises"
+  ],
+  "start_page": 455,
+  "end_page": 455,
+  "text": "12\nKNOWLEDGE\nREPRESENTATION\nIn which we show how to use ﬁrst-order logic to represent the most important\naspects of the real world, such as action, space, time, thoughts, and shopping.\nThe previous chapters described the technology for knowledge-based agents: the syntax,\nsemantics, and proof theory of propositional and ﬁrst-order logic, and the implementation of\nagents that use these logics. In this chapter we address the question of what content to put\ninto such an agent’s knowledge base—how to represent facts about the world.\nSection 12.1 introduces the idea of a general ontology, which organizes everything in\nthe world into a hierarchy of categories. Section 12.2 covers the basic categories of objects,\nsubstances, and measures; Section 12.3 covers events, and Section 12.4 discusses knowledge\nabout beliefs. We then return to consider the technology for reasoning with this content:\nSection 12.5 discusses reasoning systems designed for efﬁcient inference with categories,\nand Section 12.6 discusses reasoning with default information. Section 12.7 brings all the\nknowledge together in the context of an Internet shopping environment.\n12.1\nONTOLOGICAL ENGINEERING\nIn “toy” domains, the choice of representation is not that important; many choices will work.\nComplex domains such as shopping on the Internet or driving a car in trafﬁc require more\ngeneral and ﬂexible representations. This chapter shows how to create these representations,\nconcentrating on general concepts—such as Events, Time, Physical Objects, and Beliefs—\nthat occur in many different domains. Representing these abstract concepts is sometimes\ncalled ontological engineering.\nONTOLOGICAL\nENGINEERING\nThe prospect of representing everything in the world is daunting. Of course, we won’t\nactually write a complete description of everything—that would be far too much for even a\n1000-page textbook—but we will leave placeholders where new knowledge for any domain\ncan ﬁt in. For example, we will deﬁne what it means to be a physical object, and the details of\ndifferent types of objects—robots, televisions, books, or whatever—can be ﬁlled in later. This\nis analogous to the way that designers of an object-oriented programming framework (such as\nthe Java Swing graphical framework) deﬁne general concepts like Window, expecting users to\n437",
+  "images": [],
+  "equations": []
+}

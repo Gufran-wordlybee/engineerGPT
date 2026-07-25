@@ -1,0 +1,13 @@
+{
+  "section_id": "3-5-other-binary-codes",
+  "title": "3-5 Other Binary Codes",
+  "level": 2,
+  "chapter": "Data Representation",
+  "parent_id": "data-representation",
+  "children": [],
+  "start_page": 96,
+  "end_page": 96,
+  "text": "In previous sections we introduced the most common types of binary-coded data found in digital computers. Other binary codes for decimal numbers and alphanumeric characters are sometimes used. Digital computers also employ other binary codes for special applications. A few additional binary codes encountered in digital computers are presented in this section.",
+  "images": [],
+  "equations": []
+}

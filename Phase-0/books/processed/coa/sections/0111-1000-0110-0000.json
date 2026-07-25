@@ -1,0 +1,13 @@
+{
+  "section_id": "0111-1000-0110-0000",
+  "title": "0111 1000 0110 0000",
+  "level": 4,
+  "chapter": "Pipeline and Vector Processing",
+  "parent_id": "10-7-decimal-arithmetic-operations",
+  "children": [],
+  "start_page": 377,
+  "end_page": 377,
+  "text": "The microoperation dshr A shifts the decimal number one digit to the right to give 0786. This shift is over the four bits and changes the content of the register into",
+  "images": [],
+  "equations": []
+}

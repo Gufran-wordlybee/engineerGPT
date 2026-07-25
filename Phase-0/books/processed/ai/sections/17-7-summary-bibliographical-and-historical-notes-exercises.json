@@ -1,0 +1,179 @@
+{
+  "section_id": "17-7-summary-bibliographical-and-historical-notes-exercises",
+  "title": "17.7 Summary, Bibliographical and Historical Notes, Exercises",
+  "level": 3,
+  "chapter": "IV: Uncertain knowledge and reasoning",
+  "parent_id": "17-making-complex-decisions",
+  "children": [],
+  "start_page": 702,
+  "end_page": 710,
+  "text": "684\n17.\nMaking Complex Decisions\nIn this example, the VCG rule means that each winner would pay a tax equal to the highest\nreported value among the losers. That is, if I report my value as 5, and that causes someone\nwith value 2 to miss out on an allocation, then I pay a tax of 2. All winners should be happy\nbecause they pay a tax that is less than their value, and all losers are as happy as they can be,\nbecause they value the goods less than the required tax.\nWhy is it that this mechanism is truth-revealing? First, consider the payoff to agent i,\nwhich is the value of getting an item, minus the tax:\nvi(A) −(W−i −B−i) .\n(17.14)\nHere we distinguish the agent’s true utility, vi, from his reported utility bi (but we are trying\nto show that a dominant strategy is bi = vi). Agent i knows that the center will maximize\nglobal utility using the reported values,\n\n\nj\nbj(A) = bi(A) +\n\n\nj̸=i\nbj(A)\nwhereas agent i wants the center to maximize (17.14), which can be rewritten as\nvi(A) +\n\n\nj̸=i\nbj(A) −W−i .\nSince agent i cannot affect the value of W−i (it depends only on the other agents), the only\nway i can make the center optimize what i wants is to report the true utility, bi = vi.\n17.7\nSUMMARY\nThis chapter shows how to use knowledge about the world to make decisions even when the\noutcomes of an action are uncertain and the rewards for acting might not be reaped until many\nactions have passed. The main points are as follows:\n• Sequential decision problems in uncertain environments, also called Markov decision\nprocesses, or MDPs, are deﬁned by a transition model specifying the probabilistic\noutcomes of actions and a reward function specifying the reward in each state.\n• The utility of a state sequence is the sum of all the rewards over the sequence, possibly\ndiscounted over time. The solution of an MDP is a policy that associates a decision\nwith every state that the agent might reach. An optimal policy maximizes the utility of\nthe state sequences encountered when it is executed.\n• The utility of a state is the expected utility of the state sequences encountered when\nan optimal policy is executed, starting in that state. The value iteration algorithm for\nsolving MDPs works by iteratively solving the equations relating the utility of each state\nto those of its neighbors.\n• Policy iteration alternates between calculating the utilities of states under the current\npolicy and improving the current policy with respect to the current utilities.\n• Partially observable MDPs, or POMDPs, are much more difﬁcult to solve than are\nMDPs. They can be solved by conversion to an MDP in the continuous space of belief\nBibliographical and Historical Notes\n685\nstates; both value iteration and policy iteration algorithms have been devised. Optimal\nbehavior in POMDPs includes information gathering to reduce uncertainty and there-\nfore make better decisions in the future.\n• A decision-theoretic agent can be constructed for POMDP environments. The agent\nuses a dynamic decision network to represent the transition and sensor models, to\nupdate its belief state, and to project forward possible action sequences.\n• Game theory describes rational behavior for agents in situations in which multiple\nagents interact simultaneously. Solutions of games are Nash equilibria—strategy pro-\nﬁles in which no agent has an incentive to deviate from the speciﬁed strategy.\n• Mechanism design can be used to set the rules by which agents will interact, in order\nto maximize some global utility through the operation of individually rational agents.\nSometimes, mechanisms exist that achieve this goal without requiring each agent to\nconsider the choices made by other agents.\nWe shall return to the world of MDPs and POMDP in Chapter 21, when we study rein-\nforcement learning methods that allow an agent to improve its behavior from experience in\nsequential, uncertain environments.\nBIBLIOGRAPHICAL AND HISTORICAL NOTES\nRichard Bellman developed the ideas underlying the modern approach to sequential decision\nproblems while working at the RAND Corporation beginning in 1949. According to his au-\ntobiography (Bellman, 1984), he coined the exciting term “dynamic programming” to hide\nfrom a research-phobic Secretary of Defense, Charles Wilson, the fact that his group was\ndoing mathematics. (This cannot be strictly true, because his ﬁrst paper using the term (Bell-\nman, 1952) appeared before Wilson became Secretary of Defense in 1953.) Bellman’s book,\nDynamic Programming (1957), gave the new ﬁeld a solid foundation and introduced the basic\nalgorithmic approaches. Ron Howard’s Ph.D. thesis (1960) introduced policy iteration and\nthe idea of average reward for solving inﬁnite-horizon problems. Several additional results\nwere introduced by Bellman and Dreyfus (1962). Modiﬁed policy iteration is due to van\nNunen (1976) and Puterman and Shin (1978). Asynchronous policy iteration was analyzed\nby Williams and Baird (1993), who also proved the policy loss bound in Equation (17.9). The\nanalysis of discounting in terms of stationary preferences is due to Koopmans (1972). The\ntexts by Bertsekas (1987), Puterman (1994), and Bertsekas and Tsitsiklis (1996) provide a\nrigorous introduction to sequential decision problems. Papadimitriou and Tsitsiklis (1987)\ndescribe results on the computational complexity of MDPs.\nSeminal work by Sutton (1988) and Watkins (1989) on reinforcement learning methods\nfor solving MDPs played a signiﬁcant role in introducing MDPs into the AI community, as\ndid the later survey by Barto et al. (1995). (Earlier work by Werbos (1977) contained many\nsimilar ideas, but was not taken up to the same extent.) The connection between MDPs and\nAI planning problems was made ﬁrst by Sven Koenig (1991), who showed how probabilistic\nSTRIPS operators provide a compact representation for transition models (see also Wellman,\n686\n17.\nMaking Complex Decisions\n1990b). Work by Dean et al. (1993) and Tash and Russell (1994) attempted to overcome\nthe combinatorics of large state spaces by using a limited search horizon and abstract states.\nHeuristics based on the value of information can be used to select areas of the state space\nwhere a local expansion of the horizon will yield a signiﬁcant improvement in decision qual-\nity. Agents using this approach can tailor their effort to handle time pressure and generate\nsome interesting behaviors such as using familiar “beaten paths” to ﬁnd their way around the\nstate space quickly without having to recompute optimal decisions at each point.\nAs one might expect, AI researchers have pushed MDPs in the direction of more ex-\npressive representations that can accommodate much larger problems than the traditional\natomic representations based on transition matrices. The use of a dynamic Bayesian network\nto represent transition models was an obvious idea, but work on factored MDPs (Boutilier\nFACTORED MDP\net al., 2000; Koller and Parr, 2000; Guestrin et al., 2003b) extends the idea to structured\nrepresentations of the value function with provable improvements in complexity. Relational\nMDPs (Boutilier et al., 2001; Guestrin et al., 2003a) go one step further, using structured\nRELATIONAL MDP\nrepresentations to handle domains with many related objects.\nThe observation that a partially observable MDP can be transformed into a regular MDP\nover belief states is due to Astrom (1965) and Aoki (1965). The ﬁrst complete algorithm for\nthe exact solution of POMDPs—essentially the value iteration algorithm presented in this\nchapter—was proposed by Edward Sondik (1971) in his Ph.D. thesis. (A later journal paper\nby Smallwood and Sondik (1973) contains some errors, but is more accessible.) Lovejoy\n(1991) surveyed the ﬁrst twenty-ﬁve years of POMDP research, reaching somewhat pes-\nsimistic conclusions about the feasibility of solving large problems. The ﬁrst signiﬁcant\ncontribution within AI was the Witness algorithm (Cassandra et al., 1994; Kaelbling et al.,\n1998), an improved version of POMDP value iteration. Other algorithms soon followed, in-\ncluding an approach due to Hansen (1998) that constructs a policy incrementally in the form\nof a ﬁnite-state automaton. In this policy representation, the belief state corresponds directly\nto a particular state in the automaton. More recent work in AI has focused on point-based\nvalue iteration methods that, at each iteration, generate conditional plans and α-vectors for\na ﬁnite set of belief states rather than for the entire belief space. Lovejoy (1991) proposed\nsuch an algorithm for a ﬁxed grid of points, an approach taken also by Bonet (2002). An\ninﬂuential paper by Pineau et al. (2003) suggested generating reachable points by simulat-\ning trajectories in a somewhat greedy fashion; Spaan and Vlassis (2005) observe that one\nneed generate plans for only a small, randomly selected subset of points to improve on the\nplans from the previous iteration for all points in the set. Current point-based methods—\nsuch as point-based policy iteration (Ji et al., 2007)—can generate near-optimal solutions for\nPOMDPs with thousands of states. Because POMDPs are PSPACE-hard (Papadimitriou and\nTsitsiklis, 1987), further progress may require taking advantage of various kinds of structure\nwithin a factored representation.\nThe online approach—using look-ahead search to select an action for the current belief\nstate—was ﬁrst examined by Satia and Lave (1973). The use of sampling at chance nodes\nwas explored analytically by Kearns et al. (2000) and Ng and Jordan (2000). The basic\nideas for an agent architecture using dynamic decision networks were proposed by Dean\nand Kanazawa (1989a). The book Planning and Control by Dean and Wellman (1991) goes\nBibliographical and Historical Notes\n687\ninto much greater depth, making connections between DBN/DDN models and the classical\ncontrol literature on ﬁltering. Tatman and Shachter (1990) showed how to apply dynamic\nprogramming algorithms to DDN models. Russell (1998) explains various ways in which\nsuch agents can be scaled up and identiﬁes a number of open research issues.\nThe roots of game theory can be traced back to proposals made in the 17th century\nby Christiaan Huygens and Gottfried Leibniz to study competitive and cooperative human\ninteractions scientiﬁcally and mathematically. Throughout the 19th century, several leading\neconomists created simple mathematical examples to analyze particular examples of com-\npetitive situations. The ﬁrst formal results in game theory are due to Zermelo (1913) (who\nhad, the year before, suggested a form of minimax search for games, albeit an incorrect one).\nEmile Borel (1921) introduced the notion of a mixed strategy. John von Neumann (1928)\nproved that every two-person, zero-sum game has a maximin equilibrium in mixed strategies\nand a well-deﬁned value. Von Neumann’s collaboration with the economist Oskar Morgen-\nstern led to the publication in 1944 of the Theory of Games and Economic Behavior, the\ndeﬁning book for game theory. Publication of the book was delayed by the wartime paper\nshortage until a member of the Rockefeller family personally subsidized its publication.\nIn 1950, at the age of 21, John Nash published his ideas concerning equilibria in general\n(non-zero-sum) games. His deﬁnition of an equilibrium solution, although originating in the\nwork of Cournot (1838), became known as Nash equilibrium. After a long delay because\nof the schizophrenia he suffered from 1959 onward, Nash was awarded the Nobel Memorial\nPrize in Economics (along with Reinhart Selten and John Harsanyi) in 1994. The Bayes–Nash\nequilibrium is described by Harsanyi (1967) and discussed by Kadane and Larkey (1982).\nSome issues in the use of game theory for agent control are covered by Binmore (1982).\nThe prisoner’s dilemma was invented as a classroom exercise by Albert W. Tucker in\n1950 (based on an example by Merrill Flood and Melvin Dresher) and is covered extensively\nby Axelrod (1985) and Poundstone (1993). Repeated games were introduced by Luce and\nRaiffa (1957), and games of partial information in extensive form by Kuhn (1953). The ﬁrst\npractical algorithm for sequential, partial-information games was developed within AI by\nKoller et al. (1996); the paper by Koller and Pfeffer (1997) provides a readable introduction\nto the ﬁeld and describe a working system for representing and solving sequential games.\nThe use of abstraction to reduce a game tree to a size that can be solved with Koller’s\ntechnique is discussed by Billings et al. (2003). Bowling et al. (2008) show how to use\nimportance sampling to get a better estimate of the value of a strategy. Waugh et al. (2009)\nshow that the abstraction approach is vulnerable to making systematic errors in approximating\nthe equilibrium solution, meaning that the whole approach is on shaky ground: it works for\nsome games but not others. Korb et al. (1999) experiment with an opponent model in the\nform of a Bayesian network. It plays ﬁve-card stud about as well as experienced humans.\n(Zinkevich et al., 2008) show how an approach that minimizes regret can ﬁnd approximate\nequilibria for abstractions with 1012 states, 100 times more than previous methods.\nGame theory and MDPs are combined in the theory of Markov games, also called\nstochastic games (Littman, 1994; Hu and Wellman, 1998). Shapley (1953) actually described\nthe value iteration algorithm independently of Bellman, but his results were not widely ap-\npreciated, perhaps because they were presented in the context of Markov games. Evolu-\n688\n17.\nMaking Complex Decisions\ntionary game theory (Smith, 1982; Weibull, 1995) looks at strategy drift over time: if your\nopponent’s strategy is changing, how should you react? Textbooks on game theory from\nan economics point of view include those by Myerson (1991), Fudenberg and Tirole (1991),\nOsborne (2004), and Osborne and Rubinstein (1994); Mailath and Samuelson (2006) concen-\ntrate on repeated games. From an AI perspective we have Nisan et al. (2007), Leyton-Brown\nand Shoham (2008), and Shoham and Leyton-Brown (2009).\nThe 2007 Nobel Memorial Prize in Economics went to Hurwicz, Maskin, and Myerson\n“for having laid the foundations of mechanism design theory” (Hurwicz, 1973). The tragedy\nof the commons, a motivating problem for the ﬁeld, was presented by Hardin (1968). The rev-\nelation principle is due to Myerson (1986), and the revenue equivalence theorem was devel-\noped independently by Myerson (1981) and Riley and Samuelson (1981). Two economists,\nMilgrom (1997) and Klemperer (2002), write about the multibillion-dollar spectrum auctions\nthey were involved in.\nMechanism design is used in multiagent planning (Hunsberger and Grosz, 2000; Stone\net al., 2009) and scheduling (Rassenti et al., 1982). Varian (1995) gives a brief overview with\nconnections to the computer science literature, and Rosenschein and Zlotkin (1994) present a\nbook-length treatment with applications to distributed AI. Related work on distributed AI also\ngoes under other names, including collective intelligence (Tumer and Wolpert, 2000; Segaran,\n2007) and market-based control (Clearwater, 1996). Since 2001 there has been an annual\nTrading Agents Competition (TAC), in which agents try to make the best proﬁt on a series\nof auctions (Wellman et al., 2001; Arunachalam and Sadeh, 2005). Papers on computational\nissues in auctions often appear in the ACM Conferences on Electronic Commerce.\nEXERCISES\n17.1\nFor the 4 × 3 world shown in Figure 17.1, calculate which squares can be reached\nfrom (1,1) by the action sequence [Up, Up, Right, Right, Right] and with what probabilities.\nExplain how this computation is related to the prediction task (see Section 15.2.1) for a hidden\nMarkov model.\n17.2\nSelect a speciﬁc member of the set of policies that are optimal for R(s) > 0 as shown\nin Figure 17.2(b), and calculate the fraction of time the agent spends in each state, in the limit,\nif the policy is executed forever. (Hint: Construct the state-to-state transition probability\nmatrix corresponding to the policy and see Exercise 15.2.)\n17.3\nSuppose that we deﬁne the utility of a state sequence to be the maximum reward ob-\ntained in any state in the sequence. Show that this utility function does not result in stationary\npreferences between state sequences. Is it still possible to deﬁne a utility function on states\nsuch that MEU decision making gives optimal behavior?\n17.4\nSometimes MDPs are formulated with a reward function R(s, a) that depends on the\naction taken or with a reward function R(s, a, s′) that also depends on the outcome state.\na. Write the Bellman equations for these formulations.\nExercises\n689\nb. Show how an MDP with reward function R(s, a, s′) can be transformed into a different\nMDP with reward function R(s, a), such that optimal policies in the new MDP corre-\nspond exactly to optimal policies in the original MDP.\nc. Now do the same to convert MDPs with R(s, a) into MDPs with R(s).\n17.5\nFor the environment shown in Figure 17.1, ﬁnd all the threshold values for R(s) such\nthat the optimal policy changes when the threshold is crossed. You will need a way to calcu-\nlate the optimal policy and its value for ﬁxed R(s). (Hint: Prove that the value of any ﬁxed\npolicy varies linearly with R(s).)\n17.6\nEquation (17.7) on page 654 states that the Bellman operator is a contraction.\na. Show that, for any functions f and g,\n| max\na\nf(a) −max\na\ng(a)| ≤max\na\n|f(a) −g(a)| .\nb. Write out an expression for |(B Ui −B U′\ni)(s)| and then apply the result from (a) to\ncomplete the proof that the Bellman operator is a contraction.\n17.7\nThis exercise considers two-player MDPs that correspond to zero-sum, turn-taking\ngames like those in Chapter 5. Let the players be A and B, and let R(s) be the reward for\nplayer A in state s. (The reward for B is always equal and opposite.)\na. Let UA(s) be the utility of state s when it is A’s turn to move in s, and let UB(s) be the\nutility of state s when it is B’s turn to move in s. All rewards and utilities are calculated\nfrom A’s point of view (just as in a minimax game tree). Write down Bellman equations\ndeﬁning UA(s) and UB(s).\nb. Explain how to do two-player value iteration with these equations, and deﬁne a suitable\ntermination criterion.\nc. Consider the game described in Figure 5.17 on page 197. Draw the state space (rather\nthan the game tree), showing the moves by A as solid lines and moves by B as dashed\nlines. Mark each state with R(s). You will ﬁnd it helpful to arrange the states (sA, sB)\non a two-dimensional grid, using sA and sB as “coordinates.”\nd. Now apply two-player value iteration to solve this game, and derive the optimal policy.\n17.8\nConsider the 3 × 3 world shown in Figure 17.14(a). The transition model is the same\nas in the 4 × 3 Figure 17.1: 80% of the time the agent goes in the direction it selects; the rest\nof the time it moves at right angles to the intended direction.\nImplement value iteration for this world for each value of r below. Use discounted\nrewards with a discount factor of 0.99. Show the policy obtained in each case. Explain\nintuitively why the value of r leads to each policy.\na. r = 100\nb. r = −3\nc. r = 0\nd. r = +3\n690\n17.\nMaking Complex Decisions\n-50\n+1\n+1\n+1\n+1\n+1\n+1\n+1\n+50\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n· · ·\n· · ·\n· · ·\nStart\nr\n-1\n-1\n-1\n+10\n-1\n-1\n-1\n-1\n(a)\n(b)\nFigure 17.14\n(a) 3 × 3 world for Exercise 17.8. The reward for each state is indicated.\nThe upper right square is a terminal state. (b) 101 ×3 world for Exercise 17.9 (omitting 93\nidentical columns in the middle). The start state has reward 0.\n17.9\nConsider the 101 × 3 world shown in Figure 17.14(b). In the start state the agent has\na choice of two deterministic actions, Up or Down, but in the other states the agent has one\ndeterministic action, Right. Assuming a discounted reward function, for what values of the\ndiscount γ should the agent choose Up and for which Down? Compute the utility of each\naction as a function of γ. (Note that this simple example actually reﬂects many real-world\nsituations in which one must weigh the value of an immediate action versus the potential\ncontinual long-term consequences, such as choosing to dump pollutants into a lake.)\n17.10\nConsider an undiscounted MDP having three states, (1, 2, 3), with rewards −1, −2,\n0, respectively. State 3 is a terminal state. In states 1 and 2 there are two possible actions: a\nand b. The transition model is as follows:\n• In state 1, action a moves the agent to state 2 with probability 0.8 and makes the agent\nstay put with probability 0.2.\n• In state 2, action a moves the agent to state 1 with probability 0.8 and makes the agent\nstay put with probability 0.2.\n• In either state 1 or state 2, action b moves the agent to state 3 with probability 0.1 and\nmakes the agent stay put with probability 0.9.\nAnswer the following questions:\na. What can be determined qualitatively about the optimal policy in states 1 and 2?\nb. Apply policy iteration, showing each step in full, to determine the optimal policy and\nthe values of states 1 and 2. Assume that the initial policy has action b in both states.\nc. What happens to policy iteration if the initial policy has action a in both states? Does\ndiscounting help? Does the optimal policy depend on the discount factor?\n17.11\nConsider the 4 × 3 world shown in Figure 17.1.\na. Implement an environment simulator for this environment, such that the speciﬁc geog-\nraphy of the environment is easily altered. Some code for doing this is already in the\nonline code repository.\nExercises\n691\nb. Create an agent that uses policy iteration, and measure its performance in the environ-\nment simulator from various starting states. Perform several experiments from each\nstarting state, and compare the average total reward received per run with the utility of\nthe state, as determined by your algorithm.\nc. Experiment with increasing the size of the environment. How does the run time for\npolicy iteration vary with the size of the environment?\n17.12\nHow can the value determination algorithm be used to calculate the expected loss\nexperienced by an agent using a given set of utility estimates U and an estimated model P,\ncompared with an agent using correct values?\n17.13\nLet the initial belief state b0 for the 4 × 3 POMDP on page 658 be the uniform dis-\ntribution over the nonterminal states, i.e., ⟨1\n9, 1\n9, 1\n9, 1\n9, 1\n9, 1\n9, 1\n9, 1\n9, 1\n9, 0, 0⟩. Calculate the exact\nbelief state b1 after the agent moves Left and its sensor reports 1 adjacent wall. Also calculate\nb2 assuming that the same thing happens again.\n17.14\nWhat is the time complexity of d steps of POMDP value iteration for a sensorless\nenvironment?\n17.15\nConsider a version of the two-state POMDP on page 661 in which the sensor is\n90% reliable in state 0 but provides no information in state 1 (that is, it reports 0 or 1 with\nequal probability). Analyze, either qualitatively or quantitatively, the utility function and the\noptimal policy for this problem.\n17.16\nShow that a dominant strategy equilibrium is a Nash equilibrium, but not vice versa.\n17.17\nIn the children’s game of rock–paper–scissors each player reveals at the same time\na choice of rock, paper, or scissors. Paper wraps rock, rock blunts scissors, and scissors cut\npaper. In the extended version rock–paper–scissors–ﬁre–water, ﬁre beats rock, paper, and\nscissors; rock, paper, and scissors beat water; and water beats ﬁre. Write out the payoff\nmatrix and ﬁnd a mixed-strategy solution to this game.\n17.18\nThe following payoff matrix, from Blinder (1983) by way of Bernstein (1996), shows\na game between politicians and the Federal Reserve.\nFed: contract Fed: do nothing\nFed: expand\nPol: contract\nF = 7, P = 1\nF = 9, P = 4\nF = 6, P = 6\nPol: do nothing F = 8, P = 2\nF = 5, P = 5\nF = 4, P = 9\nPol: expand\nF = 3, P = 3\nF = 2, P = 7\nF = 1, P = 8\nPoliticians can expand or contract ﬁscal policy, while the Fed can expand or contract mon-\netary policy. (And of course either side can choose to do nothing.) Each side also has pref-\nerences for who should do what—neither side wants to look like the bad guys. The payoffs\nshown are simply the rank orderings: 9 for ﬁrst choice through 1 for last choice. Find the\nNash equilibrium of the game in pure strategies. Is this a Pareto-optimal solution? You might\nwish to analyze the policies of recent administrations in this light.\n692\n17.\nMaking Complex Decisions\n17.19\nA Dutch auction is similar in an English auction, but rather than starting the bidding\nat a low price and increasing, in a Dutch auction the seller starts at a high price and gradually\nlowers the price until some buyer is willing to accept that price. (If multiple bidders accept\nthe price, one is arbitrarily chosen as the winner.) More formally, the seller begins with a\nprice p and gradually lowers p by increments of d until at least one buyer accepts the price.\nAssuming all bidders act rationally, is it true that for arbitrarily small d, a Dutch auction will\nalways result in the bidder with the highest value for the item obtaining the item? If so, show\nmathematically why. If not, explain how it may be possible for the bidder with highest value\nfor the item not to obtain it.\n17.20\nImagine an auction mechanism that is just like an ascending-bid auction, except that\nat the end, the winning bidder, the one who bid bmax, pays only bmax/2 rather than bmax.\nAssuming all agents are rational, what is the expected revenue to the auctioneer for this\nmechanism, compared with a standard ascending-bid auction?\n17.21\nTeams in the National Hockey League historically received 2 points for winning a\ngame and 0 for losing. If the game is tied, an overtime period is played; if nobody wins in\novertime, the game is a tie and each team gets 1 point. But league ofﬁcials felt that teams\nwere playing too conservatively in overtime (to avoid a loss), and it would be more exciting\nif overtime produced a winner. So in 1999 the ofﬁcials experimented in mechanism design:\nthe rules were changed, giving a team that loses in overtime 1 point, not 0. It is still 2 points\nfor a win and 1 for a tie.\na. Was hockey a zero-sum game before the rule change? After?\nb. Suppose that at a certain time t in a game, the home team has probability p of winning\nin regulation time, probability 0.78 −p of losing, and probability 0.22 of going into\novertime, where they have probability q of winning, .9 −q of losing, and .1 of tying.\nGive equations for the expected value for the home and visiting teams.\nc. Imagine that it were legal and ethical for the two teams to enter into a pact where they\nagree that they will skate to a tie in regulation time, and then both try in earnest to win\nin overtime. Under what conditions, in terms of p and q, would it be rational for both\nteams to agree to this pact?\nd. Longley and Sankaran (2005) report that since the rule change, the percentage of games\nwith a winner in overtime went up 18.2%, as desired, but the percentage of overtime\ngames also went up 3.6%. What does that suggest about possible collusion or conser-\nvative play after the rule change?",
+  "images": [],
+  "equations": [
+    {
+      "path": "images/17-7-summary-bibliographical-and-historical-notes-exercises_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-7-summary-bibliographical-and-historical-notes-exercises_eq_17-14.png",
+      "type": "equation",
+      "label": "17.14"
+    },
+    {
+      "path": "images/17-7-summary-bibliographical-and-historical-notes-exercises_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-7-summary-bibliographical-and-historical-notes-exercises_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-7-summary-bibliographical-and-historical-notes-exercises_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-7-summary-bibliographical-and-historical-notes-exercises_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-7-summary-bibliographical-and-historical-notes-exercises_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-7-summary-bibliographical-and-historical-notes-exercises_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-7-summary-bibliographical-and-historical-notes-exercises_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-7-summary-bibliographical-and-historical-notes-exercises_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-7-summary-bibliographical-and-historical-notes-exercises_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-7-summary-bibliographical-and-historical-notes-exercises_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-7-summary-bibliographical-and-historical-notes-exercises_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-7-summary-bibliographical-and-historical-notes-exercises_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-7-summary-bibliographical-and-historical-notes-exercises_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-7-summary-bibliographical-and-historical-notes-exercises_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-7-summary-bibliographical-and-historical-notes-exercises_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-7-summary-bibliographical-and-historical-notes-exercises_eq_18.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-7-summary-bibliographical-and-historical-notes-exercises_eq_19.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-7-summary-bibliographical-and-historical-notes-exercises_eq_20.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-7-summary-bibliographical-and-historical-notes-exercises_eq_21.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-7-summary-bibliographical-and-historical-notes-exercises_eq_22.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-7-summary-bibliographical-and-historical-notes-exercises_eq_23.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-7-summary-bibliographical-and-historical-notes-exercises_eq_24.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-7-summary-bibliographical-and-historical-notes-exercises_eq_25.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-7-summary-bibliographical-and-historical-notes-exercises_eq_26.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-7-summary-bibliographical-and-historical-notes-exercises_eq_27.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-7-summary-bibliographical-and-historical-notes-exercises_eq_28.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-7-summary-bibliographical-and-historical-notes-exercises_eq_29.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-7-summary-bibliographical-and-historical-notes-exercises_eq_30.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-7-summary-bibliographical-and-historical-notes-exercises_eq_31.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-7-summary-bibliographical-and-historical-notes-exercises_eq_32.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-7-summary-bibliographical-and-historical-notes-exercises_eq_33.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "section_id": "references-4",
+  "title": "REFERENCES",
+  "level": 4,
+  "chapter": "5-10 Design of Accumulator Logic",
+  "parent_id": "adder-and-logic-circuit",
+  "children": [],
+  "start_page": 181,
+  "end_page": 182,
+  "text": "Bell, C. G., J. C. Mudge, and J. E. McNamara, Computer Engineering. Bedford, MA: Digital Press, 1980.\nBooth, T. L., Introduction to Computer Engineering, 3rd ed. New York: John Wiley, 1984.\nGibson, G. A., Computer Systems Concepts and Design. Englewood Cliffs, NJ: Prentice Hall, 1991.\nGray, N. A. B., Introduction to Computer Systems. Englewood Cliffs, NJ: Prentice Hall. 1987.\nHill, F. J., and G. R. Peterson, Digital Systems: Hardware Organization and Design, 3rd ed. New York: John Wiley, 1987.\nLewin, M. H. Logic Design and Computer Organization. Reading, MA: Addison-Wesley, 1983.\nMano, M. M., Computer Engineering: Hardware Design. Englewood Cliffs, NJ: Prentice Hall, 1988.\nPatterson, D. A. and J. L. Hennessy, Computer Architecture: A Quantitative Approach. San Mateo, CA: Morgan Kaufmann Publishers, 1990.\nProsser, F. P., and D. E. Winkel, The Art of Digital Design, 2nd ed. Englewood Cliffs, NJ: Prentice Hall, 1987.\nShiva, S. G., Computer Design and Architecture, 2nd ed. New York: HarperCollins Publishers, 1991.",
+  "images": [],
+  "equations": []
+}

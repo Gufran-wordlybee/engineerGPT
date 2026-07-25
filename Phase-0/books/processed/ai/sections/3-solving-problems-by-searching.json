@@ -1,0 +1,21 @@
+{
+  "section_id": "3-solving-problems-by-searching",
+  "title": "3 Solving Problems by Searching",
+  "level": 2,
+  "chapter": "II: Problem-solving",
+  "parent_id": "ii-problem-solving",
+  "children": [
+    "3-1-problem-solving-agents",
+    "3-2-example-problems",
+    "3-3-searching-for-solutions",
+    "3-4-uninformed-search-strategies",
+    "3-5-informed-heuristic-search-strategies",
+    "3-6-heuristic-functions",
+    "3-7-summary-bibliographical-and-historical-notes-exercises"
+  ],
+  "start_page": 82,
+  "end_page": 82,
+  "text": "3\nSOLVING PROBLEMS BY\nSEARCHING\nIn which we see how an agent can ﬁnd a sequence of actions that achieves its\ngoals when no single action will do.\nThe simplest agents discussed in Chapter 2 were the reﬂex agents, which base their actions on\na direct mapping from states to actions. Such agents cannot operate well in environments for\nwhich this mapping would be too large to store and would take too long to learn. Goal-based\nagents, on the other hand, consider future actions and the desirability of their outcomes.\nThis chapter describes one kind of goal-based agent called a problem-solving agent.\nPROBLEM-SOLVING\nAGENT\nProblem-solving agents use atomic representations, as described in Section 2.4.7—that is,\nstates of the world are considered as wholes, with no internal structure visible to the problem-\nsolving algorithms. Goal-based agents that use more advanced factored or structured rep-\nresentations are usually called planning agents and are discussed in Chapters 7 and 10.\nOur discussion of problem solving begins with precise deﬁnitions of problems and their\nsolutions and give several examples to illustrate these deﬁnitions. We then describe several\ngeneral-purpose search algorithms that can be used to solve these problems. We will see\nseveral uninformed search algorithms—algorithms that are given no information about the\nproblem other than its deﬁnition. Although some of these algorithms can solve any solvable\nproblem, none of them can do so efﬁciently. Informed search algorithms, on the other hand,\ncan do quite well given some guidance on where to look for solutions.\nIn this chapter, we limit ourselves to the simplest kind of task environment, for which\nthe solution to a problem is always a ﬁxed sequence of actions. The more general case—where\nthe agent’s future actions may vary depending on future percepts—is handled in Chapter 4.\nThis chapter uses the concepts of asymptotic complexity (that is, O() notation) and\nNP-completeness. Readers unfamiliar with these concepts should consult Appendix A.\n3.1\nPROBLEM-SOLVING AGENTS\nIntelligent agents are supposed to maximize their performance measure. As we mentioned\nin Chapter 2, achieving this is sometimes simpliﬁed if the agent can adopt a goal and aim at\nsatisfying it. Let us ﬁrst look at why and how an agent might do this.\n64",
+  "images": [],
+  "equations": []
+}

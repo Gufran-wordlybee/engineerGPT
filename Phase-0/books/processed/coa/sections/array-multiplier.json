@@ -1,0 +1,24 @@
+{
+  "section_id": "array-multiplier",
+  "title": "Array Multiplier",
+  "level": 2,
+  "chapter": "Pipeline and Vector Processing",
+  "parent_id": "pipeline-and-vector-processing",
+  "children": [],
+  "start_page": 353,
+  "end_page": 355,
+  "text": "Checking the bits of the multiplier one at a time and forming partial products is a sequential operation that requires a sequence of add and shift microoperations. The multiplication of two binary numbers can be done with one microoperation by means of a combinational circuit that forms the product bits all\n\n[Table]\nQ_n Q_{n+1}\\frac{BR}{\\overline{BR}} = 10111\\overline{BR} + 1 = 01001ACQRQ_{n+1}SCInitial000001001101011 0Subtract BR0100101001ashr001001100111001 1ashr000100110010110 1Add BR1011111001ashr111001011000100 0ashr111100101100011 0Subtract BR0100100111ashr00011101011000\n\nTABLE 10-3 Example of Multiplication with Booth Algorithm\nat once. This is a fast way of multiplying two numbers since all it takes is the time for the signals to propagate through the gates that form the multiplication array. However, an array multiplier requires a large number of gates, and for this reason it was not economical until the development of integrated circuits.\nTo see how an array multiplier can be implemented with a combinational circuit, consider the multiplication of two 2-bit numbers as shown in Fig. 10-9. The multiplicand bits are b_1 and b_0, the multiplier bits are a_1 and a_0, and the product is c_3c_2c_1c_0. The first partial product is formed by multiplying a_0 by b_1 b_0. The multiplication of two bits such as a_0 and b_0 produces a 1 if both bits are 1; otherwise, it produces a 0. This is identical to an AND operation and can be implemented with an AND gate. As shown in the diagram, the first partial product is formed by means of two AND gates. The second partial product is formed by multiplying a_1 by b_1 b_0 and is shifted one position to the left. The two partial products are added with two half-adder (HA) circuits. Usually, there are more bits in the partial products and it will be necessary to use full-adders to produce the sum. Note that the least significant bit of the product does not have to go through an adder since it is formed by the output of the first AND gate.\nA combinational circuit binary multiplier with more bits can be constructed in a similar fashion. A bit of the multiplier is ANDed with each bit of the multiplicand in as many levels as there are bits in the multiplier. The binary output in each level of AND gates is added in parallel with the partial product of the previous level to form a new partial product. The last level produces the product. For j multiplier bits and k multiplicand bits we need j \\times k AND gates and (j-1) k-bit adders to produce a product of j+k bits.\nAs a second example, consider a multiplier circuit that multiplies a binary number of four bits with a number of three bits. Let the multiplicand be\nFigure 10-9 2-bit by 2-bit array multiplier.\nFigure 10-10 4-bit by 3-bit array multiplier.\nrepresented by b_3b_2b_1b_0 and the multiplier by a_2a_1a_0. Since k=4 and j=3, we need 12 AND gates and two 4-bit adders to produce a product of seven bits. The logic diagram of the multiplier is shown in Fig. 10-10.",
+  "images": [
+    {
+      "path": "images/array-multiplier_img_1.png",
+      "type": "figure",
+      "caption": null
+    },
+    {
+      "path": "images/array-multiplier_img_2.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

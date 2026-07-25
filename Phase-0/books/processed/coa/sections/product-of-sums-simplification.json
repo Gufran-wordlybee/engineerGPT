@@ -1,0 +1,26 @@
+{
+  "section_id": "product-of-sums-simplification",
+  "title": "Product-of-Sums Simplification",
+  "level": 2,
+  "chapter": "Contents",
+  "parent_id": "contents",
+  "children": [
+    "dont-care-conditions"
+  ],
+  "start_page": 29,
+  "end_page": 31,
+  "text": "The Boolean expressions derived from the maps in the preceding examples were expressed in sum-of-products form. The product terms are AND terms and the sum denotes the ORing of these terms. It is sometimes convenient to obtain the algebraic expression for the function in a product-of-sums form. The\nFigure 1-10 Map for F(A, B, C, D) = \\Sigma (0.1, 2, 6, 8, 9, 10).\nsums are OR terms and the product denotes the ANDing of these terms. With a minor modification, a product-of-sums form can be obtained from a map.\nThe procedure for obtaining a product-of-sums expression follows from the basic properties of Boolean algebra. The 1's in the map represent the minterms that produce 1 for the function. The squares not marked by 1 represent the minterms that produce 0 for the function. If we mark the empty squares with 0's and combine them into groups of adjacent squares, we obtain the complement of the function, F'. Taking the complement of F' produces an expression for F in product-of-sums form. The best way to show this is by example.\nWe wish to simplify the following Boolean function in both sum-ofproducts form and product-of-sums form:\nF(A, B, C, D) = \\sum_{i=1}^{n} (0, 1, 2, 5, 8, 9, 10)\nThe 1's marked in the map of Fig. 1-11 represent the minterms that produce a 1 for the function. The squares marked with 0's represent the minterms not included in F and therefore denote the complement of F. Combining the squares with 1's gives the simplified function in sum-of-products forms\nF = B'D' + B'C' + A'C'D\nIf the squares marked with 0's are combined, as shown in the diagram, we obtain the simplified complemented function:\nF' = AB + CD + BD'\nTaking the complement of F', we obtain the simplified function in product-ofsums form:\nF = (A' + B')(C' + D')(B' + D)\nFigure 1-11 Map for F(A, B, C, D) = \\Sigma (0,1,2,5,8,9,10).\nThe logic diagrams of the two simplified expressions are shown in Fig. 1-12. The sum-of-products expression is implemented in Fig. 1-12(a) with a group of AND gates, one for each AND term. The outputs of the AND gates are connected to the inputs of a single OR gate. The same function is implemented in Fig. 1-12(b) in product-of-sums form with a group of OR gates, one for each OR term. The outputs of the OR gates are connected to the inputs of a single AND gate. In each case it is assumed that the input variables are directly available in their complement, so inverters are not included. The pattern established in Fig. 1-12 is the general form by which any Boolean function is implemented when expressed in one of the standard forms. AND gates are connected to a single OR gate when in sum-of-products form. OR gates are connected to a single AND gate when in product-of-sums form.\nNAND implementation\nNOR implementation\nA sum-of-products expression can be implemented with NAND gates as shown in Fig. 1-13(a). Note that the second NAND gate is drawn with the graphic symbol of Fig. 1-5(b). There are three lines in the diagram with small circles at both ends. Two circles in the same line designate double complementation, and since (x')' = x, the two circles can be removed and the resulting diagram is equivalent to the one shown in Fig. 1-12(a). Similarly, a product-of-sums expression can be implemented with NOR gates as shown in Fig. 1-13(b). The second NOR gate is drawn with the graphic symbol of Fig. 1-4(b). Again the two circles on both sides of each line may be removed, and the diagram so obtained is equivalent to the one shown in Fig. 1-12(b).",
+  "images": [
+    {
+      "path": "images/product-of-sums-simplification_img_1.png",
+      "type": "figure",
+      "caption": null
+    },
+    {
+      "path": "images/product-of-sums-simplification_img_2.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

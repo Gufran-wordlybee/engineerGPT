@@ -1,0 +1,19 @@
+{
+  "section_id": "sr-flip-flop",
+  "title": "SR Flip-Flop",
+  "level": 2,
+  "chapter": "Contents",
+  "parent_id": "contents",
+  "children": [],
+  "start_page": 37,
+  "end_page": 38,
+  "text": "The graphic symbol of the SR flip-flop is shown in Fig. 1-19(a). It has three inputs, labeled S (for set), R (for reset), and C (for clock). It has an output Q and sometimes the flip-flop has a complemented output, which is indicated with a small circle at the other output terminal. There is an arrowhead-shaped symbol in front of the letter C to designate a dynamic input. The dynamic\nFigure 1-19 SR flip-flop.\nindicator symbol denotes the fact that the flip-flop responds to a positive transition (from 0 to 1) of the input clock signal.\nThe operation of the SR flip-flop is as follows. If there is no signal at the clock input C, the output of the circuit cannot change irrespective of the values at inputs S and R. Only when the clock signal changes from 0 to 1 can the output be affected according to the values in inputs S and R. If S=1 and R=0 when C changes from 0 to 1, output Q is set to 1. If S=0 and S=1 when S=0 changes from 0 to 1, output S=0 is cleared to 0. If both S=0 and S=0 during the clock transition, the output does not change. When both S=0 and S=0 are equal to 1, the output is unpredictable and may go to either 0 or 1, depending on internal timing delays that occur within the circuit.\nThe characteristic table shown in Fig. 1-19(b) summarizes the operation of the SR flip-flop in tabular form. The S and R columns give the binary values of the two inputs. Q(t) is the binary state of the Q output at a given time (referred to as present state). Q(t+1) is the binary state of the Q output after the occurrence of a clock transition (referred to as next state). If S=R=0, a clock transition produces no change of state [i.e., Q(t+1)=Q(t)]. If S=0 and R=1, the flip-flop goes to the 0 (clear) state. If S=1 and S=10, the flip-flop goes to the 1 (set) state. The SR flip-flop should not be pulsed when S=R=1 since it produces an indeterminate next state. This indeterminate condition makes the SR flip-flop difficult to manage and therefore it is seldom used in practice.",
+  "images": [
+    {
+      "path": "images/sr-flip-flop_img_1.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

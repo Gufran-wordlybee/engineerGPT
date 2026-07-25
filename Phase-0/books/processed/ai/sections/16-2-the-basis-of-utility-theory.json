@@ -1,0 +1,130 @@
+{
+  "section_id": "16-2-the-basis-of-utility-theory",
+  "title": "16.2 The Basis of Utility Theory",
+  "level": 3,
+  "chapter": "IV: Uncertain knowledge and reasoning",
+  "parent_id": "16-making-simple-decisions",
+  "children": [],
+  "start_page": 629,
+  "end_page": 632,
+  "text": "Section 16.2.\nThe Basis of Utility Theory\n611\nwhere the a on the right-hand side of the conditioning bar stands for the event that action a is\nexecuted.1\nThe agent’s preferences are captured by a utility function, U(s), which assigns a single\nUTILITY FUNCTION\nnumber to express the desirability of a state. The expected utility of an action given the evi-\nEXPECTED UTILITY\ndence, EU (a|e), is just the average utility value of the outcomes, weighted by the probability\nthat the outcome occurs:\nEU (a|e) =\n\n\ns′\nP(RESULT(a) = s′ | a, e) U(s′) .\n(16.1)\nThe principle of maximum expected utility (MEU) says that a rational agent should choose\nMAXIMUM EXPECTED\nUTILITY\nthe action that maximizes the agent’s expected utility:\naction = argmax\na\nEU (a|e)\nIn a sense, the MEU principle could be seen as deﬁning all of AI. All an intelligent agent has\nto do is calculate the various quantities, maximize utility over its actions, and away it goes.\nBut this does not mean that the AI problem is solved by the deﬁnition!\nThe MEU principle formalizes the general notion that the agent should “do the right\nthing,” but goes only a small distance toward a full operationalization of that advice. Es-\ntimating the state of the world requires perception, learning, knowledge representation, and\ninference. Computing P(RESULT(a) | a, e) requires a complete causal model of the world\nand, as we saw in Chapter 14, NP-hard inference in (very large) Bayesian networks. Comput-\ning the outcome utilities U(s′) often requires searching or planning, because an agent may\nnot know how good a state is until it knows where it can get to from that state. So, decision\ntheory is not a panacea that solves the AI problem—but it does provide a useful framework.\nThe MEU principle has a clear relation to the idea of performance measures introduced\nin Chapter 2. The basic idea is simple. Consider the environments that could lead to an\nagent having a given percept history, and consider the different agents that we could design.\nIf an agent acts so as to maximize a utility function that correctly reﬂects the performance\nmeasure, then the agent will achieve the highest possible performance score (averaged over\nall the possible environments). This is the central justiﬁcation for the MEU principle itself.\nWhile the claim may seem tautological, it does in fact embody a very important transition\nfrom a global, external criterion of rationality—the performance measure over environment\nhistories—to a local, internal criterion involving the maximization of a utility function applied\nto the next state.\n16.2\nTHE BASIS OF UTILITY THEORY\nIntuitively, the principle of Maximum Expected Utility (MEU) seems like a reasonable way\nto make decisions, but it is by no means obvious that it is the only rational way. After all,\nwhy should maximizing the average utility be so special? What’s wrong with an agent that\n1 Classical decision theory leaves the current state S0 implicit, but we could make it explicit by writing\nP(RESULT(a) = s′ | a, e) = P\ns P(RESULT(s, a) = s′ | a)P(S0 = s | e).\n612\n16.\nMaking Simple Decisions\nmaximizes the weighted sum of the cubes of the possible utilities, or tries to minimize the\nworst possible loss? Could an agent act rationally just by expressing preferences between\nstates, without giving them numeric values? Finally, why should a utility function with the\nrequired properties exist at all? We shall see.\n16.2.1\nConstraints on rational preferences\nThese questions can be answered by writing down some constraints on the preferences that a\nrational agent should have and then showing that the MEU principle can be derived from the\nconstraints. We use the following notation to describe an agent’s preferences:\nA ≻B\nthe agent prefers A over B.\nA ∼B\nthe agent is indifferent between A and B.\nA ≻∼B\nthe agent prefers A over B or is indifferent between them.\nNow the obvious question is, what sorts of things are A and B? They could be states of the\nworld, but more often than not there is uncertainty about what is really being offered. For\nexample, an airline passenger who is offered “the pasta dish or the chicken” does not know\nwhat lurks beneath the tinfoil cover.2 The pasta could be delicious or congealed, the chicken\njuicy or overcooked beyond recognition. We can think of the set of outcomes for each action\nas a lottery—think of each action as a ticket. A lottery L with possible outcomes S1, . . . , Sn\nLOTTERY\nthat occur with probabilities p1, . . . , pn is written\nL = [p1, S1; p2, S2; . . . pn, Sn] .\nIn general, each outcome Si of a lottery can be either an atomic state or another lottery. The\nprimary issue for utility theory is to understand how preferences between complex lotteries\nare related to preferences between the underlying states in those lotteries. To address this\nissue we list six constraints that we require any reasonable preference relation to obey:\n• Orderability: Given any two lotteries, a rational agent must either prefer one to the\nORDERABILITY\nother or else rate the two as equally preferable. That is, the agent cannot avoid deciding.\nAs we said on page 490, refusing to bet is like refusing to allow time to pass.\nExactly one of (A ≻B), (B ≻A), or (A ∼B) holds.\n• Transitivity: Given any three lotteries, if an agent prefers A to B and prefers B to C,\nTRANSITIVITY\nthen the agent must prefer A to C.\n(A ≻B) ∧(B ≻C) ⇒(A ≻C) .\n• Continuity: If some lottery B is between A and C in preference, then there is some\nCONTINUITY\nprobability p for which the rational agent will be indifferent between getting B for sure\nand the lottery that yields A with probability p and C with probability 1 −p.\nA ≻B ≻C ⇒∃p [p, A; 1 −p, C] ∼B .\n• Substitutability: If an agent is indifferent between two lotteries A and B, then the\nSUBSTITUTABILITY\nagent is indifferent between two more complex lotteries that are the same except that B\n2 We apologize to readers whose local airlines no longer offer food on long ﬂights.\nSection 16.2.\nThe Basis of Utility Theory\n613\nis substituted for A in one of them. This holds regardless of the probabilities and the\nother outcome(s) in the lotteries.\nA ∼B ⇒[p, A; 1 −p, C] ∼[p, B; 1 −p, C] .\nThis also holds if we substitute ≻for ∼in this axiom.\n• Monotonicity: Suppose two lotteries have the same two possible outcomes, A and B.\nMONOTONICITY\nIf an agent prefers A to B, then the agent must prefer the lottery that has a higher\nprobability for A (and vice versa).\nA ≻B ⇒(p > q ⇔[p, A; 1 −p, B] ≻[q, A; 1 −q, B]) .\n• Decomposability: Compound lotteries can be reduced to simpler ones using the laws\nDECOMPOSABILITY\nof probability. This has been called the “no fun in gambling” rule because it says that\ntwo consecutive lotteries can be compressed into a single equivalent lottery, as shown\nin Figure 16.1(b).3\n[p, A; 1 −p, [q, B; 1 −q, C]] ∼[p, A; (1 −p)q, B; (1 −p)(1 −q), C] .\nThese constraints are known as the axioms of utility theory. Each axiom can be motivated\nby showing that an agent that violates it will exhibit patently irrational behavior in some\nsituations. For example, we can motivate transitivity by making an agent with nontransitive\npreferences give us all its money. Suppose that the agent has the nontransitive preferences\nA ≻B ≻C ≻A, where A, B, and C are goods that can be freely exchanged. If the agent\ncurrently has A, then we could offer to trade C for A plus one cent. The agent prefers C,\nand so would be willing to make this trade. We could then offer to trade B for C, extracting\nanother cent, and ﬁnally trade A for B. This brings us back where we started from, except\nthat the agent has given us three cents (Figure 16.1(a)). We can keep going around the cycle\nuntil the agent has no money at all. Clearly, the agent has acted irrationally in this case.\n16.2.2\nPreferences lead to utility\nNotice that the axioms of utility theory are really axioms about preferences—they say nothing\nabout a utility function. But in fact from the axioms of utility we can derive the following\nconsequences (for the proof, see von Neumann and Morgenstern, 1944):\n• Existence of Utility Function: If an agent’s preferences obey the axioms of utility, then\nthere exists a function U such that U(A) > U(B) if and only if A is preferred to B,\nand U(A) = U(B) if and only if the agent is indifferent between A and B.\nU(A) > U(B) ⇔A ≻B\nU(A) = U(B) ⇔A ∼B\n• Expected Utility of a Lottery: The utility of a lottery is the sum of the probability of\neach outcome times the utility of that outcome.\nU([p1, S1; . . . ; pn, Sn]) =\n\n\ni\npiU(Si) .\n3 We can account for the enjoyment of gambling by encoding gambling events into the state description; for\nexample, “Have $10 and gambled” could be preferred to “Have $10 and didn’t gamble.”\n614\n16.\nMaking Simple Decisions\n1¢\n1¢\n1¢\nA\nB\nC\np\nq\nA\nB\nC\np\n(1–p)\n(1–p)(1–q)\n(1–q)\nA\nB\nC\nis equivalent to\n(a)\n(b)\n(1–p)q\nFigure 16.1\n(a) A cycle of exchanges showing that the nontransitive preferences A ≻\nB ≻C ≻A result in irrational behavior. (b) The decomposability axiom.\nIn other words, once the probabilities and utilities of the possible outcome states are speciﬁed,\nthe utility of a compound lottery involving those states is completely determined. Because the\noutcome of a nondeterministic action is a lottery, it follows that an agent can act rationally—\nthat is, consistently with its preferences—only by choosing an action that maximizes expected\nutility according to Equation (16.1).\nThe preceding theorems establish that a utility function exists for any rational agent, but\nthey do not establish that it is unique. It is easy to see, in fact, that an agent’s behavior would\nnot change if its utility function U(S) were transformed according to\nU′(S) = aU(S) + b ,\n(16.2)\nwhere a and b are constants and a > 0; an afﬁne transformation.4 This fact was noted in\nChapter 5 for two-player games of chance; here, we see that it is completely general.\nAs in game-playing, in a deterministic environment an agent just needs a preference\nranking on states—the numbers don’t matter. This is called a value function or ordinal\nVALUE FUNCTION\nutility function.\nORDINAL UTILITY\nFUNCTION\nIt is important to remember that the existence of a utility function that describes an\nagent’s preference behavior does not necessarily mean that the agent is explicitly maximizing\nthat utility function in its own deliberations. As we showed in Chapter 2, rational behavior can\nbe generated in any number of ways. By observing a rational agent’s preferences, however,\nan observer can construct the utility function that represents what the agent is actually trying\nto achieve (even if the agent doesn’t know it).\n4 In this sense, utilities resemble temperatures: a temperature in Fahrenheit is 1.8 times the Celsius temperature\nplus 32. You get the same results in either measurement system.",
+  "images": [
+    {
+      "path": "images/16-2-the-basis-of-utility-theory_diagram_1.png",
+      "type": "diagram",
+      "caption": null
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/16-2-the-basis-of-utility-theory_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/16-2-the-basis-of-utility-theory_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/16-2-the-basis-of-utility-theory_eq_16-1.png",
+      "type": "equation",
+      "label": "16.1"
+    },
+    {
+      "path": "images/16-2-the-basis-of-utility-theory_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/16-2-the-basis-of-utility-theory_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/16-2-the-basis-of-utility-theory_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/16-2-the-basis-of-utility-theory_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/16-2-the-basis-of-utility-theory_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/16-2-the-basis-of-utility-theory_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/16-2-the-basis-of-utility-theory_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/16-2-the-basis-of-utility-theory_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/16-2-the-basis-of-utility-theory_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/16-2-the-basis-of-utility-theory_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/16-2-the-basis-of-utility-theory_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/16-2-the-basis-of-utility-theory_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/16-2-the-basis-of-utility-theory_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/16-2-the-basis-of-utility-theory_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/16-2-the-basis-of-utility-theory_eq_18.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/16-2-the-basis-of-utility-theory_eq_19.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/16-2-the-basis-of-utility-theory_eq_20.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/16-2-the-basis-of-utility-theory_eq_21.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/16-2-the-basis-of-utility-theory_eq_16-2.png",
+      "type": "equation",
+      "label": "16.2"
+    }
+  ]
+}

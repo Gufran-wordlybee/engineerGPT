@@ -1,0 +1,170 @@
+{
+  "section_id": "13-5-bayes-rule-and-its-use",
+  "title": "13.5 Bayes’ Rule and Its Use",
+  "level": 3,
+  "chapter": "IV: Uncertain knowledge and reasoning",
+  "parent_id": "13-quantifying-uncertainty",
+  "children": [],
+  "start_page": 513,
+  "end_page": 516,
+  "text": "Section 13.5.\nBayes’ Rule and Its Use\n495\nWeather\nToothache\nCatch\nCavity\ndecomposes\n      into\nWeather\nToothache\nCatch\nCavity\ndecomposes\n       into\nCoin1\nCoinn\nCoin1\nCoinn\n(a)\n(b)\nFigure 13.4\nTwo examples of factoring a large joint distribution into smaller distributions,\nusing absolute independence. (a) Weather and dental problems are independent. (b) Coin\nﬂips are independent.\ninto independent subsets, then the full joint distribution can be factored into separate joint\ndistributions on those subsets. For example, the full joint distribution on the outcome of n\nindependent coin ﬂips, P(C1, . . . , Cn), has 2n entries, but it can be represented as the prod-\nuct of n single-variable distributions P(Ci). In a more practical vein, the independence of\ndentistry and meteorology is a good thing, because otherwise the practice of dentistry might\nrequire intimate knowledge of meteorology, and vice versa.\nWhen they are available, then, independence assertions can help in reducing the size of\nthe domain representation and the complexity of the inference problem. Unfortunately, clean\nseparation of entire sets of variables by independence is quite rare. Whenever a connection,\nhowever indirect, exists between two variables, independence will fail to hold. Moreover,\neven independent subsets can be quite large—for example, dentistry might involve dozens of\ndiseases and hundreds of symptoms, all of which are interrelated. To handle such problems,\nwe need more subtle methods than the straightforward concept of independence.\n13.5\nBAYES’ RULE AND ITS USE\nOn page 486, we deﬁned the product rule. It can actually be written in two forms:\nP(a ∧b) = P(a | b)P(b)\nand\nP(a ∧b) = P(b | a)P(a) .\nEquating the two right-hand sides and dividing by P(a), we get\nP(b | a) = P(a | b)P(b)\nP(a)\n.\n(13.12)\nThis equation is known as Bayes’ rule (also Bayes’ law or Bayes’ theorem). This simple\nBAYES’ RULE\nequation underlies most modern AI systems for probabilistic inference.\n496\n13.\nQuantifying Uncertainty\nThe more general case of Bayes’ rule for multivalued variables can be written in the P\nnotation as follows:\nP(Y | X) = P(X | Y )P(Y )\nP(X)\n,\nAs before, this is to be taken as representing a set of equations, each dealing with speciﬁc val-\nues of the variables. We will also have occasion to use a more general version conditionalized\non some background evidence e:\nP(Y | X, e) = P(X | Y, e)P(Y | e)\nP(X | e)\n.\n(13.13)\n13.5.1\nApplying Bayes’ rule: The simple case\nOn the surface, Bayes’ rule does not seem very useful. It allows us to compute the single\nterm P(b | a) in terms of three terms: P(a | b), P(b), and P(a). That seems like two steps\nbackwards, but Bayes’ rule is useful in practice because there are many cases where we do\nhave good probability estimates for these three numbers and need to compute the fourth.\nOften, we perceive as evidence the effect of some unknown cause and we would like to\ndetermine that cause. In that case, Bayes’ rule becomes\nP(cause | effect) = P(effect | cause)P(cause)\nP(effect)\n.\nThe conditional probability P(effect | cause) quantiﬁes the relationship in the causal direc-\nCAUSAL\ntion, whereas P(cause | effect) describes the diagnostic direction. In a task such as medical\nDIAGNOSTIC\ndiagnosis, we often have conditional probabilities on causal relationships (that is, the doctor\nknows P(symptoms | disease)) and want to derive a diagnosis, P(disease | symptoms). For\nexample, a doctor knows that the disease meningitis causes the patient to have a stiff neck,\nsay, 70% of the time. The doctor also knows some unconditional facts: the prior probabil-\nity that a patient has meningitis is 1/50,000, and the prior probability that any patient has a\nstiff neck is 1%. Letting s be the proposition that the patient has a stiff neck and m be the\nproposition that the patient has meningitis, we have\nP(s | m) = 0.7\nP(m) = 1/50000\nP(s) = 0.01\nP(m | s) = P(s | m)P(m)\nP(s)\n= 0.7 × 1/50000\n0.01\n= 0.0014 .\n(13.14)\nThat is, we expect less than 1 in 700 patients with a stiff neck to have meningitis. Notice that\neven though a stiff neck is quite strongly indicated by meningitis (with probability 0.7), the\nprobability of meningitis in the patient remains small. This is because the prior probability of\nstiff necks is much higher than that of meningitis.\nSection 13.3 illustrated a process by which one can avoid assessing the prior probability\nof the evidence (here, P(s)) by instead computing a posterior probability for each value of\nSection 13.5.\nBayes’ Rule and Its Use\n497\nthe query variable (here, m and ¬m) and then normalizing the results. The same process can\nbe applied when using Bayes’ rule. We have\nP(M | s) = α ⟨P(s | m)P(m), P(s | ¬m)P(¬m)⟩.\nThus, to use this approach we need to estimate P(s | ¬m) instead of P(s). There is no free\nlunch—sometimes this is easier, sometimes it is harder. The general form of Bayes’ rule with\nnormalization is\nP(Y | X) = α P(X | Y )P(Y ) ,\n(13.15)\nwhere α is the normalization constant needed to make the entries in P(Y | X) sum to 1.\nOne obvious question to ask about Bayes’ rule is why one might have available the\nconditional probability in one direction, but not the other. In the meningitis domain, perhaps\nthe doctor knows that a stiff neck implies meningitis in 1 out of 5000 cases; that is, the doctor\nhas quantitative information in the diagnostic direction from symptoms to causes. Such a\ndoctor has no need to use Bayes’ rule. Unfortunately, diagnostic knowledge is often more\nfragile than causal knowledge. If there is a sudden epidemic of meningitis, the unconditional\nprobability of meningitis, P(m), will go up. The doctor who derived the diagnostic proba-\nbility P(m | s) directly from statistical observation of patients before the epidemic will have\nno idea how to update the value, but the doctor who computes P(m | s) from the other three\nvalues will see that P(m | s) should go up proportionately with P(m). Most important, the\ncausal information P(s | m) is unaffected by the epidemic, because it simply reﬂects the way\nmeningitis works. The use of this kind of direct causal or model-based knowledge provides\nthe crucial robustness needed to make probabilistic systems feasible in the real world.\n13.5.2\nUsing Bayes’ rule: Combining evidence\nWe have seen that Bayes’ rule can be useful for answering probabilistic queries conditioned\non one piece of evidence—for example, the stiff neck. In particular, we have argued that\nprobabilistic information is often available in the form P(effect | cause). What happens when\nwe have two or more pieces of evidence? For example, what can a dentist conclude if her\nnasty steel probe catches in the aching tooth of a patient? If we know the full joint distribution\n(Figure 13.3), we can read off the answer:\nP(Cavity | toothache ∧catch) = α ⟨0.108, 0.016⟩≈⟨0.871, 0.129⟩.\nWe know, however, that such an approach does not scale up to larger numbers of variables.\nWe can try using Bayes’ rule to reformulate the problem:\nP(Cavity | toothache ∧catch)\n= α P(toothache ∧catch | Cavity) P(Cavity) .\n(13.16)\nFor this reformulation to work, we need to know the conditional probabilities of the conjunc-\ntion toothache ∧catch for each value of Cavity. That might be feasible for just two evidence\nvariables, but again it does not scale up. If there are n possible evidence variables (X rays,\ndiet, oral hygiene, etc.), then there are 2n possible combinations of observed values for which\nwe would need to know conditional probabilities. We might as well go back to using the\nfull joint distribution. This is what ﬁrst led researchers away from probability theory toward\n498\n13.\nQuantifying Uncertainty\napproximate methods for evidence combination that, while giving incorrect answers, require\nfewer numbers to give any answer at all.\nRather than taking this route, we need to ﬁnd some additional assertions about the\ndomain that will enable us to simplify the expressions. The notion of independence in Sec-\ntion 13.4 provides a clue, but needs reﬁning. It would be nice if Toothache and Catch were\nindependent, but they are not: if the probe catches in the tooth, then it is likely that the tooth\nhas a cavity and that the cavity causes a toothache. These variables are independent, how-\never, given the presence or the absence of a cavity. Each is directly caused by the cavity, but\nneither has a direct effect on the other: toothache depends on the state of the nerves in the\ntooth, whereas the probe’s accuracy depends on the dentist’s skill, to which the toothache is\nirrelevant.5 Mathematically, this property is written as\nP(toothache ∧catch | Cavity) = P(toothache | Cavity)P(catch | Cavity) .\n(13.17)\nThis equation expresses the conditional independence of toothache and catch given Cavity.\nCONDITIONAL\nINDEPENDENCE\nWe can plug it into Equation (13.16) to obtain the probability of a cavity:\nP(Cavity | toothache ∧catch)\n= α P(toothache | Cavity) P(catch | Cavity) P(Cavity) .\n(13.18)\nNow the information requirements are the same as for inference, using each piece of evi-\ndence separately: the prior probability P(Cavity) for the query variable and the conditional\nprobability of each effect, given its cause.\nThe general deﬁnition of conditional independence of two variables X and Y , given a\nthird variable Z, is\nP(X, Y | Z) = P(X | Z)P(Y | Z) .\nIn the dentist domain, for example, it seems reasonable to assert conditional independence of\nthe variables Toothache and Catch, given Cavity:\nP(Toothache, Catch | Cavity) = P(Toothache | Cavity)P(Catch | Cavity) . (13.19)\nNotice that this assertion is somewhat stronger than Equation (13.17), which asserts indepen-\ndence only for speciﬁc values of Toothache and Catch. As with absolute independence in\nEquation (13.11), the equivalent forms\nP(X | Y, Z) = P(X | Z)\nand\nP(Y | X, Z) = P(Y | Z)\ncan also be used (see Exercise 13.17). Section 13.4 showed that absolute independence as-\nsertions allow a decomposition of the full joint distribution into much smaller pieces. It turns\nout that the same is true for conditional independence assertions. For example, given the\nassertion in Equation (13.19), we can derive a decomposition as follows:\nP(Toothache, Catch, Cavity)\n= P(Toothache, Catch | Cavity)P(Cavity)\n(product rule)\n= P(Toothache | Cavity)P(Catch | Cavity)P(Cavity)\n(using 13.19).\n(The reader can easily check that this equation does in fact hold in Figure 13.3.) In this way,\nthe original large table is decomposed into three smaller tables. The original table has seven\n5 We assume that the patient and dentist are distinct individuals.",
+  "images": [
+    {
+      "path": "images/13-5-bayes-rule-and-its-use_fig_13-4.png",
+      "type": "diagram",
+      "caption": "Figure 13.4"
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/13-5-bayes-rule-and-its-use_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-5-bayes-rule-and-its-use_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-5-bayes-rule-and-its-use_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-5-bayes-rule-and-its-use_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-5-bayes-rule-and-its-use_eq_13-12.png",
+      "type": "equation",
+      "label": "13.12"
+    },
+    {
+      "path": "images/13-5-bayes-rule-and-its-use_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-5-bayes-rule-and-its-use_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-5-bayes-rule-and-its-use_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-5-bayes-rule-and-its-use_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-5-bayes-rule-and-its-use_eq_13-13.png",
+      "type": "equation",
+      "label": "13.13"
+    },
+    {
+      "path": "images/13-5-bayes-rule-and-its-use_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-5-bayes-rule-and-its-use_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-5-bayes-rule-and-its-use_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-5-bayes-rule-and-its-use_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-5-bayes-rule-and-its-use_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-5-bayes-rule-and-its-use_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-5-bayes-rule-and-its-use_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-5-bayes-rule-and-its-use_eq_18.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-5-bayes-rule-and-its-use_eq_13-14.png",
+      "type": "equation",
+      "label": "13.14"
+    },
+    {
+      "path": "images/13-5-bayes-rule-and-its-use_eq_20.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-5-bayes-rule-and-its-use_eq_21.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-5-bayes-rule-and-its-use_eq_13-15.png",
+      "type": "equation",
+      "label": "13.15"
+    },
+    {
+      "path": "images/13-5-bayes-rule-and-its-use_eq_23.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-5-bayes-rule-and-its-use_eq_13-16.png",
+      "type": "equation",
+      "label": "13.16"
+    },
+    {
+      "path": "images/13-5-bayes-rule-and-its-use_eq_13-17.png",
+      "type": "equation",
+      "label": "13.17"
+    },
+    {
+      "path": "images/13-5-bayes-rule-and-its-use_eq_13-18.png",
+      "type": "equation",
+      "label": "13.18"
+    },
+    {
+      "path": "images/13-5-bayes-rule-and-its-use_eq_27.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-5-bayes-rule-and-its-use_eq_13-19.png",
+      "type": "equation",
+      "label": "13.19"
+    },
+    {
+      "path": "images/13-5-bayes-rule-and-its-use_eq_29.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-5-bayes-rule-and-its-use_eq_30.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

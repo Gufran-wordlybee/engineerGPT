@@ -1,0 +1,22 @@
+{
+  "section_id": "multiport-memory",
+  "title": "Multiport Memory",
+  "level": 2,
+  "chapter": "13-1 Characteristics of Multiprocessors",
+  "parent_id": "13-1-characteristics-of-multiprocessors",
+  "children": [
+    "crossbar-switch",
+    "memory-modules"
+  ],
+  "start_page": 492,
+  "end_page": 493,
+  "text": "A multiport memory system employs separate buses between each memory module and each CPU. This is shown in Fig. 13-3 for four CPUs and four memory modules (MMs). Each processor bus is connected to each memory module. A processor bus consists of the address, data, and control lines required to communicate with memory. The memory module is said to have four ports and each port accommodates one of the buses. The module must have internal control logic to determine which port will have access to memory at any given time. Memory access conflicts are resolved by assigning fixed priorities to each memory port. The priority for memory access associated with each processor may be established by the physical port position that its bus occupies in each module. Thus CPU 1 will have priority over CPU 2, CPU 2 will have priority over CPU 3, and CPU 4 will have the lowest priority.\nThe advantage of the multiport memory organization is the high transfer rate that can be achieved because of the multiple paths between processors and memory. The disadvantage is that it requires expensive memory control logic and a large number of cables and connectors. As a consequence, this intercon-\nFigure 13-3 Multiport memory organization.\nnection structure is usually appropriate for systems with a small number of processors.",
+  "images": [
+    {
+      "path": "images/multiport-memory_img_1.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

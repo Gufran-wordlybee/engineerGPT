@@ -1,0 +1,18 @@
+{
+  "section_id": "27-ai-the-present-and-future",
+  "title": "27 AI: The Present and Future",
+  "level": 2,
+  "chapter": "VII: Conclusions",
+  "parent_id": "vii-conclusions",
+  "children": [
+    "27-1-agent-components",
+    "27-2-agent-architectures",
+    "27-3-are-we-going-in-the-right-direction",
+    "27-4-what-if-ai-does-succeed"
+  ],
+  "start_page": 1062,
+  "end_page": 1062,
+  "text": "27\nAI: THE PRESENT AND\nFUTURE\nIn which we take stock of where we are and where we are going, this being a good\nthing to do before continuing.\nIn Chapter 2, we suggested that it would be helpful to view the AI task as that of designing\nrational agents—that is, agents whose actions maximize their expected utility given their\npercept histories. We showed that the design problem depends on the percepts and actions\navailable to the agent, the utility function that the agent’s behavior should satisfy, and the\nnature of the environment. A variety of different agent designs are possible, ranging from\nreﬂex agents to fully deliberative, knowledge-based, decision-theoretic agents. Moreover,\nthe components of these designs can have a number of different instantiations—for example,\nlogical or probabilistic reasoning, and atomic, factored, or structured representations of states.\nThe intervening chapters presented the principles by which these components operate.\nFor all the agent designs and components, there has been tremendous progress both in\nour scientiﬁc understanding and in our technological capabilities. In this chapter, we stand\nback from the details and ask, “Will all this progress lead to a general-purpose intelligent\nagent that can perform well in a wide variety of environments?” Section 27.1 looks at the\ncomponents of an intelligent agent to assess what’s known and what’s missing. Section 27.2\ndoes the same for the overall agent architecture. Section 27.3 asks whether designing rational\nagents is the right goal in the ﬁrst place. (The answer is, “Not really, but it’s OK for now.”)\nFinally, Section 27.4 examines the consequences of success in our endeavors.\n27.1\nAGENT COMPONENTS\nChapter 2 presented several agent designs and their components. To focus our discussion\nhere, we will look at the utility-based agent, which we show again in Figure 27.1. When en-\ndowed with a learning component (Figure 2.15), this is the most general of our agent designs.\nLet’s see where the state of the art stands for each of the components.\nInteraction with the environment through sensors and actuators: For much of the\nhistory of AI, this has been a glaring weak point. With a few honorable exceptions, AI sys-\ntems were built in such a way that humans had to supply the inputs and interpret the outputs,\n1044",
+  "images": [],
+  "equations": []
+}

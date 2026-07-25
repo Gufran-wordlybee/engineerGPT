@@ -1,0 +1,15 @@
+{
+  "section_id": "symbolic-microinstructions",
+  "title": "Symbolic Microinstructions",
+  "level": 3,
+  "chapter": "Computer Configuration",
+  "parent_id": "computer-configuration",
+  "children": [
+    "the-fetch-routine"
+  ],
+  "start_page": 234,
+  "end_page": 235,
+  "text": "The symbols defined in Table 7-1 can be used to specify microinstructions in symbolic form. A symbolic microprogram can be translated into its binary equivalent by means of an assembler. A microprogram assembler is similar in concept to a conventional computer assembler as defined in Sec. 6-3. The simplest and most straightforward way to formulate an assembly language for a microprogram is to define symbols for each field of the microinstruction and to give users the capability for defining their own symbolic addresses.\nEach line of the assembly language microprogram defines a symbolic microinstruction. Each symbolic microinstruction is divided into five fields: label, microoperations, CD, BR, and AD. The fields specify the following information.\nThe label field may be empty or it may specify a symbolic address. A label is terminated with a colon (:).\n2. The microoperations field consists of one, two, or three symbols, separated by commas, from those defined in Table 7-1. There may be no more than one symbol from each F field. The NOP symbol is used when the microinstruction has no microoperations. This will be translated by the assembler to nine zeros.\naddress field\n3. The CD field has one of the letters U, I, S, or Z.\n4. The BR field contains one of the four symbols defined in Table 7-1.\n5. The AD field specifies a value for the address field of the microinstruction in one of three possible ways: a. With a symbolic address, which must also appear as a label.b. With the symbol NEXT to designate the next address in sequence.c. When the BR field contains a RET or MAP symbol, the AD field is left empty and is converted to seven zeros by the assembler.\nWe will use also the pseudoinstruction ORG to define the origin, or first address, of a microprogram routine. Thus the symbol ORG 64 informs the assembler to place the next microinstruction in control memory at decimal address 64, which is equivalent to the binary address 1000000.",
+  "images": [],
+  "equations": []
+}

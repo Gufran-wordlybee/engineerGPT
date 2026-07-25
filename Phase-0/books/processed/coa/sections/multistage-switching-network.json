@@ -1,0 +1,29 @@
+{
+  "section_id": "multistage-switching-network",
+  "title": "Multistage Switching Network",
+  "level": 2,
+  "chapter": "13-1 Characteristics of Multiprocessors",
+  "parent_id": "13-1-characteristics-of-multiprocessors",
+  "children": [],
+  "start_page": 495,
+  "end_page": 497,
+  "text": "interchange switch\nThe basic component of a multistage network is a two-input, two-output interchange switch. As shown in Fig. 13-6, the 2 \\times 2 switch has two inpul labeled A and B, and two outputs, labeled 0 and 1. There are control sign (not shown) associated with the switch that establish the interconnectibetween the input and output terminals. The switch has the capability connecting input A to either of the outputs. Terminal B of the switch behavin a similar fashion. The switch also has the capability to arbitrate betwee conflicting requests. If inputs A and B both request the same output termin only one of them will be connected; the other will be blocked.\nUsing the 2 \\times 2 switch as a building block, it is possible to build multistage network to control the communication between a number of source and destinations. To see how this is done, consider the binary tree shown Fig. 13-7. The two processors P_1 and P_2 are connected through switches to eigenmemory modules marked in binary from 000 through 111. The path from source to a destination is determined from the binary bits of the destination\nFigure 13-6 Operation of a 2 × 2 interchange switch.\nFigure 13-7 Binary tree with 2 \\times 2 switches.\nnumber. The first bit of the destination number determines the switch output in the first level. The second bit specifies the output of the switch in the second level, and the third bit specifies the output of the switch in the third level. For example, to connect P_1 to memory 101, it is necessary to form a path from P_1 to output 1 in the first-level switch, output 0 in the second-level switch, and output 1 in the third-level switch. It is clear that either P_1 or P_2 can be connected to any one of the eight memories. Certain request patterns, however, cannot be satisfied simultaneously. For example, if P_1 is connected to one of the destinations 000 through 011, P_2 can be connected to only one of the destinations 100 through 111.\nMany different topologies have been proposed for multistage switching networks to control processor-memory communication in a tightly coupled multiprocessor system or to control the communication between the processing elements in a loosely coupled system. One such topology is the omega switching network shown in Fig. 13-8. In this configuration, there is exactly one path from each source to any particular destination. Some request patterns, however, cannot be connected simultaneously. For example, any two sources cannot be connected simultaneously to destinations 000 and 001.\nomega network\nFigure 13-8 8 × 8 omega switching network.\nA particular request is initiated in the switching network by the source, which sends a 3-bit pattern representing the destination number. As the binary pattern moves through the network, each level examines a different bit to determine the 2\\times 2 switch setting. Level 1 inspects the most significant bit, level 2 inspects the middle bit, and level 3 inspects the least significant bit. When the request arrives on either input of the 2\\times 2 switch, it is routed to the upper output if the specified bit is 0 or to the lower output if the bit is 1.\nIn a tightly coupled multiprocessor system, the source is a processor and the destination is a memory module. The first pass through the network sets up the path. Succeeding passes are used to transfer the address into memory and then transfer the data in either direction, depending on whether the request is a read or a write. In a loosely coupled multiprocessor system, both the source and destination are processing elements. After the path is established, the source processor transfers a message to the destination processor.",
+  "images": [
+    {
+      "path": "images/multistage-switching-network_img_1.png",
+      "type": "figure",
+      "caption": null
+    },
+    {
+      "path": "images/multistage-switching-network_img_2.png",
+      "type": "figure",
+      "caption": null
+    },
+    {
+      "path": "images/multistage-switching-network_img_3.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

@@ -1,0 +1,22 @@
+{
+  "section_id": "computer-configuration",
+  "title": "Computer Configuration",
+  "level": 1,
+  "chapter": "Computer Configuration",
+  "parent_id": null,
+  "children": [
+    "microinstruction-format",
+    "symbolic-microinstructions"
+  ],
+  "start_page": 229,
+  "end_page": 231,
+  "text": "The block diagram of the computer is shown in Fig. 7-4. It consists of two memory units: a main memory for storing instructions and data, and a control memory for storing the microprogram. Four registers are associated with the processor unit and two with the control unit. The processor registers are\nFigure 7-4 Computer hardware configuration.\nprogram counter PC, address register AR, data register DR, and accumulator register AC. The function of these registers is similar to the basic computer introduced in Chap. 5 (see Fig. 5-3). The control unit has a control address register CAR and a subroutine register SBR. The control memory and its registers are organized as a microprogrammed control unit, as shown in Fig. 7-2.\nThe transfer of information among the registers in the processor is done through multiplexers rather than a common bus. DR can receive information from AC, PC, or memory. AR can receive information from PC or DR. PC can receive information only from AR. The arithmetic, logic, and shift unit per-\nforms microoperations with data from AC and DR and places the result in AC. Note that memory receives its address from AR. Input data written to memory come from DR, and data read from memory can go only to DR.\ninstruction format\nThe computer instruction format is depicted in Fig. 7-5(a). It consists of three fields: a 1-bit field for indirect addressing symbolized by I, a 4-bit operation code (opcode), and an 11-bit address field. Figure 7-5(b) lists four of the 16 possible memory-reference instructions. The ADD instruction adds the content of the operand found in the effective address to the content of AC. The BRANCH instruction causes a branch to the effective address if the operand in AC is negative. The program proceeds with the next consecutive instruction if AC is not negative. The AC is negative if its sign bit (the bit in the leftmost position of the register) is a 1. The STORE instruction transfers the content of AC into the memory word specified by the effective address. The EXCHANGE instruction swaps the data between AC and the memory word specified by the effective address.\nIt will be shown subsequently that each computer instruction must be microprogrammed. In order not to complicate the microprogramming example, only four instructions are considered here. It should be realized that 12 other instructions can be included and each instruction must be microprogrammed by the procedure outlined below.",
+  "images": [
+    {
+      "path": "images/computer-configuration_img_1.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

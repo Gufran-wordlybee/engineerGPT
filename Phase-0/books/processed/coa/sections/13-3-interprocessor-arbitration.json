@@ -1,0 +1,17 @@
+{
+  "section_id": "13-3-interprocessor-arbitration",
+  "title": "13-3 Interprocessor Arbitration",
+  "level": 1,
+  "chapter": "13-3 Interprocessor Arbitration",
+  "parent_id": null,
+  "children": [
+    "system-bus",
+    "serial-arbitration-procedure",
+    "parallel-arbitration-logic"
+  ],
+  "start_page": 499,
+  "end_page": 499,
+  "text": "Computer systems contain a number of buses at various levels to facilitate the transfer of information between components. The CPU contains a number of internal buses for transferring information between processor registers and ALU. A memory bus consists of lines for transferring data, address, and read/write information. An I/O bus is used to transfer information to and from input and output devices. A bus that connects major components in a multiprocessor system, such as CPUs, IOPs, and memory, is called a system bus. The physical circuits of a system bus are contained in a number of identical printed circuit boards. Each board in the system belongs to a particular module. The board consists of circuits connected in parallel through connectors. Each pin of each circuit connector is connected by a wire to the corresponding pin of all other connectors in other boards. Thus any board can be plugged into a slot in the backplane that forms the system bus.\nThe processors in a shared memory multiprocessor system request access to common memory or other common resources through the system bus. If no other processor is currently utilizing the bus, the requesting processor may be granted access immediately. However, the requesting processor must wait if another processor is currently utilizing the system bus. Furthermore, other processors may request the system bus at the same time. Arbitration must then be performed to resolve this multiple contention for the shared resources. The arbitration logic would be part of the system bus controller placed between the local bus and the system bus as shown in Fig. 13-2.",
+  "images": [],
+  "equations": []
+}

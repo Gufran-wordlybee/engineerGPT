@@ -1,0 +1,19 @@
+{
+  "section_id": "control-flowchart",
+  "title": "Control Flowchart",
+  "level": 4,
+  "chapter": "5-6 Memory-Reference Instructions",
+  "parent_id": "isz-increment-and-skip-if-zero",
+  "children": [],
+  "start_page": 159,
+  "end_page": 160,
+  "text": "A flowchart showing all microoperations for the execution of the seven memory-reference instructions is shown in Fig. 5-11. The control functions are indicated on top of each box. The microoperations that are performed during time T_4, T_5, or T_6 depend on the operation code value. This is indicated in the flowchart by six different paths, one of which the control takes after the instruction is decoded. The sequence counter SC is cleared to 0 with the last timing signal in each case. This causes a transfer of control to timing signal T_0 to start the next instruction cycle.\nNote that we need only seven timing signals to execute the longest instruction (ISZ). The computer can be designed with a 3-bit sequence counter. The reason for using a 4-bit counter for SC is to provide additional timing signals for other instructions that are presented in the problems section.\nFigure 5-11 Flowchart for memory-reference instructions.",
+  "images": [
+    {
+      "path": "images/control-flowchart_img_1.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

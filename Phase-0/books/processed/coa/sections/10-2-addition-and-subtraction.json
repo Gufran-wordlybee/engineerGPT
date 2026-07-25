@@ -1,0 +1,13 @@
+{
+  "section_id": "10-2-addition-and-subtraction",
+  "title": "10-2 Addition and Subtraction",
+  "level": 2,
+  "chapter": "Pipeline and Vector Processing",
+  "parent_id": "pipeline-and-vector-processing",
+  "children": [],
+  "start_page": 341,
+  "end_page": 342,
+  "text": "As stated in Sec. 3-3, there are three ways of representing negative fixed-point binary numbers: signed-magnitude, signed-1's complement, or signed-2's complement. Most computers use the signed-2's complement representation when performing arithmetic operations with integers. For floating-point operations, most computers use the signed-magnitude representation for the mantissa. In this section we develop the addition and subtraction algorithms for data represented in signed-magnitude and again for data represented in signed-2's complement.\nIt is important to realize that the adopted representation for negative numbers refers to the representation of numbers in the registers before and\nalgorithm\nafter the execution of the arithmetic operation. It does not mean that complement arithmetic may not be used in an intermediate step. For example, it is convenient to employ complement arithmetic when performing a subtraction operation with numbers in signed-magnitude representation. As long as the initial minuend and subtrahend, as well as the final difference, are in signed-magnitude form the fact that complements have been used in an intermediate step does not alter the fact that the representation is in signed-magnitude.",
+  "images": [],
+  "equations": []
+}

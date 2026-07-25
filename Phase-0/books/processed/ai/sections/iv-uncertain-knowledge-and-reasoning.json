@@ -1,0 +1,19 @@
+{
+  "section_id": "iv-uncertain-knowledge-and-reasoning",
+  "title": "IV: Uncertain knowledge and reasoning",
+  "level": 1,
+  "chapter": "III: Knowledge, reasoning, and planning",
+  "parent_id": null,
+  "children": [
+    "13-quantifying-uncertainty",
+    "14-probabilistic-reasoning",
+    "15-probabilistic-reasoning-over-time",
+    "16-making-simple-decisions",
+    "17-making-complex-decisions"
+  ],
+  "start_page": 498,
+  "end_page": 498,
+  "text": "13\nQUANTIFYING\nUNCERTAINTY\nIn which we see how an agent can tame uncertainty with degrees of belief.\n13.1\nACTING UNDER UNCERTAINTY\nAgents may need to handle uncertainty, whether due to partial observability, nondetermin-\nUNCERTAINTY\nism, or a combination of the two. An agent may never know for certain what state it’s in or\nwhere it will end up after a sequence of actions.\nWe have seen problem-solving agents (Chapter 4) and logical agents (Chapters 7 and 11)\ndesigned to handle uncertainty by keeping track of a belief state—a representation of the set\nof all possible world states that it might be in—and generating a contingency plan that han-\ndles every possible eventuality that its sensors may report during execution. Despite its many\nvirtues, however, this approach has signiﬁcant drawbacks when taken literally as a recipe for\ncreating agent programs:\n• When interpreting partial sensor information, a logical agent must consider every log-\nically possible explanation for the observations, no matter how unlikely. This leads to\nimpossible large and complex belief-state representations.\n• A correct contingent plan that handles every eventuality can grow arbitrarily large and\nmust consider arbitrarily unlikely contingencies.\n• Sometimes there is no plan that is guaranteed to achieve the goal—yet the agent must\nact. It must have some way to compare the merits of plans that are not guaranteed.\nSuppose, for example, that an automated taxi!automated has the goal of delivering a pas-\nsenger to the airport on time. The agent forms a plan, A90, that involves leaving home 90\nminutes before the ﬂight departs and driving at a reasonable speed. Even though the airport\nis only about 5 miles away, a logical taxi agent will not be able to conclude with certainty\nthat “Plan A90 will get us to the airport in time.” Instead, it reaches the weaker conclusion\n“Plan A90 will get us to the airport in time, as long as the car doesn’t break down or run out\nof gas, and I don’t get into an accident, and there are no accidents on the bridge, and the plane\ndoesn’t leave early, and no meteorite hits the car, and . . . .” None of these conditions can be\n480",
+  "images": [],
+  "equations": []
+}

@@ -1,0 +1,16 @@
+{
+  "section_id": "list-of-logic-microoperations",
+  "title": "List of Logic Microoperations",
+  "level": 1,
+  "chapter": "List of Logic Microoperations",
+  "parent_id": null,
+  "children": [
+    "hardware-implementation",
+    "some-applications"
+  ],
+  "start_page": 119,
+  "end_page": 121,
+  "text": "There are 16 different logic operations that can be performed with two binary variables. They can be determined from all possible truth tables obtained with two binary variables as shown in Table 4-5. In this table, each of the 16 columns F_0 through F_{15} represents a truth table of one possible Boolean function for the\nspecial symbols\n\n[Table]\nхуF0F1F2F3F4F5F6F7F8F,F10F11F12F13F14F15000000000011111100111010000111100001111100011001100110011110101010101010101\n\nTABLE 4-5 Truth Tables for 16 Functions of Two Variables\ntwo variables x and y. Note that the functions are determined from the 16 binary combinations that can be assigned to F.\nThe 16 Boolean functions of two variables x and y are expressed in algebraic form in the first column of Table 4-6. The 16 logic microoperations are derived from these functions by replacing variable x by the binary content of register A and variable y by the binary content of register B. It is important to realize that the Boolean functions listed in the first column of Table 4-6 represent a relationship between two binary variables x and y. The logic microoperations listed in the second column represent a relationship between the binary content of two registers A and B. Each bit of the register is treated as a binary variable and the microoperation is performed on the string of bits stored in the registers.\nBoolean function Microoperation Name F_0 = 0 F \\leftarrow 0 Clear F_1 = xy F \\leftarrow A \\land B AND F_2 = xy' F \\leftarrow A \\wedge \\overline{B} F_3 = x F \\leftarrow A Transfer A F_4 = x'y F \\leftarrow \\overline{A} \\wedge B F_5 = y F \\leftarrow B Transfer B F_6 = x \\oplus y F \\leftarrow A \\oplus B Exclusive-OR F_7 = x + y F \\leftarrow A \\lor B OR F_8 = (x + y)' F \\leftarrow \\overline{A \\vee B} NOR F_9 = (x \\oplus y)' F \\leftarrow \\overline{A \\oplus B} Exclusive-NOR F_{10} = y' F \\leftarrow \\overline{B} Complement B F_{11} = x + y' F \\leftarrow A \\vee \\overline{B} F_{12} = x' F \\leftarrow \\overline{A} Complement A F_{13} = x' + y F \\leftarrow \\overline{A} \\lor B F_{14} = (xy)' F \\leftarrow \\overline{A \\wedge B} NAND F_{15} = 1 F \\leftarrow \\text{all 1's} Set to all 1's\nTABLE 4-6 Sixteen Logic Microoperations",
+  "images": [],
+  "equations": []
+}

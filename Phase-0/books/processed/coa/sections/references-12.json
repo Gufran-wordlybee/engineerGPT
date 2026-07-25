@@ -1,0 +1,13 @@
+{
+  "section_id": "references-12",
+  "title": "REFERENCES",
+  "level": 4,
+  "chapter": "13-4 Interprocessor Communication and Synchronization",
+  "parent_id": "13-5-cache-coherence",
+  "children": [],
+  "start_page": 513,
+  "end_page": 514,
+  "text": "Dasgupta, S., Computer Architecture: A Modern Synthesis, Vol. 2. New York: John Wiley, 1989.\nDeCegama, A. L., Parallel Processing Architecture and VLSI Hardware. Englewood Cliffs, NJ: Prentice Hall, 1989.\nDubois, M., C. Scheurich, and F. A. Briggs, \"Synchronization, Coherence, and Event Ordering in Multiprocessors.\" IEEE Computer, Vol. 21, No. 2 (February 1988), pp. 9–21.\nGibson, G. A., Computer Systems Concepts and Design. Englewood Cliffs, NJ: Prentice Hall, 1991.\nGorsline, G. W., Computer Organization: Hardware/Software, 2nd ed. Englewood Cliffs, NJ: Prentice Hall, 1986.\nHays, J. F., Computer Architecture and Organization, 2nd ed. New York: McGraw-Hill, 1988.\nHwang, K., and F. A. Briggs, Computer Architecture and Parallel Processing. New York: McGraw-Hill, 1984.\nKain, R., Computer Architecture: Software and Hardware, Vol. 2. Englewood Cliffs, NJ: Prentice Hall, 1989.\nLangholz, G., J. Francioni, and A. Kandel, Elements of Computer Organization. Englewood Cliffs, NJ: Prentice Hall, 1989.\nStenstrom, P., \"A Survey of Cache Coherence Schemes for Multiprocessors.\" IEEE Computer, Vol. 23, No. 6 (June 1990), pp. 12–24.\nStone, H. S., High-Performance Computer Architecture. 2nd ed. Reading, MA: Addison-Wesley, 1990.\n12. Tabak, D., Multiprocessors. Englewood Cliffs, NI: Prentice Hall, 1990.",
+  "images": [],
+  "equations": []
+}

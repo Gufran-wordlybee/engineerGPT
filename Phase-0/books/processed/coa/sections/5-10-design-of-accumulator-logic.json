@@ -1,0 +1,16 @@
+{
+  "section_id": "5-10-design-of-accumulator-logic",
+  "title": "5-10 Design of Accumulator Logic",
+  "level": 1,
+  "chapter": "5-10 Design of Accumulator Logic",
+  "parent_id": null,
+  "children": [
+    "control-of-ac-register",
+    "adder-and-logic-circuit"
+  ],
+  "start_page": 174,
+  "end_page": 175,
+  "text": "The circuits associated with the AC register are shown in Fig. 5-19. The adder and logic circuit has three sets of inputs. One set of 16 inputs comes from the outputs of AC. Another set of 16 inputs comes from the data register DR. A third set of eight inputs comes from the input register INPR. The outputs of the adder and logic circuit provide the data inputs for the register. In addition, it is necessary to include logic gates for controlling the LD, INR, and CLR in the register and for controlling the operation of the adder and logic circuit.\nIn order to design the logic associated with AC, it is necessary to go over the register transfer statements in Table 5-6 and extract all the statements that change the content of AC.\n\n[Table]\nD_0T_5:AC \\leftarrow AC \\land DRAND with DRD_1T_5:AC \\leftarrow AC + DRAdd with DRD_2T_5:AC \\leftarrow DRTransfer from DRpB_{11}:AC(0-7) \\leftarrow INPRTransfer from INPRrB_9:AC \\leftarrow \\overline{AC}ComplementrB_7:AC \\leftarrow \\text{shr } AC, AC(15) \\leftarrow EShift rightrB_6:AC \\leftarrow \\text{shl } AC, AC(0) \\leftarrow EShift leftrB_{11}:AC \\leftarrow 0ClearrBs:AC \\leftarrow AC + 1Increment\n\nFrom this list we can derive the control logic gates and the adder and logic circuit.\n16 Adder and Accumulator 16 16 logic register From DR circuit (AC) To bus From INPR LD INR CLR Clock Control gates\nFigure 5-19 Circuits associated with AC.",
+  "images": [],
+  "equations": []
+}

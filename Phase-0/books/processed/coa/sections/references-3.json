@@ -1,0 +1,13 @@
+{
+  "section_id": "references-3",
+  "title": "REFERENCES",
+  "level": 4,
+  "chapter": "4-7 Arithmetic Logic Shift Unit",
+  "parent_id": "problems-3",
+  "children": [],
+  "start_page": 132,
+  "end_page": 133,
+  "text": "Bell, C. G., J. C. Mudge, and J. E. McNamara, Computer Engineering. Bedford, MA: Digital Press, 1980.\nBooth, T. L., Introduction to Computer Engineering, 3rd ed. New York: John Wiley, 1984.\nHays, J. F., Computer Architecture and Organization, 2nd ed. New York: McGraw-Hill, 1988.\nHill, F. J., and G. R. Peterson, Digital Systems: Hardware Organization and Design, 3rd ed. New York: John Wiley, 1987.\nMano, M. M., Computer Engineering: Hardware Design. Englewood Cliffs, NJ: Prentice Hall, 1988.\nPatterson, D. A., and J. L. Hennessy, Computer Architecture: A Quantitative Approach. San Mateo, CA: Morgan Kaufmann Publishers, 1990.\nProsser, F. P., and D. E. Winkel, The Art of Digital Design, 2nd ed. Englewood Cliffs, NJ: Prentice Hall, 1987.\n8. Sandige, R. S., Modern Digital Design. New York: McGraw-Hill, 1990.\nShiva, S. G., Computer Design and Architecture, 2nd ed. New York: HarperCollins Publishers, 1991.\nTomek, I., Introduction to Computer Organization. Rockville, MD: Computer Science Press, 1981.\nWard, S. A., and R.H. Halstead, Jr., Computation Structures. Cambridge, MA: MIT Press, 1990.",
+  "images": [],
+  "equations": []
+}

@@ -1,0 +1,13 @@
+{
+  "section_id": "crossbar-switch",
+  "title": "Crossbar Switch",
+  "level": 4,
+  "chapter": "13-1 Characteristics of Multiprocessors",
+  "parent_id": "multiport-memory",
+  "children": [],
+  "start_page": 493,
+  "end_page": 494,
+  "text": "The crossbar switch organization consists of a number of crosspoints that are placed at intersections between processor buses and memory module paths. Figure 13-4 shows a crossbar switch interconnection between four CPUs and four memory modules. The small square in each crosspoint is a switch that determines the path from a processor to a memory module. Each switch point has control logic to set up the transfer path between a processor and memory. It examines the address that is placed in the bus to determine whether its particular module is being addressed. It also resolves multiple requests for access to the same memory module on a predetermined priority basis.\nFigure 13-5 shows the functional design of a crossbar switch connected to one memory module. The circuit consists of multiplexers that select the data,",
+  "images": [],
+  "equations": []
+}

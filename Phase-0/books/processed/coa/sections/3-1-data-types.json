@@ -1,0 +1,13 @@
+{
+  "section_id": "3-1-data-types",
+  "title": "3-1 Data Types",
+  "level": 2,
+  "chapter": "Data Representation",
+  "parent_id": "data-representation",
+  "children": [],
+  "start_page": 79,
+  "end_page": 80,
+  "text": "Binary information in digital computers is stored in memory or processor registers. Registers contain either data or control information. Control information is a bit or a group of bits used to specify the sequence of command signals needed for manipulation of the data in other registers. Data are numbers and other binary-coded information that are operated on to achieve required computational results. In this chapter we present the most common types of data found in digital computers and show how the various data types are represented in binary-coded form in computer registers.\nThe data types found in the registers of digital computers may be classified as being one of the following categories: (1) numbers used in arithmetic computations, (2) letters of the alphabet used in data processing, and (3) other discrete symbols used for specific purposes. All types of data, except binary numbers, are represented in computer registers in binary-coded form. This is because registers are made up of flip-flops and flip-flops are two-state devices that can store only 1's and 0's. The binary number system is the most natural system to use in a digital computer. But sometimes it is convenient to employ different number systems, especially the decimal number system, since it is used by people to perform arithmetic computations.",
+  "images": [],
+  "equations": []
+}

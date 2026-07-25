@@ -1,0 +1,125 @@
+{
+  "section_id": "18-9-support-vector-machines",
+  "title": "18.9 Support Vector Machines",
+  "level": 3,
+  "chapter": "V: Learning",
+  "parent_id": "18-learning-from-examples",
+  "children": [],
+  "start_page": 762,
+  "end_page": 765,
+  "text": "744\n18.\nLearning from Examples\nis the fact that each regression problem will be easier to solve, because it involves only the\nexamples with nonzero weight—the examples whose kernels overlap the query point. When\nkernel widths are small, this may be just a few points.\nMost nonparametric models have the advantage that it is easy to do leave-one-out cross-\nvalidation without having to recompute everything. With a k-nearest-neighbors model, for\ninstance, when given a test example (x, y) we retrieve the k nearest neighbors once, compute\nthe per-example loss L(y, h(x)) from them, and record that as the leave-one-out result for\nevery example that is not one of the neighbors. Then we retrieve the k + 1 nearest neighbors\nand record distinct results for leaving out each of the k neighbors. With N examples the\nwhole process is O(k), not O(kN).\n18.9\nSUPPORT VECTOR MACHINES\nThe support vector machine or SVM framework is currently the most popular approach for\nSUPPORT VECTOR\nMACHINE\n“off-the-shelf” supervised learning: if you don’t have any specialized prior knowledge about\na domain, then the SVM is an excellent method to try ﬁrst. There are three properties that\nmake SVMs attractive:\n1. SVMs construct a maximum margin separator—a decision boundary with the largest\npossible distance to example points. This helps them generalize well.\n2. SVMs create a linear separating hyperplane, but they have the ability to embed the\ndata into a higher-dimensional space, using the so-called kernel trick. Often, data that\nare not linearly separable in the original input space are easily separable in the higher-\ndimensional space. The high-dimensional linear separator is actually nonlinear in the\noriginal space. This means the hypothesis space is greatly expanded over methods that\nuse strictly linear representations.\n3. SVMs are a nonparametric method—they retain training examples and potentially need\nto store them all. On the other hand, in practice they often end up retaining only a\nsmall fraction of the number of examples—sometimes as few as a small constant times\nthe number of dimensions. Thus SVMs combine the advantages of nonparametric and\nparametric models: they have the ﬂexibility to represent complex functions, but they\nare resistant to overﬁtting.\nYou could say that SVMs are successful because of one key insight and one neat trick. We\nwill cover each in turn. In Figure 18.30(a), we have a binary classiﬁcation problem with three\ncandidate decision boundaries, each a linear separator. Each of them is consistent with all\nthe examples, so from the point of view of 0/1 loss, each would be equally good. Logistic\nregression would ﬁnd some separating line; the exact location of the line depends on all the\nexample points. The key insight of SVMs is that some examples are more important than\nothers, and that paying attention to them can lead to better generalization.\nConsider the lowest of the three separating lines in (a). It comes very close to 5 of the\nblack examples. Although it classiﬁes all the examples correctly, and thus minimizes loss, it\nSection 18.9.\nSupport Vector Machines\n745\n 0\n 0.2\n 0.4\n 0.6\n 0.8\n 1\n 0\n 0.2\n 0.4\n 0.6\n 0.8\n 1\n 0\n 0.2\n 0.4\n 0.6\n 0.8\n 1\n 0\n 0.2\n 0.4\n 0.6\n 0.8\n 1\n(a)\n(b)\nFigure 18.30\nSupport vector machine classiﬁcation: (a) Two classes of points (black and\nwhite circles) and three candidate linear separators. (b) The maximum margin separator\n(heavy line), is at the midpoint of the margin (area between dashed lines). The support\nvectors (points with large circles) are the examples closest to the separator.\nshould make you nervous that so many examples are close to the line; it may be that other\nblack examples will turn out to fall on the other side of the line.\nSVMs address this issue: Instead of minimizing expected empirical loss on the training\ndata, SVMs attempt to minimize expected generalization loss. We don’t know where the\nas-yet-unseen points may fall, but under the probabilistic assumption that they are drawn\nfrom the same distribution as the previously seen examples, there are some arguments from\ncomputational learning theory (Section 18.5) suggesting that we minimize generalization loss\nby choosing the separator that is farthest away from the examples we have seen so far. We\ncall this separator, shown in Figure 18.30(b) the maximum margin separator. The margin\nMAXIMUM MARGIN\nSEPARATOR\nMARGIN\nis the width of the area bounded by dashed lines in the ﬁgure—twice the distance from the\nseparator to the nearest example point.\nNow, how do we ﬁnd this separator? Before showing the equations, some notation:\nTraditionally SVMs use the convention that class labels are +1 and -1, instead of the +1 and\n0 we have been using so far. Also, where we put the intercept into the weight vector w (and\na corresponding dummy 1 value into xj,0), SVMs do not do that; they keep the intercept\nas a separate parameter, b. With that in mind, the separator is deﬁned as the set of points\n{x : w · x + b = 0}. We could search the space of w and b with gradient descent to ﬁnd the\nparameters that maximize the margin while correctly classifying all the examples.\nHowever, it turns out there is another approach to solving this problem. We won’t\nshow the details, but will just say that there is an alternative representation called the dual\n746\n18.\nLearning from Examples\nrepresentation, in which the optimal solution is found by solving\nargmax\nα\n\n\nj\nαj −1\n2\n\n\nj,k\nαjαkyjyk(xj · xk)\n(18.13)\nsubject to the constraints αj ≥0 and \u0002\nj αjyj = 0. This is a quadratic programming\nQUADRATIC\nPROGRAMMING\noptimization problem, for which there are good software packages. Once we have found the\nvector α we can get back to w with the equation w = \u0002\nj αjxj, or we can stay in the dual\nrepresentation. There are three important properties of Equation (18.13). First, the expression\nis convex; it has a single global maximum that can be found efﬁciently. Second, the data enter\nthe expression only in the form of dot products of pairs of points. This second property is also\ntrue of the equation for the separator itself; once the optimal αj have been calculated, it is\nh(x) = sign\n⎛\n⎝\n\nj\nαjyj(x · xj) −b\n⎞\n⎠.\n(18.14)\nA ﬁnal important property is that the weights αj associated with each data point are zero ex-\ncept for the support vectors—the points closest to the separator. (They are called “support”\nSUPPORT VECTOR\nvectors because they “hold up” the separating plane.) Because there are usually many fewer\nsupport vectors than examples, SVMs gain some of the advantages of parametric models.\nWhat if the examples are not linearly separable? Figure 18.31(a) shows an input space\ndeﬁned by attributes x = (x1, x2), with positive examples (y = + 1) inside a circular region\nand negative examples (y = −1) outside. Clearly, there is no linear separator for this problem.\nNow, suppose we re-express the input data—i.e., we map each input vector x to a new vector\nof feature values, F(x). In particular, let us use the three features\nf1 = x2\n1 ,\nf2 = x2\n2 ,\nf3 =\n√\n2x1x2 .\n(18.15)\nWe will see shortly where these came from, but for now, just look at what happens. Fig-\nure 18.31(b) shows the data in the new, three-dimensional space deﬁned by the three features;\nthe data are linearly separable in this space! This phenomenon is actually fairly general: if\ndata are mapped into a space of sufﬁciently high dimension, then they will almost always be\nlinearly separable—if you look at a set of points from enough directions, you’ll ﬁnd a way to\nmake them line up. Here, we used only three dimensions;11 Exercise 18.16 asks you to show\nthat four dimensions sufﬁce for linearly separating a circle anywhere in the plane (not just at\nthe origin), and ﬁve dimensions sufﬁce to linearly separate any ellipse. In general (with some\nspecial cases excepted) if we have N data points then they will always be separable in spaces\nof N −1 dimensions or more (Exercise 18.25).\nNow, we would not usually expect to ﬁnd a linear separator in the input space x, but\nwe can ﬁnd linear separators in the high-dimensional feature space F(x) simply by replacing\nxj·xk in Equation (18.13) with F(xj)·F(xk). This by itself is not remarkable—replacing x by\nF(x) in any learning algorithm has the required effect—but the dot product has some special\nproperties. It turns out that F(xj) · F(xk) can often be computed without ﬁrst computing F\n11 The reader may notice that we could have used just f1 and f2, but the 3D mapping illustrates the idea better.\nSection 18.9.\nSupport Vector Machines\n747\n-1.5\n-1\n-0.5\n0\n0.5\n1\n1.5\n-1.5\n-1\n-0.5\n0\n0.5\n1\n1.5\nx2\nx1\n0\n0.5\n1\n1.5\n2\nx1\n2\n0.5\n1\n1.5\n2\n2.5\nx2\n2\n-3\n-2\n-1\n0\n1\n2\n3\n√2x1x2\n(a)\n(b)\nFigure 18.31\n(a) A two-dimensional training set with positive examples as black cir-\ncles and negative examples as white circles. The true decision boundary, x2\n1 + x2\n2 ≤1,\nis also shown.\n(b) The same data after mapping into a three-dimensional input space\n(x2\n1, x2\n2,\n√\n2x1x2). The circular decision boundary in (a) becomes a linear decision boundary\nin three dimensions. Figure 18.30(b) gives a closeup of the separator in (b).\nfor each point. In our three-dimensional feature space deﬁned by Equation (18.15), a little bit\nof algebra shows that\nF(xj) · F(xk) = (xj · xk)2 .\n(That’s why the\n√\n2 is in f3.) The expression (xj · xk)2 is called a kernel function,12 and\nKERNEL FUNCTION\nis usually written as K(xj, xk). The kernel function can be applied to pairs of input data to\nevaluate dot products in some corresponding feature space. So, we can ﬁnd linear separators\nin the higher-dimensional feature space F(x) simply by replacing xj · xk in Equation (18.13)\nwith a kernel function K(xj, xk). Thus, we can learn in the higher-dimensional space, but we\ncompute only kernel functions rather than the full list of features for each data point.\nThe next step is to see that there’s nothing special about the kernel K(xj, xk) = (xj·xk)2.\nIt corresponds to a particular higher-dimensional feature space, but other kernel functions\ncorrespond to other feature spaces.\nA venerable result in mathematics, Mercer’s theo-\nrem (1909), tells us that any “reasonable”13 kernel function corresponds to some feature\nMERCER’S THEOREM\nspace. These feature spaces can be very large, even for innocuous-looking kernels. For ex-\nample, the polynomial kernel, K(xj, xk) = (1 + xj · xk)d, corresponds to a feature space\nPOLYNOMIAL\nKERNEL\nwhose dimension is exponential in d.\n12 This usage of “kernel function” is slightly different from the kernels in locally weighted regression. Some\nSVM kernels are distance metrics, but not all are.\n13 Here, “reasonable” means that the matrix Kjk = K(xj, xk) is positive deﬁnite.",
+  "images": [
+    {
+      "path": "images/18-9-support-vector-machines_diagram_1.png",
+      "type": "diagram",
+      "caption": null
+    },
+    {
+      "path": "images/18-9-support-vector-machines_diagram_2.png",
+      "type": "diagram",
+      "caption": null
+    },
+    {
+      "path": "images/18-9-support-vector-machines_diagram_3.png",
+      "type": "diagram",
+      "caption": null
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/18-9-support-vector-machines_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-9-support-vector-machines_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-9-support-vector-machines_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-9-support-vector-machines_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-9-support-vector-machines_eq_18-13.png",
+      "type": "equation",
+      "label": "18.13"
+    },
+    {
+      "path": "images/18-9-support-vector-machines_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-9-support-vector-machines_eq_18-14.png",
+      "type": "equation",
+      "label": "18.14"
+    },
+    {
+      "path": "images/18-9-support-vector-machines_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-9-support-vector-machines_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-9-support-vector-machines_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-9-support-vector-machines_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-9-support-vector-machines_eq_18-15.png",
+      "type": "equation",
+      "label": "18.15"
+    },
+    {
+      "path": "images/18-9-support-vector-machines_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-9-support-vector-machines_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-9-support-vector-machines_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-9-support-vector-machines_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-9-support-vector-machines_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-9-support-vector-machines_eq_18.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-9-support-vector-machines_eq_18-13.png",
+      "type": "equation",
+      "label": "18.13"
+    }
+  ]
+}

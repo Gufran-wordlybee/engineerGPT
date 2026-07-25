@@ -1,0 +1,220 @@
+{
+  "section_id": "8-4-knowledge-engineering-in-first-order-logic",
+  "title": "8.4 Knowledge Engineering in First-Order Logic",
+  "level": 3,
+  "chapter": "III: Knowledge, reasoning, and planning",
+  "parent_id": "8-first-order-logic",
+  "children": [],
+  "start_page": 325,
+  "end_page": 330,
+  "text": "Section 8.4.\nKnowledge Engineering in First-Order Logic\n307\nis invited to construct analogous axioms for the agent’s location and orientation; in these\ncases, the axioms quantify over both space and time. As in the case of propositional state\nestimation, an agent can use logical inference with axioms of this kind to keep track of aspects\nof the world that are not directly observed. Chapter 10 goes into more depth on the subject of\nﬁrst-order successor-state axioms and their uses for constructing plans.\n8.4\nKNOWLEDGE ENGINEERING IN FIRST-ORDER LOGIC\nThe preceding section illustrated the use of ﬁrst-order logic to represent knowledge in three\nsimple domains. This section describes the general process of knowledge-base construction—\na process called knowledge engineering. A knowledge engineer is someone who investigates\nKNOWLEDGE\nENGINEERING\na particular domain, learns what concepts are important in that domain, and creates a formal\nrepresentation of the objects and relations in the domain. We illustrate the knowledge engi-\nneering process in an electronic circuit domain that should already be fairly familiar, so that\nwe can concentrate on the representational issues involved. The approach we take is suitable\nfor developing special-purpose knowledge bases whose domain is carefully circumscribed\nand whose range of queries is known in advance. General-purpose knowledge bases, which\ncover a broad range of human knowledge and are intended to support tasks such as natural\nlanguage understanding, are discussed in Chapter 12.\n8.4.1\nThe knowledge-engineering process\nKnowledge engineering projects vary widely in content, scope, and difﬁculty, but all such\nprojects include the following steps:\n1. Identify the task. The knowledge engineer must delineate the range of questions that\nthe knowledge base will support and the kinds of facts that will be available for each\nspeciﬁc problem instance. For example, does the wumpus knowledge base need to be\nable to choose actions or is it required to answer questions only about the contents\nof the environment? Will the sensor facts include the current location? The task will\ndetermine what knowledge must be represented in order to connect problem instances to\nanswers. This step is analogous to the PEAS process for designing agents in Chapter 2.\n2. Assemble the relevant knowledge. The knowledge engineer might already be an expert\nin the domain, or might need to work with real experts to extract what they know—a\nprocess called knowledge acquisition. At this stage, the knowledge is not represented\nKNOWLEDGE\nACQUISITION\nformally. The idea is to understand the scope of the knowledge base, as determined by\nthe task, and to understand how the domain actually works.\nFor the wumpus world, which is deﬁned by an artiﬁcial set of rules, the relevant\nknowledge is easy to identify. (Notice, however, that the deﬁnition of adjacency was\nnot supplied explicitly in the wumpus-world rules.) For real domains, the issue of\nrelevance can be quite difﬁcult—for example, a system for simulating VLSI designs\nmight or might not need to take into account stray capacitances and skin effects.\n308\n8.\nFirst-Order Logic\n3. Decide on a vocabulary of predicates, functions, and constants. That is, translate the\nimportant domain-level concepts into logic-level names. This involves many questions\nof knowledge-engineering style. Like programming style, this can have a signiﬁcant\nimpact on the eventual success of the project. For example, should pits be represented\nby objects or by a unary predicate on squares? Should the agent’s orientation be a\nfunction or a predicate? Should the wumpus’s location depend on time? Once the\nchoices have been made, the result is a vocabulary that is known as the ontology of\nONTOLOGY\nthe domain. The word ontology means a particular theory of the nature of being or\nexistence. The ontology determines what kinds of things exist, but does not determine\ntheir speciﬁc properties and interrelationships.\n4. Encode general knowledge about the domain. The knowledge engineer writes down\nthe axioms for all the vocabulary terms. This pins down (to the extent possible) the\nmeaning of the terms, enabling the expert to check the content. Often, this step reveals\nmisconceptions or gaps in the vocabulary that must be ﬁxed by returning to step 3 and\niterating through the process.\n5. Encode a description of the speciﬁc problem instance. If the ontology is well thought\nout, this step will be easy. It will involve writing simple atomic sentences about in-\nstances of concepts that are already part of the ontology. For a logical agent, problem\ninstances are supplied by the sensors, whereas a “disembodied” knowledge base is sup-\nplied with additional sentences in the same way that traditional programs are supplied\nwith input data.\n6. Pose queries to the inference procedure and get answers. This is where the reward is:\nwe can let the inference procedure operate on the axioms and problem-speciﬁc facts to\nderive the facts we are interested in knowing. Thus, we avoid the need for writing an\napplication-speciﬁc solution algorithm.\n7. Debug the knowledge base. Alas, the answers to queries will seldom be correct on\nthe ﬁrst try. More precisely, the answers will be correct for the knowledge base as\nwritten, assuming that the inference procedure is sound, but they will not be the ones\nthat the user is expecting. For example, if an axiom is missing, some queries will not be\nanswerable from the knowledge base. A considerable debugging process could ensue.\nMissing axioms or axioms that are too weak can be easily identiﬁed by noticing places\nwhere the chain of reasoning stops unexpectedly. For example, if the knowledge base\nincludes a diagnostic rule (see Exercise 8.13) for ﬁnding the wumpus,\n∀s Smelly(s) ⇒Adjacent(Home(Wumpus), s) ,\ninstead of the biconditional, then the agent will never be able to prove the absence of\nwumpuses. Incorrect axioms can be identiﬁed because they are false statements about\nthe world. For example, the sentence\n∀x NumOfLegs(x, 4) ⇒Mammal(x)\nis false for reptiles, amphibians, and, more importantly, tables. The falsehood of this\nsentence can be determined independently of the rest of the knowledge base. In contrast,\nSection 8.4.\nKnowledge Engineering in First-Order Logic\n309\na typical error in a program looks like this:\noffset = position + 1 .\nIt is impossible to tell whether this statement is correct without looking at the rest of the\nprogram to see whether, for example, offset is used to refer to the current position,\nor to one beyond the current position, or whether the value of position is changed\nby another statement and so offset should also be changed again.\nTo understand this seven-step process better, we now apply it to an extended example—the\ndomain of electronic circuits.\n8.4.2\nThe electronic circuits domain\nWe will develop an ontology and knowledge base that allow us to reason about digital circuits\nof the kind shown in Figure 8.6. We follow the seven-step process for knowledge engineering.\nIdentify the task\nThere are many reasoning tasks associated with digital circuits. At the highest level, one\nanalyzes the circuit’s functionality. For example, does the circuit in Figure 8.6 actually add\nproperly? If all the inputs are high, what is the output of gate A2? Questions about the\ncircuit’s structure are also interesting. For example, what are all the gates connected to the\nﬁrst input terminal? Does the circuit contain feedback loops? These will be our tasks in this\nsection. There are more detailed levels of analysis, including those related to timing delays,\ncircuit area, power consumption, production cost, and so on. Each of these levels would\nrequire additional knowledge.\nAssemble the relevant knowledge\nWhat do we know about digital circuits? For our purposes, they are composed of wires and\ngates. Signals ﬂow along wires to the input terminals of gates, and each gate produces a\n1\n2\n3\n1\n2\nX1\nX2\nA1\nA2\nO1\nC1\nFigure 8.6\nA digital circuit C1, purporting to be a one-bit full adder. The ﬁrst two inputs\nare the two bits to be added, and the third input is a carry bit. The ﬁrst output is the sum, and\nthe second output is a carry bit for the next adder. The circuit contains two XOR gates, two\nAND gates, and one OR gate.\n310\n8.\nFirst-Order Logic\nsignal on the output terminal that ﬂows along another wire. To determine what these signals\nwill be, we need to know how the gates transform their input signals. There are four types\nof gates: AND, OR, and XOR gates have two input terminals, and NOT gates have one. All\ngates have one output terminal. Circuits, like gates, have input and output terminals.\nTo reason about functionality and connectivity, we do not need to talk about the wires\nthemselves, the paths they take, or the junctions where they come together. All that matters\nis the connections between terminals—we can say that one output terminal is connected to\nanother input terminal without having to say what actually connects them. Other factors such\nas the size, shape, color, or cost of the various components are irrelevant to our analysis.\nIf our purpose were something other than verifying designs at the gate level, the ontol-\nogy would be different. For example, if we were interested in debugging faulty circuits, then\nit would probably be a good idea to include the wires in the ontology, because a faulty wire\ncan corrupt the signal ﬂowing along it. For resolving timing faults, we would need to include\ngate delays. If we were interested in designing a product that would be proﬁtable, then the\ncost of the circuit and its speed relative to other products on the market would be important.\nDecide on a vocabulary\nWe now know that we want to talk about circuits, terminals, signals, and gates. The next step\nis to choose functions, predicates, and constants to represent them. First, we need to be able\nto distinguish gates from each other and from other objects. Each gate is represented as an\nobject named by a constant, about which we assert that it is a gate with, say, Gate(X1). The\nbehavior of each gate is determined by its type: one of the constants AND, OR, XOR, or\nNOT. Because a gate has exactly one type, a function is appropriate: Type(X1) = XOR.\nCircuits, like gates, are identiﬁed by a predicate: Circuit(C1).\nNext we consider terminals, which are identiﬁed by the predicate Terminal(x). A gate\nor circuit can have one or more input terminals and one or more output terminals. We use the\nfunction In(1, X1) to denote the ﬁrst input terminal for gate X1. A similar function Out is\nused for output terminals. The function Arity(c, i, j) says that circuit c has i input and j out-\nput terminals. The connectivity between gates can be represented by a predicate, Connected,\nwhich takes two terminals as arguments, as in Connected(Out(1, X1), In(1, X2)).\nFinally, we need to know whether a signal is on or off. One possibility is to use a unary\npredicate, On(t), which is true when the signal at a terminal is on. This makes it a little\ndifﬁcult, however, to pose questions such as “What are all the possible values of the signals\nat the output terminals of circuit C1 ?” We therefore introduce as objects two signal values, 1\nand 0, and a function Signal(t) that denotes the signal value for the terminal t.\nEncode general knowledge of the domain\nOne sign that we have a good ontology is that we require only a few general rules, which can\nbe stated clearly and concisely. These are all the axioms we will need:\n1. If two terminals are connected, then they have the same signal:\n∀t1, t2 Terminal(t1) ∧Terminal(t2) ∧Connected(t1, t2) ⇒\nSignal(t1) = Signal(t2) .\nSection 8.4.\nKnowledge Engineering in First-Order Logic\n311\n2. The signal at every terminal is either 1 or 0:\n∀t Terminal(t) ⇒Signal(t) = 1 ∨Signal(t) = 0 .\n3. Connected is commutative:\n∀t1, t2 Connected(t1, t2) ⇔Connected(t2, t1) .\n4. There are four types of gates:\n∀g Gate(g) ∧k = Type(g) ⇒k = AND ∨k = OR ∨k = XOR ∨k = NOT .\n5. An AND gate’s output is 0 if and only if any of its inputs is 0:\n∀g Gate(g) ∧Type(g) = AND ⇒\nSignal(Out(1, g)) = 0 ⇔∃n Signal(In(n, g)) = 0 .\n6. An OR gate’s output is 1 if and only if any of its inputs is 1:\n∀g Gate(g) ∧Type(g) = OR ⇒\nSignal(Out(1, g)) = 1 ⇔∃n Signal(In(n, g)) = 1 .\n7. An XOR gate’s output is 1 if and only if its inputs are different:\n∀g Gate(g) ∧Type(g) = XOR ⇒\nSignal(Out(1, g)) = 1 ⇔Signal(In(1, g))̸ = Signal(In(2, g)) .\n8. A NOT gate’s output is different from its input:\n∀g Gate(g) ∧(Type(g) = NOT) ⇒\nSignal(Out(1, g))̸ = Signal(In(1, g)) .\n9. The gates (except for NOT) have two inputs and one output.\n∀g Gate(g) ∧Type(g) = NOT ⇒Arity(g, 1, 1) .\n∀g Gate(g) ∧k = Type(g) ∧(k = AND ∨k = OR ∨k = XOR) ⇒\nArity(g, 2, 1)\n10. A circuit has terminals, up to its input and output arity, and nothing beyond its arity:\n∀c, i, j Circuit(c) ∧Arity(c, i, j) ⇒\n∀n (n ≤i ⇒Terminal(In(c, n))) ∧(n > i ⇒In(c, n) = Nothing) ∧\n∀n (n ≤j ⇒Terminal(Out(c, n))) ∧(n > j ⇒Out(c, n) = Nothing)\n11. Gates, terminals, signals, gate types, and Nothing are all distinct.\n∀g, t Gate(g) ∧Terminal(t) ⇒\ng̸ = t̸ = 1̸ = 0̸ = OR̸ = AND̸ = XOR̸ = NOT̸ = Nothing .\n12. Gates are circuits.\n∀g Gate(g) ⇒Circuit(g)\nEncode the speciﬁc problem instance\nThe circuit shown in Figure 8.6 is encoded as circuit C1 with the following description. First,\nwe categorize the circuit and its component gates:\nCircuit(C1) ∧Arity(C1, 3, 2)\nGate(X1) ∧Type(X1) = XOR\nGate(X2) ∧Type(X2) = XOR\nGate(A1) ∧Type(A1) = AND\nGate(A2) ∧Type(A2) = AND\nGate(O1) ∧Type(O1) = OR .\n312\n8.\nFirst-Order Logic\nThen, we show the connections between them:\nConnected(Out(1, X1), In(1, X2))\nConnected(In(1, C1), In(1, X1))\nConnected(Out(1, X1), In(2, A2))\nConnected(In(1, C1), In(1, A1))\nConnected(Out(1, A2), In(1, O1))\nConnected(In(2, C1), In(2, X1))\nConnected(Out(1, A1), In(2, O1))\nConnected(In(2, C1), In(2, A1))\nConnected(Out(1, X2), Out(1, C1)) Connected(In(3, C1), In(2, X2))\nConnected(Out(1, O1), Out(2, C1)) Connected(In(3, C1), In(1, A2)) .\nPose queries to the inference procedure\nWhat combinations of inputs would cause the ﬁrst output of C1 (the sum bit) to be 0 and the\nsecond output of C1 (the carry bit) to be 1?\n∃i1, i2, i3 Signal(In(1, C1)) = i1 ∧Signal(In(2, C1)) = i2 ∧Signal(In(3, C1)) = i3\n∧Signal(Out(1, C1)) = 0 ∧Signal(Out(2, C1)) = 1 .\nThe answers are substitutions for the variables i1, i2, and i3 such that the resulting sentence\nis entailed by the knowledge base. ASKVARS will give us three such substitutions:\n{i1/1, i2/1, i3/0}\n{i1/1, i2/0, i3/1}\n{i1/0, i2/1, i3/1} .\nWhat are the possible sets of values of all the terminals for the adder circuit?\n∃i1, i2, i3, o1, o2 Signal(In(1, C1)) = i1 ∧Signal(In(2, C1)) = i2\n∧Signal(In(3, C1)) = i3 ∧Signal(Out(1, C1)) = o1 ∧Signal(Out(2, C1)) = o2 .\nThis ﬁnal query will return a complete input–output table for the device, which can be used\nto check that it does in fact add its inputs correctly. This is a simple example of circuit\nveriﬁcation. We can also use the deﬁnition of the circuit to build larger digital systems, for\nCIRCUIT\nVERIFICATION\nwhich the same kind of veriﬁcation procedure can be carried out. (See Exercise 8.26.) Many\ndomains are amenable to the same kind of structured knowledge-base development, in which\nmore complex concepts are deﬁned on top of simpler concepts.\nDebug the knowledge base\nWe can perturb the knowledge base in various ways to see what kinds of erroneous behaviors\nemerge. For example, suppose we fail to read Section 8.2.8 and hence forget to assert that\n1̸ = 0. Suddenly, the system will be unable to prove any outputs for the circuit, except for\nthe input cases 000 and 110. We can pinpoint the problem by asking for the outputs of each\ngate. For example, we can ask\n∃i1, i2, o Signal(In(1, C1)) = i1 ∧Signal(In(2, C1)) = i2 ∧Signal(Out(1, X1)) ,\nwhich reveals that no outputs are known at X1 for the input cases 10 and 01. Then, we look\nat the axiom for XOR gates, as applied to X1:\nSignal(Out(1, X1)) = 1 ⇔Signal(In(1, X1))̸ = Signal(In(2, X1)) .\nIf the inputs are known to be, say, 1 and 0, then this reduces to\nSignal(Out(1, X1)) = 1 ⇔1̸ = 0 .\nNow the problem is apparent: the system is unable to infer that Signal(Out(1, X1)) = 1, so\nwe need to tell it that 1̸ = 0.",
+  "images": [
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_fig_8-6.png",
+      "type": "diagram",
+      "caption": "Figure 8.6"
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_18.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_19.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_20.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_21.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_22.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_23.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_24.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_25.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_26.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_27.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_28.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_29.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_30.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_31.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_32.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_33.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_34.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_35.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_36.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_37.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_38.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_39.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-4-knowledge-engineering-in-first-order-logic_eq_40.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

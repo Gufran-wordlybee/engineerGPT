@@ -1,0 +1,13 @@
+{
+  "section_id": "hardware-implementation",
+  "title": "Hardware Implementation",
+  "level": 2,
+  "chapter": "List of Logic Microoperations",
+  "parent_id": "list-of-logic-microoperations",
+  "children": [],
+  "start_page": 121,
+  "end_page": 121,
+  "text": "The hardware implementation of logic microoperations requires that logic gates be inserted for each bit or pair of bits in the registers to perform the required logic function. Although there are 16 logic microoperations, most computers use only four—AND, OR, XOR (exclusive-OR), and complement—from which all others can be derived.\nlogic circuit\nFigure 4-10 shows one stage of a circuit that generates the four basic logic microoperations. It consists of four gates and a multiplexer. Each of the four logic operations is generated through a gate that performs the required logic. The outputs of the gates are applied to the data inputs of the multiplexer. The two selection inputs S_1 and S_0 choose one of the data inputs of the multiplexer and direct its value to the output. The diagram shows one typical stage with subscript i. For a logic circuit with n bits, the diagram must be repeated n times for i = 0, 1, 2, ..., n - 1. The selection variables are applied to all stages. The function table in Fig. 4-10(b) lists the logic microoperations obtained for each combination of the selection variables.",
+  "images": [],
+  "equations": []
+}

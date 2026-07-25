@@ -1,0 +1,24 @@
+{
+  "section_id": "simd-array-processor",
+  "title": "SIMD Array Processor",
+  "level": 4,
+  "chapter": "Pipeline and Vector Processing",
+  "parent_id": "attached-array-processor",
+  "children": [],
+  "start_page": 335,
+  "end_page": 337,
+  "text": "An SIMD array processor is a computer with multiple processing units operating in parallel. The processing units are synchronized to perform the same operation under the control of a common control unit, thus providing a single instruction stream, multiple data stream (SIMD) organization. A general block diagram of an array processor is shown in Fig. 9-15. It contains a set of identical processing elements (PEs), each having a local memory M. Each processor element includes an ALU, a floating-point arithmetic unit, and working registers. The master control unit controls the operations in the processor elements. The main memory is used for storage of the program. The function of the master control unit is to decode the instructions and determine how the instruction is to be executed. Scalar and program control instructions are\nFigure 9-14 Attached array processor with host computer.\nFigure 9-15 SIMD array processor organization.\ndirectly executed within the master control unit. Vector instructions are broadcast to all PEs simultaneously. Each PE uses operands stored in its local memory. Vector operands are distributed to the local memories prior to the parallel execution of the instruction.\nConsider, for example, the vector addition C = A + B. The master control unit first stores the ith components a_i and b_i of A and B in local memory M_i for i = 1, 2, 3, \\ldots, n. It then broadcasts the floating-point add instruction c_i = a_i + b_i to all PEs, causing the addition to take place simultaneously. The components of c_i are stored in fixed locations in each local memory. This produces the desired vector sum in one add cycle.\nMasking schemes are used to control the status of each PE during the execution of vector instructions. Each PE has a flag that is set when the PE is active and reset when the PE is inactive. This ensures that only those PEs that need to participate are active during the execution of the instruction. For example, suppose that the array processor contains a set of 64 PEs. If a vector length of less than 64 data items is to be processed, the control unit selects the proper number of PEs to be active. Vectors of greater length than 64 must be divided into 64-word portions by the control unit.\nThe best known SIMD array processor is the ILLIAC IV computer developed at the University of Illinois and manufactured by the Burroughs Corp. This computer is no longer in operation. SIMD processors are highly specialized computers. They are suited primarily for numerical problems that can be expressed in vector or matrix form. However, they are not very efficient in other types of computations or in dealing with conventional data-processing programs.",
+  "images": [
+    {
+      "path": "images/simd-array-processor_img_1.png",
+      "type": "figure",
+      "caption": null
+    },
+    {
+      "path": "images/simd-array-processor_img_2.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

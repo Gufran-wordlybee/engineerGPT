@@ -1,0 +1,13 @@
+{
+  "section_id": "in-this-chapter-8",
+  "title": "IN THIS CHAPTER",
+  "level": 4,
+  "chapter": "Pipeline and Vector Processing",
+  "parent_id": "pipeline-and-vector-processing",
+  "children": [],
+  "start_page": 307,
+  "end_page": 307,
+  "text": "9-1 Parallel Processing\n9-2 Pipelining\n9-3 Arithmetic Pipeline\n9-4 Instruction Pipeline\n9-5 RISC Pipeline\n9-6 Vector Processing\n9-7 Array Processors",
+  "images": [],
+  "equations": []
+}

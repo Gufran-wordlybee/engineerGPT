@@ -1,0 +1,20 @@
+{
+  "section_id": "4-beyond-classical-search",
+  "title": "4 Beyond Classical Search",
+  "level": 2,
+  "chapter": "II: Problem-solving",
+  "parent_id": "ii-problem-solving",
+  "children": [
+    "4-1-local-search-algorithms-and-optimization-problems",
+    "4-2-local-search-in-continuous-spaces",
+    "4-3-searching-with-nondeterministic-actions",
+    "4-4-searching-with-partial-observations",
+    "4-5-online-search-agents-and-unknown-environments",
+    "4-6-summary-bibliographical-and-historical-notes-exercises"
+  ],
+  "start_page": 138,
+  "end_page": 138,
+  "text": "4\nBEYOND CLASSICAL\nSEARCH\nIn which we relax the simplifying assumptions of the previous chapter, thereby\ngetting closer to the real world.\nChapter 3 addressed a single category of problems: observable, deterministic, known envi-\nronments where the solution is a sequence of actions. In this chapter, we look at what happens\nwhen these assumptions are relaxed. We begin with a fairly simple case: Sections 4.1 and 4.2\ncover algorithms that perform purely local search in the state space, evaluating and modify-\ning one or more current states rather than systematically exploring paths from an initial state.\nThese algorithms are suitable for problems in which all that matters is the solution state, not\nthe path cost to reach it. The family of local search algorithms includes methods inspired by\nstatistical physics (simulated annealing) and evolutionary biology (genetic algorithms).\nThen, in Sections 4.3–4.4, we examine what happens when we relax the assumptions\nof determinism and observability. The key idea is that if an agent cannot predict exactly what\npercept it will receive, then it will need to consider what to do under each contingency that\nits percepts may reveal. With partial observability, the agent will also need to keep track of\nthe states it might be in.\nFinally, Section 4.5 investigates online search, in which the agent is faced with a state\nspace that is initially unknown and must be explored.\n4.1\nLOCAL SEARCH ALGORITHMS AND OPTIMIZATION PROBLEMS\nThe search algorithms that we have seen so far are designed to explore search spaces sys-\ntematically. This systematicity is achieved by keeping one or more paths in memory and by\nrecording which alternatives have been explored at each point along the path. When a goal is\nfound, the path to that goal also constitutes a solution to the problem. In many problems, how-\never, the path to the goal is irrelevant. For example, in the 8-queens problem (see page 71),\nwhat matters is the ﬁnal conﬁguration of queens, not the order in which they are added. The\nsame general property holds for many important applications such as integrated-circuit de-\nsign, factory-ﬂoor layout, job-shop scheduling, automatic programming, telecommunications\nnetwork optimization, vehicle routing, and portfolio management.\n120",
+  "images": [],
+  "equations": []
+}

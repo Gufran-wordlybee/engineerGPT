@@ -1,0 +1,29 @@
+{
+  "section_id": "digital-components",
+  "title": "Digital Components",
+  "level": 1,
+  "chapter": "Digital Components",
+  "parent_id": null,
+  "children": [
+    "in-this-chapter-1",
+    "2-1-integrated-circuits",
+    "2-2-decoders",
+    "2-3-multiplexers",
+    "2-4-registers",
+    "register-with-parallel-load",
+    "2-5-shift-registers",
+    "bidirectional-shift-register-with-parallel-load",
+    "2-6-binary-counters",
+    "binary-counter-with-parallel-load",
+    "2-7-memory-unit",
+    "random-access-memory",
+    "read-only-memory",
+    "types-of-roms",
+    "references-1"
+  ],
+  "start_page": 55,
+  "end_page": 55,
+  "text": "",
+  "images": [],
+  "equations": []
+}

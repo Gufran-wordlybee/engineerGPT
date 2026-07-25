@@ -1,0 +1,270 @@
+{
+  "section_id": "15-3-hidden-markov-models",
+  "title": "15.3 Hidden Markov Models",
+  "level": 3,
+  "chapter": "IV: Uncertain knowledge and reasoning",
+  "parent_id": "15-probabilistic-reasoning-over-time",
+  "children": [],
+  "start_page": 596,
+  "end_page": 601,
+  "text": "578\n15.\nProbabilistic Reasoning over Time\n1. The forward message f1:t = P(Xt | e1:t) is replaced by the message\nm1:t =\nmax\nx1...xt−1 P(x1, . . . , xt−1, Xt | e1:t) ,\nthat is, the probabilities of the most likely path to each state xt; and\n2. the summation over xt in Equation (15.5) is replaced by the maximization over xt in\nEquation (15.11).\nThus, the algorithm for computing the most likely sequence is similar to ﬁltering: it runs for-\nward along the sequence, computing the m message at each time step, using Equation (15.11).\nThe progress of this computation is shown in Figure 15.5(b). At the end, it will have the\nprobability for the most likely sequence reaching each of the ﬁnal states. One can thus easily\nselect the most likely sequence overall (the states outlined in bold). In order to identify the\nactual sequence, as opposed to just computing its probability, the algorithm will also need to\nrecord, for each state, the best state that leads to it; these are indicated by the bold arrows in\nFigure 15.5(b). The optimal sequence is identiﬁed by following these bold arrows backwards\nfrom the best ﬁnal state.\nThe algorithm we have just described is called the Viterbi algorithm, after its inventor.\nVITERBI ALGORITHM\nLike the ﬁltering algorithm, its time complexity is linear in t, the length of the sequence.\nUnlike ﬁltering, which uses constant space, its space requirement is also linear in t. This\nis because the Viterbi algorithm needs to keep the pointers that identify the best sequence\nleading to each state.\n15.3\nHIDDEN MARKOV MODELS\nThe preceding section developed algorithms for temporal probabilistic reasoning using a gen-\neral framework that was independent of the speciﬁc form of the transition and sensor models.\nIn this and the next two sections, we discuss more concrete models and applications that\nillustrate the power of the basic algorithms and in some cases allow further improvements.\nWe begin with the hidden Markov model, or HMM. An HMM is a temporal proba-\nHIDDEN MARKOV\nMODEL\nbilistic model in which the state of the process is described by a single discrete random vari-\nable. The possible values of the variable are the possible states of the world. The umbrella\nexample described in the preceding section is therefore an HMM, since it has just one state\nvariable: Raint. What happens if you have a model with two or more state variables? You can\nstill ﬁt it into the HMM framework by combining the variables into a single “megavariable”\nwhose values are all possible tuples of values of the individual state variables. We will see\nthat the restricted structure of HMMs allows for a simple and elegant matrix implementation\nof all the basic algorithms.4\n4 The reader unfamiliar with basic operations on vectors and matrices might wish to consult Appendix A before\nproceeding with this section.\nSection 15.3.\nHidden Markov Models\n579\n15.3.1\nSimpliﬁed matrix algorithms\nWith a single, discrete state variable Xt, we can give concrete form to the representations\nof the transition model, the sensor model, and the forward and backward messages. Let the\nstate variable Xt have values denoted by integers 1, . . . , S, where S is the number of possible\nstates. The transition model P(Xt | Xt−1) becomes an S × S matrix T, where\nTij = P(Xt = j | Xt−1 = i) .\nThat is, Tij is the probability of a transition from state i to state j. For example, the transition\nmatrix for the umbrella world is\nT = P(Xt | Xt−1) =\n\n 0.7 0.3\n0.3 0.7\n\u000e\n.\nWe also put the sensor model in matrix form. In this case, because the value of the evidence\nvariable Et is known at time t (call it et), we need only specify, for each state, how likely it\nis that the state causes et to appear: we need P(et | Xt = i) for each state i. For mathematical\nconvenience we place these values into an S × S diagonal matrix, Ot whose ith diagonal\nentry is P(et | Xt = i) and whose other entries are 0. For example, on day 1 in the umbrella\nworld of Figure 15.5, U1 = true, and on day 3, U3 = false, so, from Figure 15.2, we have\nO1 =\n\n 0.9\n0\n0\n0.2\n\u000e\n;\nO3 =\n\n 0.1\n0\n0\n0.8\n\u000e\n.\nNow, if we use column vectors to represent the forward and backward messages, all the com-\nputations become simple matrix–vector operations. The forward equation (15.5) becomes\nf1:t+1 = α Ot+1T⊤f1:t\n(15.12)\nand the backward equation (15.9) becomes\nbk+1:t = TOk+1bk+2:t .\n(15.13)\nFrom these equations, we can see that the time complexity of the forward–backward algo-\nrithm (Figure 15.4) applied to a sequence of length t is O(S2t), because each step requires\nmultiplying an S-element vector by an S × S matrix. The space requirement is O(St), be-\ncause the forward pass stores t vectors of size S.\nBesides providing an elegant description of the ﬁltering and smoothing algorithms for\nHMMs, the matrix formulation reveals opportunities for improved algorithms. The ﬁrst is\na simple variation on the forward–backward algorithm that allows smoothing to be carried\nout in constant space, independently of the length of the sequence. The idea is that smooth-\ning for any particular time slice k requires the simultaneous presence of both the forward and\nbackward messages, f1:k and bk+1:t, according to Equation (15.8). The forward–backward al-\ngorithm achieves this by storing the fs computed on the forward pass so that they are available\nduring the backward pass. Another way to achieve this is with a single pass that propagates\nboth f and b in the same direction. For example, the “forward” message f can be propagated\nbackward if we manipulate Equation (15.12) to work in the other direction:\nf1:t = α′(T⊤)−1O−1\nt+1f1:t+1 .\nThe modiﬁed smoothing algorithm works by ﬁrst running the standard forward pass to com-\npute ft:t (forgetting all the intermediate results) and then running the backward pass for both\n580\n15.\nProbabilistic Reasoning over Time\nfunction FIXED-LAG-SMOOTHING(et,hmm,d) returns a distribution over Xt−d\ninputs: et, the current evidence for time step t\nhmm, a hidden Markov model with S × S transition matrix T\nd, the length of the lag for smoothing\npersistent: t, the current time, initially 1\nf, the forward message P(Xt|e1:t), initially hmm.PRIOR\nB, the d-step backward transformation matrix, initially the identity matrix\net−d:t, double-ended list of evidence from t −d to t, initially empty\nlocal variables: Ot−d, Ot, diagonal matrices containing the sensor model information\nadd et to the end of et−d:t\nOt ←diagonal matrix containing P(et|Xt)\nif t > d then\nf ←FORWARD(f, et)\nremove et−d−1 from the beginning of et−d:t\nOt−d ←diagonal matrix containing P(et−d|Xt−d)\nB ←O−1\nt−dT−1BTOt\nelse B ←BTOt\nt ←t + 1\nif t > d then return NORMALIZE(f × B1) else return null\nFigure 15.6\nAn algorithm for smoothing with a ﬁxed time lag of d steps, implemented\nas an online algorithm that outputs the new smoothed estimate given the observation for a\nnew time step. Notice that the ﬁnal output NORMALIZE(f × B1) is just α f × b, by Equa-\ntion (15.14).\nb and f together, using them to compute the smoothed estimate at each step. Since only one\ncopy of each message is needed, the storage requirements are constant (i.e., independent of\nt, the length of the sequence). There are two signiﬁcant restrictions on this algorithm: it re-\nquires that the transition matrix be invertible and that the sensor model have no zeroes—that\nis, that every observation be possible in every state.\nA second area in which the matrix formulation reveals an improvement is in online\nsmoothing with a ﬁxed lag. The fact that smoothing can be done in constant space suggests\nthat there should exist an efﬁcient recursive algorithm for online smoothing—that is, an al-\ngorithm whose time complexity is independent of the length of the lag. Let us suppose that\nthe lag is d; that is, we are smoothing at time slice t −d, where the current time is t. By\nEquation (15.8), we need to compute\nα f1:t−d × bt−d+1:t\nfor slice t −d. Then, when a new observation arrives, we need to compute\nα f1:t−d+1 × bt−d+2:t+1\nfor slice t −d + 1. How can this be done incrementally? First, we can compute f1:t−d+1 from\nf1:t−d, using the standard ﬁltering process, Equation (15.5).\nSection 15.3.\nHidden Markov Models\n581\nComputing the backward message incrementally is trickier, because there is no simple\nrelationship between the old backward message bt−d+1:t and the new backward message\nbt−d+2:t+1. Instead, we will examine the relationship between the old backward message\nbt−d+1:t and the backward message at the front of the sequence, bt+1:t. To do this, we apply\nEquation (15.13) d times to get\nbt−d+1:t =\n\u001f\nt\u0019\ni = t−d+1\nTOi\n \nbt+1:t = Bt−d+1:t1 ,\n(15.14)\nwhere the matrix Bt−d+1:t is the product of the sequence of T and O matrices. B can be\nthought of as a “transformation operator” that transforms a later backward message into an\nearlier one. A similar equation holds for the new backward messages after the next observa-\ntion arrives:\nbt−d+2:t+1 =\n\u001f\nt+1\n\u0019\ni = t−d+2\nTOi\n \nbt+2:t+1 = Bt−d+2:t+11 .\n(15.15)\nExamining the product expressions in Equations (15.14) and (15.15), we see that they have a\nsimple relationship: to get the second product, “divide” the ﬁrst product by the ﬁrst element\nTOt−d+1, and multiply by the new last element TOt+1. In matrix language, then, there is a\nsimple relationship between the old and new B matrices:\nBt−d+2:t+1 = O−1\nt−d+1T−1Bt−d+1:tTOt+1 .\n(15.16)\nThis equation provides an incremental update for the B matrix, which in turn (through Equa-\ntion (15.15)) allows us to compute the new backward message bt−d+2:t+1. The complete\nalgorithm, which requires storing and updating f and B, is shown in Figure 15.6.\n15.3.2\nHidden Markov model example: Localization\nOn page 145, we introduced a simple form of the localization problem for the vacuum world.\nIn that version, the robot had a single nondeterministic Move action and its sensors reported\nperfectly whether or not obstacles lay immediately to the north, south, east, and west; the\nrobot’s belief state was the set of possible locations it could be in.\nHere we make the problem slightly more realistic by including a simple probability\nmodel for the robot’s motion and by allowing for noise in the sensors. The state variable Xt\nrepresents the location of the robot on the discrete grid; the domain of this variable is the\nset of empty squares {s1, . . . , sn}. Let NEIGHBORS(s) be the set of empty squares that are\nadjacent to s and let N(s) be the size of that set. Then the transition model for Move action\nsays that the robot is equally likely to end up at any neighboring square:\nP(Xt+1 = j | Xt = i) = Tij = (1/N(i) if j ∈NEIGHBORS(i) else 0) .\nWe don’t know where the robot starts, so we will assume a uniform distribution over all the\nsquares; that is, P(X0 = i) = 1/n. For the particular environment we consider (Figure 15.7),\nn = 42 and the transition matrix T has 42 × 42 = 1764 entries.\nThe sensor variable Et has 16 possible values, each a four-bit sequence giving the pres-\nence or absence of an obstacle in a particular compass direction. We will use the notation\n582\n15.\nProbabilistic Reasoning over Time\n(a) Posterior distribution over robot location after E1 = NSW\n(b) Posterior distribution over robot location after E1 = NSW, E2 = NS\nFigure 15.7\nPosterior distribution over robot location: (a) one observation E1 = NSW;\n(b) after a second observation E2 = NS. The size of each disk corresponds to the probability\nthat the robot is at that location. The sensor error rate is ϵ = 0.2.\nNS, for example, to mean that the north and south sensors report an obstacle and the east and\nwest do not. Suppose that each sensor’s error rate is ϵ and that errors occur independently for\nthe four sensor directions. In that case, the probability of getting all four bits right is (1 −ϵ)4\nand the probability of getting them all wrong is ϵ4. Furthermore, if dit is the discrepancy—the\nnumber of bits that are different—between the true values for square i and the actual reading\net, then the probability that a robot in square i would receive a sensor reading et is\nP(Et = et | Xt = i) = Otii = (1 −ϵ)4−ditϵdit .\nFor example, the probability that a square with obstacles to the north and south would produce\na sensor reading NSE is (1 −ϵ)3ϵ1.\nGiven the matrices T and Ot, the robot can use Equation (15.12) to compute the pos-\nterior distribution over locations—that is, to work out where it is. Figure 15.7 shows the\ndistributions P(X1 | E1 = NSW) and P(X2 | E1 = NSW, E2 = NS). This is the same maze\nwe saw before in Figure 4.18 (page 146), but there we used logical ﬁltering to ﬁnd the loca-\ntions that were possible, assuming perfect sensing. Those same locations are still the most\nlikely with noisy sensing, but now every location has some nonzero probability.\nIn addition to ﬁltering to estimate its current location, the robot can use smoothing\n(Equation (15.13)) to work out where it was at any given past time—for example, where it\nbegan at time 0—and it can use the Viterbi algorithm to work out the most likely path it has\nSection 15.3.\nHidden Markov Models\n583\n 0.5\n 1\n 1.5\n 2\n 2.5\n 3\n 3.5\n 4\n 4.5\n 5\n 5.5\n 6\n 0\n 5\n 10\n 15\n 20\n 25\n 30\n 35\n 40\nLocalization error\nNumber of observations\nε = 0.20\nε = 0.10\nε = 0.05\nε = 0.02\nε = 0.00\n 0.1\n 0.2\n 0.3\n 0.4\n 0.5\n 0.6\n 0.7\n 0.8\n 0.9\n 1\n 0\n 5\n 10\n 15\n 20\n 25\n 30\n 35\n 40\nPath accuracy\nNumber of observations\nε = 0.00\nε = 0.02\nε = 0.05\nε = 0.10\nε = 0.20\n(a)\n(b)\nFigure 15.8\nPerformance of HMM localization as a function of the length of the observa-\ntion sequence for various different values of the sensor error probability ϵ; data averaged over\n400 runs. (a) The localization error, deﬁned as the Manhattan distance from the true location.\n(b) The Viterbi path accuracy, deﬁned as the fraction of correct states on the Viterbi path.\ntaken to get where it is now. Figure 15.8 shows the localization error and Viterbi path accuracy\nfor various values of the per-bit sensor error rate ϵ. Even when ϵ is 20%—which means that\nthe overall sensor reading is wrong 59% of the time—the robot is usually able to work out its\nlocation within two squares after 25 observations. This is because of the algorithm’s ability\nto integrate evidence over time and to take into account the probabilistic constraints imposed\non the location sequence by the transition model. When ϵ is 10%, the performance after\na half-dozen observations is hard to distinguish from the performance with perfect sensing.\nExercise 15.7 asks you to explore how robust the HMM localization algorithm is to errors in\nthe prior distribution P(X0) and in the transition model itself. Broadly speaking, high levels\nof localization and path accuracy are maintained even in the face of substantial errors in the\nmodels used.\nThe state variable for the example we have considered in this section is a physical\nlocation in the world. Other problems can, of course, include other aspects of the world.\nExercise 15.8 asks you to consider a version of the vacuum robot that has the policy of going\nstraight for as long as it can; only when it encounters an obstacle does it change to a new\n(randomly selected) heading. To model this robot, each state in the model consists of a\n(location, heading) pair. For the environment in Figure 15.7, which has 42 empty squares,\nthis leads to 168 states and a transition matrix with 1682 = 28, 224 entries—still a manageable\nnumber. If we add the possibility of dirt in the squares, the number of states is multiplied by\n242 and the transition matrix ends up with more than 1029 entries—no longer a manageable\nnumber; Section 15.5 shows how to use dynamic Bayesian networks to model domains with\nmany state variables. If we allow the robot to move continuously rather than in a discrete\ngrid, the number of states becomes inﬁnite; the next section shows how to handle this case.",
+  "images": [
+    {
+      "path": "images/15-3-hidden-markov-models_diagram_1.png",
+      "type": "diagram",
+      "caption": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_fig_15-7.png",
+      "type": "diagram",
+      "caption": "Figure 15.7"
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_diagram_3.png",
+      "type": "diagram",
+      "caption": null
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/15-3-hidden-markov-models_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_15-12.png",
+      "type": "equation",
+      "label": "15.12"
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_15-13.png",
+      "type": "equation",
+      "label": "15.13"
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_18.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_19.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_20.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_21.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_22.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_23.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_24.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_25.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_26.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_27.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_15-14.png",
+      "type": "equation",
+      "label": "15.14"
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_29.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_30.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_31.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_32.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_15-15.png",
+      "type": "equation",
+      "label": "15.15"
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_34.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_35.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_15-16.png",
+      "type": "equation",
+      "label": "15.16"
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_37.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_38.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_39.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_40.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_41.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_42.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_43.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_44.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_45.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_46.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_47.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-3-hidden-markov-models_eq_48.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "section_id": "19-knowledge-in-learning",
+  "title": "19 Knowledge in Learning",
+  "level": 2,
+  "chapter": "V: Learning",
+  "parent_id": "v-learning",
+  "children": [
+    "19-1-alogical-formulation-of-learning",
+    "19-2-knowledge-in-learning",
+    "19-3-explanation-based-learning",
+    "19-4-learning-using-relevance-information",
+    "19-5-inductive-logic-programming",
+    "19-6-summary-bibliographical-and-historical-notes-exercises"
+  ],
+  "start_page": 786,
+  "end_page": 786,
+  "text": "19\nKNOWLEDGE IN\nLEARNING\nIn which we examine the problem of learning when you know something already.\nIn all of the approaches to learning described in the previous chapter, the idea is to construct\na function that has the input–output behavior observed in the data. In each case, the learning\nmethods can be understood as searching a hypothesis space to ﬁnd a suitable function, starting\nfrom only a very basic assumption about the form of the function, such as “second-degree\npolynomial” or “decision tree” and perhaps a preference for simpler hypotheses. Doing this\namounts to saying that before you can learn something new, you must ﬁrst forget (almost)\neverything you know. In this chapter, we study learning methods that can take advantage\nof prior knowledge about the world. In most cases, the prior knowledge is represented\nPRIOR KNOWLEDGE\nas general ﬁrst-order logical theories; thus for the ﬁrst time we bring together the work on\nknowledge representation and learning.\n19.1\nA LOGICAL FORMULATION OF LEARNING\nChapter 18 deﬁned pure inductive learning as a process of ﬁnding a hypothesis that agrees\nwith the observed examples. Here, we specialize this deﬁnition to the case where the hypoth-\nesis is represented by a set of logical sentences. Example descriptions and classiﬁcations will\nalso be logical sentences, and a new example can be classiﬁed by inferring a classiﬁcation\nsentence from the hypothesis and the example description. This approach allows for incre-\nmental construction of hypotheses, one sentence at a time. It also allows for prior knowledge,\nbecause sentences that are already known can assist in the classiﬁcation of new examples.\nThe logical formulation of learning may seem like a lot of extra work at ﬁrst, but it turns out\nto clarify many of the issues in learning. It enables us to go well beyond the simple learning\nmethods of Chapter 18 by using the full power of logical inference in the service of learning.\n19.1.1\nExamples and hypotheses\nRecall from Chapter 18 the restaurant learning problem: learning a rule for deciding whether\nto wait for a table. Examples were described by attributes such as Alternate, Bar, Fri/Sat,\n768",
+  "images": [],
+  "equations": []
+}

@@ -1,0 +1,15 @@
+{
+  "section_id": "references-1",
+  "title": "REFERENCES",
+  "level": 2,
+  "chapter": "Digital Components",
+  "parent_id": "digital-components",
+  "children": [
+    "chapter-three"
+  ],
+  "start_page": 78,
+  "end_page": 79,
+  "text": "Hill, F. J., and G. R. Peterson, Introduction to Switching Theory and Logical Design, 3rd ed. New York: John Wiley, 1981.\n2. Mano, M. M., Digital Design, 2nd ed. Englewood Cliffs, NJ: Prentice Hall, 1991.\nRoth, C. H., Fundamentals of Logic Design, 3rd ed. St. Paul, MN: West Publishing, 1985.\n4. Sandige, R. S., Modern Digital Design. New York: McGraw-Hill, 1990.\n5. Shiva, S. G., Introduction to Logic Design. Glenview, Il: Scott, Foresman, 1988.\nWakerly, J. F., Digital Design Principles and Practices. Englewood Cliffs, NJ: Prentice Hall, 1990.\nWard, S. A., and R. H. Halstead, Jr., Computation Structures. Cambridge, MA: MIT Press, 1990.",
+  "images": [],
+  "equations": []
+}

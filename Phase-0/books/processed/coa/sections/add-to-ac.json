@@ -1,0 +1,13 @@
+{
+  "section_id": "add-to-ac",
+  "title": "ADD to AC",
+  "level": 4,
+  "chapter": "5-6 Memory-Reference Instructions",
+  "parent_id": "5-6-memory-reference-instructions",
+  "children": [],
+  "start_page": 156,
+  "end_page": 156,
+  "text": "This instruction adds the content of the memory word specified by the effective address to the value of AC. The sum is transferred into AC and the output carry C_{\\rm out} is transferred to the E (extended accumulator) flip-flop. The microoperations needed to execute this instruction are\nD_1T_4: DR \\leftarrow M[AR]\nD_1T_5: AC \\leftarrow AC + DR, E \\leftarrow C_{out}, SC \\leftarrow 0\nThe same two timing signals, T_4 and T_5, are used again but with operation decoder D_1 instead of D_0, which was used for the AND instruction. After the instruction is fetched from memory and decoded, only one output of the operation decoder will be active, and that output determines the sequence of microoperations that the control follows during the execution of a memory-reference instruction.",
+  "images": [],
+  "equations": []
+}

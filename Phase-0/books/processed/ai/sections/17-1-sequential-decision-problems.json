@@ -1,0 +1,150 @@
+{
+  "section_id": "17-1-sequential-decision-problems",
+  "title": "17.1 Sequential Decision Problems",
+  "level": 3,
+  "chapter": "IV: Uncertain knowledge and reasoning",
+  "parent_id": "17-making-complex-decisions",
+  "children": [],
+  "start_page": 663,
+  "end_page": 669,
+  "text": "17\nMAKING COMPLEX\nDECISIONS\nIn which we examine methods for deciding what to do today, given that we may\ndecide again tomorrow.\nIn this chapter, we address the computational issues involved in making decisions in a stochas-\ntic environment. Whereas Chapter 16 was concerned with one-shot or episodic decision\nproblems, in which the utility of each action’s outcome was well known, we are concerned\nhere with sequential decision problems, in which the agent’s utility depends on a sequence\nSEQUENTIAL\nDECISION PROBLEM\nof decisions. Sequential decision problems incorporate utilities, uncertainty, and sensing,\nand include search and planning problems as special cases. Section 17.1 explains how se-\nquential decision problems are deﬁned, and Sections 17.2 and 17.3 explain how they can\nbe solved to produce optimal behavior that balances the risks and rewards of acting in an\nuncertain environment. Section 17.4 extends these ideas to the case of partially observable\nenvironments, and Section 17.4.3 develops a complete design for decision-theoretic agents in\npartially observable environments, combining dynamic Bayesian networks from Chapter 15\nwith decision networks from Chapter 16.\nThe second part of the chapter covers environments with multiple agents. In such en-\nvironments, the notion of optimal behavior is complicated by the interactions among the\nagents. Section 17.5 introduces the main ideas of game theory, including the idea that ra-\ntional agents might need to behave randomly. Section 17.6 looks at how multiagent systems\ncan be designed so that multiple agents can achieve a common goal.\n17.1\nSEQUENTIAL DECISION PROBLEMS\nSuppose that an agent is situated in the 4 × 3 environment shown in Figure 17.1(a). Beginning\nin the start state, it must choose an action at each time step. The interaction with the environ-\nment terminates when the agent reaches one of the goal states, marked +1 or –1. Just as for\nsearch problems, the actions available to the agent in each state are given by ACTIONS(s),\nsometimes abbreviated to A(s); in the 4 × 3 environment, the actions in every state are Up,\nDown, Left, and Right. We assume for now that the environment is fully observable, so that\nthe agent always knows where it is.\n645\n646\n17.\nMaking Complex Decisions\n1\n2\n3\n1\n2\n3\n4\nSTART\n0.8\n0.1\n0.1\n(a)\n(b)\n–1\n+ 1\nFigure 17.1\n(a) A simple 4 ×3 environment that presents the agent with a sequential\ndecision problem. (b) Illustration of the transition model of the environment: the “intended”\noutcome occurs with probability 0.8, but with probability 0.2 the agent moves at right angles\nto the intended direction. A collision with a wall results in no movement. The two terminal\nstates have reward +1 and –1, respectively, and all other states have a reward of –0.04.\nIf the environment were deterministic, a solution would be easy: [Up, Up, Right, Right,\nRight]. Unfortunately, the environment won’t always go along with this solution, because the\nactions are unreliable. The particular model of stochastic motion that we adopt is illustrated\nin Figure 17.1(b). Each action achieves the intended effect with probability 0.8, but the rest\nof the time, the action moves the agent at right angles to the intended direction. Furthermore,\nif the agent bumps into a wall, it stays in the same square. For example, from the start square\n(1,1), the action Up moves the agent to (1,2) with probability 0.8, but with probability 0.1, it\nmoves right to (2,1), and with probability 0.1, it moves left, bumps into the wall, and stays in\n(1,1). In such an environment, the sequence [Up, Up, Right, Right, Right] goes up around\nthe barrier and reaches the goal state at (4,3) with probability 0.85 = 0.32768. There is also a\nsmall chance of accidentally reaching the goal by going the other way around with probability\n0.14 × 0.8, for a grand total of 0.32776. (See also Exercise 17.1.)\nAs in Chapter 3, the transition model (or just “model,” whenever no confusion can\narise) describes the outcome of each action in each state. Here, the outcome is stochastic,\nso we write P(s′ | s, a) to denote the probability of reaching state s′ if action a is done in\nstate s. We will assume that transitions are Markovian in the sense of Chapter 15, that is, the\nprobability of reaching s′ from s depends only on s and not on the history of earlier states. For\nnow, you can think of P(s′ | s, a) as a big three-dimensional table containing probabilities.\nLater, in Section 17.4.3, we will see that the transition model can be represented as a dynamic\nBayesian network, just as in Chapter 15.\nTo complete the deﬁnition of the task environment, we must specify the utility function\nfor the agent. Because the decision problem is sequential, the utility function will depend\non a sequence of states—an environment history—rather than on a single state. Later in\nthis section, we investigate how such utility functions can be speciﬁed in general; for now,\nwe simply stipulate that in each state s, the agent receives a reward R(s), which may be\nREWARD\npositive or negative, but must be bounded. For our particular example, the reward is −0.04\nin all states except the terminal states (which have rewards +1 and –1). The utility of an\nSection 17.1.\nSequential Decision Problems\n647\nenvironment history is just (for now) the sum of the rewards received. For example, if the\nagent reaches the +1 state after 10 steps, its total utility will be 0.6. The negative reward of\n–0.04 gives the agent an incentive to reach (4,3) quickly, so our environment is a stochastic\ngeneralization of the search problems of Chapter 3. Another way of saying this is that the\nagent does not enjoy living in this environment and so wants to leave as soon as possible.\nTo sum up: a sequential decision problem for a fully observable, stochastic environment\nwith a Markovian transition model and additive rewards is called a Markov decision process,\nMARKOV DECISION\nPROCESS\nor MDP, and consists of a set of states (with an initial state s0); a set ACTIONS(s) of actions\nin each state; a transition model P(s′ | s, a); and a reward function R(s).1\nThe next question is, what does a solution to the problem look like? We have seen that\nany ﬁxed action sequence won’t solve the problem, because the agent might end up in a state\nother than the goal. Therefore, a solution must specify what the agent should do for any state\nthat the agent might reach. A solution of this kind is called a policy. It is traditional to denote\nPOLICY\na policy by π, and π(s) is the action recommended by the policy π for state s. If the agent\nhas a complete policy, then no matter what the outcome of any action, the agent will always\nknow what to do next.\nEach time a given policy is executed starting from the initial state, the stochastic nature\nof the environment may lead to a different environment history. The quality of a policy is\ntherefore measured by the expected utility of the possible environment histories generated\nby that policy. An optimal policy is a policy that yields the highest expected utility. We\nOPTIMAL POLICY\nuse π∗to denote an optimal policy. Given π∗, the agent decides what to do by consulting\nits current percept, which tells it the current state s, and then executing the action π∗(s). A\npolicy represents the agent function explicitly and is therefore a description of a simple reﬂex\nagent, computed from the information used for a utility-based agent.\nAn optimal policy for the world of Figure 17.1 is shown in Figure 17.2(a). Notice\nthat, because the cost of taking a step is fairly small compared with the penalty for ending\nup in (4,2) by accident, the optimal policy for the state (3,1) is conservative. The policy\nrecommends taking the long way round, rather than taking the shortcut and thereby risking\nentering (4,2).\nThe balance of risk and reward changes depending on the value of R(s) for the nonter-\nminal states. Figure 17.2(b) shows optimal policies for four different ranges of R(s). When\nR(s) ≤−1.6284, life is so painful that the agent heads straight for the nearest exit, even if\nthe exit is worth –1. When −0.4278 ≤R(s) ≤−0.0850, life is quite unpleasant; the agent\ntakes the shortest route to the +1 state and is willing to risk falling into the –1 state by acci-\ndent. In particular, the agent takes the shortcut from (3,1). When life is only slightly dreary\n(−0.0221 < R(s) < 0), the optimal policy takes no risks at all. In (4,1) and (3,2), the agent\nheads directly away from the –1 state so that it cannot fall in by accident, even though this\nmeans banging its head against the wall quite a few times. Finally, if R(s) > 0, then life is\npositively enjoyable and the agent avoids both exits. As long as the actions in (4,1), (3,2),\n1 Some deﬁnitions of MDPs allow the reward to depend on the action and outcome too, so the reward function\nis R(s, a, s′). This simpliﬁes the description of some environments but does not change the problem in any\nfundamental way, as shown in Exercise 17.4.\n648\n17.\nMaking Complex Decisions\n1\n2\n3\n1\n2\n3\n+ 1\n–1\n4\n–1\n+1\n R(s) < –1.6284\n(a)\n(b)\n– 0.0221 < R(s) < 0 \n–1\n+1\n–1\n+1\n–1\n+1\nR(s) > 0 \n– 0.4278 < R(s) < – 0.0850\nFigure 17.2\n(a) An optimal policy for the stochastic environment with R(s) = −0.04 in\nthe nonterminal states. (b) Optimal policies for four different ranges of R(s).\nand (3,3) are as shown, every policy is optimal, and the agent obtains inﬁnite total reward be-\ncause it never enters a terminal state. Surprisingly, it turns out that there are six other optimal\npolicies for various ranges of R(s); Exercise 17.5 asks you to ﬁnd them.\nThe careful balancing of risk and reward is a characteristic of MDPs that does not\narise in deterministic search problems; moreover, it is a characteristic of many real-world\ndecision problems. For this reason, MDPs have been studied in several ﬁelds, including\nAI, operations research, economics, and control theory. Dozens of algorithms have been\nproposed for calculating optimal policies. In sections 17.2 and 17.3 we describe two of the\nmost important algorithm families. First, however, we must complete our investigation of\nutilities and policies for sequential decision problems.\n17.1.1\nUtilities over time\nIn the MDP example in Figure 17.1, the performance of the agent was measured by a sum of\nrewards for the states visited. This choice of performance measure is not arbitrary, but it is\nnot the only possibility for the utility function on environment histories, which we write as\nUh([s0, s1, . . . , sn]). Our analysis draws on multiattribute utility theory (Section 16.4) and\nis somewhat technical; the impatient reader may wish to skip to the next section.\nThe ﬁrst question to answer is whether there is a ﬁnite horizon or an inﬁnite horizon\nFINITE HORIZON\nINFINITE HORIZON\nfor decision making. A ﬁnite horizon means that there is a ﬁxed time N after which nothing\nmatters—the game is over, so to speak. Thus, Uh([s0, s1, . . . , sN+k]) = Uh([s0, s1, . . . , sN])\nfor all k > 0. For example, suppose an agent starts at (3,1) in the 4 × 3 world of Figure 17.1,\nand suppose that N = 3. Then, to have any chance of reaching the +1 state, the agent must\nhead directly for it, and the optimal action is to go Up. On the other hand, if N = 100,\nthen there is plenty of time to take the safe route by going Left. So, with a ﬁnite horizon,\nSection 17.1.\nSequential Decision Problems\n649\nthe optimal action in a given state could change over time. We say that the optimal policy\nfor a ﬁnite horizon is nonstationary. With no ﬁxed time limit, on the other hand, there is\nNONSTATIONARY\nPOLICY\nno reason to behave differently in the same state at different times. Hence, the optimal ac-\ntion depends only on the current state, and the optimal policy is stationary. Policies for the\nSTATIONARY POLICY\ninﬁnite-horizon case are therefore simpler than those for the ﬁnite-horizon case, and we deal\nmainly with the inﬁnite-horizon case in this chapter. (We will see later that for partially ob-\nservable environments, the inﬁnite-horizon case is not so simple.) Note that “inﬁnite horizon”\ndoes not necessarily mean that all state sequences are inﬁnite; it just means that there is no\nﬁxed deadline. In particular, there can be ﬁnite state sequences in an inﬁnite-horizon MDP\ncontaining a terminal state.\nThe next question we must decide is how to calculate the utility of state sequences. In\nthe terminology of multiattribute utility theory, each state si can be viewed as an attribute of\nthe state sequence [s0, s1, s2 . . .]. To obtain a simple expression in terms of the attributes, we\nwill need to make some sort of preference-independence assumption. The most natural as-\nsumption is that the agent’s preferences between state sequences are stationary. Stationarity\nSTATIONARY\nPREFERENCE\nfor preferences means the following: if two state sequences [s0, s1, s2, . . .] and [s′\n0, s′\n1, s′\n2, . . .]\nbegin with the same state (i.e., s0 = s′\n0), then the two sequences should be preference-ordered\nthe same way as the sequences [s1, s2, . . .] and [s′\n1, s′\n2, . . .]. In English, this means that if you\nprefer one future to another starting tomorrow, then you should still prefer that future if it\nwere to start today instead. Stationarity is a fairly innocuous-looking assumption with very\nstrong consequences: it turns out that under stationarity there are just two coherent ways to\nassign utilities to sequences:\n1. Additive rewards: The utility of a state sequence is\nADDITIVE REWARD\nUh([s0, s1, s2, . . .]) = R(s0) + R(s1) + R(s2) + · · · .\nThe 4 × 3 world in Figure 17.1 uses additive rewards. Notice that additivity was used\nimplicitly in our use of path cost functions in heuristic search algorithms (Chapter 3).\n2. Discounted rewards: The utility of a state sequence is\nDISCOUNTED\nREWARD\nUh([s0, s1, s2, . . .]) = R(s0) + γR(s1) + γ2R(s2) + · · · ,\nwhere the discount factor γ is a number between 0 and 1. The discount factor describes\nDISCOUNT FACTOR\nthe preference of an agent for current rewards over future rewards. When γ is close\nto 0, rewards in the distant future are viewed as insigniﬁcant. When γ is 1, discounted\nrewards are exactly equivalent to additive rewards, so additive rewards are a special\ncase of discounted rewards. Discounting appears to be a good model of both animal\nand human preferences over time. A discount factor of γ is equivalent to an interest rate\nof (1/γ) −1.\nFor reasons that will shortly become clear, we assume discounted rewards in the remainder\nof the chapter, although sometimes we allow γ = 1.\nLurking beneath our choice of inﬁnite horizons is a problem: if the environment does\nnot contain a terminal state, or if the agent never reaches one, then all environment histories\nwill be inﬁnitely long, and utilities with additive, undiscounted rewards will generally be\n650\n17.\nMaking Complex Decisions\ninﬁnite. While we can agree that+∞is better than −∞, comparing two state sequences with\n+∞utility is more difﬁcult. There are three solutions, two of which we have seen already:\n1. With discounted rewards, the utility of an inﬁnite sequence is ﬁnite. In fact, if γ < 1\nand rewards are bounded by ±Rmax, we have\nUh([s0, s1, s2, . . .]) =\n∞\n\n\nt = 0\nγtR(st) ≤\n∞\n\n\nt = 0\nγtRmax = Rmax/(1 −γ) ,\n(17.1)\nusing the standard formula for the sum of an inﬁnite geometric series.\n2. If the environment contains terminal states and if the agent is guaranteed to get to one\neventually, then we will never need to compare inﬁnite sequences. A policy that is\nguaranteed to reach a terminal state is called a proper policy. With proper policies, we\nPROPER POLICY\ncan use γ = 1 (i.e., additive rewards). The ﬁrst three policies shown in Figure 17.2(b)\nare proper, but the fourth is improper. It gains inﬁnite total reward by staying away from\nthe terminal states when the reward for the nonterminal states is positive. The existence\nof improper policies can cause the standard algorithms for solving MDPs to fail with\nadditive rewards, and so provides a good reason for using discounted rewards.\n3. Inﬁnite sequences can be compared in terms of the average reward obtained per time\nAVERAGE REWARD\nstep. Suppose that square (1,1) in the 4 × 3 world has a reward of 0.1 while the other\nnonterminal states have a reward of 0.01. Then a policy that does its best to stay in\n(1,1) will have higher average reward than one that stays elsewhere. Average reward is\na useful criterion for some problems, but the analysis of average-reward algorithms is\nbeyond the scope of this book.\nIn sum, discounted rewards present the fewest difﬁculties in evaluating state sequences.\n17.1.2\nOptimal policies and the utilities of states\nHaving decided that the utility of a given state sequence is the sum of discounted rewards\nobtained during the sequence, we can compare policies by comparing the expected utilities\nobtained when executing them. We assume the agent is in some initial state s and deﬁne St\n(a random variable) to be the state the agent reaches at time t when executing a particular\npolicy π. (Obviously, S0 = s, the state the agent is in now.) The probability distribution over\nstate sequences S1, S2, . . . , is determined by the initial state s, the policy π, and the transition\nmodel for the environment.\nThe expected utility obtained by executing π starting in s is given by\nUπ(s) = E\n\" ∞\n\n\nt = 0\nγtR(St)\n#\n,\n(17.2)\nwhere the expectation is with respect to the probability distribution over state sequences de-\ntermined by s and π. Now, out of all the policies the agent could choose to execute starting in\ns, one (or more) will have higher expected utilities than all the others. We’ll use π∗\ns to denote\none of these policies:\nπ∗\ns = argmax\nπ\nUπ(s) .\n(17.3)\nSection 17.1.\nSequential Decision Problems\n651\nRemember that π∗\ns is a policy, so it recommends an action for every state; its connection\nwith s in particular is that it’s an optimal policy when s is the starting state. A remarkable\nconsequence of using discounted utilities with inﬁnite horizons is that the optimal policy is\nindependent of the starting state. (Of course, the action sequence won’t be independent;\nremember that a policy is a function specifying an action for each state.) This fact seems\nintuitively obvious: if policy π∗\na is optimal starting in a and policy π∗\nb is optimal starting in b,\nthen, when they reach a third state c, there’s no good reason for them to disagree with each\nother, or with π∗\nc, about what to do next.2 So we can simply write π∗for an optimal policy.\nGiven this deﬁnition, the true utility of a state is just U π∗(s)—that is, the expected\nsum of discounted rewards if the agent executes an optimal policy. We write this as U(s),\nmatching the notation used in Chapter 16 for the utility of an outcome. Notice that U(s) and\nR(s) are quite different quantities; R(s) is the “short term” reward for being in s, whereas\nU(s) is the “long term” total reward from s onward. Figure 17.3 shows the utilities for the\n4 × 3 world. Notice that the utilities are higher for states closer to the +1 exit, because fewer\nsteps are required to reach the exit.\n1\n2\n3\n1\n2\n3\n–1\n+ 1\n4\n0.611\n0.812\n0.655\n0.762\n0.918\n0.705\n0.660\n0.868\n 0.388\nFigure 17.3\nThe utilities of the states in the 4 × 3 world, calculated with γ = 1 and\nR(s) = −0.04 for nonterminal states.\nThe utility function U(s) allows the agent to select actions by using the principle of\nmaximum expected utility from Chapter 16—that is, choose the action that maximizes the\nexpected utility of the subsequent state:\nπ∗(s) = argmax\na∈A(s)\n\n\ns′\nP(s′ | s, a)U(s′) .\n(17.4)\nThe next two sections describe algorithms for ﬁnding optimal policies.\n2 Although this seems obvious, it does not hold for ﬁnite-horizon policies or for other ways of combining\nrewards over time. The proof follows directly from the uniqueness of the utility function on states, as shown in\nSection 17.2.",
+  "images": [
+    {
+      "path": "images/17-1-sequential-decision-problems_diagram_1.png",
+      "type": "diagram",
+      "caption": null
+    },
+    {
+      "path": "images/17-1-sequential-decision-problems_fig_17-2.png",
+      "type": "diagram",
+      "caption": "Figure 17.2"
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/17-1-sequential-decision-problems_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-1-sequential-decision-problems_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-1-sequential-decision-problems_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-1-sequential-decision-problems_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-1-sequential-decision-problems_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-1-sequential-decision-problems_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-1-sequential-decision-problems_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-1-sequential-decision-problems_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-1-sequential-decision-problems_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-1-sequential-decision-problems_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-1-sequential-decision-problems_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-1-sequential-decision-problems_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-1-sequential-decision-problems_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-1-sequential-decision-problems_eq_17-1.png",
+      "type": "equation",
+      "label": "17.1"
+    },
+    {
+      "path": "images/17-1-sequential-decision-problems_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-1-sequential-decision-problems_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-1-sequential-decision-problems_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-1-sequential-decision-problems_eq_17-2.png",
+      "type": "equation",
+      "label": "17.2"
+    },
+    {
+      "path": "images/17-1-sequential-decision-problems_eq_19.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-1-sequential-decision-problems_eq_20.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-1-sequential-decision-problems_eq_17-3.png",
+      "type": "equation",
+      "label": "17.3"
+    },
+    {
+      "path": "images/17-1-sequential-decision-problems_eq_22.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-1-sequential-decision-problems_eq_23.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-1-sequential-decision-problems_eq_24.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-1-sequential-decision-problems_eq_17-4.png",
+      "type": "equation",
+      "label": "17.4"
+    }
+  ]
+}

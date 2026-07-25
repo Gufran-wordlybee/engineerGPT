@@ -1,0 +1,21 @@
+{
+  "section_id": "24-perception",
+  "title": "24 Perception",
+  "level": 2,
+  "chapter": "VI: Communicating, perceiving, and acting",
+  "parent_id": "vi-communicating-perceiving-and-acting",
+  "children": [
+    "24-1-image-formation",
+    "24-2-early-image-processing-operations",
+    "24-3-object-recognition-by-appearance",
+    "24-4-reconstructing-the-3d-world",
+    "24-5-object-recognition-from-structural-information",
+    "24-6-using-vision",
+    "24-7-summary-bibliographical-and-historical-notes-exercises"
+  ],
+  "start_page": 946,
+  "end_page": 946,
+  "text": "24\nPERCEPTION\nIn which we connect the computer to the raw, unwashed world.\nPerception provides agents with information about the world they inhabit by interpreting the\nPERCEPTION\nresponse of sensors. A sensor measures some aspect of the environment in a form that can\nSENSOR\nbe used as input by an agent program. The sensor could be as simple as a switch, which gives\none bit telling whether it is on or off, or as complex as the eye. A variety of sensory modalities\nare available to artiﬁcial agents. Those they share with humans include vision, hearing, and\ntouch. Modalities that are not available to the unaided human include radio, infrared, GPS,\nand wireless signals. Some robots do active sensing, meaning they send out a signal, such as\nradar or ultrasound, and sense the reﬂection of this signal off of the environment. Rather than\ntrying to cover all of these, this chapter will cover one modality in depth: vision.\nWe saw in our description of POMDPs (Section 17.4, page 658) that a model-based\ndecision-theoretic agent in a partially observable environment has a sensor model—a prob-\nability distribution P(E | S) over the evidence that its sensors provide, given a state of the\nworld. Bayes’ rule can then be used to update the estimation of the state.\nFor vision, the sensor model can be broken into two components: An object model\nOBJECT MODEL\ndescribes the objects that inhabit the visual world—people, buildings, trees, cars, etc. The\nobject model could include a precise 3D geometric model taken from a computer-aided design\n(CAD) system, or it could be vague constraints, such as the fact that human eyes are usually 5\nto 7 cm apart. A rendering model describes the physical, geometric, and statistical processes\nRENDERING MODEL\nthat produce the stimulus from the world. Rendering models are quite accurate, but they are\nambiguous. For example, a white object under low light may appear as the same color as a\nblack object under intense light. A small nearby object may look the same as a large distant\nobject. Without additional evidence, we cannot tell if the image that ﬁlls the frame is a toy\nGodzilla or a real monster.\nAmbiguity can be managed with prior knowledge—we know Godzilla is not real, so\nthe image must be a toy—or by selectively choosing to ignore the ambiguity. For example,\nthe vision system for an autonomous car may not be able to interpret objects that are far in\nthe distance, but the agent can choose to ignore the problem, because it is unlikely to crash\ninto an object that is miles away.\n928",
+  "images": [],
+  "equations": []
+}

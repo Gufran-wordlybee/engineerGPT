@@ -1,0 +1,17 @@
+{
+  "section_id": "data-manipulation-instructions",
+  "title": "Data Manipulation Instructions",
+  "level": 1,
+  "chapter": "Data Manipulation Instructions",
+  "parent_id": null,
+  "children": [
+    "arithmetic-instructions",
+    "logical-and-bit-manipulation-instructions",
+    "shift-instructions"
+  ],
+  "start_page": 276,
+  "end_page": 277,
+  "text": "Data manipulation instructions perform operations on data and provide the computational capabilities for the computer. The data manipulation instructions in a typical computer are usually divided into three basic types:\n1. Arithmetic instructions\n2. Logical and bit manipulation instructions\n3. Shift instructions\nA list of data manipulation instructions will look very much like the list of microoperations given in Chap. 4. It must be realized, however, that each instruction when executed in the computer must go through the fetch phase\nto read its binary code value from memory. The operands must also be brought into processor registers according to the rules of the instruction addressing mode. The last step is to execute the instruction in the processor. This last step is implemented by means of microoperations as explained in Chap. 4 or through an ALU and shifter as shown in Fig. 8-2. Some of the arithmetic instructions need special circuits for their implementation.",
+  "images": [],
+  "equations": []
+}

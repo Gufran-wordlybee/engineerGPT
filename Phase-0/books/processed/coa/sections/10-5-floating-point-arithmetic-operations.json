@@ -1,0 +1,17 @@
+{
+  "section_id": "10-5-floating-point-arithmetic-operations",
+  "title": "10-5 Floating-Point Arithmetic Operations",
+  "level": 2,
+  "chapter": "Pipeline and Vector Processing",
+  "parent_id": "pipeline-and-vector-processing",
+  "children": [
+    "basic-considerations",
+    "register-configuration",
+    "addition-and-subtraction"
+  ],
+  "start_page": 361,
+  "end_page": 361,
+  "text": "Many high-level programming languages have a facility for specifying floating-point numbers. The most common way is to specify them by a real declaration statement as opposed to fixed-point numbers, which are specified by an integer declaration statement. Any computer that has a compiler for such high-level programming language must have a provision for handling floating-point arithmetic operations. The operations are quite often included in the internal hardware. If no hardware is available for the operations, the compiler must be designed with a package of floating-point software subroutines. Although the hardware method is more expensive, it is so much more efficient than the software method that floating-point hardware is included in most computers and is omitted only in very small ones.\ninteger declaration statement",
+  "images": [],
+  "equations": []
+}

@@ -1,0 +1,130 @@
+{
+  "section_id": "12-3-events",
+  "title": "12.3 Events",
+  "level": 3,
+  "chapter": "III: Knowledge, reasoning, and planning",
+  "parent_id": "12-knowledge-representation",
+  "children": [],
+  "start_page": 464,
+  "end_page": 467,
+  "text": "446\n12.\nKnowledge Representation\n12.3\nEVENTS\nIn Section 10.4.2, we showed how situation calculus represents actions and their effects.\nSituation calculus is limited in its applicability: it was designed to describe a world in which\nactions are discrete, instantaneous, and happen one at a time. Consider a continuous action,\nsuch as ﬁlling a bathtub. Situation calculus can say that the tub is empty before the action and\nfull when the action is done, but it can’t talk about what happens during the action. It also\ncan’t describe two actions happening at the same time—such as brushing one’s teeth while\nwaiting for the tub to ﬁll. To handle such cases we introduce an alternative formalism known\nas event calculus, which is based on points of time rather than on situations.3\nEVENT CALCULUS\nEvent calculus reiﬁes ﬂuents and events. The ﬂuent At(Shankar, Berkeley) is an ob-\nject that refers to the fact of Shankar being in Berkeley, but does not by itself say anything\nabout whether it is true. To assert that a ﬂuent is actually true at some point in time we use\nthe predicate T, as in T(At(Shankar, Berkeley), t).\nEvents are described as instances of event categories.4 The event E1 of Shankar ﬂying\nfrom San Francisco to Washington, D.C. is described as\nE1 ∈Flyings ∧Flyer(E1, Shankar) ∧Origin(E1, SF) ∧Destination(E1, DC ) .\nIf this is too verbose, we can deﬁne an alternative three-argument version of the category of\nﬂying events and say\nE1 ∈Flyings(Shankar, SF, DC) .\nWe then use Happens(E1, i) to say that the event E1 took place over the time interval i, and\nwe say the same thing in functional form with Extent(E1) = i. We represent time intervals\nby a (start, end) pair of times; that is, i = (t1, t2) is the time interval that starts at t1 and ends\nat t2. The complete set of predicates for one version of the event calculus is\nT(f, t)\nFluent f is true at time t\nHappens(e, i)\nEvent e happens over the time interval i\nInitiates(e, f, t)\nEvent e causes ﬂuent f to start to hold at time t\nTerminates(e, f, t)\nEvent e causes ﬂuent f to cease to hold at time t\nClipped(f, i)\nFluent f ceases to be true at some point during time interval i\nRestored(f, i)\nFluent f becomes true sometime during time interval i\nWe assume a distinguished event, Start, that describes the initial state by saying which ﬂuents\nare initiated or terminated at the start time. We deﬁne T by saying that a ﬂuent holds at a point\nin time if the ﬂuent was initiated by an event at some time in the past and was not made false\n(clipped) by an intervening event. A ﬂuent does not hold if it was terminated by an event and\n3 The terms “event” and “action” may be used interchangeably. Informally, “action” connotes an agent while\n“event” connotes the possibility of agentless actions.\n4 Some versions of event calculus do not distinguish event categories from instances of the categories.\nSection 12.3.\nEvents\n447\nnot made true (restored) by another event. Formally, the axioms are:\nHappens(e, (t1, t2)) ∧Initiates(e, f, t1) ∧¬Clipped(f, (t1, t)) ∧t1 < t ⇒\nT(f, t)\nHappens(e, (t1, t2)) ∧Terminates(e, f, t1) ∧¬Restored(f, (t1, t)) ∧t1 < t ⇒\n¬T(f, t)\nwhere Clipped and Restored are deﬁned by\nClipped(f, (t1, t2)) ⇔\n∃e, t, t3 Happens(e, (t, t3)) ∧t1 ≤t < t2 ∧Terminates(e, f, t)\nRestored(f, (t1, t2)) ⇔\n∃e, t, t3 Happens(e, (t, t3)) ∧t1 ≤t < t2 ∧Initiates(e, f, t)\nIt is convenient to extend T to work over intervals as well as time points; a ﬂuent holds over\nan interval if it holds on every point within the interval:\nT(f, (t1, t2)) ⇔[∀t (t1 ≤t < t2) ⇒T(f, t)]\nFluents and actions are deﬁned with domain-speciﬁc axioms that are similar to successor-\nstate axioms. For example, we can say that the only way a wumpus-world agent gets an\narrow is at the start, and the only way to use up an arrow is to shoot it:\nInitiates(e, HaveArrow(a), t) ⇔e = Start\nTerminates(e, HaveArrow(a), t) ⇔e ∈Shootings(a)\nBy reifying events we make it possible to add any amount of arbitrary information about\nthem. For example, we can say that Shankar’s ﬂight was bumpy with Bumpy(E1). In an\nontology where events are n-ary predicates, there would be no way to add extra information\nlike this; moving to an n + 1-ary predicate isn’t a scalable solution.\nWe can extend event calculus to make it possible to represent simultaneous events (such\nas two people being necessary to ride a seesaw), exogenous events (such as the wind blowing\nand changing the location of an object), continuous events (such as the level of water in the\nbathtub continuously rising) and other complications.\n12.3.1\nProcesses\nThe events we have seen so far are what we call discrete events—they have a deﬁnite struc-\nDISCRETE EVENTS\nture. Shankar’s trip has a beginning, middle, and end. If interrupted halfway, the event would\nbe something different—it would not be a trip from San Francisco to Washington, but instead\na trip from San Francisco to somewhere over Kansas. On the other hand, the category of\nevents denoted by Flyings has a different quality. If we take a small interval of Shankar’s\nﬂight, say, the third 20-minute segment (while he waits anxiously for a bag of peanuts), that\nevent is still a member of Flyings. In fact, this is true for any subinterval.\nCategories of events with this property are called process categories or liquid event\nPROCESS\nLIQUID EVENT\ncategories. Any process e that happens over an interval also happens over any subinterval:\n(e ∈Processes) ∧Happens(e, (t1, t4)) ∧(t1 < t2 < t3 < t4) ⇒Happens(e, (t2, t3)) .\nThe distinction between liquid and nonliquid events is exactly analogous to the difference\nbetween substances, or stuff, and individual objects, or things. In fact, some have called\nliquid events temporal substances, whereas substances like butter are spatial substances.\nTEMPORAL\nSUBSTANCE\nSPATIAL SUBSTANCE\n448\n12.\nKnowledge Representation\n12.3.2\nTime intervals\nEvent calculus opens us up to the possibility of talking about time, and time intervals. We\nwill consider two kinds of time intervals: moments and extended intervals. The distinction is\nthat only moments have zero duration:\nPartition({Moments, ExtendedIntervals}, Intervals)\ni ∈Moments ⇔Duration(i) = Seconds(0) .\nNext we invent a time scale and associate points on that scale with moments, giving us ab-\nsolute times. The time scale is arbitrary; we measure it in seconds and say that the moment\nat midnight (GMT) on January 1, 1900, has time 0. The functions Begin and End pick out\nthe earliest and latest moments in an interval, and the function Time delivers the point on the\ntime scale for a moment. The function Duration gives the difference between the end time\nand the start time.\nInterval(i) ⇒Duration(i) = (Time(End(i)) −Time(Begin(i))) .\nTime(Begin(AD1900)) = Seconds(0) .\nTime(Begin(AD2001)) = Seconds(3187324800) .\nTime(End(AD2001)) = Seconds(3218860800) .\nDuration(AD2001) = Seconds(31536000) .\nTo make these numbers easier to read, we also introduce a function Date, which takes six\narguments (hours, minutes, seconds, day, month, and year) and returns a time point:\nTime(Begin(AD2001)) = Date(0, 0, 0, 1, Jan, 2001)\nDate(0, 20, 21, 24, 1, 1995) = Seconds(3000000000) .\nTwo intervals Meet if the end time of the ﬁrst equals the start time of the second. The com-\nplete set of interval relations, as proposed by Allen (1983), is shown graphically in Figure 12.2\nand logically below:\nMeet(i, j)\n⇔\nEnd(i) = Begin(j)\nBefore(i, j)\n⇔\nEnd(i) < Begin(j)\nAfter(j, i)\n⇔\nBefore(i, j)\nDuring(i, j)\n⇔\nBegin(j) < Begin(i) < End(i) < End(j)\nOverlap(i, j)\n⇔\nBegin(i) < Begin(j) < End(i) < End(j)\nBegins(i, j)\n⇔\nBegin(i) = Begin(j)\nFinishes(i, j)\n⇔\nEnd(i) = End(j)\nEquals(i, j)\n⇔\nBegin(i) = Begin(j) ∧End(i) = End(j)\nThese all have their intuitive meaning, with the exception of Overlap: we tend to think of\noverlap as symmetric (if i overlaps j then j overlaps i), but in this deﬁnition, Overlap(i, j)\nonly holds if i begins before j. To say that the reign of Elizabeth II immediately followed that\nof George VI, and the reign of Elvis overlapped with the 1950s, we can write the following:\nMeets(ReignOf (GeorgeVI ), ReignOf (ElizabethII )) .\nOverlap(Fifties, ReignOf (Elvis)) .\nBegin(Fifties) = Begin(AD1950) .\nEnd(Fifties) = End(AD1959) .\nSection 12.3.\nEvents\n449\nFigure 12.2\nPredicates on time intervals.\ntime\n1801\n1797\n1789\nWashington\nAdams\nJefferson\nFigure 12.3\nA schematic view of the object President(USA) for the ﬁrst 15 years of its\nexistence.\n12.3.3\nFluents and objects\nPhysical objects can be viewed as generalized events, in the sense that a physical object is\na chunk of space–time. For example, USA can be thought of as an event that began in,\nsay, 1776 as a union of 13 states and is still in progress today as a union of 50. We can\ndescribe the changing properties of USA using state ﬂuents, such as Population(USA). A\nproperty of the USA that changes every four or eight years, barring mishaps, is its president.\nOne might propose that President(USA) is a logical term that denotes a different object\nat different times. Unfortunately, this is not possible, because a term denotes exactly one\nobject in a given model structure. (The term President(USA, t) can denote different objects,\ndepending on the value of t, but our ontology keeps time indices separate from ﬂuents.) The",
+  "images": [
+    {
+      "path": "images/12-3-events_img_1.png",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/12-3-events_fig_12-2.png",
+      "type": "diagram",
+      "caption": "Figure 12.2"
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/12-3-events_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/12-3-events_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/12-3-events_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/12-3-events_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/12-3-events_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/12-3-events_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/12-3-events_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/12-3-events_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/12-3-events_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/12-3-events_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/12-3-events_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/12-3-events_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/12-3-events_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/12-3-events_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/12-3-events_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/12-3-events_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/12-3-events_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/12-3-events_eq_18.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/12-3-events_eq_19.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/12-3-events_eq_20.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/12-3-events_eq_21.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

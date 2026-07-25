@@ -1,0 +1,19 @@
+{
+  "section_id": "determine-the-type-of-instruction",
+  "title": "Determine the Type of Instruction",
+  "level": 1,
+  "chapter": "Determine the Type of Instruction",
+  "parent_id": null,
+  "children": [],
+  "start_page": 151,
+  "end_page": 153,
+  "text": "The timing signal that is active after the decoding is T_3. During time T_3, the control unit determines the type of instruction that was just read from memory. The flowchart of Fig. 5-9 presents an initial configuration for the instruction cycle and shows how the control determines the instruction type after the decoding. The three possible instruction types available in the basic computer are specified in Fig. 5-5.\nDecoder output D_7 is equal to 1 if the operation code is equal to binary 111. From Fig. 5-5 we determine that if D_7 = 1, the instruction must be a\nFigure 5-9 Flowchart for instruction cycle (initial configuration).\nregister-reference or input—output type. If D_7=0, the operation code must be one of the other seven values 000 through 110, specifying a memory-reference instruction. Control then inspects the value of the first bit of the instruction, which is now available in flip-flop I. If D_7=0 and I=1, we have a memory-reference instruction with an indirect address. It is then necessary to read the\nindirect address\neffective address from memory. The microoperation for the indirect address condition can be symbolized by the register transfer statement\nAR \\leftarrow M[AR]\nInitially, AR holds the address part of the instruction. This address is used during the memory read operation. The word at the address given by AR is read from memory and placed on the common bus. The LD input of AR is then enabled to receive the indirect address that resided in the 12 least significant bits of the memory word.\nThe three instruction types are subdivided into four separate paths. The selected operation is activated with the clock transition associated with timing signal T_3. This can be symbolized as follows:\nD_7'IT_3: AR \\leftarrow M[AR]\nD_7'I'T_3: Nothing D_7I'T_3: Execute a register-reference instruction\nD<sub>7</sub>IT<sub>3</sub>: Execute an input-output instruction\nWhen a memory-reference instruction with I=0 is encountered, it is not necessary to do anything since the effective address is already in AR. However, the sequence counter SC must be incremented when D_t'T_3=1, so that the execution of the memory-reference instruction can be continued with timing variable T_4. A register-reference or input—output instruction can be executed with the clock associated with timing signal T_3. After the instruction is executed, SC is cleared to 0 and control returns to the fetch phase with T_0=1.\nNote that the sequence counter SC is either incremented or cleared to 0 with every positive clock transition. We will adopt the convention that if SC is incremented, we will not write the statement SC \\leftarrow SC + 1, but it will be implied that the control goes to the next timing signal in sequence. When SC is to be cleared, we will include the statement SC \\leftarrow 0.\nThe register transfers needed for the execution of the register-reference instructions are presented in this section. The memory-reference instructions are explained in the next section. The input-output instructions are included in Sec. 5-7.",
+  "images": [
+    {
+      "path": "images/determine-the-type-of-instruction_img_1.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

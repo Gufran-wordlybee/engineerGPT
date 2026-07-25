@@ -1,0 +1,27 @@
+{
+  "section_id": "segmented-page-mapping",
+  "title": "Segmented-Page Mapping",
+  "level": 2,
+  "chapter": "12-7 Memory Management Hardware",
+  "parent_id": "12-7-memory-management-hardware",
+  "children": [
+    "numerical-example-1",
+    "a-segment-and-page-table-mapping"
+  ],
+  "start_page": 478,
+  "end_page": 480,
+  "text": "It was already mentioned that the property of logical space is that it uses variable-length segments. The length of each segment is allowed to grow and contract according to the needs of the program being executed. One way of specifying the length of a segment is by associating with it a number of equal-size pages. To see how this is done, consider the logical address shown in Fig. 12-21. The logical address is partitioned into three fields. The segment field specifies a segment number. The page field specifies the page within the segment and the word field gives the specific word within the page. A page field of k bits can specify up to 2^k pages. A segment number may be associated\n(a) Logical to physical address mapping\n(b) Associative memory translation look-aside buffer (TLB)\nFigure 12-21 Mapping in segmented-page memory management unit.\nwith just one page or with as many as 2* pages. Thus the length of a segment would vary according to the number of pages that are assigned to it.\nThe mapping of the logical address into a physical address is done by means of two tables, as shown in Fig. 12-21(a). The segment number of the logical address specifies the address for the segment table. The entry in the\nsegment table is a pointer address for a page table base. The page table base is added to the page number given in the logical address. The sum produces a pointer address to an entry in the page table. The value found in the page table provides the block number in physical memory. The concatenation of the block field with the word field produces the final physical mapped address.\nThe two mapping tables may be stored in two separate small memories or in main memory. In either case, a memory reference from the CPU will require three accesses to memory: one from the segment table, one from the page table, and the third from main memory. This would slow the system significantly when compared to a conventional system that requires only one reference to memory. To avoid this speed penalty, a fast associative memory is used to hold the most recently referenced table entries. (This type of memory is sometimes called a translation lookaside buffer, abbreviated TLB.) The first time a given block is referenced, its value together with the corresponding segment and page numbers are entered into the associative memory as shown in Fig. 12-21(b). Thus the mapping process is first attempted by associative search with the given segment and page numbers. If it succeeds, the mapping delay is only that of the associative memory. If no match occurs, the slower table mapping of Fig. 12-21(a) is used and the result transformed into the associative memory for future reference.",
+  "images": [
+    {
+      "path": "images/segmented-page-mapping_img_1.png",
+      "type": "figure",
+      "caption": null
+    },
+    {
+      "path": "images/segmented-page-mapping_img_2.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

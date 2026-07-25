@@ -1,0 +1,115 @@
+{
+  "section_id": "6-1-defining-constraint-satisfaction-problems",
+  "title": "6.1 Defining Constraint Satisfaction Problems",
+  "level": 3,
+  "chapter": "II: Problem-solving",
+  "parent_id": "6-constraint-satisfaction-problems",
+  "children": [],
+  "start_page": 220,
+  "end_page": 225,
+  "text": "6\nCONSTRAINT\nSATISFACTION PROBLEMS\nIn which we see how treating states as more than just little black boxes leads to the\ninvention of a range of powerful new search methods and a deeper understanding\nof problem structure and complexity.\nChapters 3 and 4 explored the idea that problems can be solved by searching in a space of\nstates. These states can be evaluated by domain-speciﬁc heuristics and tested to see whether\nthey are goal states. From the point of view of the search algorithm, however, each state is\natomic, or indivisible—a black box with no internal structure.\nThis chapter describes a way to solve a wide variety of problems more efﬁciently. We\nuse a factored representation for each state: a set of variables, each of which has a value.\nA problem is solved when each variable has a value that satisﬁes all the constraints on the\nvariable. A problem described this way is called a constraint satisfaction problem, or CSP.\nCONSTRAINT\nSATISFACTION\nPROBLEM\nCSP search algorithms take advantage of the structure of states and use general-purpose\nrather than problem-speciﬁc heuristics to enable the solution of complex problems. The main\nidea is to eliminate large portions of the search space all at once by identifying variable/value\ncombinations that violate the constraints.\n6.1\nDEFINING CONSTRAINT SATISFACTION PROBLEMS\nA constraint satisfaction problem consists of three components, X, D, and C:\nX is a set of variables, {X1, . . . , Xn}.\nD is a set of domains, {D1, . . . , Dn}, one for each variable.\nC is a set of constraints that specify allowable combinations of values.\nEach domain Di consists of a set of allowable values, {v1, . . . , vk} for variable Xi. Each\nconstraint Ci consists of a pair ⟨scope, rel⟩, where scope is a tuple of variables that participate\nin the constraint and rel is a relation that deﬁnes the values that those variables can take on. A\nrelation can be represented as an explicit list of all tuples of values that satisfy the constraint,\nor as an abstract relation that supports two operations: testing if a tuple is a member of the\nrelation and enumerating the members of the relation. For example, if X1 and X2 both have\n202\nSection 6.1.\nDeﬁning Constraint Satisfaction Problems\n203\nthe domain {A,B}, then the constraint saying the two variables must have different values\ncan be written as ⟨(X1, X2), [(A, B), (B, A)]⟩or as ⟨(X1, X2), X1̸ = X2⟩.\nTo solve a CSP, we need to deﬁne a state space and the notion of a solution. Each\nstate in a CSP is deﬁned by an assignment of values to some or all of the variables, {Xi =\nASSIGNMENT\nvi, Xj = vj, . . .}. An assignment that does not violate any constraints is called a consistent\nCONSISTENT\nor legal assignment. A complete assignment is one in which every variable is assigned, and\nCOMPLETE\nASSIGNMENT\na solution to a CSP is a consistent, complete assignment. A partial assignment is one that\nSOLUTION\nPARTIAL\nASSIGNMENT\nassigns values to only some of the variables.\n6.1.1\nExample problem: Map coloring\nSuppose that, having tired of Romania, we are looking at a map of Australia showing each\nof its states and territories (Figure 6.1(a)). We are given the task of coloring each region\neither red, green, or blue in such a way that no neighboring regions have the same color. To\nformulate this as a CSP, we deﬁne the variables to be the regions\nX = {WA, NT, Q, NSW , V, SA, T} .\nThe domain of each variable is the set Di = {red, green, blue}. The constraints require\nneighboring regions to have distinct colors. Since there are nine places where regions border,\nthere are nine constraints:\nC = {SA̸ = WA, SA̸ = NT, SA̸ = Q, SA̸ = NSW , SA̸ = V,\nWA̸ = NT, NT̸ = Q, Q̸ = NSW , NSW̸ = V } .\nHere we are using abbreviations; SA̸ = WA is a shortcut for ⟨(SA, WA), SA̸ = WA⟩, where\nSA̸ = WA can be fully enumerated in turn as\n{(red, green), (red, blue), (green, red), (green, blue), (blue, red), (blue, green)} .\nThere are many possible solutions to this problem, such as\n{WA = red, NT = green, Q = red, NSW = green, V = red, SA = blue, T = red }.\nIt can be helpful to visualize a CSP as a constraint graph, as shown in Figure 6.1(b). The\nCONSTRAINT GRAPH\nnodes of the graph correspond to variables of the problem, and a link connects any two vari-\nables that participate in a constraint.\nWhy formulate a problem as a CSP? One reason is that the CSPs yield a natural rep-\nresentation for a wide variety of problems; if you already have a CSP-solving system, it is\noften easier to solve a problem using it than to design a custom solution using another search\ntechnique. In addition, CSP solvers can be faster than state-space searchers because the CSP\nsolver can quickly eliminate large swatches of the search space. For example, once we have\nchosen {SA = blue} in the Australia problem, we can conclude that none of the ﬁve neighbor-\ning variables can take on the value blue. Without taking advantage of constraint propagation,\na search procedure would have to consider 35 = 243 assignments for the ﬁve neighboring\nvariables; with constraint propagation we never have to consider blue as a value, so we have\nonly 25 = 32 assignments to look at, a reduction of 87%.\nIn regular state-space search we can only ask: is this speciﬁc state a goal? No? What\nabout this one? With CSPs, once we ﬁnd out that a partial assignment is not a solution, we can\n204\n6.\nConstraint Satisfaction Problems\nWestern\nAustralia\nNorthern\nTerritory\nSouth\nAustralia\nQueensland\nNew\nSouth\nWales\nVictoria\nTasmania\nWA\nNT\nSA\nQ\nNSW\nV\nT\n(a)\n(b)\nFigure 6.1\n(a) The principal states and territories of Australia. Coloring this map can\nbe viewed as a constraint satisfaction problem (CSP). The goal is to assign colors to each\nregion so that no neighboring regions have the same color. (b) The map-coloring problem\nrepresented as a constraint graph.\nimmediately discard further reﬁnements of the partial assignment. Furthermore, we can see\nwhy the assignment is not a solution—we see which variables violate a constraint—so we can\nfocus attention on the variables that matter. As a result, many problems that are intractable\nfor regular state-space search can be solved quickly when formulated as a CSP.\n6.1.2\nExample problem: Job-shop scheduling\nFactories have the problem of scheduling a day’s worth of jobs, subject to various constraints.\nIn practice, many of these problems are solved with CSP techniques. Consider the problem of\nscheduling the assembly of a car. The whole job is composed of tasks, and we can model each\ntask as a variable, where the value of each variable is the time that the task starts, expressed\nas an integer number of minutes. Constraints can assert that one task must occur before\nanother—for example, a wheel must be installed before the hubcap is put on—and that only\nso many tasks can go on at once. Constraints can also specify that a task takes a certain\namount of time to complete.\nWe consider a small part of the car assembly, consisting of 15 tasks: install axles (front\nand back), afﬁx all four wheels (right and left, front and back), tighten nuts for each wheel,\nafﬁx hubcaps, and inspect the ﬁnal assembly. We can represent the tasks with 15 variables:\nX = {AxleF , AxleB, Wheel RF , WheelLF , WheelRB, WheelLB, NutsRF ,\nNutsLF , NutsRB, NutsLB, CapRF , CapLF , CapRB, CapLB, Inspect} .\nThe value of each variable is the time that the task starts. Next we represent precedence\nconstraints between individual tasks. Whenever a task T1 must occur before task T2, and\nPRECEDENCE\nCONSTRAINTS\ntask T1 takes duration d1 to complete, we add an arithmetic constraint of the form\nT1 + d1 ≤T2 .\nSection 6.1.\nDeﬁning Constraint Satisfaction Problems\n205\nIn our example, the axles have to be in place before the wheels are put on, and it takes 10\nminutes to install an axle, so we write\nAxleF + 10 ≤WheelRF ;\nAxleF + 10 ≤WheelLF ;\nAxleB + 10 ≤WheelRB;\nAxleB + 10 ≤WheelLB .\nNext we say that, for each wheel, we must afﬁx the wheel (which takes 1 minute), then tighten\nthe nuts (2 minutes), and ﬁnally attach the hubcap (1 minute, but not represented yet):\nWheelRF + 1 ≤NutsRF ;\nNutsRF + 2 ≤CapRF ;\nWheelLF + 1 ≤NutsLF;\nNutsLF + 2 ≤CapLF;\nWheelRB + 1 ≤NutsRB;\nNutsRB + 2 ≤CapRB;\nWheelLB + 1 ≤NutsLB;\nNutsLB + 2 ≤CapLB .\nSuppose we have four workers to install wheels, but they have to share one tool that helps put\nthe axle in place. We need a disjunctive constraint to say that AxleF and AxleB must not\nDISJUNCTIVE\nCONSTRAINT\noverlap in time; either one comes ﬁrst or the other does:\n(AxleF + 10 ≤AxleB)\nor\n(AxleB + 10 ≤AxleF) .\nThis looks like a more complicated constraint, combining arithmetic and logic. But it still\nreduces to a set of pairs of values that AxleF and AxleF can take on.\nWe also need to assert that the inspection comes last and takes 3 minutes. For every\nvariable except Inspect we add a constraint of the form X + dX ≤Inspect. Finally, suppose\nthere is a requirement to get the whole assembly done in 30 minutes. We can achieve that by\nlimiting the domain of all variables:\nDi = {1, 2, 3, . . . , 27} .\nThis particular problem is trivial to solve, but CSPs have been applied to job-shop schedul-\ning problems like this with thousands of variables. In some cases, there are complicated\nconstraints that are difﬁcult to specify in the CSP formalism, and more advanced planning\ntechniques are used, as discussed in Chapter 11.\n6.1.3\nVariations on the CSP formalism\nThe simplest kind of CSP involves variables that have discrete, ﬁnite domains.\nMap-\nDISCRETE DOMAIN\nFINITE DOMAIN\ncoloring problems and scheduling with time limits are both of this kind. The 8-queens prob-\nlem described in Chapter 3 can also be viewed as a ﬁnite-domain CSP, where the variables\nQ1, . . . , Q8 are the positions of each queen in columns 1, . . . , 8 and each variable has the\ndomain Di = {1, 2, 3, 4, 5, 6, 7, 8}.\nA discrete domain can be inﬁnite, such as the set of integers or strings. (If we didn’t put\nINFINITE\na deadline on the job-scheduling problem, there would be an inﬁnite number of start times\nfor each variable.) With inﬁnite domains, it is no longer possible to describe constraints by\nenumerating all allowed combinations of values. Instead, a constraint language must be\nCONSTRAINT\nLANGUAGE\nused that understands constraints such as T1 + d1 ≤T2 directly, without enumerating the\nset of pairs of allowable values for (T1, T2). Special solution algorithms (which we do not\ndiscuss here) exist for linear constraints on integer variables—that is, constraints, such as\nLINEAR\nCONSTRAINTS\nthe one just given, in which each variable appears only in linear form. It can be shown that\nno algorithm exists for solving general nonlinear constraints on integer variables.\nNONLINEAR\nCONSTRAINTS\nextensions of the basic CSP model\n206\n6.\nConstraint Satisfaction Problems\nConstraint satisfaction problems with continuous domains are common in the real\nCONTINUOUS\nDOMAINS\nworld and are widely studied in the ﬁeld of operations research. For example, the scheduling\nof experiments on the Hubble Space Telescope requires very precise timing of observations;\nthe start and ﬁnish of each observation and maneuver are continuous-valued variables that\nmust obey a variety of astronomical, precedence, and power constraints. The best-known\ncategory of continuous-domain CSPs is that of linear programming problems, where con-\nstraints must be linear equalities or inequalities. Linear programming problems can be solved\nin time polynomial in the number of variables. Problems with different types of constraints\nand objective functions have also been studied—quadratic programming, second-order conic\nprogramming, and so on.\nIn addition to examining the types of variables that can appear in CSPs, it is useful to\nlook at the types of constraints. The simplest type is the unary constraint, which restricts\nUNARY CONSTRAINT\nthe value of a single variable. For example, in the map-coloring problem it could be the case\nthat South Australians won’t tolerate the color green; we can express that with the unary\nconstraint ⟨(SA), SA̸ = green⟩\nA binary constraint relates two variables. For example, SA̸ = NSW is a binary\nBINARY CONSTRAINT\nconstraint. A binary CSP is one with only binary constraints; it can be represented as a\nconstraint graph, as in Figure 6.1(b).\nWe can also describe higher-order constraints, such as asserting that the value of Y is\nbetween X and Z, with the ternary constraint Between(X, Y, Z).\nA constraint involving an arbitrary number of variables is called a global constraint.\nGLOBAL\nCONSTRAINT\n(The name is traditional but confusing because it need not involve all the variables in a prob-\nlem). One of the most common global constraints is Alldiﬀ, which says that all of the\nvariables involved in the constraint must have different values. In Sudoku problems (see\nSection 6.2.6), all variables in a row or column must satisfy an Alldiﬀconstraint.\nAn-\nother example is provided by cryptarithmetic puzzles. (See Figure 6.2(a).) Each letter in a\nCRYPTARITHMETIC\ncryptarithmetic puzzle represents a different digit. For the case in Figure 6.2(a), this would\nbe represented as the global constraint Alldiﬀ(F, T, U, W, R, O). The addition constraints\non the four columns of the puzzle can be written as the following n-ary constraints:\nO + O = R + 10 · C10\nC10 + W + W = U + 10 · C100\nC100 + T + T = O + 10 · C1000\nC1000 = F ,\nwhere C10, C100, and C1000 are auxiliary variables representing the digit carried over into the\ntens, hundreds, or thousands column. These constraints can be represented in a constraint\nhypergraph, such as the one shown in Figure 6.2(b). A hypergraph consists of ordinary nodes\nCONSTRAINT\nHYPERGRAPH\n(the circles in the ﬁgure) and hypernodes (the squares), which represent n-ary constraints.\nAlternatively, as Exercise 6.6 asks you to prove, every ﬁnite-domain constraint can be\nreduced to a set of binary constraints if enough auxiliary variables are introduced, so we could\ntransform any CSP into one with only binary constraints; this makes the algorithms simpler.\nAnother way to convert an n-ary CSP to a binary one is the dual graph transformation: create\nDUAL GRAPH\na new graph in which there will be one variable for each constraint in the original graph, and\nonly one var \ninvolved\ntwo var involved\nmore than 2 var, \ni.e grp of vars\nSection 6.1.\nDeﬁning Constraint Satisfaction Problems\n207\n(a)\nO\nW\nT\nF\nU\nR\n(b)\n+\nF\nT\nT\nO\nW\nW\nU\nO\nO\nR\nC3\nC1\nC2\nFigure 6.2\n(a) A cryptarithmetic problem. Each letter stands for a distinct digit; the aim is\nto ﬁnd a substitution of digits for letters such that the resulting sum is arithmetically correct,\nwith the added restriction that no leading zeroes are allowed. (b) The constraint hypergraph\nfor the cryptarithmetic problem, showing the Alldiﬀconstraint (square box at the top) as\nwell as the column addition constraints (four square boxes in the middle). The variables C1,\nC2, and C3 represent the carry digits for the three columns.\none binary constraint for each pair of constraints in the original graph that share variables. For\nexample, if the original graph has variables {X, Y, Z} and constraints ⟨(X, Y, Z), C1⟩and\n⟨(X, Y ), C2⟩then the dual graph would have variables {C1, C2} with the binary constraint\n⟨(X, Y ), R1⟩, where (X, Y ) are the shared variables and R1 is a new relation that deﬁnes the\nconstraint between the shared variables, as speciﬁed by the original C1 and C2.\nThere are however two reasons why we might prefer a global constraint such as Alldiﬀ\nrather than a set of binary constraints. First, it is easier and less error-prone to write the\nproblem description using Alldiﬀ. Second, it is possible to design special-purpose inference\nalgorithms for global constraints that are not available for a set of more primitive constraints.\nWe describe these inference algorithms in Section 6.2.5.\nThe constraints we have described so far have all been absolute constraints, violation of\nwhich rules out a potential solution. Many real-world CSPs include preference constraints\nPREFERENCE\nCONSTRAINTS\nindicating which solutions are preferred. For example, in a university class-scheduling prob-\nlem there are absolute constraints that no professor can teach two classes at the same time.\nBut we also may allow preference constraints: Prof. R might prefer teaching in the morning,\nwhereas Prof. N prefers teaching in the afternoon. A schedule that has Prof. R teaching at\n2 p.m. would still be an allowable solution (unless Prof. R happens to be the department chair)\nbut would not be an optimal one. Preference constraints can often be encoded as costs on in-\ndividual variable assignments—for example, assigning an afternoon slot for Prof. R costs\n2 points against the overall objective function, whereas a morning slot costs 1. With this\nformulation, CSPs with preferences can be solved with optimization search methods, either\npath-based or local. We call such a problem a constraint optimization problem, or COP.\nCONSTRAINT\nOPTIMIZATION\nPROBLEM\nLinear programming problems do this kind of optimization.",
+  "images": [
+    {
+      "path": "images/6-1-defining-constraint-satisfaction-problems_fig_6-1.png",
+      "type": "diagram",
+      "caption": "Figure 6.1"
+    },
+    {
+      "path": "images/6-1-defining-constraint-satisfaction-problems_fig_6-1.png",
+      "type": "diagram",
+      "caption": "Figure 6.1"
+    },
+    {
+      "path": "images/6-1-defining-constraint-satisfaction-problems_fig_6-2.png",
+      "type": "diagram",
+      "caption": "Figure 6.2"
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/6-1-defining-constraint-satisfaction-problems_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/6-1-defining-constraint-satisfaction-problems_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/6-1-defining-constraint-satisfaction-problems_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/6-1-defining-constraint-satisfaction-problems_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/6-1-defining-constraint-satisfaction-problems_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/6-1-defining-constraint-satisfaction-problems_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/6-1-defining-constraint-satisfaction-problems_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/6-1-defining-constraint-satisfaction-problems_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/6-1-defining-constraint-satisfaction-problems_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/6-1-defining-constraint-satisfaction-problems_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/6-1-defining-constraint-satisfaction-problems_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/6-1-defining-constraint-satisfaction-problems_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/6-1-defining-constraint-satisfaction-problems_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/6-1-defining-constraint-satisfaction-problems_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/6-1-defining-constraint-satisfaction-problems_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/6-1-defining-constraint-satisfaction-problems_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/6-1-defining-constraint-satisfaction-problems_eq_17.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

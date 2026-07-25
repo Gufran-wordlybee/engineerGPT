@@ -1,0 +1,160 @@
+{
+  "section_id": "24-2-early-image-processing-operations",
+  "title": "24.2 Early Image-Processing Operations",
+  "level": 3,
+  "chapter": "VI: Communicating, perceiving, and acting",
+  "parent_id": "24-perception",
+  "children": [],
+  "start_page": 953,
+  "end_page": 959,
+  "text": "Section 24.2.\nEarly Image-Processing Operations\n935\n24.1.5\nColor\nFruit is a bribe that a tree offers to animals to carry its seeds around. Trees have evolved to\nhave fruit that turns red or yellow when ripe, and animals have evolved to detect these color\nchanges. Light arriving at the eye has different amounts of energy at different wavelengths;\nthis can be represented by a spectral energy density function. Human eyes respond to light in\nthe 380–750nm wavelength region, with three different types of color receptor cells, which\nhave peak receptiveness at 420mm (blue), 540nm (green), and 570nm (red). The human eye\ncan capture only a small fraction of the full spectral energy density function—but it is enough\nto tell when the fruit is ripe.\nThe principle of trichromacy states that for any spectral energy density, no matter how\nPRINCIPLE OF\nTRICHROMACY\ncomplicated, it is possible to construct another spectral energy density consisting of a mixture\nof just three colors—usually red, green, and blue—such that a human can’t tell the difference\nbetween the two. That means that our TVs and computer displays can get by with just the\nthree red/green/blue (or R/G/B) color elements. It makes our computer vision algorithms\neasier, too. Each surface can be modeled with three different albedos for R/G/B. Similarly,\neach light source can be modeled with three R/G/B intensities. We then apply Lambert’s\ncosine law to each to get three R/G/B pixel values. This model predicts, correctly, that the\nsame surface will produce different colored image patches under different-colored lights. In\nfact, human observers are quite good at ignoring the effects of different colored lights and are\nable to estimate the color of the surface under white light, an effect known as color constancy.\nCOLOR CONSTANCY\nQuite accurate color constancy algorithms are now available; simple versions show up in the\n“auto white balance” function of your camera. Note that if we wanted to build a camera for\nmantis shrimp, we would need 12 different pixel colors, corresponding to the 12 types of\ncolor receptors of the crustacean.\n24.2\nEARLY IMAGE-PROCESSING OPERATIONS\nWe have seen how light reﬂects off objects in the scene to form an image consisting of, say,\nﬁve million 3-byte pixels. With all sensors there will be noise in the image, and in any case\nthere is a lot of data to deal with. So how do we get started on analyzing this data?\nIn this section we will study three useful image-processing operations: edge detection,\ntexture analysis, and computation of optical ﬂow. These are called “early” or “low-level”\noperations because they are the ﬁrst in a pipeline of operations. Early vision operations are\ncharacterized by their local nature (they can be carried out in one part of the image without\nregard for anything more than a few pixels away) and by their lack of knowledge: we can\nperform these operations without consideration of the objects that might be present in the\nscene. This makes the low-level operations good candidates for implementation in parallel\nhardware—either in a graphics processor unit (GPU) or an eye. We will then look at one\nmid-level operation: segmenting the image into regions.\n936\n24.\nPerception\nA\nB\n1\n2\n4\n2\n1\n1\n3\nFigure 24.6\nDifferent kinds of edges: (1) depth discontinuities; (2) surface orientation\ndiscontinuities; (3) reﬂectance discontinuities; (4) illumination discontinuities (shadows).\n24.2.1\nEdge detection\nEdges are straight lines or curves in the image plane across which there is a “signiﬁcant”\nEDGE\nchange in image brightness. The goal of edge detection is to abstract away from the messy,\nmultimegabyte image and toward a more compact, abstract representation, as in Figure 24.6.\nThe motivation is that edge contours in the image correspond to important scene contours.\nIn the ﬁgure we have three examples of depth discontinuity, labeled 1; two surface-normal\ndiscontinuities, labeled 2; a reﬂectance discontinuity, labeled 3; and an illumination discon-\ntinuity (shadow), labeled 4. Edge detection is concerned only with the image, and thus does\nnot distinguish between these different types of scene discontinuities; later processing will.\nFigure 24.7(a) shows an image of a scene containing a stapler resting on a desk, and\n(b) shows the output of an edge-detection algorithm on this image. As you can see, there\nis a difference between the output and an ideal line drawing. There are gaps where no edge\nappears, and there are “noise” edges that do not correspond to anything of signiﬁcance in the\nscene. Later stages of processing will have to correct for these errors.\nHow do we detect edges in an image? Consider the proﬁle of image brightness along a\none-dimensional cross-section perpendicular to an edge—for example, the one between the\nleft edge of the desk and the wall. It looks something like what is shown in Figure 24.8 (top).\nEdges correspond to locations in images where the brightness undergoes a sharp change,\nso a naive idea would be to differentiate the image and look for places where the magnitude\nof the derivative I′(x) is large. That almost works. In Figure 24.8 (middle), we see that there\nis indeed a peak at x = 50, but there are also subsidiary peaks at other locations (e.g., x = 75).\nThese arise because of the presence of noise in the image. If we smooth the image ﬁrst, the\nspurious peaks are diminished, as we see in the bottom of the ﬁgure.\nSection 24.2.\nEarly Image-Processing Operations\n937\n(a)\n(b)\nFigure 24.7\n(a) Photograph of a stapler. (b) Edges computed from (a).\n0\n10\n20\n30\n40\n50\n60\n70\n80\n90\n100\n−1\n0\n1\n2\n0\n10\n20\n30\n40\n50\n60\n70\n80\n90\n100\n−1\n0\n1\n0\n10\n20\n30\n40\n50\n60\n70\n80\n90\n100\n−1\n0\n1\nFigure 24.8\nTop: Intensity proﬁle I(x) along a one-dimensional section across an edge at\nx = 50. Middle: The derivative of intensity, I′(x). Large values of this function correspond\nto edges, but the function is noisy. Bottom: The derivative of a smoothed version of the\nintensity, (I ∗Gσ)′, which can be computed in one step as the convolution I ∗G′\nσ. The noisy\ncandidate edge at x = 75 has disappeared.\nThe measurement of brightness at a pixel in a CCD camera is based on a physical\nprocess involving the absorption of photons and the release of electrons; inevitably there\nwill be statistical ﬂuctuations of the measurement—noise. The noise can be modeled with\n938\n24.\nPerception\na Gaussian probability distribution, with each pixel independent of the others. One way to\nsmooth an image is to assign to each pixel the average of its neighbors. This tends to cancel\nout extreme values. But how many neighbors should we consider—one pixel away, or two, or\nmore? One good answer is a weighted average that weights the nearest pixels the most, then\ngradually decreases the weight for more distant pixels. The Gaussian ﬁlter does just that.\nGAUSSIAN FILTER\n(Users of Photoshop recognize this as the Gaussian blur operation.) Recall that the Gaussian\nfunction with standard deviation σ and mean 0 is\nNσ(x) =\n1\n√\n2πσe−x2/2σ2\nin one dimension, or\nNσ(x, y) =\n1\n2πσ2 e−(x2+y2)/2σ2\nin two dimensions.\nThe application of the Gaussian ﬁlter replaces the intensity I(x0, y0) with the sum, over all\n(x, y) pixels, of I(x, y) Nσ(d), where d is the distance from (x0, y0) to (x, y). This kind of\nweighted sum is so common that there is a special name and notation for it. We say that the\nfunction h is the convolution of two functions f and g (denoted f ∗g) if we have\nCONVOLUTION\nh(x) = (f ∗g)(x) =\n+∞\n\n\nu=−∞\nf(u) g(x −u)\nin one dimension, or\nh(x, y) = (f ∗g)(x, y) =\n+∞\n\n\nu=−∞\n+∞\n\n\nv=−∞\nf(u, v) g(x −u, y −v)\nin two.\nSo the smoothing function is achieved by convolving the image with the Gaussian, I ∗Nσ. A\nσ of 1 pixel is enough to smooth over a small amount of noise, whereas 2 pixels will smooth a\nlarger amount, but at the loss of some detail. Because the Gaussian’s inﬂuence fades quickly\nat a distance, we can replace the ±∞in the sums with ±3σ.\nWe can optimize the computation by combining smoothing and edge ﬁnding into a sin-\ngle operation. It is a theorem that for any functions f and g, the derivative of the convolution,\n(f ∗g)′, is equal to the convolution with the derivative, f ∗(g′). So rather than smoothing\nthe image and then differentiating, we can just convolve the image with the derivative of the\nsmoothing function, N ′\nσ. We then mark as edges those peaks in the response that are above\nsome threshold.\nThere is a natural generalization of this algorithm from one-dimensional cross sections\nto general two-dimensional images. In two dimensions edges may be at any angle θ. Consid-\nering the image brightness as a scalar function of the variables x, y, its gradient is a vector\n∇I =\n\u001f ∂I\n∂x\n∂I\n∂y\n \n=\n\n Ix\nIy\n\u000e\n.\nEdges correspond to locations in images where the brightness undergoes a sharp change, and\nso the magnitude of the gradient, ∥∇I∥, should be large at an edge point. Of independent\ninterest is the direction of the gradient\n∇I\n∥∇I∥=\n\n cos θ\nsin θ\n\u000e\n.\nThis gives us a θ = θ(x, y) at every pixel, which deﬁnes the edge orientation at that pixel.\nORIENTATION\nSection 24.2.\nEarly Image-Processing Operations\n939\nAs in one dimension, to form the gradient we don’t compute ∇I, but rather ∇(I ∗Nσ),\nthe gradient after smoothing the image by convolving it with a Gaussian. And again, the\nshortcut is that this is equivalent to convolving the image with the partial derivatives of a\nGaussian. Once we have computed the gradient, we can obtain edges by ﬁnding edge points\nand linking them together. To tell whether a point is an edge point, we must look at other\npoints a small distance forward and back along the direction of the gradient. If the gradient\nmagnitude at one of these points is larger, then we could get a better edge point by shifting\nthe edge curve very slightly. Furthermore, if the gradient magnitude is too small, the point\ncannot be an edge point. So at an edge point, the gradient magnitude is a local maximum\nalong the direction of the gradient, and the gradient magnitude is above a suitable threshold.\nOnce we have marked edge pixels by this algorithm, the next stage is to link those pixels\nthat belong to the same edge curves. This can be done by assuming that any two neighboring\nedge pixels with consistent orientations must belong to the same edge curve.\n24.2.2\nTexture\nIn everyday language, texture is the visual feel of a surface—what you see evokes what\nTEXTURE\nthe surface might feel like if you touched it (“texture” has the same root as “textile”). In\ncomputational vision, texture refers to a spatially repeating pattern on a surface that can be\nsensed visually. Examples include the pattern of windows on a building, stitches on a sweater,\nspots on a leopard, blades of grass on a lawn, pebbles on a beach, and people in a stadium.\nSometimes the arrangement is quite periodic, as in the stitches on a sweater; in other cases,\nsuch as pebbles on a beach, the regularity is only statistical.\nWhereas brightness is a property of individual pixels, the concept of texture makes sense\nonly for a multipixel patch. Given such a patch, we could compute the orientation at each\npixel, and then characterize the patch by a histogram of orientations. The texture of bricks in\na wall would have two peaks in the histogram (one vertical and one horizontal), whereas the\ntexture of spots on a leopard’s skin would have a more uniform distribution of orientations.\nFigure 24.9 shows that orientations are largely invariant to changes in illumination. This\nmakes texture an important clue for object recognition, because other clues, such as edges,\ncan yield different results in different lighting conditions.\nIn images of textured objects, edge detection does not work as well as it does for smooth\nobjects. This is because the most important edges can be lost among the texture elements.\nQuite literally, we may miss the tiger for the stripes. The solution is to look for differences in\ntexture properties, just the way we look for differences in brightness. A patch on a tiger and\na patch on the grassy background will have very different orientation histograms, allowing us\nto ﬁnd the boundary curve between them.\n24.2.3\nOptical ﬂow\nNext, let us consider what happens when we have a video sequence, instead of just a single\nstatic image. When an object in the video is moving, or when the camera is moving relative\nto an object, the resulting apparent motion in the image is called optical ﬂow. Optical ﬂow\nOPTICAL FLOW\ndescribes the direction and speed of motion of features in the image—the optical ﬂow of a\n940\n24.\nPerception\n(a)\n(b)\nFigure 24.9\nTwo images of the same texture of crumpled rice paper, with different illumi-\nnation levels. The gradient vector ﬁeld (at every eighth pixel) is plotted on top of each one.\nNotice that, as the light gets darker, all the gradient vectors get shorter. The vectors do not\nrotate, so the gradient orientations do not change.\nvideo of a race car would be measured in pixels per second, not miles per hour. The optical\nﬂow encodes useful information about scene structure. For example, in a video of scenery\ntaken from a moving train, distant objects have slower apparent motion than close objects;\nthus, the rate of apparent motion can tell us something about distance. Optical ﬂow also\nenables us to recognize actions. In Figure 24.10(a) and (b), we show two frames from a video\nof a tennis player. In (c) we display the optical ﬂow vectors computed from these images,\nshowing that the racket and front leg are moving fastest.\nThe optical ﬂow vector ﬁeld can be represented at any point (x, y) by its components\nvx(x, y) in the x direction and vy(x, y) in the y direction. To measure optical ﬂow we need to\nﬁnd corresponding points between one time frame and the next. A simple-minded technique\nis based on the fact that image patches around corresponding points have similar intensity\npatterns. Consider a block of pixels centered at pixel p, (x0, y0), at time t0. This block\nof pixels is to be compared with pixel blocks centered at various candidate pixels at (x0 +\nDx, y0 + Dy) at time t0 + Dt. One possible measure of similarity is the sum of squared\ndifferences (SSD):\nSUM OF SQUARED\nDIFFERENCES\nSSD(Dx, Dy) =\n\n\n(x,y)\n(I(x, y, t) −I(x + Dx, y + Dy, t + Dt))2 .\nHere, (x, y) ranges over pixels in the block centered at (x0, y0). We ﬁnd the (Dx, Dy) that\nminimizes the SSD. The optical ﬂow at (x0, y0) is then (vx, vy) = (Dx/Dt, Dy/Dt). Note\nthat for this to work, there needs to be some texture or variation in the scene. If one is looking\nat a uniform white wall, then the SSD is going to be nearly the same for the different can-\nSection 24.2.\nEarly Image-Processing Operations\n941\nFigure 24.10\nTwo frames of a video sequence. On the right is the optical ﬂow ﬁeld cor-\nresponding to the displacement from one frame to the other. Note how the movement of\nthe tennis racket and the front leg is captured by the directions of the arrows. (Courtesy of\nThomas Brox.)\ndidate matches, and the algorithm is reduced to making a blind guess. The best-performing\nalgorithms for measuring optical ﬂow rely on a variety of additional constraints when the\nscene is only partially textured.\n24.2.4\nSegmentation of images\nSegmentation is the process of breaking an image into regions of similar pixels. Each image\nSEGMENTATION\nREGIONS\npixel can be associated with certain visual properties, such as brightness, color, and texture.\nWithin an object, or a single part of an object, these attributes vary relatively little, whereas\nacross an inter-object boundary there is typically a large change in one or more of these at-\ntributes. There are two approaches to segmentation, one focusing on detecting the boundaries\nof these regions, and the other on detecting the regions themselves (Figure 24.11).\nA boundary curve passing through a pixel (x, y) will have an orientation θ, so one way\nto formalize the problem of detecting boundary curves is as a machine learning classiﬁcation\nproblem. Based on features from a local neighborhood, we want to compute the probability\nPb(x, y, θ) that indeed there is a boundary curve at that pixel along that orientation. Consider\na circular disk centered at (x, y), subdivided into two half disks by a diameter oriented at θ.\nIf there is a boundary at (x, y, θ) the two half disks might be expected to differ signiﬁcantly\nin their brightness, color, and texture. Martin, Fowlkes, and Malik (2004) used features based\non differences in histograms of brightness, color, and texture values measured in these two\nhalf disks, and then trained a classiﬁer. For this they used a data set of natural images where\nhumans had marked the “ground truth” boundaries, and the goal of the classiﬁer was to mark\nexactly those boundaries marked by humans and no others.\nBoundaries detected by this technique turn out to be signiﬁcantly better than those found\nusing the simple edge-detection technique described previously. But still there are two limita-\ntions. (1) The boundary pixels formed by thresholding Pb(x, y, θ) are not guaranteed to form\nclosed curves, so this approach doesn’t deliver regions, and (2) the decision making exploits\nonly local context and does not use global consistency constraints.",
+  "images": [
+    {
+      "path": "images/24-2-early-image-processing-operations_img_1.png",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-2-early-image-processing-operations_fig_24-6.png",
+      "type": "diagram",
+      "caption": "Figure 24.6"
+    },
+    {
+      "path": "images/24-2-early-image-processing-operations_img_2.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-2-early-image-processing-operations_img_3.png",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-2-early-image-processing-operations_img_4.png",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-2-early-image-processing-operations_img_5.png",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-2-early-image-processing-operations_fig_24-9.png",
+      "type": "diagram",
+      "caption": "Figure 24.9"
+    },
+    {
+      "path": "images/24-2-early-image-processing-operations_img_6.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-2-early-image-processing-operations_img_7.jpeg",
+      "type": "raster",
+      "caption": null
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/24-2-early-image-processing-operations_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-2-early-image-processing-operations_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-2-early-image-processing-operations_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-2-early-image-processing-operations_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-2-early-image-processing-operations_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-2-early-image-processing-operations_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-2-early-image-processing-operations_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-2-early-image-processing-operations_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-2-early-image-processing-operations_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-2-early-image-processing-operations_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-2-early-image-processing-operations_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-2-early-image-processing-operations_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-2-early-image-processing-operations_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-2-early-image-processing-operations_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-2-early-image-processing-operations_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-2-early-image-processing-operations_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-2-early-image-processing-operations_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-2-early-image-processing-operations_eq_18.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-2-early-image-processing-operations_eq_19.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-2-early-image-processing-operations_eq_20.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

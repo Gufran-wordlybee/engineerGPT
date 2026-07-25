@@ -1,0 +1,24 @@
+{
+  "section_id": "control-of-common-bus",
+  "title": "Control of Common Bus",
+  "level": 4,
+  "chapter": "Control of Single Flip-flops",
+  "parent_id": "control-of-single-flip-flops",
+  "children": [],
+  "start_page": 172,
+  "end_page": 174,
+  "text": "The 16-bit common bus shown in Fig. 5-4 is controlled by the selection inputs S_2, S_1, and S_0. The decimal number shown with each bus input specifies the equivalent binary number that must be applied to the selection inputs in order to select the corresponding register. Table 5-7 specifies the binary numbers for S_2S_1S_0 that select each register. Each binary number is associated with a Boolean variable x_1 through x_2, corresponding to the gate structure that must be active in order to select the register or memory for the bus. For example, when x_1 = 1, the value of S_2S_1S_0 must be 001 and the output of AR will be selected for the bus. Table 5-7 is recognized as the truth table of a binary encoder. The placement of the encoder at the inputs of the bus selection logic is shown in Fig. 5-18. The Boolean functions for the encoder are\nS_0 = x_1 + x_3 + x_5 + x_7\nS_1 = x_2 + x_3 + x_6 + x_7\nS_2 = x_4 + x_5 + x_6 + x_7\nFigure 5-17 Control inputs for IEN.\n\n[Table]\nInputsOutputRegisterx1x2x3x4x5x6x7S2S_1Soselectedfor bus0000000000None1000000001AR0100000010PC0010000011DR0001000100AC0000100101ΙŔ0000010110TR0000001111Memory\n\nTABLE 5-7 Encoder for Bus Selection Circuit\nTo determine the logic for each encoder input, it is necessary to find the control functions that place the corresponding register onto the bus. For example, to find the logic that makes x_1 = 1, we scan all register transfer statements in Table 5-6 and extract those statements that have AR as a source.\nD_4T_4: PC \\leftarrow AR\nD_5T_5: PC \\leftarrow AR\nTherefore, the Boolean function for x1 is\nx_1 = D_4 T_4 + D_5 T_5\nThe data output from memory are selected for the bus when x_7 = 1 and S_2S_1S_0 = 111. The gate logic that generates x_7 must also be applied to the read input of memory. Therefore, the Boolean function for x_7 is the same as the one derived previously for the read operation.\nx_7 = R'T_1 + D_7'IT_3 + (D_0 + D_1 + D_2 + D_6)T_4\nIn a similar manner we can determine the gate logic for the other registers.\nFigure 5-18 Encoder for bus selection inputs.",
+  "images": [
+    {
+      "path": "images/control-of-common-bus_img_1.png",
+      "type": "figure",
+      "caption": null
+    },
+    {
+      "path": "images/control-of-common-bus_img_2.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

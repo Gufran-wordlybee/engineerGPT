@@ -1,0 +1,115 @@
+{
+  "section_id": "18-5-the-theory-of-learning",
+  "title": "18.5 The Theory of Learning",
+  "level": 3,
+  "chapter": "V: Learning",
+  "parent_id": "18-learning-from-examples",
+  "children": [],
+  "start_page": 731,
+  "end_page": 734,
+  "text": "Section 18.5.\nThe Theory of Learning\n713\nempirical loss and the complexity of the hypothesis, which we will call the total cost:\nCost(h) = EmpLoss(h) + λ Complexity(h)\nˆh∗= argmin\nh∈H\nCost(h) .\nHere λ is a parameter, a positive number that serves as a conversion rate between loss and\nhypothesis complexity (which after all are not measured on the same scale). This approach\ncombines loss and complexity into one metric, allowing us to ﬁnd the best hypothesis all at\nonce. Unfortunately we still need to do a cross-validation search to ﬁnd the hypothesis that\ngeneralizes best, but this time it is with different values of λ rather than size. We select the\nvalue of λ that gives us the best validation set score.\nThis process of explicitly penalizing complex hypotheses is called regularization (be-\nREGULARIZATION\ncause it looks for a function that is more regular, or less complex). Note that the cost function\nrequires us to make two choices: the loss function and the complexity measure, which is\ncalled a regularization function. The choice of regularization function depends on the hy-\npothesis space. For example, a good regularization function for polynomials is the sum of\nthe squares of the coefﬁcients—keeping the sum small would guide us away from the wiggly\npolynomials in Figure 18.1(b) and (c). We will show an example of this type of regularization\nin Section 18.6.\nAnother way to simplify models is to reduce the dimensions that the models work with.\nA process of feature selection can be performed to discard attributes that appear to be irrel-\nFEATURE SELECTION\nevant. χ2 pruning is a kind of feature selection.\nIt is in fact possible to have the empirical loss and the complexity measured on the\nsame scale, without the conversion factor λ: they can both be measured in bits. First encode\nthe hypothesis as a Turing machine program, and count the number of bits. Then count\nthe number of bits required to encode the data, where a correctly predicted example costs\nzero bits and the cost of an incorrectly predicted example depends on how large the error is.\nThe minimum description length or MDL hypothesis minimizes the total number of bits\nMINIMUM\nDESCRIPTION\nLENGTH\nrequired. This works well in the limit, but for smaller problems there is a difﬁculty in that\nthe choice of encoding for the program—for example, how best to encode a decision tree\nas a bit string—affects the outcome. In Chapter 20 (page 805), we describe a probabilistic\ninterpretation of the MDL approach.\n18.5\nTHE THEORY OF LEARNING\nThe main unanswered question in learning is this: How can we be sure that our learning\nalgorithm has produced a hypothesis that will predict the correct value for previously unseen\ninputs? In formal terms, how do we know that the hypothesis h is close to the target function\nf if we don’t know what f is? These questions have been pondered for several centuries.\nIn more recent decades, other questions have emerged: how many examples do we need\nto get a good h? What hypothesis space should we use? If the hypothesis space is very\ncomplex, can we even ﬁnd the best h, or do we have to settle for a local maximum in the\n714\n18.\nLearning from Examples\nspace of hypotheses? How complex should h be? How do we avoid overﬁtting? This section\nexamines these questions.\nWe’ll start with the question of how many examples are needed for learning. We saw\nfrom the learning curve for decision tree learning on the restaurant problem (Figure 18.7 on\npage 703) that improves with more training data. Learning curves are useful, but they are\nspeciﬁc to a particular learning algorithm on a particular problem. Are there some more gen-\neral principles governing the number of examples needed in general? Questions like this are\naddressed by computational learning theory, which lies at the intersection of AI, statistics,\nCOMPUTATIONAL\nLEARNING THEORY\nand theoretical computer science. The underlying principle is that any hypothesis that is seri-\nously wrong will almost certainly be “found out” with high probability after a small number\nof examples, because it will make an incorrect prediction. Thus, any hypothesis that is consis-\ntent with a sufﬁciently large set of training examples is unlikely to be seriously wrong: that is,\nit must be probably approximately correct. Any learning algorithm that returns hypotheses\nPROBABLY\nAPPROXIMATELY\nCORRECT\nthat are probably approximately correct is called a PAC learning algorithm; we can use this\nPAC LEARNING\napproach to provide bounds on the performance of various learning algorithms.\nPAC-learning theorems, like all theorems, are logical consequences of axioms. When\na theorem (as opposed to, say, a political pundit) states something about the future based on\nthe past, the axioms have to provide the “juice” to make that connection. For PAC learning,\nthe juice is provided by the stationarity assumption introduced on page 708, which says that\nfuture examples are going to be drawn from the same ﬁxed distribution P(E) = P(X, Y )\nas past examples. (Note that we do not have to know what distribution that is, just that it\ndoesn’t change.) In addition, to keep things simple, we will assume that the true function f\nis deterministic and is a member of the hypothesis class H that is being considered.\nThe simplest PAC theorems deal with Boolean functions, for which the 0/1 loss is ap-\npropriate. The error rate of a hypothesis h, deﬁned informally earlier, is deﬁned formally\nhere as the expected generalization error for examples drawn from the stationary distribution:\nerror(h) = GenLossL0/1(h) =\n\n\nx,y\nL0/1(y, h(x)) P(x, y) .\nIn other words, error(h) is the probability that h misclassiﬁes a new example. This is the\nsame quantity being measured experimentally by the learning curves shown earlier.\nA hypothesis h is called approximately correct if error(h) ≤ϵ, where ϵ is a small\nconstant. We will show that we can ﬁnd an N such that, after seeing N examples, with high\nprobability, all consistent hypotheses will be approximately correct. One can think of an\napproximately correct hypothesis as being “close” to the true function in hypothesis space: it\nlies inside what is called the ϵ-ball around the true function f. The hypothesis space outside\nϵ-BALL\nthis ball is called Hbad.\nWe can calculate the probability that a “seriously wrong” hypothesis hb ∈Hbad is\nconsistent with the ﬁrst N examples as follows. We know that error(hb) > ϵ. Thus, the\nprobability that it agrees with a given example is at most 1 −ϵ. Since the examples are\nindependent, the bound for N examples is\nP(hb agrees with N examples) ≤(1 −ϵ)N .\nSection 18.5.\nThe Theory of Learning\n715\nThe probability that Hbad contains at least one consistent hypothesis is bounded by the sum\nof the individual probabilities:\nP(Hbad contains a consistent hypothesis) ≤|Hbad|(1 −ϵ)N ≤|H|(1 −ϵ)N ,\nwhere we have used the fact that |Hbad| ≤|H|. We would like to reduce the probability of\nthis event below some small number δ:\n|H|(1 −ϵ)N ≤δ .\nGiven that 1 −ϵ ≤e−ϵ, we can achieve this if we allow the algorithm to see\nN ≥1\nϵ\n\nln 1\nδ + ln |H|\n\u000e\n(18.1)\nexamples. Thus, if a learning algorithm returns a hypothesis that is consistent with this many\nexamples, then with probability at least 1 −δ, it has error at most ϵ. In other words, it is\nprobably approximately correct. The number of required examples, as a function of ϵ and δ,\nis called the sample complexity of the hypothesis space.\nSAMPLE\nCOMPLEXITY\nAs we saw earlier, if H is the set of all Boolean functions on n attributes, then |H| =\n22n. Thus, the sample complexity of the space grows as 2n. Because the number of possible\nexamples is also 2n, this suggests that PAC-learning in the class of all Boolean functions\nrequires seeing all, or nearly all, of the possible examples. A moment’s thought reveals the\nreason for this: H contains enough hypotheses to classify any given set of examples in all\npossible ways. In particular, for any set of N examples, the set of hypotheses consistent with\nthose examples contains equal numbers of hypotheses that predict xN+1 to be positive and\nhypotheses that predict xN+1 to be negative.\nTo obtain real generalization to unseen examples, then, it seems we need to restrict\nthe hypothesis space H in some way; but of course, if we do restrict the space, we might\neliminate the true function altogether. There are three ways to escape this dilemma. The ﬁrst,\nwhich we will cover in Chapter 19, is to bring prior knowledge to bear on the problem. The\nsecond, which we introduced in Section 18.4.3, is to insist that the algorithm return not just\nany consistent hypothesis, but preferably a simple one (as is done in decision tree learning). In\ncases where ﬁnding simple consistent hypotheses is tractable, the sample complexity results\nare generally better than for analyses based only on consistency. The third escape, which\nwe pursue next, is to focus on learnable subsets of the entire hypothesis space of Boolean\nfunctions. This approach relies on the assumption that the restricted language contains a\nhypothesis h that is close enough to the true function f; the beneﬁts are that the restricted\nhypothesis space allows for effective generalization and is typically easier to search. We now\nexamine one such restricted language in more detail.\n18.5.1\nPAC learning example: Learning decision lists\nWe now show how to apply PAC learning to a new hypothesis space: decision lists. A\nDECISION LISTS\ndecision list consists of a series of tests, each of which is a conjunction of literals. If a\ntest succeeds when applied to an example description, the decision list speciﬁes the value\nto be returned. If the test fails, processing continues with the next test in the list. Decision\nlists resemble decision trees, but their overall structure is simpler: they branch only in one\n716\n18.\nLearning from Examples\nPatrons(x, Some)\nNo\nYes\nYes\nNo\nPatrons(x, Full)\n  Fri/Sat(x)\nYes\nNo\nYes\n^\nFigure 18.10\nA decision list for the restaurant problem.\ndirection. In contrast, the individual tests are more complex. Figure 18.10 shows a decision\nlist that represents the following hypothesis:\nWillWait ⇔(Patrons = Some) ∨(Patrons = Full ∧Fri/Sat) .\nIf we allow tests of arbitrary size, then decision lists can represent any Boolean function\n(Exercise 18.14). On the other hand, if we restrict the size of each test to at most k literals,\nthen it is possible for the learning algorithm to generalize successfully from a small number\nof examples. We call this language k-DL. The example in Figure 18.10 is in 2-DL. It is easy to\nk-DL\nshow (Exercise 18.14) that k-DL includes as a subset the language k-DT, the set of all decision\nk-DT\ntrees of depth at most k. It is important to remember that the particular language referred to\nby k-DL depends on the attributes used to describe the examples. We will use the notation\nk-DL(n) to denote a k-DL language using n Boolean attributes.\nThe ﬁrst task is to show that k-DL is learnable—that is, that any function in k-DL can\nbe approximated accurately after training on a reasonable number of examples. To do this,\nwe need to calculate the number of hypotheses in the language. Let the language of tests—\nconjunctions of at most k literals using n attributes—be Conj (n, k). Because a decision list\nis constructed of tests, and because each test can be attached to either a Yes or a No outcome\nor can be absent from the decision list, there are at most 3|Conj (n,k)| distinct sets of component\ntests. Each of these sets of tests can be in any order, so\n|k-DL(n)| ≤3|Conj (n,k)||Conj (n, k)|! .\nThe number of conjunctions of k literals from n attributes is given by\n|Conj (n, k)| =\nk\n\n\ni=0\n\n2n\ni\n\u000e\n= O(nk) .\nHence, after some work, we obtain\n|k-DL(n)| = 2O(nk log2(nk)) .\nWe can plug this into Equation (18.1) to show that the number of examples needed for PAC-\nlearning a k-DL function is polynomial in n:\nN ≥1\nϵ\n\nln 1\nδ + O(nk log2(nk))\n\u000e\n.\nTherefore, any algorithm that returns a consistent decision list will PAC-learn a k-DL function\nin a reasonable number of examples, for small k.\nThe next task is to ﬁnd an efﬁcient algorithm that returns a consistent decision list.\nWe will use a greedy algorithm called DECISION-LIST-LEARNING that repeatedly ﬁnds a",
+  "images": [
+    {
+      "path": "images/18-5-the-theory-of-learning_fig_18-10.png",
+      "type": "diagram",
+      "caption": "Figure 18.10"
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/18-5-the-theory-of-learning_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-5-the-theory-of-learning_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-5-the-theory-of-learning_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-5-the-theory-of-learning_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-5-the-theory-of-learning_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-5-the-theory-of-learning_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-5-the-theory-of-learning_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-5-the-theory-of-learning_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-5-the-theory-of-learning_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-5-the-theory-of-learning_eq_18-1.png",
+      "type": "equation",
+      "label": "18.1"
+    },
+    {
+      "path": "images/18-5-the-theory-of-learning_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-5-the-theory-of-learning_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-5-the-theory-of-learning_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-5-the-theory-of-learning_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-5-the-theory-of-learning_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-5-the-theory-of-learning_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-5-the-theory-of-learning_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-5-the-theory-of-learning_eq_18.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-5-the-theory-of-learning_eq_19.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "section_id": "9-inference-in-first-order-logic",
+  "title": "9 Inference in First-Order Logic",
+  "level": 2,
+  "chapter": "III: Knowledge, reasoning, and planning",
+  "parent_id": "iii-knowledge-reasoning-and-planning",
+  "children": [
+    "9-1-propositional-vs-first-order-inference",
+    "9-2-unification-and-lifting",
+    "9-3-forward-chaining",
+    "9-4-backward-chaining",
+    "9-5-resolution",
+    "9-6-summary-bibliographical-and-historical-notes-exercises"
+  ],
+  "start_page": 340,
+  "end_page": 340,
+  "text": "9\nINFERENCE IN\nFIRST-ORDER LOGIC\nIn which we deﬁne effective procedures for answering questions posed in ﬁrst-\norder logic.\nChapter 7 showed how sound and complete inference can be achieved for propositional logic.\nIn this chapter, we extend those results to obtain algorithms that can answer any answer-\nable question stated in ﬁrst-order logic. Section 9.1 introduces inference rules for quantiﬁers\nand shows how to reduce ﬁrst-order inference to propositional inference, albeit at potentially\ngreat expense. Section 9.2 describes the idea of uniﬁcation, showing how it can be used\nto construct inference rules that work directly with ﬁrst-order sentences. We then discuss\nthree major families of ﬁrst-order inference algorithms. Forward chaining and its applica-\ntions to deductive databases and production systems are covered in Section 9.3; backward\nchaining and logic programming systems are developed in Section 9.4. Forward and back-\nward chaining can be very efﬁcient, but are applicable only to knowledge bases that can\nbe expressed as sets of Horn clauses. General ﬁrst-order sentences require resolution-based\ntheorem proving, which is described in Section 9.5.\n9.1\nPROPOSITIONAL VS. FIRST-ORDER INFERENCE\nThis section and the next introduce the ideas underlying modern logical inference systems.\nWe begin with some simple inference rules that can be applied to sentences with quantiﬁers\nto obtain sentences without quantiﬁers. These rules lead naturally to the idea that ﬁrst-order\ninference can be done by converting the knowledge base to propositional logic and using\npropositional inference, which we already know how to do. The next section points out an\nobvious shortcut, leading to inference methods that manipulate ﬁrst-order sentences directly.\n9.1.1\nInference rules for quantiﬁers\nLet us begin with universal quantiﬁers. Suppose our knowledge base contains the standard\nfolkloric axiom stating that all greedy kings are evil:\n∀x King(x) ∧Greedy(x) ⇒Evil(x) .\n322",
+  "images": [],
+  "equations": []
+}

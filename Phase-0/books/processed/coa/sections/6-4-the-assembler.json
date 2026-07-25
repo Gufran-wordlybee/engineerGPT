@@ -1,0 +1,13 @@
+{
+  "section_id": "6-4-the-assembler",
+  "title": "6-4 The Assembler",
+  "level": 1,
+  "chapter": "6-4 The Assembler",
+  "parent_id": null,
+  "children": [],
+  "start_page": 192,
+  "end_page": 193,
+  "text": "An assembler is a program that accepts a symbolic language program and produces its binary machine language equivalent. The input symbolic program is called the source program and the resulting binary program is called the object program. The assembler is a program that operates on character strings and produces an equivalent binary interpretation.",
+  "images": [],
+  "equations": []
+}

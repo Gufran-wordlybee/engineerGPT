@@ -1,0 +1,125 @@
+{
+  "section_id": "5-3-alphabeta-pruning",
+  "title": "5.3 Alpha–Beta Pruning",
+  "level": 3,
+  "chapter": "II: Problem-solving",
+  "parent_id": "5-adversarial-search",
+  "children": [],
+  "start_page": 185,
+  "end_page": 188,
+  "text": "Section 5.3.\nAlpha–Beta Pruning\n167\nsuppose A and B are in weak positions and C is in a stronger position. Then it is often\noptimal for both A and B to attack C rather than each other, lest C destroy each of them\nindividually. In this way, collaboration emerges from purely selﬁsh behavior. Of course,\nas soon as C weakens under the joint onslaught, the alliance loses its value, and either A\nor B could violate the agreement. In some cases, explicit alliances merely make concrete\nwhat would have happened anyway. In other cases, a social stigma attaches to breaking an\nalliance, so players must balance the immediate advantage of breaking an alliance against the\nlong-term disadvantage of being perceived as untrustworthy. See Section 17.5 for more on\nthese complications.\nIf the game is not zero-sum, then collaboration can also occur with just two players.\nSuppose, for example, that there is a terminal state with utilities ⟨vA = 1000, vB = 1000⟩and\nthat 1000 is the highest possible utility for each player. Then the optimal strategy is for both\nplayers to do everything possible to reach this state—that is, the players will automatically\ncooperate to achieve a mutually desirable goal.\n5.3\nALPHA–BETA PRUNING\nThe problem with minimax search is that the number of game states it has to examine is\nexponential in the depth of the tree. Unfortunately, we can’t eliminate the exponent, but it\nturns out we can effectively cut it in half. The trick is that it is possible to compute the correct\nminimax decision without looking at every node in the game tree. That is, we can borrow the\nidea of pruning from Chapter 3 to eliminate large parts of the tree from consideration. The\nparticular technique we examine is called alpha–beta pruning. When applied to a standard\nALPHA–BETA\nPRUNING\nminimax tree, it returns the same move as minimax would, but prunes away branches that\ncannot possibly inﬂuence the ﬁnal decision.\nConsider again the two-ply game tree from Figure 5.2. Let’s go through the calculation\nof the optimal decision once more, this time paying careful attention to what we know at\neach point in the process. The steps are explained in Figure 5.5. The outcome is that we can\nidentify the minimax decision without ever evaluating two of the leaf nodes.\nAnother way to look at this is as a simpliﬁcation of the formula for MINIMAX. Let the\ntwo unevaluated successors of node C in Figure 5.5 have values x and y. Then the value of\nthe root node is given by\nMINIMAX(root) = max(min(3, 12, 8), min(2, x, y), min(14, 5, 2))\n= max(3, min(2, x, y), 2)\n= max(3, z, 2)\nwhere z = min(2, x, y) ≤2\n= 3.\nIn other words, the value of the root and hence the minimax decision are independent of the\nvalues of the pruned leaves x and y.\nAlpha–beta pruning can be applied to trees of any depth, and it is often possible to\nprune entire subtrees rather than just leaves. The general principle is this: consider a node n\n168\n5.\nAdversarial Search\n(a)\n(b)\n(c)\n(d)\n(e)\n(f)\n3\n3\n12\n3\n12\n8\n3\n12\n8\n2\n3\n12\n8\n2\n14\n3\n12\n8\n2\n14\n5\n2\nA\nB\nA\nB\nA\nB\nC\nD\nA\nB\nC\nD\nA\nB\nA\nB\nC\n[−∞, +∞]\n[−∞, +∞]\n[3, +∞]\n[3, +∞]\n[3, 3]\n[3, 14]\n[−∞, 2]\n[−∞, 2]\n[2, 2]\n[3, 3]\n[3, 3]\n[3, 3]\n[3, 3]\n[−∞, 3]\n[−∞, 3]\n[−∞, 2]\n[−∞, 14]\nFigure 5.5\nStages in the calculation of the optimal decision for the game tree in Figure 5.2.\nAt each point, we show the range of possible values for each node. (a) The ﬁrst leaf below B\nhas the value 3. Hence, B, which is a MIN node, has a value of at most 3. (b) The second leaf\nbelow B has a value of 12; MIN would avoid this move, so the value of B is still at most 3.\n(c) The third leaf below B has a value of 8; we have seen all B’s successor states, so the\nvalue of B is exactly 3. Now, we can infer that the value of the root is at least 3, because\nMAX has a choice worth 3 at the root. (d) The ﬁrst leaf below C has the value 2. Hence,\nC, which is a MIN node, has a value of at most 2. But we know that B is worth 3, so MAX\nwould never choose C. Therefore, there is no point in looking at the other successor states\nof C. This is an example of alpha–beta pruning. (e) The ﬁrst leaf below D has the value 14,\nso D is worth at most 14. This is still higher than MAX’s best alternative (i.e., 3), so we need\nto keep exploring D’s successor states. Notice also that we now have bounds on all of the\nsuccessors of the root, so the root’s value is also at most 14. (f) The second successor of D\nis worth 5, so again we need to keep exploring. The third successor is worth 2, so now D is\nworth exactly 2. MAX’s decision at the root is to move to B, giving a value of 3.\nsomewhere in the tree (see Figure 5.6), such that Player has a choice of moving to that node.\nIf Player has a better choice m either at the parent node of n or at any choice point further up,\nthen n will never be reached in actual play. So once we have found out enough about n (by\nexamining some of its descendants) to reach this conclusion, we can prune it.\nRemember that minimax search is depth-ﬁrst, so at any one time we just have to con-\nsider the nodes along a single path in the tree. Alpha–beta pruning gets its name from the\nfollowing two parameters that describe bounds on the backed-up values that appear anywhere\nalong the path:\nSection 5.3.\nAlpha–Beta Pruning\n169\nPlayer\nOpponent\nPlayer\nOpponent\nm\nn\n•\n•\n•\nFigure 5.6\nThe general case for alpha–beta pruning. If m is better than n for Player, we\nwill never get to n in play.\nα = the value of the best (i.e., highest-value) choice we have found so far at any choice point\nalong the path for MAX.\nβ = the value of the best (i.e., lowest-value) choice we have found so far at any choice point\nalong the path for MIN.\nAlpha–beta search updates the values of α and β as it goes along and prunes the remaining\nbranches at a node (i.e., terminates the recursive call) as soon as the value of the current\nnode is known to be worse than the current α or β value for MAX or MIN, respectively. The\ncomplete algorithm is given in Figure 5.7. We encourage you to trace its behavior when\napplied to the tree in Figure 5.5.\n5.3.1\nMove ordering\nThe effectiveness of alpha–beta pruning is highly dependent on the order in which the states\nare examined. For example, in Figure 5.5(e) and (f), we could not prune any successors of D\nat all because the worst successors (from the point of view of MIN) were generated ﬁrst. If\nthe third successor of D had been generated ﬁrst, we would have been able to prune the other\ntwo. This suggests that it might be worthwhile to try to examine ﬁrst the successors that are\nlikely to be best.\nIf this can be done,2 then it turns out that alpha–beta needs to examine only O(bm/2)\nnodes to pick the best move, instead of O(bm) for minimax. This means that the effective\nbranching factor becomes\n√\nb instead of b—for chess, about 6 instead of 35. Put another\nway, alpha–beta can solve a tree roughly twice as deep as minimax in the same amount of\ntime. If successors are examined in random order rather than best-ﬁrst, the total number of\nnodes examined will be roughly O(b3m/4) for moderate b. For chess, a fairly simple ordering\nfunction (such as trying captures ﬁrst, then threats, then forward moves, and then backward\nmoves) gets you to within about a factor of 2 of the best-case O(bm/2) result.\n2 Obviously, it cannot be done perfectly; otherwise, the ordering function could be used to play a perfect game!\n170\n5.\nAdversarial Search\nfunction ALPHA-BETA-SEARCH(state) returns an action\nv ←MAX-VALUE(state,−∞,+∞)\nreturn the action in ACTIONS(state) with value v\nfunction MAX-VALUE(state,α,β) returns a utility value\nif TERMINAL-TEST(state) then return UTILITY(state)\nv ←−∞\nfor each a in ACTIONS(state) do\nv ←MAX(v, MIN-VALUE(RESULT(s,a),α,β))\nif v ≥β then return v\nα ←MAX(α, v)\nreturn v\nfunction MIN-VALUE(state,α,β) returns a utility value\nif TERMINAL-TEST(state) then return UTILITY(state)\nv ←+∞\nfor each a in ACTIONS(state) do\nv ←MIN(v, MAX-VALUE(RESULT(s,a) ,α,β))\nif v ≤α then return v\nβ ←MIN(β, v)\nreturn v\nFigure 5.7\nThe alpha–beta search algorithm. Notice that these routines are the same as\nthe MINIMAX functions in Figure 5.3, except for the two lines in each of MIN-VALUE and\nMAX-VALUE that maintain α and β (and the bookkeeping to pass these parameters along).\nAdding dynamic move-ordering schemes, such as trying ﬁrst the moves that were found\nto be best in the past, brings us quite close to the theoretical limit. The past could be the\nprevious move—often the same threats remain—or it could come from previous exploration\nof the current move. One way to gain information from the current move is with iterative\ndeepening search. First, search 1 ply deep and record the best path of moves. Then search\n1 ply deeper, but use the recorded path to inform move ordering. As we saw in Chapter 3,\niterative deepening on an exponential game tree adds only a constant fraction to the total\nsearch time, which can be more than made up from better move ordering. The best moves are\noften called killer moves and to try them ﬁrst is called the killer move heuristic.\nKILLER MOVES\nIn Chapter 3, we noted that repeated states in the search tree can cause an exponential\nincrease in search cost. In many games, repeated states occur frequently because of transpo-\nsitions—different permutations of the move sequence that end up in the same position. For\nTRANSPOSITION\nexample, if White has one move, a1, that can be answered by Black with b1 and an unre-\nlated move a2 on the other side of the board that can be answered by b2, then the sequences\n[a1, b1, a2, b2] and [a2, b2, a1, b1] both end up in the same position. It is worthwhile to store\nthe evaluation of the resulting position in a hash table the ﬁrst time it is encountered so that\nwe don’t have to recompute it on subsequent occurrences. The hash table of previously seen\npositions is traditionally called a transposition table; it is essentially identical to the explored\nTRANSPOSITION\nTABLE",
+  "images": [
+    {
+      "path": "images/5-3-alphabeta-pruning_fig_5-5.png",
+      "type": "diagram",
+      "caption": "Figure 5.5"
+    },
+    {
+      "path": "images/5-3-alphabeta-pruning_fig_5-6.png",
+      "type": "diagram",
+      "caption": "Figure 5.6"
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/5-3-alphabeta-pruning_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/5-3-alphabeta-pruning_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/5-3-alphabeta-pruning_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/5-3-alphabeta-pruning_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/5-3-alphabeta-pruning_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/5-3-alphabeta-pruning_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/5-3-alphabeta-pruning_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/5-3-alphabeta-pruning_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/5-3-alphabeta-pruning_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/5-3-alphabeta-pruning_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/5-3-alphabeta-pruning_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/5-3-alphabeta-pruning_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/5-3-alphabeta-pruning_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/5-3-alphabeta-pruning_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/5-3-alphabeta-pruning_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/5-3-alphabeta-pruning_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/5-3-alphabeta-pruning_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/5-3-alphabeta-pruning_eq_18.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/5-3-alphabeta-pruning_eq_19.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/5-3-alphabeta-pruning_eq_20.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

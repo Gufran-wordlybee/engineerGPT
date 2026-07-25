@@ -1,0 +1,15 @@
+{
+  "section_id": "references-11",
+  "title": "REFERENCES",
+  "level": 2,
+  "chapter": "12-7 Memory Management Hardware",
+  "parent_id": "12-7-memory-management-hardware",
+  "children": [
+    "chapter-thirteen"
+  ],
+  "start_page": 486,
+  "end_page": 488,
+  "text": "Baer, J. L., Computer Systems Architecture. Potomac, MD: Computer Science Press, 1980.\nDasgupta, S., Computer Architecture: A Modern Synthesis, Vol. 1. New York: John Wiley, 1989.\nGibson, G. A., Computer Systems Concepts and Design. Englewood Cliffs, NJ: Prentice Hall, 1991.\n4. Hamacher, V. C., Z. G. Vranesic, and S. G. Zaky, Computer Organization, 3rd ed. New York: McGraw-Hill, 1990.\nHwang, K., and F. A. Briggs, Computer Architecture and Parallel Processing. New York: McGraw-Hill, 1984.\nKain, R., Computer Architecture: Software and Hardware, Vol. 1. Englewood Cliffs, NJ: Prentice Hall. 1989.\nLangholz, G., J. Francioni, and A. Kandel, Elements of Computer Organization. Englewood Cliffs, NJ: Prentice Hall, 1989.\nMurray, W. D., Computer and Digital System Architecture. Englewood Cliffs, NJ: Prentice Hall. 1990.\n9. Patterson, D. A., and J. L. Hennessy, Computer Architecture: A Quantitative Approach.\nSan Mateo, CA: Morgan Kaufmann Publishers, 1990.\nPollard, L. H., Computer Design and Architecture. Englewood Cliffs, NJ: Prentice Hall. 1990.\nStone, H. S. (ed.), Introduction to Computer Architecture, 2nd ed. Chicago: Science Research Associates, 1980.",
+  "images": [],
+  "equations": []
+}

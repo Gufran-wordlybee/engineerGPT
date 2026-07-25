@@ -3,8 +3,10 @@
 .env.*
 !.env.example
 
-# Processed book outputs
-Phase-0/books/
+# PDFs are local inputs. Processed books are intentionally committed: Streamlit
+# reads them from the GitHub checkout when answering questions.
+Phase-0/books/raw/
+Phase-0/books/processed/**/marker_raw/
 
 # Python
 __pycache__/

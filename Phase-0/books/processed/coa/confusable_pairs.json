@@ -1,0 +1,118 @@
+[
+  {
+    "section_a": "1-7-sequential-circuits",
+    "section_b": "design-example",
+    "overlap": 0.65,
+    "shared_keywords": [
+      "binary",
+      "circuit",
+      "combinational",
+      "diagram",
+      "flip",
+      "flops",
+      "inputs",
+      "outputs",
+      "present",
+      "sequential",
+      "state"
+    ]
+  },
+  {
+    "section_a": "design-example",
+    "section_b": "design-procedure",
+    "overlap": 0.76,
+    "shared_keywords": [
+      "circuit",
+      "combinational",
+      "diagram",
+      "excitation",
+      "flip",
+      "flop",
+      "flops",
+      "input",
+      "inputs",
+      "outputs",
+      "present",
+      "sequential",
+      "state"
+    ]
+  },
+  {
+    "section_a": "direct-mapping",
+    "section_b": "set-associative-mapping",
+    "overlap": 0.65,
+    "shared_keywords": [
+      "address",
+      "bits",
+      "cache",
+      "data",
+      "index",
+      "main",
+      "mapping",
+      "memory",
+      "size",
+      "tag",
+      "tags",
+      "word",
+      "words"
+    ]
+  },
+  {
+    "section_a": "1-7-sequential-circuits",
+    "section_b": "design-example",
+    "overlap": 0.65,
+    "shared_keywords": [
+      "binary",
+      "circuit",
+      "combinational",
+      "diagram",
+      "flip",
+      "flops",
+      "inputs",
+      "outputs",
+      "present",
+      "sequential",
+      "state"
+    ]
+  },
+  {
+    "section_a": "design-example",
+    "section_b": "design-procedure",
+    "overlap": 0.76,
+    "shared_keywords": [
+      "circuit",
+      "combinational",
+      "diagram",
+      "excitation",
+      "flip",
+      "flop",
+      "flops",
+      "input",
+      "inputs",
+      "outputs",
+      "present",
+      "sequential",
+      "state"
+    ]
+  },
+  {
+    "section_a": "direct-mapping",
+    "section_b": "set-associative-mapping",
+    "overlap": 0.65,
+    "shared_keywords": [
+      "address",
+      "bits",
+      "cache",
+      "data",
+      "index",
+      "main",
+      "mapping",
+      "memory",
+      "size",
+      "tag",
+      "tags",
+      "word",
+      "words"
+    ]
+  }
+]

@@ -1,0 +1,260 @@
+{
+  "section_id": "24-4-reconstructing-the-3d-world",
+  "title": "24.4 Reconstructing the 3D World",
+  "level": 3,
+  "chapter": "VI: Communicating, perceiving, and acting",
+  "parent_id": "24-perception",
+  "children": [],
+  "start_page": 965,
+  "end_page": 974,
+  "text": "Section 24.4.\nReconstructing the 3D World\n947\nFigure 24.15\nAnother example of object recognition, this one using the SIFT feature\n(Scale Invariant Feature Transform), an earlier version of the HOG feature. On the left, im-\nages of a shoe and a telephone that serve as object models. In the center, a test image. On the\nright, the shoe and the telephone have been detected by: ﬁnding points in the image whose\nSIFT feature descriptions match a model; computing an estimate of pose of the model; and\nverifying that estimate. A strong match is usually veriﬁed with rare false positives. Images\nfrom Lowe (1999) c⃝IEEE.\norientation at x for this cell. A natural choice of weight is\nwx,C =\n||∇Ix ||\n\u0002\nu∈C ||∇Iu || .\nThis compares the gradient magnitude to others in the cell, so gradients that are large com-\npared to their neighbors get a large weight. The resulting feature is usually called a HOG\nfeature (for Histogram Of Gradient orientations).\nHOG FEATURE\nThis feature construction is the main way in which pedestrian detection differs from\nface detection. Otherwise, building a pedestrian detector is very like building a face detector.\nThe detector sweeps a window across the image, computes features for that window, then\npresents it to a classiﬁer. Non-maximum suppression needs to be applied to the output. In\nmost applications, the scale and orientation of typical pedestrians is known. For example, in\ndriving applications in which a camera is ﬁxed to the car, we expect to view mainly vertical\npedestrians, and we are interested only in nearby pedestrians. Several pedestrian data sets\nhave been published, and these can be used for training the classiﬁer.\nPedestrians are not the only type of object we can detect. In Figure 24.15 we see that\nsimilar techniques can be used to ﬁnd a variety of objects in different contexts.\n24.4\nRECONSTRUCTING THE 3D WORLD\nIn this section we show how to go from the two-dimensional image to a three-dimensional\nrepresentation of the scene. The fundamental question is this: Given that all points in the\nscene that fall along a ray to the pinhole are projected to the same point in the image, how do\nwe recover three-dimensional information? Two ideas come to our rescue:\n948\n24.\nPerception\n• If we have two (or more) images from different camera positions, then we can triangu-\nlate to ﬁnd the position of a point in the scene.\n• We can exploit background knowledge about the physical scene that gave rise to the\nimage. Given an object model P(Scene) and a rendering model P(Image | Scene), we\ncan compute a posterior distribution P(Scene | Image).\nThere is as yet no single uniﬁed theory for scene reconstruction. We survey eight commonly\nused visual cues: motion, binocular stereopsis, multiple views, texture, shading, contour,\nand familiar objects.\n24.4.1\nMotion parallax\nIf the camera moves relative to the three-dimensional scene, the resulting apparent motion in\nthe image, optical ﬂow, can be a source of information for both the movement of the camera\nand depth in the scene. To understand this, we state (without proof) an equation that relates\nthe optical ﬂow to the viewer’s translational velocity T and the depth in the scene.\nThe components of the optical ﬂow ﬁeld are\nvx(x, y) = −Tx + xTz\nZ(x, y)\n,\nvy(x, y) = −Ty + yTz\nZ(x, y)\n,\nwhere Z(x, y) is the z-coordinate of the point in the scene corresponding to the point in the\nimage at (x, y).\nNote that both components of the optical ﬂow, vx(x, y) and vy(x, y), are zero at the\npoint x = Tx/Tz, y = Ty/Tz. This point is called the focus of expansion of the ﬂow\nFOCUS OF\nEXPANSION\nﬁeld. Suppose we change the origin in the x–y plane to lie at the focus of expansion; then\nthe expressions for optical ﬂow take on a particularly simple form. Let (x′, y′) be the new\ncoordinates deﬁned by x′ = x −Tx/Tz, y′ = y −Ty/Tz. Then\nvx(x′, y′) =\nx′Tz\nZ(x′, y′),\nvy(x′, y′) =\ny′Tz\nZ(x′, y′) .\nNote that there is a scale-factor ambiguity here. If the camera was moving twice as fast, and\nevery object in the scene was twice as big and at twice the distance to the camera, the optical\nﬂow ﬁeld would be exactly the same. But we can still extract quite useful information.\n1. Suppose you are a ﬂy trying to land on a wall and you want to know the time-to-\ncontact at the current velocity. This time is given by Z/Tz. Note that although the\ninstantaneous optical ﬂow ﬁeld cannot provide either the distance Z or the velocity\ncomponent Tz, it can provide the ratio of the two and can therefore be used to control\nthe landing approach. There is considerable experimental evidence that many different\nanimal species exploit this cue.\n2. Consider two points at depths Z1, Z2, respectively. We may not know the absolute\nvalue of either of these, but by considering the inverse of the ratio of the optical ﬂow\nmagnitudes at these points, we can determine the depth ratio Z1/Z2. This is the cue of\nmotion parallax, one we use when we look out of the side window of a moving car or\ntrain and infer that the slower moving parts of the landscape are farther away.\nSection 24.4.\nReconstructing the 3D World\n949\nPerceived object\nRight image\n(a)\n(b)\nLeft image\nDisparity\nLeft\nRight\nFigure 24.16\nTranslating a camera parallel to the image plane causes image features to\nmove in the camera plane. The disparity in positions that results is a cue to depth. If we\nsuperimpose left and right image, as in (b), we see the disparity.\n24.4.2\nBinocular stereopsis\nMost vertebrates have two eyes. This is useful for redundancy in case of a lost eye, but it\nhelps in other ways too. Most prey have eyes on the side of the head to enable a wider ﬁeld\nof vision. Predators have the eyes in the front, enabling them to use binocular stereopsis.\nBINOCULAR\nSTEREOPSIS\nThe idea is similar to motion parallax, except that instead of using images over time, we use\ntwo (or more) images separated in space. Because a given feature in the scene will be in a\ndifferent place relative to the z-axis of each image plane, if we superpose the two images,\nthere will be a disparity in the location of the image feature in the two images. You can see\nDISPARITY\nthis in Figure 24.16, where the nearest point of the pyramid is shifted to the left in the right\nimage and to the right in the left image.\nNote that to measure disparity we need to solve the correspondence problem, that is,\ndetermine for a point in the left image, the point in the right image that results from the\nprojection of the same scene point. This is analogous to what one has to do in measuring\noptical ﬂow, and the most simple-minded approaches are somewhat similar and based on\ncomparing blocks of pixels around corresponding points using the sum of squared differences.\nIn practice, we use much more sophisticated algorithms, which exploit additional constraints.\nAssuming that we can measure disparity, how does this yield information about depth\nin the scene? We will need to work out the geometrical relationship between disparity and\ndepth. First, we will consider the case when both the eyes (or cameras) are looking forward\nwith their optical axes parallel. The relationship of the right camera to the left camera is then\njust a displacement along the x-axis by an amount b, the baseline. We can use the optical\nﬂow equations from the previous section, if we think of this as resulting from a translation\n950\n24.\nPerception\nb\nδθ/2\nδZ\nP\nP0\nPR\nPL\nLeft\neye\nZ\nRight\neye\nθ\nFigure 24.17\nThe relation between disparity and depth in stereopsis. The centers of pro-\njection of the two eyes are b apart, and the optical axes intersect at the ﬁxation point P0. The\npoint P in the scene projects to points PL and PR in the two eyes. In angular terms, the\ndisparity between these is δθ. See text.\nvector T acting for time δt, with Tx = b/δt and Ty = Tz = 0. The horizontal and vertical\ndisparity are given by the optical ﬂow components, multiplied by the time step δt, H = vx δt,\nV = vy δt. Carrying out the substitutions, we get the result that H = b/Z, V = 0. In words,\nthe horizontal disparity is equal to the ratio of the baseline to the depth, and the vertical\ndisparity is zero. Given that we know b, we can measure H and recover the depth Z.\nUnder normal viewing conditions, humans ﬁxate; that is, there is some point in the\nFIXATE\nscene at which the optical axes of the two eyes intersect. Figure 24.17 shows two eyes ﬁxated\nat a point P0, which is at a distance Z from the midpoint of the eyes. For convenience,\nwe will compute the angular disparity, measured in radians. The disparity at the point of\nﬁxation P0 is zero. For some other point P in the scene that is δZ farther away, we can\ncompute the angular displacements of the left and right images of P, which we will call PL\nand PR, respectively. If each of these is displaced by an angle δθ/2 relative to P0, then the\ndisplacement between PL and PR, which is the disparity of P, is just δθ. From Figure 24.17,\ntan θ = b/2\nZ and tan(θ −δθ/2) =\nb/2\nZ+δZ , but for small angles, tan θ ≈θ, so\nδθ/2 = b/2\nZ −\nb/2\nZ + δZ ≈bδZ\n2Z2\nand, since the actual disparity is δθ, we have\ndisparity = bδZ\nZ2 .\nIn humans, b (the baseline distance between the eyes) is about 6 cm. Suppose that Z is about\nBASELINE\n100 cm. If the smallest detectable δθ (corresponding to the pixel size) is about 5 seconds\nof arc, this gives a δZ of 0.4 mm. For Z = 30 cm, we get the impressively small value\nδZ = 0.036 mm. That is, at a distance of 30 cm, humans can discriminate depths that differ\nby as little as 0.036 mm, enabling us to thread needles and the like.\nSection 24.4.\nReconstructing the 3D World\n951\nFigure 24.18\n(a) Four frames from a video sequence in which the camera is moved and\nrotated relative to the object. (b) The ﬁrst frame of the sequence, annotated with small boxes\nhighlighting the features found by the feature detector. (Courtesy of Carlo Tomasi.)\n24.4.3\nMultiple views\nShape from optical ﬂow or binocular disparity are two instances of a more general framework,\nthat of exploiting multiple views for recovering depth. In computer vision, there is no reason\nfor us to be restricted to differential motion or to only use two cameras converging at a ﬁxation\npoint. Therefore, techniques have been developed that exploit the information available in\nmultiple views, even from hundreds or thousands of cameras. Algorithmically, there are\nthree subproblems that need to be solved:\n• The correspondence problem, i.e., identifying features in the different images that are\nprojections of the same feature in the three-dimensional world.\n• The relative orientation problem, i.e., determining the transformation (rotation and\ntranslation) between the coordinate systems ﬁxed to the different cameras.\n• The depth estimation problem, i.e., determining the depths of various points in the world\nfor which image plane projections were available in at least two views\nThe development of robust matching procedures for the correspondence problem, accompa-\nnied by numerically stable algorithms for solving for relative orientations and scene depth, is\none of the success stories of computer vision. Results from one such approach due to Tomasi\nand Kanade (1992) are shown in Figures 24.18 and 24.19.\n24.4.4\nTexture\nEarlier we saw how texture was used for segmenting objects. It can also be used to estimate\ndistances. In Figure 24.20 we see that a homogeneous texture in the scene results in varying\ntexture elements, or texels, in the image. All the paving tiles in (a) are identical in the scene.\nTEXEL\nThey appear different in the image for two reasons:\n952\n24.\nPerception\n(a)\n(b)\nFigure 24.19\n(a) Three-dimensional reconstruction of the locations of the image features\nin Figure 24.18, shown from above. (b) The real house, taken from the same position.\n1. Differences in the distances of the texels from the camera. Distant objects appear smaller\nby a scaling factor of 1/Z.\n2. Differences in the foreshortening of the texels. If all the texels are in the ground plane\nthen distance ones are viewed at an angle that is farther off the perpendicular, and so\nare more foreshortened. The magnitude of the foreshortening effect is proportional to\ncos σ, where σ is the slant, the angle between the Z-axis and n, the surface normal to\nthe texel.\nResearchers have developed various algorithms that try to exploit the variation in the\nappearance of the projected texels as a basis for determining surface normals. However, the\naccuracy and applicability of these algorithms is not anywhere as general as those based on\nusing multiple views.\n24.4.5\nShading\nShading—variation in the intensity of light received from different portions of a surface in a\nscene—is determined by the geometry of the scene and by the reﬂectance properties of the\nsurfaces. In computer graphics, the objective is to compute the image brightness I(x, y),\ngiven the scene geometry and reﬂectance properties of the objects in the scene. Computer\nvision aims to invert the process—that is, to recover the geometry and reﬂectance properties,\ngiven the image brightness I(x, y). This has proved to be difﬁcult to do in anything but the\nsimplest cases.\nFrom the physical model of section 24.1.4, we know that if a surface normal points\ntoward the light source, the surface is brighter, and if it points away, the surface is darker.\nWe cannot conclude that a dark patch has its normal pointing away from the light; instead,\nit could have low albedo. Generally, albedo changes quite quickly in images, and shading\nSection 24.4.\nReconstructing the 3D World\n953\n(a)\n(b)\nFigure 24.20\n(a) A textured scene. Assuming that the real texture is uniform allows recov-\nery of the surface orientation. The computed surface orientation is indicated by overlaying a\nblack circle and pointer, transformed as if the circle were painted on the surface at that point.\n(b) Recovery of shape from texture for a curved surface (white circle and pointer this time).\nImages courtesy of Jitendra Malik and Ruth Rosenholtz (1994).\nchanges rather slowly, and humans seem to be quite good at using this observation to tell\nwhether low illumination, surface orientation, or albedo caused a surface patch to be dark.\nTo simplify the problem, let us assume that the albedo is known at every surface point. It\nis still difﬁcult to recover the normal, because the image brightness is one measurement but\nthe normal has two unknown parameters, so we cannot simply solve for the normal. The key\nto this situation seems to be that nearby normals will be similar, because most surfaces are\nsmooth—they do not have sharp changes.\nThe real difﬁculty comes in dealing with interreﬂections. If we consider a typical indoor\nscene, such as the objects inside an ofﬁce, surfaces are illuminated not only by the light\nsources, but also by the light reﬂected from other surfaces in the scene that effectively serve\nas secondary light sources. These mutual illumination effects are quite signiﬁcant and make\nit quite difﬁcult to predict the relationship between the normal and the image brightness. Two\nsurface patches with the same normal might have quite different brightnesses, because one\nreceives light reﬂected from a large white wall and the other faces only a dark bookcase.\nDespite these difﬁculties, the problem is important. Humans seem to be able to ignore the\neffects of interreﬂections and get a useful perception of shape from shading, but we know\nfrustratingly little about algorithms to do this.\n24.4.6\nContour\nWhen we look at a line drawing, such as Figure 24.21, we get a vivid perception of three-\ndimensional shape and layout. How? It is a combination of recognition of familiar objects in\nthe scene and the application of generic constraints such as the following:\n• Occluding contours, such as the outlines of the hills. One side of the contour is nearer\nto the viewer, the other side is farther away. Features such as local convexity and sym-\n954\n24.\nPerception\nFigure 24.21\nAn evocative line drawing. (Courtesy of Isha Malik.)\nmetry provide cues to solving the ﬁgure-ground problem—assigning which side of the\nFIGURE-GROUND\ncontour is ﬁgure (nearer), and which is ground (farther). At an occluding contour, the\nline of sight is tangential to the surface in the scene.\n• T-junctions. When one object occludes another, the contour of the farther object is\ninterrupted, assuming that the nearer object is opaque. A T-junction results in the image.\n• Position on the ground plane. Humans, like many other terrestrial animals, are very\noften in a scene that contains a ground plane, with various objects at different locations\nGROUND PLANE\non this plane. Because of gravity, typical objects don’t ﬂoat in air but are supported by\nthis ground plane, and we can exploit the very special geometry of this viewing scenario.\nLet us work out the projection of objects of different heights and at different loca-\ntions on the ground plane. Suppose that the eye, or camera, is at a height hc above\nthe ground plane. Consider an object of height δY resting on the ground plane, whose\nbottom is at (X, −hc, Z) and top is at (X, δY −hc, Z). The bottom projects to the\nimage point (fX/Z, −fhc/Z) and the top to (fX/Z, f(δY −hc)/Z). The bottoms of\nnearer objects (small Z) project to points lower in the image plane; farther objects have\nbottoms closer to the horizon.\n24.4.7\nObjects and the geometric structure of scenes\nA typical adult human head is about 9 inches long. This means that for someone who is 43\nfeet away, the angle subtended by the head at the camera is 1 degree. If we see a person whose\nhead appears to subtend just half a degree, Bayesian inference suggests we are looking at a\nnormal person who is 86 feet away, rather than someone with a half-size head. This line of\nreasoning supplies us with a method to check the results of a pedestrian detector, as well as a\nmethod to estimate the distance to an object. For example, all pedestrians are about the same\nheight, and they tend to stand on a ground plane. If we know where the horizon is in an image,\nwe can rank pedestrians by distance to the camera. This works because we know where their\nSection 24.4.\nReconstructing the 3D World\n955\nImage plane\nHorizon\nGround plane\nA\nB\nC\nA\nC\nB\nFigure 24.22\nIn an image of people standing on a ground plane, the people whose feet\nare closer to the horizon in the image must be farther away (top drawing). This means they\nmust look smaller in the image (left lower drawing). This means that the size and location of\nreal pedestrians in an image depend upon one another and on the location of the horizon. To\nexploit this, we need to identify the ground plane, which is done using shape-from-texture\nmethods. From this information, and from some likely pedestrians, we can recover a horizon\nas shown in the center image. On the right, acceptable pedestrian boxes given this geometric\ncontext. Notice that pedestrians who are higher in the scene must be smaller. If they are not,\nthen they are false positives. Images from Hoiem et al. (2008) c⃝IEEE.\nfeet are, and pedestrians whose feet are closer to the horizon in the image are farther away\nfrom the camera (Figure 24.22). Pedestrians who are farther away from the camera must also\nbe smaller in the image. This means we can rule out some detector responses — if a detector\nﬁnds a pedestrian who is large in the image and whose feet are close to the horizon, it has\nfound an enormous pedestrian; these don’t exist, so the detector is wrong. In fact, many or\nmost image windows are not acceptable pedestrian windows, and need not even be presented\nto the detector.\nThere are several strategies for ﬁnding the horizon, including searching for a roughly\nhorizontal line with a lot of blue above it, and using surface orientation estimates obtained\nfrom texture deformation. A more elegant strategy exploits the reverse of our geometric\nconstraints. A reasonably reliable pedestrian detector is capable of producing estimates of the\nhorizon, if there are several pedestrians in the scene at different distances from the camera.\nThis is because the relative scaling of the pedestrians is a cue to where the horizon is. So we\ncan extract a horizon estimate from the detector, then use this estimate to prune the pedestrian\ndetector’s mistakes.\n956\n24.\nPerception\nIf the object is familiar, we can estimate more than just the distance to it, because what it\nlooks like in the image depends very strongly on its pose, i.e., its position and orientation with\nrespect to the viewer. This has many applications. For instance, in an industrial manipulation\ntask, the robot arm cannot pick up an object until the pose is known. In the case of rigid\nobjects, whether three-dimensional or two-dimensional, this problem has a simple and well-\ndeﬁned solution based on the alignment method, which we now develop.\nALIGNMENT METHOD\nThe object is represented by M features or distinguished points m1, m2, . . . , mM in\nthree-dimensional space—perhaps the vertices of a polyhedral object. These are measured\nin some coordinate system that is natural for the object. The points are then subjected to\nan unknown three-dimensional rotation R, followed by translation by an unknown amount t\nand then projection to give rise to image feature points p1, p2, . . . , pN on the image plane.\nIn general, N̸ = M, because some model points may be occluded, and the feature detector\ncould miss some features (or invent false ones due to noise). We can express this as\npi = Π(Rmi + t) = Q(mi)\nfor a three-dimensional model point mi and the corresponding image point pi. Here, R\nis a rotation matrix, t is a translation, and Π denotes perspective projection or one of its\napproximations, such as scaled orthographic projection. The net result is a transformation Q\nthat will bring the model point mi into alignment with the image point pi. Although we do\nnot know Q initially, we do know (for rigid objects) that Q must be the same for all the model\npoints.\nWe can solve for Q, given the three-dimensional coordinates of three model points and\ntheir two-dimensional projections. The intuition is as follows: we can write down equations\nrelating the coordinates of pi to those of mi. In these equations, the unknown quantities\ncorrespond to the parameters of the rotation matrix R and the translation vector t. If we have\nenough equations, we ought to be able to solve for Q. We will not give a proof here; we\nmerely state the following result:\nGiven three noncollinear points m1, m2, and m3 in the model, and their scaled\northographic projections p1, p2, and p3 on the image plane, there exist exactly\ntwo transformations from the three-dimensional model coordinate frame to a two-\ndimensional image coordinate frame.\nThese transformations are related by a reﬂection around the image plane and can be computed\nby a simple closed-form solution. If we could identify the corresponding model features for\nthree features in the image, we could compute Q, the pose of the object.\nLet us specify position and orientation in mathematical terms. The position of a point P\nin the scene is characterized by three numbers, the (X, Y, Z) coordinates of P in a coordinate\nframe with its origin at the pinhole and the Z-axis along the optical axis (Figure 24.2 on\npage 931). What we have available is the perspective projection (x, y) of the point in the\nimage. This speciﬁes the ray from the pinhole along which P lies; what we do not know is\nthe distance. The term “orientation” could be used in two senses:\n1. The orientation of the object as a whole. This can be speciﬁed in terms of a three-\ndimensional rotation relating its coordinate frame to that of the camera.",
+  "images": [
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_img_1.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_img_2.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_img_3.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_img_4.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_fig_24-16.png",
+      "type": "diagram",
+      "caption": "Figure 24.16"
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_fig_24-17.png",
+      "type": "diagram",
+      "caption": "Figure 24.17"
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_img_5.png",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_img_6.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_img_7.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_img_8.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_img_9.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_img_10.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_fig_24-19.png",
+      "type": "diagram",
+      "caption": "Figure 24.19"
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_img_11.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_img_12.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_fig_24-21.png",
+      "type": "diagram",
+      "caption": "Figure 24.21"
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_img_13.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_img_14.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_img_15.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_img_16.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_img_17.png",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_img_18.png",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_img_19.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_img_20.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_fig_24-22.png",
+      "type": "diagram",
+      "caption": "Figure 24.22"
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_diagram_6.png",
+      "type": "diagram",
+      "caption": null
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_eq_18.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_eq_19.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_eq_20.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_eq_21.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_eq_22.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/24-4-reconstructing-the-3d-world_eq_23.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

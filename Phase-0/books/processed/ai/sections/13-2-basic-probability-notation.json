@@ -1,0 +1,209 @@
+{
+  "section_id": "13-2-basic-probability-notation",
+  "title": "13.2 Basic Probability Notation",
+  "level": 3,
+  "chapter": "IV: Uncertain knowledge and reasoning",
+  "parent_id": "13-quantifying-uncertainty",
+  "children": [],
+  "start_page": 501,
+  "end_page": 507,
+  "text": "Section 13.2.\nBasic Probability Notation\n483\nThe utility of a state is relative to an agent. For example, the utility of a state in which\nWhite has checkmated Black in a game of chess is obviously high for the agent playing White,\nbut low for the agent playing Black. But we can’t go strictly by the scores of 1, 1/2, and 0 that\nare dictated by the rules of tournament chess—some players (including the authors) might be\nthrilled with a draw against the world champion, whereas other players (including the former\nworld champion) might not. There is no accounting for taste or preferences: you might think\nthat an agent who prefers jalape˜no bubble-gum ice cream to chocolate chocolate chip is odd\nor even misguided, but you could not say the agent is irrational. A utility function can account\nfor any set of preferences—quirky or typical, noble or perverse. Note that utilities can account\nfor altruism, simply by including the welfare of others as one of the factors.\nPreferences, as expressed by utilities, are combined with probabilities in the general\ntheory of rational decisions called decision theory:\nDECISION THEORY\nDecision theory = probability theory + utility theory .\nThe fundamental idea of decision theory is that an agent is rational if and only if it chooses\nthe action that yields the highest expected utility, averaged over all the possible outcomes\nof the action. This is called the principle of maximum expected utility (MEU). Note that\nMAXIMUM EXPECTED\nUTILITY\n“expected” might seem like a vague, hypothetical term, but as it is used here it has a precise\nmeaning: it means the “average,” or “statistical mean” of the outcomes, weighted by the\nprobability of the outcome. We saw this principle in action in Chapter 5 when we touched\nbrieﬂy on optimal decisions in backgammon; it is in fact a completely general principle.\nFigure 13.1 sketches the structure of an agent that uses decision theory to select actions.\nThe agent is identical, at an abstract level, to the agents described in Chapters 4 and 7 that\nmaintain a belief state reﬂecting the history of percepts to date. The primary difference is\nthat the decision-theoretic agent’s belief state represents not just the possibilities for world\nstates but also their probabilities. Given the belief state, the agent can make probabilistic\npredictions of action outcomes and hence select the action with highest expected utility. This\nchapter and the next concentrate on the task of representing and computing with probabilistic\ninformation in general. Chapter 15 deals with methods for the speciﬁc tasks of representing\nand updating the belief state over time and predicting the environment. Chapter 16 covers\nutility theory in more depth, and Chapter 17 develops algorithms for planning sequences of\nactions in uncertain environments.\n13.2\nBASIC PROBABILITY NOTATION\nFor our agent to represent and use probabilistic information, we need a formal language.\nThe language of probability theory has traditionally been informal, written by human math-\nematicians to other human mathematicians. Appendix A includes a standard introduction to\nelementary probability theory; here, we take an approach more suited to the needs of AI and\nmore consistent with the concepts of formal logic.\n484\n13.\nQuantifying Uncertainty\nfunction DT-AGENT(percept) returns an action\npersistent: belief state, probabilistic beliefs about the current state of the world\naction, the agent’s action\nupdate belief state based on action and percept\ncalculate outcome probabilities for actions,\ngiven action descriptions and current belief state\nselect action with highest expected utility\ngiven probabilities of outcomes and utility information\nreturn action\nFigure 13.1\nA decision-theoretic agent that selects rational actions.\n13.2.1\nWhat probabilities are about\nLike logical assertions, probabilistic assertions are about possible worlds. Whereas logical\nassertions say which possible worlds are strictly ruled out (all those in which the assertion is\nfalse), probabilistic assertions talk about how probable the various worlds are. In probability\ntheory, the set of all possible worlds is called the sample space. The possible worlds are\nSAMPLE SPACE\nmutually exclusive and exhaustive—two possible worlds cannot both be the case, and one\npossible world must be the case. For example, if we are about to roll two (distinguishable)\ndice, there are 36 possible worlds to consider: (1,1), (1,2), . . ., (6,6). The Greek letter Ω\n(uppercase omega) is used to refer to the sample space, and ω (lowercase omega) refers to\nelements of the space, that is, particular possible worlds.\nA fully speciﬁed probability model associates a numerical probability P(ω) with each\nPROBABILITY MODEL\npossible world.1 The basic axioms of probability theory say that every possible world has a\nprobability between 0 and 1 and that the total probability of the set of possible worlds is 1:\n0 ≤P(ω) ≤1 for every ω and\n\n\nω∈Ω\nP(ω) = 1 .\n(13.1)\nFor example, if we assume that each die is fair and the rolls don’t interfere with each other,\nthen each of the possible worlds (1,1), (1,2), . . ., (6,6) has probability 1/36. On the other\nhand, if the dice conspire to produce the same number, then the worlds (1,1), (2,2), (3,3), etc.,\nmight have higher probabilities, leaving the others with lower probabilities.\nProbabilistic assertions and queries are not usually about particular possible worlds, but\nabout sets of them. For example, we might be interested in the cases where the two dice add\nup to 11, the cases where doubles are rolled, and so on. In probability theory, these sets are\ncalled events—a term already used extensively in Chapter 12 for a different concept. In AI,\nEVENT\nthe sets are always described by propositions in a formal language. (One such language is\ndescribed in Section 13.2.2.) For each proposition, the corresponding set contains just those\npossible worlds in which the proposition holds. The probability associated with a proposition\n1 For now, we assume a discrete, countable set of worlds. The proper treatment of the continuous case brings in\ncertain complications that are less relevant for most purposes in AI.\nSection 13.2.\nBasic Probability Notation\n485\nis deﬁned to be the sum of the probabilities of the worlds in which it holds:\nFor any proposition φ, P(φ) =\n\n\nω∈φ\nP(ω) .\n(13.2)\nFor example, when rolling fair dice, we have P(Total = 11) = P((5, 6)) + P((6, 5)) =\n1/36 + 1/36 = 1/18. Note that probability theory does not require complete knowledge\nof the probabilities of each possible world. For example, if we believe the dice conspire to\nproduce the same number, we might assert that P(doubles) = 1/4 without knowing whether\nthe dice prefer double 6 to double 2. Just as with logical assertions, this assertion constrains\nthe underlying probability model without fully determining it.\nProbabilities such as P(Total = 11) and P(doubles) are called unconditional or prior\nUNCONDITIONAL\nPROBABILITY\nprobabilities (and sometimes just “priors” for short); they refer to degrees of belief in propo-\nPRIOR PROBABILITY\nsitions in the absence of any other information. Most of the time, however, we have some\ninformation, usually called evidence, that has already been revealed. For example, the ﬁrst\nEVIDENCE\ndie may already be showing a 5 and we are waiting with bated breath for the other one to\nstop spinning. In that case, we are interested not in the unconditional probability of rolling\ndoubles, but the conditional or posterior probability (or just “posterior” for short) of rolling\nCONDITIONAL\nPROBABILITY\nPOSTERIOR\nPROBABILITY\ndoubles given that the ﬁrst die is a 5. This probability is written P(doubles | Die1 = 5), where\nthe “ | ” is pronounced “given.” Similarly, if I am going to the dentist for a regular checkup,\nthe probability P(cavity) = 0.2 might be of interest; but if I go to the dentist because I have\na toothache, it’s P(cavity | toothache) = 0.6 that matters. Note that the precedence of “ | ” is\nsuch that any expression of the form P(. . . | . . .) always means P((. . .)|(. . .)).\nIt is important to understand that P(cavity) = 0.2 is still valid after toothache is ob-\nserved; it just isn’t especially useful. When making decisions, an agent needs to condition\non all the evidence it has observed. It is also important to understand the difference be-\ntween conditioning and logical implication. The assertion that P(cavity | toothache) = 0.6\ndoes not mean “Whenever toothache is true, conclude that cavity is true with probabil-\nity 0.6” rather it means “Whenever toothache is true and we have no further information,\nconclude that cavity is true with probability 0.6.” The extra condition is important; for ex-\nample, if we had the further information that the dentist found no cavities, we deﬁnitely\nwould not want to conclude that cavity is true with probability 0.6; instead we need to use\nP(cavity|toothache ∧¬cavity) = 0.\nMathematically speaking, conditional probabilities are deﬁned in terms of uncondi-\ntional probabilities as follows: for any propositions a and b, we have\nP(a | b) = P(a ∧b)\nP(b)\n,\n(13.3)\nwhich holds whenever P(b) > 0. For example,\nP(doubles | Die1 = 5) = P(doubles ∧Die1 = 5)\nP(Die1 = 5)\n.\nThe deﬁnition makes sense if you remember that observing b rules out all those possible\nworlds where b is false, leaving a set whose total probability is just P(b). Within that set, the\na-worlds satisfy a ∧b and constitute a fraction P(a ∧b)/P(b).\n486\n13.\nQuantifying Uncertainty\nThe deﬁnition of conditional probability, Equation (13.3), can be written in a different\nform called the product rule:\nPRODUCT RULE\nP(a ∧b) = P(a | b)P(b) ,\nThe product rule is perhaps easier to remember: it comes from the fact that, for a and b to be\ntrue, we need b to be true, and we also need a to be true given b.\n13.2.2\nThe language of propositions in probability assertions\nIn this chapter and the next, propositions describing sets of possible worlds are written in a\nnotation that combines elements of propositional logic and constraint satisfaction notation. In\nthe terminology of Section 2.4.7, it is a factored representation, in which a possible world\nis represented by a set of variable/value pairs.\nVariables in probability theory are called random variables and their names begin with\nRANDOM VARIABLE\nan uppercase letter. Thus, in the dice example, Total and Die1 are random variables. Every\nrandom variable has a domain—the set of possible values it can take on. The domain of\nDOMAIN\nTotal for two dice is the set {2, . . . , 12} and the domain of Die1 is {1, . . . , 6}. A Boolean\nrandom variable has the domain {true, false} (notice that values are always lowercase); for\nexample, the proposition that doubles are rolled can be written as Doubles = true. By con-\nvention, propositions of the form A = true are abbreviated simply as a, while A = false is\nabbreviated as ¬a. (The uses of doubles, cavity, and toothache in the preceding section are\nabbreviations of this kind.) As in CSPs, domains can be sets of arbitrary tokens; we might\nchoose the domain of Age to be {juvenile, teen, adult} and the domain of Weather might\nbe {sunny, rain, cloudy, snow}. When no ambiguity is possible, it is common to use a value\nby itself to stand for the proposition that a particular variable has that value; thus, sunny can\nstand for Weather = sunny.\nThe preceding examples all have ﬁnite domains. Variables can have inﬁnite domains,\ntoo—either discrete (like the integers) or continuous (like the reals). For any variable with an\nordered domain, inequalities are also allowed, such as NumberOfAtomsInUniverse ≥1070.\nFinally, we can combine these sorts of elementary propositions (including the abbre-\nviated forms for Boolean variables) by using the connectives of propositional logic. For\nexample, we can express “The probability that the patient has a cavity, given that she is a\nteenager with no toothache, is 0.1” as follows:\nP(cavity | ¬toothache ∧teen) = 0.1 .\nSometimes we will want to talk about the probabilities of all the possible values of a random\nvariable. We could write:\nP(Weather = sunny) = 0.6\nP(Weather = rain) = 0.1\nP(Weather = cloudy) = 0.29\nP(Weather = snow) = 0.01 ,\nbut as an abbreviation we will allow\nP(Weather) = ⟨0.6, 0.1, 0.29, 0.01⟩,\nSection 13.2.\nBasic Probability Notation\n487\nwhere the bold P indicates that the result is a vector of numbers, and where we assume a pre-\ndeﬁned ordering ⟨sunny, rain, cloudy, snow⟩on the domain of Weather. We say that the\nP statement deﬁnes a probability distribution for the random variable Weather. The P nota-\nPROBABILITY\nDISTRIBUTION\ntion is also used for conditional distributions: P(X | Y ) gives the values of P(X = xi | Y = yj)\nfor each possible i, j pair.\nFor continuous variables, it is not possible to write out the entire distribution as a vector,\nbecause there are inﬁnitely many values. Instead, we can deﬁne the probability that a random\nvariable takes on some value x as a parameterized function of x. For example, the sentence\nP(NoonTemp = x) = Uniform[18C,26C](x)\nexpresses the belief that the temperature at noon is distributed uniformly between 18 and 26\ndegrees Celsius. We call this a probability density function.\nPROBABILITY\nDENSITY FUNCTION\nProbability density functions (sometimes called pdfs) differ in meaning from discrete\ndistributions. Saying that the probability density is uniform from 18C to 26C means that\nthere is a 100% chance that the temperature will fall somewhere in that 8C-wide region\nand a 50% chance that it will fall in any 4C-wide region, and so on. We write the probability\ndensity for a continuous random variable X at value x as P(X = x) or just P(x); the intuitive\ndeﬁnition of P(x) is the probability that X falls within an arbitrarily small region beginning\nat x, divided by the width of the region:\nP(x) = lim\ndx→0 P(x ≤X ≤x + dx)/dx .\nFor NoonTemp we have\nP(NoonTemp = x) = Uniform[18C,26C](x) =\n\u0018\n1\n8C if 18C ≤x ≤26C\n0 otherwise\n,\nwhere C stands for centigrade (not for a constant). In P(NoonTemp = 20.18C) =\n1\n8C , note\nthat\n1\n8C is not a probability, it is a probability density. The probability that NoonTemp is\nexactly 20.18C is zero, because 20.18C is a region of width 0. Some authors use different\nsymbols for discrete distributions and density functions; we use P in both cases, since confu-\nsion seldom arises and the equations are usually identical. Note that probabilities are unitless\nnumbers, whereas density functions are measured with a unit, in this case reciprocal degrees.\nIn addition to distributions on single variables, we need notation for distributions on\nmultiple variables. Commas are used for this. For example, P(Weather, Cavity) denotes\nthe probabilities of all combinations of the values of Weather and Cavity. This is a 4 × 2\ntable of probabilities called the joint probability distribution of Weather and Cavity. We\nJOINT PROBABILITY\nDISTRIBUTION\ncan also mix variables with and without values; P(sunny, Cavity) would be a two-element\nvector giving the probabilities of a sunny day with a cavity and a sunny day with no cavity.\nThe P notation makes certain expressions much more concise than they might otherwise be.\nFor example, the product rules for all possible values of Weather and Cavity can be written\nas a single equation:\nP(Weather, Cavity) = P(Weather | Cavity)P(Cavity) ,\n488\n13.\nQuantifying Uncertainty\ninstead of as these 4 × 2 = 8 equations (using abbreviations W and C):\nP(W = sunny ∧C = true) = P(W = sunny|C = true) P(C = true)\nP(W = rain ∧C = true) = P(W = rain|C = true) P(C = true)\nP(W = cloudy ∧C = true) = P(W = cloudy|C = true) P(C = true)\nP(W = snow ∧C = true) = P(W = snow|C = true) P(C = true)\nP(W = sunny ∧C = false) = P(W = sunny|C = false) P(C = false)\nP(W = rain ∧C = false) = P(W = rain|C = false) P(C = false)\nP(W = cloudy ∧C = false) = P(W = cloudy|C = false) P(C = false)\nP(W = snow ∧C = false) = P(W = snow|C = false) P(C = false) .\nAs a degenerate case, P(sunny, cavity) has no variables and thus is a one-element vec-\ntor that is the probability of a sunny day with a cavity, which could also be written as\nP(sunny, cavity) or P(sunny ∧cavity). We will sometimes use P notation to derive results\nabout individual P values, and when we say “P(sunny) = 0.6” it is really an abbreviation for\n“P(sunny) is the one-element vector ⟨0.6⟩, which means that P(sunny) = 0.6.”\nNow we have deﬁned a syntax for propositions and probability assertions and we have\ngiven part of the semantics: Equation (13.2) deﬁnes the probability of a proposition as the sum\nof the probabilities of worlds in which it holds. To complete the semantics, we need to say\nwhat the worlds are and how to determine whether a proposition holds in a world. We borrow\nthis part directly from the semantics of propositional logic, as follows. A possible world is\ndeﬁned to be an assignment of values to all of the random variables under consideration. It is\neasy to see that this deﬁnition satisﬁes the basic requirement that possible worlds be mutually\nexclusive and exhaustive (Exercise 13.5). For example, if the random variables are Cavity,\nToothache, and Weather, then there are 2 × 2 × 4 = 16 possible worlds. Furthermore, the\ntruth of any given proposition, no matter how complex, can be determined easily in such\nworlds using the same recursive deﬁnition of truth as for formulas in propositional logic.\nFrom the preceding deﬁnition of possible worlds, it follows that a probability model is\ncompletely determined by the joint distribution for all of the random variables—the so-called\nfull joint probability distribution. For example, if the variables are Cavity, Toothache,\nFULL JOINT\nPROBABILITY\nDISTRIBUTION\nand Weather, then the full joint distribution is given by P(Cavity, Toothache, Weather).\nThis joint distribution can be represented as a 2 × 2 × 4 table with 16 entries. Because every\nproposition’s probability is a sum over possible worlds, a full joint distribution sufﬁces, in\nprinciple, for calculating the probability of any proposition.\n13.2.3\nProbability axioms and their reasonableness\nThe basic axioms of probability (Equations (13.1) and (13.2)) imply certain relationships\namong the degrees of belief that can be accorded to logically related propositions. For exam-\nple, we can derive the familiar relationship between the probability of a proposition and the\nprobability of its negation:\nP(¬a) = \u0002\nω∈¬a P(ω)\nby Equation (13.2)\n= \u0002\nω∈¬a P(ω) + \u0002\nω∈a P(ω) −\u0002\nω∈a P(ω)\n= \u0002\nω∈Ω P(ω) −\u0002\nω∈a P(ω)\ngrouping the ﬁrst two terms\n= 1 −P(a)\nby (13.1) and (13.2).\nSection 13.2.\nBasic Probability Notation\n489\nWe can also derive the well-known formula for the probability of a disjunction, sometimes\ncalled the inclusion–exclusion principle:\nINCLUSION–\nEXCLUSION\nPRINCIPLE\nP(a ∨b) = P(a) + P(b) −P(a ∧b) .\n(13.4)\nThis rule is easily remembered by noting that the cases where a holds, together with the cases\nwhere b holds, certainly cover all the cases where a ∨b holds; but summing the two sets of\ncases counts their intersection twice, so we need to subtract P(a ∧b). The proof is left as an\nexercise (Exercise 13.6).\nEquations (13.1) and (13.4) are often called Kolmogorov’s axioms in honor of the Rus-\nKOLMOGOROV’S\nAXIOMS\nsian mathematician Andrei Kolmogorov, who showed how to build up the rest of probability\ntheory from this simple foundation and how to handle the difﬁculties caused by continuous\nvariables.2 While Equation (13.2) has a deﬁnitional ﬂavor, Equation (13.4) reveals that the\naxioms really do constrain the degrees of belief an agent can have concerning logically re-\nlated propositions. This is analogous to the fact that a logical agent cannot simultaneously\nbelieve A, B, and ¬(A ∧B), because there is no possible world in which all three are true.\nWith probabilities, however, statements refer not to the world directly, but to the agent’s own\nstate of knowledge. Why, then, can an agent not hold the following set of beliefs (even though\nthey violate Kolmogorov’s axioms)?\nP(a) = 0.4\nP(a ∧b) = 0.0\nP(b) = 0.3\nP(a ∨b) = 0.8 .\n(13.5)\nThis kind of question has been the subject of decades of intense debate between those who\nadvocate the use of probabilities as the only legitimate form for degrees of belief and those\nwho advocate alternative approaches.\nOne argument for the axioms of probability, ﬁrst stated in 1931 by Bruno de Finetti\n(and translated into English in de Finetti (1993)), is as follows: If an agent has some degree of\nbelief in a proposition a, then the agent should be able to state odds at which it is indifferent\nto a bet for or against a.3 Think of it as a game between two agents: Agent 1 states, “my\ndegree of belief in event a is 0.4.” Agent 2 is then free to choose whether to wager for or\nagainst a at stakes that are consistent with the stated degree of belief. That is, Agent 2 could\nchoose to accept Agent 1’s bet that a will occur, offering $6 against Agent 1’s $4. Or Agent\n2 could accept Agent 1’s bet that ¬a will occur, offering $4 against Agent 1’s $6. Then we\nobserve the outcome of a, and whoever is right collects the money. If an agent’s degrees of\nbelief do not accurately reﬂect the world, then you would expect that it would tend to lose\nmoney over the long run to an opposing agent whose beliefs more accurately reﬂect the state\nof the world.\nBut de Finetti proved something much stronger: If Agent 1 expresses a set of degrees\nof belief that violate the axioms of probability theory then there is a combination of bets by\nAgent 2 that guarantees that Agent 1 will lose money every time. For example, suppose that\nAgent 1 has the set of degrees of belief from Equation (13.5). Figure 13.2 shows that if Agent\n2 The difﬁculties include the Vitali set, a well-deﬁned subset of the interval [0, 1] with no well-deﬁned size.\n3 One might argue that the agent’s preferences for different bank balances are such that the possibility of losing\n$1 is not counterbalanced by an equal possibility of winning $1. One possible response is to make the bet amounts\nsmall enough to avoid this problem. Savage’s analysis (1954) circumvents the issue altogether.",
+  "images": [],
+  "equations": [
+    {
+      "path": "images/13-2-basic-probability-notation_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_13-1.png",
+      "type": "equation",
+      "label": "13.1"
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_13-2.png",
+      "type": "equation",
+      "label": "13.2"
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_13-3.png",
+      "type": "equation",
+      "label": "13.3"
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_18.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_19.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_20.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_21.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_22.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_23.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_24.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_25.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_13-2.png",
+      "type": "equation",
+      "label": "13.2"
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_27.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_28.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_29.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_30.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_31.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_32.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_33.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_13-4.png",
+      "type": "equation",
+      "label": "13.4"
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_35.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_36.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_37.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_38.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-2-basic-probability-notation_eq_13-5.png",
+      "type": "equation",
+      "label": "13.5"
+    }
+  ]
+}

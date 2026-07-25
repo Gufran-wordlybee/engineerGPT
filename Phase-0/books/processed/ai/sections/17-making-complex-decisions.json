@@ -1,0 +1,21 @@
+{
+  "section_id": "17-making-complex-decisions",
+  "title": "17 Making Complex Decisions",
+  "level": 2,
+  "chapter": "IV: Uncertain knowledge and reasoning",
+  "parent_id": "iv-uncertain-knowledge-and-reasoning",
+  "children": [
+    "17-1-sequential-decision-problems",
+    "17-2-value-iteration",
+    "17-3-policy-iteration",
+    "17-4-partially-observable-mdps",
+    "17-5-decisions-with-multiple-agents-game-theory",
+    "17-6-mechanism-design",
+    "17-7-summary-bibliographical-and-historical-notes-exercises"
+  ],
+  "start_page": 663,
+  "end_page": 663,
+  "text": "17\nMAKING COMPLEX\nDECISIONS\nIn which we examine methods for deciding what to do today, given that we may\ndecide again tomorrow.\nIn this chapter, we address the computational issues involved in making decisions in a stochas-\ntic environment. Whereas Chapter 16 was concerned with one-shot or episodic decision\nproblems, in which the utility of each action’s outcome was well known, we are concerned\nhere with sequential decision problems, in which the agent’s utility depends on a sequence\nSEQUENTIAL\nDECISION PROBLEM\nof decisions. Sequential decision problems incorporate utilities, uncertainty, and sensing,\nand include search and planning problems as special cases. Section 17.1 explains how se-\nquential decision problems are deﬁned, and Sections 17.2 and 17.3 explain how they can\nbe solved to produce optimal behavior that balances the risks and rewards of acting in an\nuncertain environment. Section 17.4 extends these ideas to the case of partially observable\nenvironments, and Section 17.4.3 develops a complete design for decision-theoretic agents in\npartially observable environments, combining dynamic Bayesian networks from Chapter 15\nwith decision networks from Chapter 16.\nThe second part of the chapter covers environments with multiple agents. In such en-\nvironments, the notion of optimal behavior is complicated by the interactions among the\nagents. Section 17.5 introduces the main ideas of game theory, including the idea that ra-\ntional agents might need to behave randomly. Section 17.6 looks at how multiagent systems\ncan be designed so that multiple agents can achieve a common goal.\n17.1\nSEQUENTIAL DECISION PROBLEMS\nSuppose that an agent is situated in the 4 × 3 environment shown in Figure 17.1(a). Beginning\nin the start state, it must choose an action at each time step. The interaction with the environ-\nment terminates when the agent reaches one of the goal states, marked +1 or –1. Just as for\nsearch problems, the actions available to the agent in each state are given by ACTIONS(s),\nsometimes abbreviated to A(s); in the 4 × 3 environment, the actions in every state are Up,\nDown, Left, and Right. We assume for now that the environment is fully observable, so that\nthe agent always knows where it is.\n645",
+  "images": [],
+  "equations": []
+}

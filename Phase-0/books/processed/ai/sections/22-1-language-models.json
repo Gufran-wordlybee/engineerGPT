@@ -1,0 +1,99 @@
+{
+  "section_id": "22-1-language-models",
+  "title": "22.1 Language Models",
+  "level": 3,
+  "chapter": "VI: Communicating, perceiving, and acting",
+  "parent_id": "22-natural-language-processing",
+  "children": [],
+  "start_page": 878,
+  "end_page": 882,
+  "text": "22\nNATURAL LANGUAGE\nPROCESSING\nIn which we see how to make use of the copious knowledge that is expressed in\nnatural language.\nHomo sapiens is set apart from other species by the capacity for language. Somewhere around\n100,000 years ago, humans learned how to speak, and about 7,000 years ago learned to write.\nAlthough chimpanzees, dolphins, and other animals have shown vocabularies of hundreds of\nsigns, only humans can reliably communicate an unbounded number of qualitatively different\nmessages on any topic using discrete signs.\nOf course, there are other attributes that are uniquely human: no other species wears\nclothes, creates representational art, or watches three hours of television a day. But when\nAlan Turing proposed his Test (see Section 1.1.1), he based it on language, not art or TV.\nThere are two main reasons why we want our computer agents to be able to process natural\nlanguages: ﬁrst, to communicate with humans, a topic we take up in Chapter 23, and second,\nto acquire information from written language, the focus of this chapter.\nThere are over a trillion pages of information on the Web, almost all of it in natural\nlanguage. An agent that wants to do knowledge acquisition needs to understand (at least\nKNOWLEDGE\nACQUISITION\npartially) the ambiguous, messy languages that humans use. We examine the problem from\nthe point of view of speciﬁc information-seeking tasks: text classiﬁcation, information re-\ntrieval, and information extraction. One common factor in addressing these tasks is the use of\nlanguage models: models that predict the probability distribution of language expressions.\nLANGUAGE MODEL\n22.1\nLANGUAGE MODELS\nFormal languages, such as the programming languages Java or Python, have precisely deﬁned\nlanguage models. A language can be deﬁned as a set of strings; “print(2 + 2)” is a\nLANGUAGE\nlegal program in the language Python, whereas “2)+(2 print” is not. Since there are an\ninﬁnite number of legal programs, they cannot be enumerated; instead they are speciﬁed by a\nset of rules called a grammar. Formal languages also have rules that deﬁne the meaning or\nGRAMMAR\nsemantics of a program; for example, the rules say that the “meaning” of “2 + 2” is 4, and\nSEMANTICS\nthe meaning of “1/0” is that an error is signaled.\n860\nSection 22.1.\nLanguage Models\n861\nNatural languages, such as English or Spanish, cannot be characterized as a deﬁnitive\nset of sentences. Everyone agrees that “Not to be invited is sad” is a sentence of English,\nbut people disagree on the grammaticality of “To be not invited is sad.” Therefore, it is more\nfruitful to deﬁne a natural language model as a probability distribution over sentences rather\nthan a deﬁnitive set. That is, rather than asking if a string of words is or is not a member of\nthe set deﬁning the language, we instead ask for P(S = words)—what is the probability that\na random sentence would be words.\nNatural languages are also ambiguous. “He saw her duck” can mean either that he saw\nAMBIGUITY\na waterfowl belonging to her, or that he saw her move to evade something. Thus, again, we\ncannot speak of a single meaning for a sentence, but rather of a probability distribution over\npossible meanings.\nFinally, natural languages are difﬁcult to deal with because they are very large, and\nconstantly changing. Thus, our language models are, at best, an approximation. We start\nwith the simplest possible approximations and move up from there.\n22.1.1\nN-gram character models\nUltimately, a written text is composed of characters—letters, digits, punctuation, and spaces\nCHARACTERS\nin English (and more exotic characters in some other languages). Thus, one of the simplest\nlanguage models is a probability distribution over sequences of characters. As in Chapter 15,\nwe write P(c1:N) for the probability of a sequence of N characters, c1 through cN. In one\nWeb collection, P(“the”) = 0.027 and P(“zgq”) = 0.000000002. A sequence of written sym-\nbols of length n is called an n-gram (from the Greek root for writing or letters), with special\ncase “unigram” for 1-gram, “bigram” for 2-gram, and “trigram” for 3-gram. A model of the\nprobability distribution of n-letter sequences is thus called an n-gram model. (But be care-\nN -GRAM MODEL\nful: we can have n-gram models over sequences of words, syllables, or other units; not just\nover characters.)\nAn n-gram model is deﬁned as a Markov chain of order n −1. Recall from page 568\nthat in a Markov chain the probability of character ci depends only on the immediately pre-\nceding characters, not on any other characters. So in a trigram model (Markov chain of\norder 2) we have\nP(ci | c1:i−1) = P(ci | ci−2:i−1) .\nWe can deﬁne the probability of a sequence of characters P(c1:N) under the trigram model\nby ﬁrst factoring with the chain rule and then using the Markov assumption:\nP(c1:N) =\nN\n\u0019\ni = 1\nP(ci | c1:i−1) =\nN\n\u0019\ni = 1\nP(ci | ci−2:i−1) .\nFor a trigram character model in a language with 100 characters, P(Ci|Ci−2:i−1) has a million\nentries, and can be accurately estimated by counting character sequences in a body of text of\n10 million characters or more. We call a body of text a corpus (plural corpora), from the\nCORPUS\nLatin word for body.\n862\n22.\nNatural Language Processing\nWhat can we do with n-gram character models? One task for which they are well suited\nis language identiﬁcation: given a text, determine what natural language it is written in. This\nLANGUAGE\nIDENTIFICATION\nis a relatively easy task; even with short texts such as “Hello, world” or “Wie geht es dir,” it\nis easy to identify the ﬁrst as English and the second as German. Computer systems identify\nlanguages with greater than 99% accuracy; occasionally, closely related languages, such as\nSwedish and Norwegian, are confused.\nOne approach to language identiﬁcation is to ﬁrst build a trigram character model of\neach candidate language, P(ci | ci−2:i−1, ℓ), where the variable ℓranges over languages. For\neach ℓthe model is built by counting trigrams in a corpus of that language. (About 100,000\ncharacters of each language are needed.) That gives us a model of P(Text | Language), but\nwe want to select the most probable language given the text, so we apply Bayes’ rule followed\nby the Markov assumption to get the most probable language:\nℓ∗= argmax\nℓ\nP(ℓ| c1:N)\n= argmax\nℓ\nP(ℓ)P(c1:N | ℓ)\n= argmax\nℓ\nP(ℓ)\nN\n\u0019\ni = 1\nP(ci | ci−2:i−1, ℓ)\nThe trigram model can be learned from a corpus, but what about the prior probability P(ℓ)?\nWe may have some estimate of these values; for example, if we are selecting a random Web\npage we know that English is the most likely language and that the probability of Macedonian\nwill be less than 1%. The exact number we select for these priors is not critical because the\ntrigram model usually selects one language that is several orders of magnitude more probable\nthan any other.\nOther tasks for character models include spelling correction, genre classiﬁcation, and\nnamed-entity recognition. Genre classiﬁcation means deciding if a text is a news story, a\nlegal document, a scientiﬁc article, etc. While many features help make this classiﬁcation,\ncounts of punctuation and other character n-gram features go a long way (Kessler et al.,\n1997). Named-entity recognition is the task of ﬁnding names of things in a document and\ndeciding what class they belong to. For example, in the text “Mr. Sopersteen was prescribed\naciphex,” we should recognize that “Mr. Sopersteen” is the name of a person and “aciphex” is\nthe name of a drug. Character-level models are good for this task because they can associate\nthe character sequence “ex ” (“ex” followed by a space) with a drug name and “steen ” with\na person name, and thereby identify words that they have never seen before.\n22.1.2\nSmoothing n-gram models\nThe major complication of n-gram models is that the training corpus provides only an esti-\nmate of the true probability distribution. For common character sequences such as “ th” any\nEnglish corpus will give a good estimate: about 1.5% of all trigrams. On the other hand, “ ht”\nis very uncommon—no dictionary words start with ht. It is likely that the sequence would\nhave a count of zero in a training corpus of standard English. Does that mean we should as-\nsign P(“ th”) = 0? If we did, then the text “The program issues an http request” would have\nSection 22.1.\nLanguage Models\n863\nan English probability of zero, which seems wrong. We have a problem in generalization: we\nwant our language models to generalize well to texts they haven’t seen yet. Just because we\nhave never seen “ http” before does not mean that our model should claim that it is impossi-\nble. Thus, we will adjust our language model so that sequences that have a count of zero in\nthe training corpus will be assigned a small nonzero probability (and the other counts will be\nadjusted downward slightly so that the probability still sums to 1). The process od adjusting\nthe probability of low-frequency counts is called smoothing.\nSMOOTHING\nThe simplest type of smoothing was suggested by Pierre-Simon Laplace in the 18th cen-\ntury: he said that, in the lack of further information, if a random Boolean variable X has been\nfalse in all n observations so far then the estimate for P(X = true) should be 1/(n+2). That\nis, he assumes that with two more trials, one might be true and one false. Laplace smoothing\n(also called add-one smoothing) is a step in the right direction, but performs relatively poorly.\nA better approach is a backoff model, in which we start by estimating n-gram counts, but for\nBACKOFF MODEL\nany particular sequence that has a low (or zero) count, we back off to (n −1)-grams. Linear\ninterpolation smoothing is a backoff model that combines trigram, bigram, and unigram\nLINEAR\nINTERPOLATION\nSMOOTHING\nmodels by linear interpolation. It deﬁnes the probability estimate as\n*P(ci|ci−2:i−1) = λ3P(ci|ci−2:i−1) + λ2P(ci|ci−1) + λ1P(ci) ,\nwhere λ3 + λ2 + λ1 = 1. The parameter values λi can be ﬁxed, or they can be trained with\nan expectation–maximization algorithm. It is also possible to have the values of λi depend\non the counts: if we have a high count of trigrams, then we weigh them relatively more; if\nonly a low count, then we put more weight on the bigram and unigram models. One camp of\nresearchers has developed ever more sophisticated smoothing models, while the other camp\nsuggests gathering a larger corpus so that even simple smoothing models work well. Both are\ngetting at the same goal: reducing the variance in the language model.\nOne complication: note that the expression P(ci | ci−2:i−1) asks for P(c1 | c-1:0) when\ni = 1, but there are no characters before c1. We can introduce artiﬁcial characters, for\nexample, deﬁning c0 to be a space character or a special “begin text” character. Or we can\nfall back on lower-order Markov models, in effect deﬁning c-1:0 to be the empty sequence\nand thus P(c1 | c-1:0) = P(c1).\n22.1.3\nModel evaluation\nWith so many possible n-gram models—unigram, bigram, trigram, interpolated smoothing\nwith different values of λ, etc.—how do we know what model to choose? We can evaluate a\nmodel with cross-validation. Split the corpus into a training corpus and a validation corpus.\nDetermine the parameters of the model from the training data. Then evaluate the model on\nthe validation corpus.\nThe evaluation can be a task-speciﬁc metric, such as measuring accuracy on language\nidentiﬁcation. Alternatively we can have a task-independent model of language quality: cal-\nculate the probability assigned to the validation corpus by the model; the higher the proba-\nbility the better. This metric is inconvenient because the probability of a large corpus will\nbe a very small number, and ﬂoating-point underﬂow becomes an issue. A different way of\ndescribing the probability of a sequence is with a measure called perplexity, deﬁned as\nPERPLEXITY\n864\n22.\nNatural Language Processing\nPerplexity(c1:N) = P(c1:N)−1\nN .\nPerplexity can be thought of as the reciprocal of probability, normalized by sequence length.\nIt can also be thought of as the weighted average branching factor of a model. Suppose there\nare 100 characters in our language, and our model says they are all equally likely. Then for\na sequence of any length, the perplexity will be 100. If some characters are more likely than\nothers, and the model reﬂects that, then the model will have a perplexity less than 100.\n22.1.4\nN-gram word models\nNow we turn to n-gram models over words rather than characters. All the same mechanism\napplies equally to word and character models. The main difference is that the vocabulary—\nVOCABULARY\nthe set of symbols that make up the corpus and the model—is larger. There are only about\n100 characters in most languages, and sometimes we build character models that are even\nmore restrictive, for example by treating “A” and “a” as the same symbol or by treating all\npunctuation as the same symbol. But with word models we have at least tens of thousands of\nsymbols, and sometimes millions. The wide range is because it is not clear what constitutes a\nword. In English a sequence of letters surrounded by spaces is a word, but in some languages,\nlike Chinese, words are not separated by spaces, and even in English many decisions must be\nmade to have a clear policy on word boundaries: how many words are in “ne’er-do-well”? Or\nin “(Tel:1-800-960-5660x123)”?\nWord n-gram models need to deal with out of vocabulary words. With character mod-\nOUT OF\nVOCABULARY\nels, we didn’t have to worry about someone inventing a new letter of the alphabet.1 But\nwith word models there is always the chance of a new word that was not seen in the training\ncorpus, so we need to model that explicitly in our language model. This can be done by\nadding just one new word to the vocabulary: <UNK>, standing for the unknown word. We\ncan estimate n-gram counts for <UNK> by this trick: go through the training corpus, and\nthe ﬁrst time any individual word appears it is previously unknown, so replace it with the\nsymbol <UNK>. All subsequent appearances of the word remain unchanged. Then compute\nn-gram counts for the corpus as usual, treating <UNK> just like any other word. Then when\nan unknown word appears in a test set, we look up its probability under <UNK>. Sometimes\nmultiple unknown-word symbols are used, for different classes. For example, any string of\ndigits might be replaced with <NUM>, or any email address with <EMAIL>.\nTo get a feeling for what word models can do, we built unigram, bigram, and trigram\nmodels over the words in this book and then randomly sampled sequences of words from the\nmodels. The results are\nUnigram: logical are as are confusion a may right tries agent goal the was . . .\nBigram: systems are very similar computational approach would be represented . . .\nTrigram: planning and scheduling are integrated the success of naive bayes model is . . .\nEven with this small sample, it should be clear that the unigram model is a poor approximation\nof either English or the content of an AI textbook, and that the bigram and trigram models are\n1 With the possible exception of the groundbreaking work of T. Geisel (1955).",
+  "images": [],
+  "equations": [
+    {
+      "path": "images/22-1-language-models_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/22-1-language-models_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/22-1-language-models_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/22-1-language-models_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/22-1-language-models_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/22-1-language-models_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/22-1-language-models_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/22-1-language-models_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/22-1-language-models_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/22-1-language-models_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/22-1-language-models_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/22-1-language-models_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/22-1-language-models_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/22-1-language-models_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/22-1-language-models_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/22-1-language-models_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/22-1-language-models_eq_17.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

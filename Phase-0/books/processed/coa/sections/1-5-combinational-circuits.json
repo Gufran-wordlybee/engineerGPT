@@ -1,0 +1,22 @@
+{
+  "section_id": "1-5-combinational-circuits",
+  "title": "1-5 Combinational Circuits",
+  "level": 2,
+  "chapter": "Contents",
+  "parent_id": "contents",
+  "children": [
+    "half-adder",
+    "full-adder"
+  ],
+  "start_page": 33,
+  "end_page": 34,
+  "text": "A combinational circuit is a connected arrangement of logic gates with a set of inputs and outputs. At any given time, the binary values of the outputs are a function of the binary combination of the inputs. A block diagram of a combinational circuit is shown in Fig. 1-15. The n binary input variables come from an external source, the m binary output variables go to an external destination, and in between there is an interconnection of logic gates. A combinational circuit transforms binary information from the given input data to the required output data. Combinational circuits are employed in digital computers for generating binary control decisions and for providing digital components required for data processing.\nA combinational circuit can be described by a truth table showing the binary relationship between the n input variables and the m output variables. The truth table lists the corresponding output binary values for each of the 2^n input combinations. A combinational circuit can also be specified with m Boolean functions, one for each output variable. Each output function is expressed in terms of the n input variables.\nblock diagram\nFigure 1-15 Block diagram of a combinational circuit.\nmalysis\nCST (TI\nThe analysis of a combinational circuit starts with a given logic circuit diagram and culminates with a set of Boolean functions or a truth table. If the digital circuit is accompanied by a verbal explanation of its function, the Boolean functions or the truth table is sufficient for verification. If the function of the circuit is under investigation, it is necessary to interpret the operation of the circuit from the derived Boolean functions or the truth table. The success of such investigation is enhanced if one has experience and familiarity with digital circuits. The ability to correlate a truth table or a set of Boolean functions with an information-processing task is an art that one acquires with experience.\nThe design of combinational circuits starts from the verbal outline of the problem and ends in a logic circuit diagram. The procedure involves the following steps:\n1. The problem is stated.\n2. The input and output variables are assigned letter symbols.\nThe truth table that defines the relationship between inputs and outputs is derived.\n4. The simplified Boolean functions for each output are obtained.\nThe logic diagram is drawn.\nTo demonstrate the design of combinational circuits, we present two examples of simple arithmetic circuits. These circuits serve as basic building blocks for the construction of more complicated arithmetic circuits.",
+  "images": [
+    {
+      "path": "images/1-5-combinational-circuits_img_1.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

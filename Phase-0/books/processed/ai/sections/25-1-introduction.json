@@ -1,0 +1,34 @@
+{
+  "section_id": "25-1-introduction",
+  "title": "25.1 Introduction",
+  "level": 3,
+  "chapter": "VI: Communicating, perceiving, and acting",
+  "parent_id": "25-robotics",
+  "children": [],
+  "start_page": 989,
+  "end_page": 990,
+  "text": "25\nROBOTICS\nIn which agents are endowed with physical effectors with which to do mischief.\n25.1\nINTRODUCTION\nRobots are physical agents that perform tasks by manipulating the physical world. To do so,\nROBOT\nthey are equipped with effectors such as legs, wheels, joints, and grippers. Effectors have\nEFFECTOR\na single purpose: to assert physical forces on the environment.1 Robots are also equipped\nwith sensors, which allow them to perceive their environment. Present day robotics em-\nSENSOR\nploys a diverse set of sensors, including cameras and lasers to measure the environment, and\ngyroscopes and accelerometers to measure the robot’s own motion.\nMost of today’s robots fall into one of three primary categories. Manipulators, or robot\nMANIPULATOR\narms (Figure 25.1(a)), are physically anchored to their workplace, for example in a factory\nassembly line or on the International Space Station. Manipulator motion usually involves\na chain of controllable joints, enabling such robots to place their effectors in any position\nwithin the workplace. Manipulators are by far the most common type of industrial robots,\nwith approximately one million units installed worldwide. Some mobile manipulators are\nused in hospitals to assist surgeons. Few car manufacturers could survive without robotic\nmanipulators, and some manipulators have even been used to generate original artwork.\nThe second category is the mobile robot. Mobile robots move about their environment\nMOBILE ROBOT\nusing wheels, legs, or similar mechanisms. They have been put to use delivering food in\nhospitals, moving containers at loading docks, and similar tasks. Unmanned ground vehi-\ncles, or UGVs, drive autonomously on streets, highways, and off-road. The planetary rover\nUGV\nPLANETARY ROVER\nshown in Figure 25.2(b) explored Mars for a period of 3 months in 1997. Subsequent NASA\nrobots include the twin Mars Exploration Rovers (one is depicted on the cover of this book),\nwhich landed in 2003 and were still operating six years later. Other types of mobile robots\ninclude unmanned air vehicles (UAVs), commonly used for surveillance, crop-spraying, and\nUAV\n1 In Chapter 2 we talked about actuators, not effectors. Here we distinguish the effector (the physical device)\nfrom the actuator (the control line that communicates a command to the effector).\n971\n972\n25.\nRobotics\n(a)\n(b)\nFigure 25.1\n(a) An industrial robotic manipulator for stacking bags on a pallet. Image\ncourtesy of Nachi Robotic Systems. (b) Honda’s P3 and Asimo humanoid robots.\n(a)\n(b)\nFigure 25.2\n(a) Predator, an unmanned aerial vehicle (UAV) used by the U.S. Military.\nImage courtesy of General Atomics Aeronautical Systems. (b) NASA’s Sojourner, a mobile\nrobot that explored the surface of Mars in July 1997.\nmilitary operations. Figure 25.2(a) shows a UAV commonly used by the U.S. military. Au-\ntonomous underwater vehicles (AUVs) are used in deep sea exploration. Mobile robots\nAUV\ndeliver packages in the workplace and vacuum the ﬂoors at home.\nThe third type of robot combines mobility with manipulation, and is often called a\nmobile manipulator. Humanoid robots mimic the human torso. Figure 25.1(b) shows two\nMOBILE\nMANIPULATOR\nHUMANOID ROBOT\nearly humanoid robots, both manufactured by Honda Corp. in Japan. Mobile manipulators",
+  "images": [
+    {
+      "path": "images/25-1-introduction_img_1.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/25-1-introduction_img_2.png",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/25-1-introduction_img_3.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/25-1-introduction_img_4.jpeg",
+      "type": "raster",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

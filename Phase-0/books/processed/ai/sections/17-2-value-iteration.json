@@ -1,0 +1,190 @@
+{
+  "section_id": "17-2-value-iteration",
+  "title": "17.2 Value Iteration",
+  "level": 3,
+  "chapter": "IV: Uncertain knowledge and reasoning",
+  "parent_id": "17-making-complex-decisions",
+  "children": [],
+  "start_page": 670,
+  "end_page": 673,
+  "text": "652\n17.\nMaking Complex Decisions\n17.2\nVALUE ITERATION\nIn this section, we present an algorithm, called value iteration, for calculating an optimal\nVALUE ITERATION\npolicy. The basic idea is to calculate the utility of each state and then use the state utilities to\nselect an optimal action in each state.\n17.2.1\nThe Bellman equation for utilities\nSection 17.1.2 deﬁned the utility of being in a state as the expected sum of discounted rewards\nfrom that point onwards. From this, it follows that there is a direct relationship between the\nutility of a state and the utility of its neighbors: the utility of a state is the immediate reward\nfor that state plus the expected discounted utility of the next state, assuming that the agent\nchooses the optimal action. That is, the utility of a state is given by\nU(s) = R(s) + γ max\na∈A(s)\n\n\ns′\nP(s′ | s, a)U(s′) .\n(17.5)\nThis is called the Bellman equation, after Richard Bellman (1957). The utilities of the\nBELLMAN EQUATION\nstates—deﬁned by Equation (17.2) as the expected utility of subsequent state sequences—are\nsolutions of the set of Bellman equations. In fact, they are the unique solutions, as we show\nin Section 17.2.3.\nLet us look at one of the Bellman equations for the 4 × 3 world. The equation for the\nstate (1,1) is\nU(1, 1) = −0.04 + γ max[ 0.8U(1, 2) + 0.1U(2, 1) + 0.1U(1, 1),\n(Up)\n0.9U(1, 1) + 0.1U(1, 2),\n(Left)\n0.9U(1, 1) + 0.1U(2, 1),\n(Down)\n0.8U(2, 1) + 0.1U(1, 2) + 0.1U(1, 1) ].\n(Right)\nWhen we plug in the numbers from Figure 17.3, we ﬁnd that Up is the best action.\n17.2.2\nThe value iteration algorithm\nThe Bellman equation is the basis of the value iteration algorithm for solving MDPs. If there\nare n possible states, then there are n Bellman equations, one for each state. The n equations\ncontain n unknowns—the utilities of the states. So we would like to solve these simultaneous\nequations to ﬁnd the utilities. There is one problem: the equations are nonlinear, because the\n“max” operator is not a linear operator. Whereas systems of linear equations can be solved\nquickly using linear algebra techniques, systems of nonlinear equations are more problematic.\nOne thing to try is an iterative approach. We start with arbitrary initial values for the utilities,\ncalculate the right-hand side of the equation, and plug it into the left-hand side—thereby\nupdating the utility of each state from the utilities of its neighbors. We repeat this until we\nreach an equilibrium. Let Ui(s) be the utility value for state s at the ith iteration. The iteration\nstep, called a Bellman update, looks like this:\nBELLMAN UPDATE\nUi+1(s) ←R(s) + γ max\na∈A(s)\n\n\ns′\nP(s′ | s, a)Ui(s′) ,\n(17.6)\nSection 17.2.\nValue Iteration\n653\nfunction VALUE-ITERATION(mdp,ϵ) returns a utility function\ninputs: mdp, an MDP with states S, actions A(s), transition model P(s′ | s, a),\nrewards R(s), discount γ\nϵ, the maximum error allowed in the utility of any state\nlocal variables: U , U ′, vectors of utilities for states in S, initially zero\nδ, the maximum change in the utility of any state in an iteration\nrepeat\nU ←U ′; δ ←0\nfor each state s in S do\nU ′[s] ←R(s) + γ\nmax\na ∈A(s)\n\n\ns′\nP(s′ | s, a) U [s′]\nif |U ′[s] −U [s]| > δ then δ ←|U ′[s] −U [s]|\nuntil δ < ϵ(1 −γ)/γ\nreturn U\nFigure 17.4\nThe value iteration algorithm for calculating utilities of states. The termina-\ntion condition is from Equation (17.8).\n-0.2\n0\n0.2\n0.4\n0.6\n0.8\n1\n0\n5\n10\n15\n20\n25\n30\nUtility estimates\nNumber of iterations\n(4,3)\n(3,3)\n(1,1)\n(3,1)\n(4,1)\n1\n10\n100\n1000\n10000\n100000\n1e+06\n1e+07\n0.5 0.55 0.6 0.65 0.7 0.75 0.8 0.85 0.9 0.95 1\nIterations required\nDiscount factor γ\nc = 0.0001\nc = 0.001\nc = 0.01\nc = 0.1\n(a)\n(b)\nFigure 17.5\n(a) Graph showing the evolution of the utilities of selected states using value\niteration. (b) The number of value iterations k required to guarantee an error of at most\nϵ = c · Rmax, for different values of c, as a function of the discount factor γ.\nwhere the update is assumed to be applied simultaneously to all the states at each iteration.\nIf we apply the Bellman update inﬁnitely often, we are guaranteed to reach an equilibrium\n(see Section 17.2.3), in which case the ﬁnal utility values must be solutions to the Bellman\nequations. In fact, they are also the unique solutions, and the corresponding policy (obtained\nusing Equation (17.4)) is optimal. The algorithm, called VALUE-ITERATION, is shown in\nFigure 17.4.\nWe can apply value iteration to the 4 × 3 world in Figure 17.1(a). Starting with initial\nvalues of zero, the utilities evolve as shown in Figure 17.5(a). Notice how the states at differ-\n654\n17.\nMaking Complex Decisions\nent distances from (4,3) accumulate negative reward until a path is found to (4,3), whereupon\nthe utilities start to increase. We can think of the value iteration algorithm as propagating\ninformation through the state space by means of local updates.\n17.2.3\nConvergence of value iteration\nWe said that value iteration eventually converges to a unique set of solutions of the Bellman\nequations. In this section, we explain why this happens. We introduce some useful mathe-\nmatical ideas along the way, and we obtain some methods for assessing the error in the utility\nfunction returned when the algorithm is terminated early; this is useful because it means that\nwe don’t have to run forever. This section is quite technical.\nThe basic concept used in showing that value iteration converges is the notion of a con-\ntraction. Roughly speaking, a contraction is a function of one argument that, when applied to\nCONTRACTION\ntwo different inputs in turn, produces two output values that are “closer together,” by at least\nsome constant factor, than the original inputs. For example, the function “divide by two” is\na contraction, because, after we divide any two numbers by two, their difference is halved.\nNotice that the “divide by two” function has a ﬁxed point, namely zero, that is unchanged by\nthe application of the function. From this example, we can discern two important properties\nof contractions:\n• A contraction has only one ﬁxed point; if there were two ﬁxed points they would not\nget closer together when the function was applied, so it would not be a contraction.\n• When the function is applied to any argument, the value must get closer to the ﬁxed\npoint (because the ﬁxed point does not move), so repeated application of a contraction\nalways reaches the ﬁxed point in the limit.\nNow, suppose we view the Bellman update (Equation (17.6)) as an operator B that is applied\nsimultaneously to update the utility of every state. Let Ui denote the vector of utilities for all\nthe states at the ith iteration. Then the Bellman update equation can be written as\nUi+1 ←B Ui .\nNext, we need a way to measure distances between utility vectors. We will use the max norm,\nMAX NORM\nwhich measures the “length” of a vector by the absolute value of its biggest component:\n||U|| = max\ns\n|U(s)| .\nWith this deﬁnition, the “distance” between two vectors, ||U −U′||, is the maximum dif-\nference between any two corresponding elements. The main result of this section is the\nfollowing: Let Ui and U′\ni be any two utility vectors. Then we have\n||B Ui −B U′\ni|| ≤γ ||Ui −U′\ni|| .\n(17.7)\nThat is, the Bellman update is a contraction by a factor of γ on the space of utility vectors.\n(Exercise 17.6 provides some guidance on proving this claim.) Hence, from the properties of\ncontractions in general, it follows that value iteration always converges to a unique solution\nof the Bellman equations whenever γ < 1.\nSection 17.2.\nValue Iteration\n655\nWe can also use the contraction property to analyze the rate of convergence to a solu-\ntion. In particular, we can replace U′\ni in Equation (17.7) with the true utilities U, for which\nB U = U. Then we obtain the inequality\n||B Ui −U|| ≤γ ||Ui −U|| .\nSo, if we view ||Ui −U|| as the error in the estimate Ui, we see that the error is reduced by a\nfactor of at least γ on each iteration. This means that value iteration converges exponentially\nfast. We can calculate the number of iterations required to reach a speciﬁed error bound ϵ\nas follows: First, recall from Equation (17.1) that the utilities of all states are bounded by\n±Rmax/(1 −γ). This means that the maximum initial error ||U0 −U|| ≤2Rmax/(1 −γ).\nSuppose we run for N iterations to reach an error of at most ϵ. Then, because the error is\nreduced by at least γ each time, we require γN · 2Rmax/(1 −γ) ≤ϵ. Taking logs, we ﬁnd\nN = ⌈log(2Rmax/ϵ(1 −γ))/ log(1/γ)⌉\niterations sufﬁce. Figure 17.5(b) shows how N varies with γ, for different values of the ratio\nϵ/Rmax. The good news is that, because of the exponentially fast convergence, N does not\ndepend much on the ratio ϵ/Rmax. The bad news is that N grows rapidly as γ becomes close\nto 1. We can get fast convergence if we make γ small, but this effectively gives the agent a\nshort horizon and could miss the long-term effects of the agent’s actions.\nThe error bound in the preceding paragraph gives some idea of the factors inﬂuencing\nthe run time of the algorithm, but is sometimes overly conservative as a method of deciding\nwhen to stop the iteration. For the latter purpose, we can use a bound relating the error\nto the size of the Bellman update on any given iteration. From the contraction property\n(Equation (17.7)), it can be shown that if the update is small (i.e., no state’s utility changes by\nmuch), then the error, compared with the true utility function, also is small. More precisely,\nif\n||Ui+1 −Ui|| < ϵ(1 −γ)/γ\nthen\n||Ui+1 −U|| < ϵ .\n(17.8)\nThis is the termination condition used in the VALUE-ITERATION algorithm of Figure 17.4.\nSo far, we have analyzed the error in the utility function returned by the value iteration\nalgorithm. What the agent really cares about, however, is how well it will do if it makes its\ndecisions on the basis of this utility function. Suppose that after i iterations of value iteration,\nthe agent has an estimate Ui of the true utility U and obtains the MEU policy πi based on\none-step look-ahead using Ui (as in Equation (17.4)). Will the resulting behavior be nearly\nas good as the optimal behavior? This is a crucial question for any real agent, and it turns out\nthat the answer is yes. Uπi(s) is the utility obtained if πi is executed starting in s, and the\npolicy loss ||Uπi −U|| is the most the agent can lose by executing πi instead of the optimal\nPOLICY LOSS\npolicy π∗. The policy loss of πi is connected to the error in Ui by the following inequality:\nif\n||Ui −U|| < ϵ\nthen\n||Uπi −U|| < 2ϵγ/(1 −γ) .\n(17.9)\nIn practice, it often occurs that πi becomes optimal long before Ui has converged. Figure 17.6\nshows how the maximum error in Ui and the policy loss approach zero as the value iteration\nprocess proceeds for the 4 × 3 environment with γ = 0.9. The policy πi is optimal when i = 4,\neven though the maximum error in Ui is still 0.46.\nNow we have everything we need to use value iteration in practice. We know that\nit converges to the correct utilities, we can bound the error in the utility estimates if we",
+  "images": [
+    {
+      "path": "images/17-2-value-iteration_fig_17-4.png",
+      "type": "diagram",
+      "caption": "Figure 17.4"
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/17-2-value-iteration_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-2-value-iteration_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-2-value-iteration_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-2-value-iteration_eq_17-5.png",
+      "type": "equation",
+      "label": "17.5"
+    },
+    {
+      "path": "images/17-2-value-iteration_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-2-value-iteration_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-2-value-iteration_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-2-value-iteration_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-2-value-iteration_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-2-value-iteration_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-2-value-iteration_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-2-value-iteration_eq_17-6.png",
+      "type": "equation",
+      "label": "17.6"
+    },
+    {
+      "path": "images/17-2-value-iteration_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-2-value-iteration_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-2-value-iteration_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-2-value-iteration_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-2-value-iteration_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-2-value-iteration_eq_18.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-2-value-iteration_eq_19.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-2-value-iteration_eq_20.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-2-value-iteration_eq_21.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-2-value-iteration_eq_22.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-2-value-iteration_eq_23.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-2-value-iteration_eq_24.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-2-value-iteration_eq_25.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-2-value-iteration_eq_17-7.png",
+      "type": "equation",
+      "label": "17.7"
+    },
+    {
+      "path": "images/17-2-value-iteration_eq_27.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-2-value-iteration_eq_28.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-2-value-iteration_eq_29.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-2-value-iteration_eq_30.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-2-value-iteration_eq_17-8.png",
+      "type": "equation",
+      "label": "17.8"
+    },
+    {
+      "path": "images/17-2-value-iteration_eq_32.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-2-value-iteration_eq_33.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-2-value-iteration_eq_17-9.png",
+      "type": "equation",
+      "label": "17.9"
+    }
+  ]
+}

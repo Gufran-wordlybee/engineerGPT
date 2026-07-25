@@ -1,6 +1,7 @@
-
-PyMuPDF>=1.24.0
+# Deployment dependencies only.  The heavier local preprocessing dependencies
+# (including marker-pdf) remain in Phase-0/requirements.txt.
 python-dotenv>=1.0.0
-marker-pdf>=1.0.0
 openai>=1.0.0
 scikit-learn>=1.4.0
+streamlit>=1.36.0
+supabase>=2.0.0

@@ -1,0 +1,16 @@
+{
+  "section_id": "io-versus-memory-bus",
+  "title": "I/O versus Memory Bus",
+  "level": 2,
+  "chapter": "Input-Output Organization",
+  "parent_id": "input-output-organization",
+  "children": [
+    "isolated-versus-memory-mapped-io",
+    "example-of-io-interface"
+  ],
+  "start_page": 394,
+  "end_page": 395,
+  "text": "In addition to communicating with I/O, the processor must communicate with the memory unit. Like the I/O bus, the memory bus contains data, address, and read/write control lines. There are three ways that computer buses can be used to communicate with memory and I/O:\n1. Use two separate buses, one for memory and the other for I/O.\nUse one common bus for both memory and I/O but have separate control lines for each.\n3. Use one common bus for memory and I/O with common control lines.\nIOP\nIn the first method, the computer has independent sets of data, address, and control buses, one for accessing memory and the other for I/O. This is done in computers that provide a separate I/O processor (IOP) in addition to the central processing unit (CPU). The memory communicates with both the CPU and the IOP through a memory bus. The IOP communicates also with the input and output devices through a separate I/O bus with its own address, data and control lines. The purpose of the IOP is to provide an independent pathway for the transfer of information between external devices and internal memory. The I/O processor is sometimes called a data channel. In Sec. 11-7 we discuss the function of the IOP in more detail.",
+  "images": [],
+  "equations": []
+}

@@ -1,0 +1,22 @@
+{
+  "section_id": "7-logical-agents",
+  "title": "7 Logical Agents",
+  "level": 2,
+  "chapter": "III: Knowledge, reasoning, and planning",
+  "parent_id": "iii-knowledge-reasoning-and-planning",
+  "children": [
+    "7-1-knowledge-based-agents",
+    "7-2-the-wumpus-world",
+    "7-3-logic",
+    "7-4-propositional-logic-a-very-simple-logic",
+    "7-5-propositional-theorem-proving",
+    "7-6-effective-propositional-model-checking",
+    "7-7-agents-based-on-propositional-logic",
+    "7-8-summary-bibliographical-and-historical-notes-exercises"
+  ],
+  "start_page": 252,
+  "end_page": 252,
+  "text": "7\nLOGICAL AGENTS\nIn which we design agents that can form representations of a complex world, use a\nprocess of inference to derive new representations about the world, and use these\nnew representations to deduce what to do.\nHumans, it seems, know things; and what they know helps them do things.\nThese are\nnot empty statements. They make strong claims about how the intelligence of humans is\nachieved—not by purely reﬂex mechanisms but by processes of reasoning that operate on\nREASONING\ninternal representations of knowledge. In AI, this approach to intelligence is embodied in\nREPRESENTATION\nknowledge-based agents.\nKNOWLEDGE-BASED\nAGENTS\nThe problem-solving agents of Chapters 3 and 4 know things, but only in a very limited,\ninﬂexible sense. For example, the transition model for the 8-puzzle—knowledge of what the\nactions do—is hidden inside the domain-speciﬁc code of the RESULT function. It can be\nused to predict the outcome of actions but not to deduce that two tiles cannot occupy the\nsame space or that states with odd parity cannot be reached from states with even parity. The\natomic representations used by problem-solving agents are also very limiting. In a partially\nobservable environment, an agent’s only choice for representing what it knows about the\ncurrent state is to list all possible concrete states—a hopeless prospect in large environments.\nChapter 6 introduced the idea of representing states as assignments of values to vari-\nables; this is a step in the right direction, enabling some parts of the agent to work in a\ndomain-independent way and allowing for more efﬁcient algorithms. In this chapter and\nthose that follow, we take this step to its logical conclusion, so to speak—we develop logic\nLOGIC\nas a general class of representations to support knowledge-based agents. Such agents can\ncombine and recombine information to suit myriad purposes. Often, this process can be quite\nfar removed from the needs of the moment—as when a mathematician proves a theorem or\nan astronomer calculates the earth’s life expectancy. Knowledge-based agents can accept new\ntasks in the form of explicitly described goals; they can achieve competence quickly by being\ntold or learning new knowledge about the environment; and they can adapt to changes in the\nenvironment by updating the relevant knowledge.\nWe begin in Section 7.1 with the overall agent design. Section 7.2 introduces a sim-\nple new environment, the wumpus world, and illustrates the operation of a knowledge-based\nagent without going into any technical detail. Then we explain the general principles of logic\n234",
+  "images": [],
+  "equations": []
+}

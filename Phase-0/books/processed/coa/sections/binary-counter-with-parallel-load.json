@@ -1,0 +1,13 @@
+{
+  "section_id": "binary-counter-with-parallel-load",
+  "title": "Binary Counter with Parallel Load",
+  "level": 2,
+  "chapter": "Digital Components",
+  "parent_id": "digital-components",
+  "children": [],
+  "start_page": 71,
+  "end_page": 71,
+  "text": "Counters employed in digital systems quite often require a parallel load capability for transferring an initial binary number prior to the count operation. Figure 2-11 shows the logic diagram of a binary counter that has a parallel load capability and can also be cleared to 0 synchronous with the clock. When equal to 1, the clear input sets all the K inputs to 1, thus clearing all flip-flops with the next clock transition. The input load control when equal to 1, disables the count operation and causes a transfer of data from the four parallel inputs into the four flip-flops (provided that the clear input is 0). If the clear and load inputs are both 0 and the increment input is 1, the circuit operates as a binary counter.\nThe operation of the circuit is summarized in Table 2-5. With the clear, load, and increment inputs all at 0, the outputs do not change even when pulses are applied to the C terminals. If the clear and load inputs are maintained at logic 0, the increment input controls the operation of the counter and the outputs change to the next binary count for each positive transition of the clock. The input data are loaded into the flip-flops when the load control input is equal to 1 provided that the clear is disabled, but the increment input can be 0 or 1. The register is cleared to 0 with the clear control regardless of the values in the load and increment inputs.\n\n[Table]\nClockClearLoadIncrementOperation1000No change1001Increment count by 1Ť01×Load inputs Io through I311××Clear outputs to 0\n\nTABLE 2-5 Function Table for the Register of Fig. 2-11\nCounters with parallel load are very useful in the design of digital computers. In subsequent chapters we refer to them as registers with load and increment operations. The increment operation adds one to the content of a register. By enabling the count input during one clock period, the content of the register can be incremented by one.",
+  "images": [],
+  "equations": []
+}

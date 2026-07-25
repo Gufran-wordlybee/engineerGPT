@@ -1,0 +1,13 @@
+{
+  "section_id": "4-2-0-1-2-6-1-4-0-1-0-2-3-5-7",
+  "title": "4 2 0 1 2 6 1 4 0 1 0 2 3 5 7",
+  "level": 4,
+  "chapter": "12-7 Memory Management Hardware",
+  "parent_id": "memory-protection",
+  "children": [],
+  "start_page": 486,
+  "end_page": 486,
+  "text": "Determine the four pages that are resident in main memory after each page reference change if the replacement algorithm used is (a) FIFO; (b) LRU.\n12-22. Determine the two logical addresses from Fig. 12-24(a) that will access physical memory at hexadecimal address 012AF.\n12-23. The logical address space in a computer system consists of 128 segments. Each segment can have up to 32 pages of 4K words in each. Physical memory consists of 4K blocks of 4K words in each. Formulate the logical and physical address formats.\n12-24. Give the binary number of the logical address formulated in Prob. 12-23 for segment 36 and word number 2000 in page 15.",
+  "images": [],
+  "equations": []
+}

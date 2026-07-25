@@ -1,0 +1,140 @@
+{
+  "section_id": "21-3-active-reinforcement-learning",
+  "title": "21.3 Active Reinforcement Learning",
+  "level": 3,
+  "chapter": "V: Learning",
+  "parent_id": "21-reinforcement-learning",
+  "children": [],
+  "start_page": 857,
+  "end_page": 862,
+  "text": "Section 21.3.\nActive Reinforcement Learning\n839\n21.3\nACTIVE REINFORCEMENT LEARNING\nA passive learning agent has a ﬁxed policy that determines its behavior. An active agent must\ndecide what actions to take. Let us begin with the adaptive dynamic programming agent and\nconsider how it must be modiﬁed to handle this new freedom.\nFirst, the agent will need to learn a complete model with outcome probabilities for all\nactions, rather than just the model for the ﬁxed policy. The simple learning mechanism used\nby PASSIVE-ADP-AGENT will do just ﬁne for this. Next, we need to take into account the\nfact that the agent has a choice of actions. The utilities it needs to learn are those deﬁned by\nthe optimal policy; they obey the Bellman equations given on page 652, which we repeat here\nfor convenience:\nU(s) = R(s) + γ max\na\n\n\ns′\nP(s′ | s, a)U(s′) .\n(21.4)\nThese equations can be solved to obtain the utility function U using the value iteration or\npolicy iteration algorithms from Chapter 17. The ﬁnal issue is what to do at each step. Having\nobtained a utility function U that is optimal for the learned model, the agent can extract an\noptimal action by one-step look-ahead to maximize the expected utility; alternatively, if it\nuses policy iteration, the optimal policy is already available, so it should simply execute the\naction the optimal policy recommends. Or should it?\n21.3.1\nExploration\nFigure 21.6 shows the results of one sequence of trials for an ADP agent that follows the\nrecommendation of the optimal policy for the learned model at each step. The agent does\nnot learn the true utilities or the true optimal policy! What happens instead is that, in the\n39th trial, it ﬁnds a policy that reaches the +1 reward along the lower route via (2,1), (3,1),\n(3,2), and (3,3). (See Figure 21.6(b).) After experimenting with minor variations, from the\n276th trial onward it sticks to that policy, never learning the utilities of the other states and\nnever ﬁnding the optimal route via (1,2), (1,3), and (2,3). We call this agent the greedy agent.\nGREEDY AGENT\nRepeated experiments show that the greedy agent very seldom converges to the optimal policy\nfor this environment and sometimes converges to really horrendous policies.\nHow can it be that choosing the optimal action leads to suboptimal results? The answer\nis that the learned model is not the same as the true environment; what is optimal in the\nlearned model can therefore be suboptimal in the true environment. Unfortunately, the agent\ndoes not know what the true environment is, so it cannot compute the optimal action for the\ntrue environment. What, then, is to be done?\nWhat the greedy agent has overlooked is that actions do more than provide rewards\naccording to the current learned model; they also contribute to learning the true model by af-\nfecting the percepts that are received. By improving the model, the agent will receive greater\nrewards in the future.2 An agent therefore must make a tradeoff between exploitation to\nEXPLOITATION\nmaximize its reward—as reﬂected in its current utility estimates—and exploration to maxi-\nEXPLORATION\n2 Notice the direct analogy to the theory of information value in Chapter 16.\n840\n21.\nReinforcement Learning\n0\n0.5\n1\n1.5\n2\n0\n50 100 150 200 250 300 350 400 450 500\nRMS error, policy loss\nNumber of trials\nRMS error\nPolicy loss\n1\n2\n3\n1\n2\n3\n–1\n+1\n4\n(a)\n(b)\nFigure 21.6\nPerformance of a greedy ADP agent that executes the action recommended\nby the optimal policy for the learned model. (a) RMS error in the utility estimates averaged\nover the nine nonterminal squares. (b) The suboptimal policy to which the greedy agent\nconverges in this particular sequence of trials.\nmize its long-term well-being. Pure exploitation risks getting stuck in a rut. Pure exploration\nto improve one’s knowledge is of no use if one never puts that knowledge into practice. In the\nreal world, one constantly has to decide between continuing in a comfortable existence and\nstriking out into the unknown in the hopes of discovering a new and better life. With greater\nunderstanding, less exploration is necessary.\nCan we be a little more precise than this? Is there an optimal exploration policy? This\nquestion has been studied in depth in the subﬁeld of statistical decision theory that deals with\nso-called bandit problems. (See sidebar.)\nBANDIT PROBLEM\nAlthough bandit problems are extremely difﬁcult to solve exactly to obtain an optimal\nexploration method, it is nonetheless possible to come up with a reasonable scheme that\nwill eventually lead to optimal behavior by the agent. Technically, any such scheme needs\nto be greedy in the limit of inﬁnite exploration, or GLIE. A GLIE scheme must try each\nGLIE\naction in each state an unbounded number of times to avoid having a ﬁnite probability that\nan optimal action is missed because of an unusually bad series of outcomes. An ADP agent\nusing such a scheme will eventually learn the true environment model. A GLIE scheme must\nalso eventually become greedy, so that the agent’s actions become optimal with respect to the\nlearned (and hence the true) model.\nThere are several GLIE schemes; one of the simplest is to have the agent choose a ran-\ndom action a fraction 1/t of the time and to follow the greedy policy otherwise. While this\ndoes eventually converge to an optimal policy, it can be extremely slow. A more sensible\napproach would give some weight to actions that the agent has not tried very often, while\ntending to avoid actions that are believed to be of low utility. This can be implemented by\naltering the constraint equation (21.4) so that it assigns a higher utility estimate to relatively\nSection 21.3.\nActive Reinforcement Learning\n841\nEXPLORATION AND BANDITS\nIn Las Vegas, a one-armed bandit is a slot machine. A gambler can insert a coin,\npull the lever, and collect the winnings (if any). An n-armed bandit has n levers.\nThe gambler must choose which lever to play on each successive coin—the one\nthat has paid off best, or maybe one that has not been tried?\nThe n-armed bandit problem is a formal model for real problems in many vi-\ntally important areas, such as deciding on the annual budget for AI research and\ndevelopment. Each arm corresponds to an action (such as allocating $20 million\nfor the development of new AI textbooks), and the payoff from pulling the arm cor-\nresponds to the beneﬁts obtained from taking the action (immense). Exploration,\nwhether it is exploration of a new research ﬁeld or exploration of a new shopping\nmall, is risky, is expensive, and has uncertain payoffs; on the other hand, failure to\nexplore at all means that one never discovers any actions that are worthwhile.\nTo formulate a bandit problem properly, one must deﬁne exactly what is meant\nby optimal behavior. Most deﬁnitions in the literature assume that the aim is to\nmaximize the expected total reward obtained over the agent’s lifetime. These deﬁ-\nnitions require that the expectation be taken over the possible worlds that the agent\ncould be in, as well as over the possible results of each action sequence in any given\nworld. Here, a “world” is deﬁned by the transition model P(s′ | s, a). Thus, in or-\nder to act optimally, the agent needs a prior distribution over the possible models.\nThe resulting optimization problems are usually wildly intractable.\nIn some cases—for example, when the payoff of each machine is independent\nand discounted rewards are used—it is possible to calculate a Gittins index for\neach slot machine (Gittins, 1989). The index is a function only of the number of\ntimes the slot machine has been played and how much it has paid off. The index for\neach machine indicates how worthwhile it is to invest more; generally speaking, the\nhigher the expected return and the higher the uncertainty in the utility of a given\nchoice, the better. Choosing the machine with the highest index value gives an\noptimal exploration policy. Unfortunately, no way has been found to extend Gittins\nindices to sequential decision problems.\nOne can use the theory of n-armed bandits to argue for the reasonableness\nof the selection strategy in genetic algorithms. (See Chapter 4.) If you consider\neach arm in an n-armed bandit problem to be a possible string of genes, and the\ninvestment of a coin in one arm to be the reproduction of those genes, then it can\nbe proven that genetic algorithms allocate coins optimally, given an appropriate set\nof independence assumptions.\n842\n21.\nReinforcement Learning\nunexplored state–action pairs. Essentially, this amounts to an optimistic prior over the possi-\nble environments and causes the agent to behave initially as if there were wonderful rewards\nscattered all over the place. Let us use U+(s) to denote the optimistic estimate of the utility\n(i.e., the expected reward-to-go) of the state s, and let N(s, a) be the number of times action\na has been tried in state s. Suppose we are using value iteration in an ADP learning agent;\nthen we need to rewrite the update equation (Equation (17.6) on page 652) to incorporate the\noptimistic estimate. The following equation does this:\nU+(s) ←R(s) + γ max\na\nf\n\n\u0002\ns′ P(s′ | s, a)U+(s′), N(s, a)\n\u000e\n.\n(21.5)\nHere, f(u, n) is called the exploration function. It determines how greed (preference for\nEXPLORATION\nFUNCTION\nhigh values of u) is traded off against curiosity (preference for actions that have not been\ntried often and have low n). The function f(u, n) should be increasing in u and decreasing\nin n. Obviously, there are many possible functions that ﬁt these conditions. One particularly\nsimple deﬁnition is\nf(u, n) =\n\u0018 R+\nif n < Ne\nu\notherwise\nwhere R+ is an optimistic estimate of the best possible reward obtainable in any state and Ne\nis a ﬁxed parameter. This will have the effect of making the agent try each action–state pair\nat least Ne times.\nThe fact that U+ rather than U appears on the right-hand side of Equation (21.5) is\nvery important. As exploration proceeds, the states and actions near the start state might well\nbe tried a large number of times. If we used U, the more pessimistic utility estimate, then\nthe agent would soon become disinclined to explore further aﬁeld. The use of U + means\nthat the beneﬁts of exploration are propagated back from the edges of unexplored regions,\nso that actions that lead toward unexplored regions are weighted more highly, rather than\njust actions that are themselves unfamiliar. The effect of this exploration policy can be seen\nclearly in Figure 21.7, which shows a rapid convergence toward optimal performance, unlike\nthat of the greedy approach. A very nearly optimal policy is found after just 18 trials. Notice\nthat the utility estimates themselves do not converge as quickly. This is because the agent\nstops exploring the unrewarding parts of the state space fairly soon, visiting them only “by\naccident” thereafter. However, it makes perfect sense for the agent not to care about the exact\nutilities of states that it knows are undesirable and can be avoided.\n21.3.2\nLearning an action-utility function\nNow that we have an active ADP agent, let us consider how to construct an active temporal-\ndifference learning agent. The most obvious change from the passive case is that the agent\nis no longer equipped with a ﬁxed policy, so, if it learns a utility function U, it will need to\nlearn a model in order to be able to choose an action based on U via one-step look-ahead.\nThe model acquisition problem for the TD agent is identical to that for the ADP agent. What\nof the TD update rule itself? Perhaps surprisingly, the update rule (21.3) remains unchanged.\nThis might seem odd, for the following reason: Suppose the agent takes a step that normally\nSection 21.3.\nActive Reinforcement Learning\n843\n0.6\n0.8\n1\n1.2\n1.4\n1.6\n1.8\n2\n2.2\n0\n20\n40\n60\n80\n100\nUtility estimates\nNumber of trials\n(1,1)\n(1,2)\n(1,3)\n(2,3)\n(3,2)\n(3,3)\n(4,3)\n0\n0.2\n0.4\n0.6\n0.8\n1\n1.2\n1.4\n0\n20\n40\n60\n80\n100\nRMS error, policy loss\nNumber of trials\nRMS error\nPolicy loss\n(a)\n(b)\nFigure 21.7\nPerformance of the exploratory ADP agent. using R+ = 2 and Ne = 5. (a)\nUtility estimates for selected states over time. (b) The RMS error in utility values and the\nassociated policy loss.\nleads to a good destination, but because of nondeterminism in the environment the agent ends\nup in a catastrophic state. The TD update rule will take this as seriously as if the outcome had\nbeen the normal result of the action, whereas one might suppose that, because the outcome\nwas a ﬂuke, the agent should not worry about it too much. In fact, of course, the unlikely\noutcome will occur only infrequently in a large set of training sequences; hence in the long\nrun its effects will be weighted proportionally to its probability, as we would hope. Once\nagain, it can be shown that the TD algorithm will converge to the same values as ADP as the\nnumber of training sequences tends to inﬁnity.\nThere is an alternative TD method, called Q-learning, which learns an action-utility\nrepresentation instead of learning utilities. We will use the notation Q(s, a) to denote the\nvalue of doing action a in state s. Q-values are directly related to utility values as follows:\nU(s) = max\na\nQ(s, a) .\n(21.6)\nQ-functions may seem like just another way of storing utility information, but they have a\nvery important property: a TD agent that learns a Q-function does not need a model of the\nform P(s′ | s, a), either for learning or for action selection. For this reason, Q-learning is\ncalled a model-free method. As with utilities, we can write a constraint equation that must\nMODEL-FREE\nhold at equilibrium when the Q-values are correct:\nQ(s, a) = R(s) + γ\n\n\ns′\nP(s′ | s, a) max\na′\nQ(s′, a′) .\n(21.7)\nAs in the ADP learning agent, we can use this equation directly as an update equation for\nan iteration process that calculates exact Q-values, given an estimated model. This does,\nhowever, require that a model also be learned, because the equation uses P(s′ | s, a). The\ntemporal-difference approach, on the other hand, requires no model of state transitions—all\n844\n21.\nReinforcement Learning\nfunction Q-LEARNING-AGENT(percept) returns an action\ninputs: percept, a percept indicating the current state s′ and reward signal r ′\npersistent: Q, a table of action values indexed by state and action, initially zero\nNsa, a table of frequencies for state–action pairs, initially zero\ns, a, r, the previous state, action, and reward, initially null\nif TERMINAL?(s) then Q[s,None] ←r ′\nif s is not null then\nincrement Nsa[s,a]\nQ[s,a] ←Q[s,a] + α(Nsa[s, a])(r + γ maxa′ Q[s′, a′] −Q[s,a])\ns,a,r ←s′,argmaxa′ f(Q[s′, a′], Nsa[s′, a′]),r ′\nreturn a\nFigure 21.8\nAn exploratory Q-learning agent. It is an active learner that learns the value\nQ(s, a) of each action in each situation. It uses the same exploration function f as the ex-\nploratory ADP agent, but avoids having to learn the transition model because the Q-value of\na state can be related directly to those of its neighbors.\nit needs are the Q values. The update equation for TD Q-learning is\nQ(s, a) ←Q(s, a) + α(R(s) + γ max\na′\nQ(s′, a′) −Q(s, a)) ,\n(21.8)\nwhich is calculated whenever action a is executed in state s leading to state s′.\nThe complete agent design for an exploratory Q-learning agent using TD is shown in\nFigure 21.8. Notice that it uses exactly the same exploration function f as that used by the\nexploratory ADP agent—hence the need to keep statistics on actions taken (the table N). If\na simpler exploration policy is used—say, acting randomly on some fraction of steps, where\nthe fraction decreases over time—then we can dispense with the statistics.\nQ-learning has a close relative called SARSA (for State-Action-Reward-State-Action).\nSARSA\nThe update rule for SARSA is very similar to Equation (21.8):\nQ(s, a) ←Q(s, a) + α(R(s) + γ Q(s′, a′) −Q(s, a)) ,\n(21.9)\nwhere a′ is the action actually taken in state s′. The rule is applied at the end of each\ns, a, r, s′, a′ quintuplet—hence the name. The difference from Q-learning is quite subtle:\nwhereas Q-learning backs up the best Q-value from the state reached in the observed transi-\ntion, SARSA waits until an action is actually taken and backs up the Q-value for that action.\nNow, for a greedy agent that always takes the action with best Q-value, the two algorithms\nare identical. When exploration is happening, however, they differ signiﬁcantly. Because\nQ-learning uses the best Q-value, it pays no attention to the actual policy being followed—it\nis an off-policy learning algorithm, whereas SARSA is an on-policy algorithm. Q-learning is\nOFF-POLICY\nON-POLICY\nmore ﬂexible than SARSA, in the sense that a Q-learning agent can learn how to behave well\neven when guided by a random or adversarial exploration policy. On the other hand, SARSA\nis more realistic: for example, if the overall policy is even partly controlled by other agents, it\nis better to learn a Q-function for what will actually happen rather than what the agent would\nlike to happen.",
+  "images": [
+    {
+      "path": "images/21-3-active-reinforcement-learning_diagram_1.png",
+      "type": "diagram",
+      "caption": null
+    },
+    {
+      "path": "images/21-3-active-reinforcement-learning_diagram_2.png",
+      "type": "diagram",
+      "caption": null
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/21-3-active-reinforcement-learning_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-3-active-reinforcement-learning_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-3-active-reinforcement-learning_eq_21-4.png",
+      "type": "equation",
+      "label": "21.4"
+    },
+    {
+      "path": "images/21-3-active-reinforcement-learning_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-3-active-reinforcement-learning_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-3-active-reinforcement-learning_eq_21-5.png",
+      "type": "equation",
+      "label": "21.5"
+    },
+    {
+      "path": "images/21-3-active-reinforcement-learning_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-3-active-reinforcement-learning_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-3-active-reinforcement-learning_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-3-active-reinforcement-learning_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-3-active-reinforcement-learning_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-3-active-reinforcement-learning_eq_21-6.png",
+      "type": "equation",
+      "label": "21.6"
+    },
+    {
+      "path": "images/21-3-active-reinforcement-learning_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-3-active-reinforcement-learning_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-3-active-reinforcement-learning_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-3-active-reinforcement-learning_eq_21-7.png",
+      "type": "equation",
+      "label": "21.7"
+    },
+    {
+      "path": "images/21-3-active-reinforcement-learning_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-3-active-reinforcement-learning_eq_18.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-3-active-reinforcement-learning_eq_19.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-3-active-reinforcement-learning_eq_20.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-3-active-reinforcement-learning_eq_21-8.png",
+      "type": "equation",
+      "label": "21.8"
+    },
+    {
+      "path": "images/21-3-active-reinforcement-learning_eq_22.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-3-active-reinforcement-learning_eq_21-9.png",
+      "type": "equation",
+      "label": "21.9"
+    }
+  ]
+}

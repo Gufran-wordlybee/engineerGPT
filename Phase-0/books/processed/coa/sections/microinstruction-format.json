@@ -1,0 +1,15 @@
+{
+  "section_id": "microinstruction-format",
+  "title": "Microinstruction Format",
+  "level": 3,
+  "chapter": "Computer Configuration",
+  "parent_id": "computer-configuration",
+  "children": [
+    "a-instruction-format"
+  ],
+  "start_page": 231,
+  "end_page": 231,
+  "text": "microinstruction format\nThe microinstruction format for the control memory is shown in Fig. 7-6. The 20 bits of the microinstruction are divided into four functional parts. The three fields F1, F2, and F3 specify microoperations for the computer. The CD field\nFigure 7-5 Computer instructions.\n\n[Table]\n1514 11100IOpcodeAddress",
+  "images": [],
+  "equations": []
+}

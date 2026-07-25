@@ -1,0 +1,19 @@
+{
+  "section_id": "hypercube-interconnection",
+  "title": "Hypercube Interconnection",
+  "level": 2,
+  "chapter": "13-1 Characteristics of Multiprocessors",
+  "parent_id": "13-1-characteristics-of-multiprocessors",
+  "children": [],
+  "start_page": 497,
+  "end_page": 499,
+  "text": "The hypercube or binary n-cube multiprocessor structure is a loosely coupled system composed of N=2^n processors interconnected in an n-dimensional binary cube. Each processor forms a node of the cube. Although it is customary\nto refer to each node as having a processor, in effect it contains not only a CPU but also local memory and I/O interface. Each processor has direct communication paths to n other neighbor processors. These paths correspond to the edges of the cube. There are 2^n distinct n-bit binary addresses that can be assigned to the processors. Each processor address differs from that of each of its n neighbors by exactly one bit position.\nFigure 13-9 shows the hypercube structure for n=1,2, and 3. A one-cube structure has n=1 and 2^n=2. It contains two processors interconnected by a single path. A two-cube structure has n=2 and 2^n=4. It contains four nodes interconnected as a square. A three-cube structure has eight nodes interconnected as a cube. An n-cube structure has 2^n nodes with a processor residing in each node. Each node is assigned a binary address in such a way that the addresses of two neighbors differ in exactly one bit position. For example, the three neighbors of the node with address 100 in a three-cube structure are 000, 110, and 101. Each of these binary numbers differs from address 100 by one bit value\nRouting messages through an n-cube structure may take from one to n links from a source node to a destination node. For example, in a three-cube structure, node 000 can communicate directly with node 001. It must cross at least two links to communicate with 011 (from 000 to 001 to 011) or from 000 to 010 to 011). It is necessary to go through at least three links to communicate from node 000 to node 111. A routing procedure can be developed by computing the exclusive-OR of the source node address with the destination node address. The resulting binary value will have 1 bits corresponding to the axes on which the two nodes differ. The message is then sent along any one of the axes. For example, in a three-cube structure, a message at 010 going to 001 produces an exclusive-OR of the two addresses equal to 011. The message can be sent along the second axis to 000 and then through the third axis to 001.\nFigure 13-9 Hypercube structures for n = 1,2,3.\nA representative of the hypercube architecture is the Intel iPSC computer complex. It consists of 128 (n=7) microcomputers connected through communication channels. Each node consists of a CPU, a floating-point processor, local memory, and serial communication interface units. The individual nodes operate independently on data stored in local memory according to resident programs. The data and programs to each node come through a message-passing system from other nodes or from a cube manager. Application programs are developed and compiled on the cube manager and then downloaded to the individual nodes. Computations are distributed through the system and executed concurrently.",
+  "images": [
+    {
+      "path": "images/hypercube-interconnection_img_1.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

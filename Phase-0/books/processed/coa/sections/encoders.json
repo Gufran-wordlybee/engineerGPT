@@ -1,0 +1,13 @@
+{
+  "section_id": "encoders",
+  "title": "Encoders",
+  "level": 4,
+  "chapter": "Digital Components",
+  "parent_id": "2-2-decoders",
+  "children": [],
+  "start_page": 61,
+  "end_page": 62,
+  "text": "An encoder is a digital circuit that performs the inverse operation of a decoder. An encoder has 2^n (or less) input lines and n output lines. The output lines generate the binary code corresponding to the input value. An example of an encoder is the octal-to-binary encoder, whose truth table is given in Table 2-2. It has eight inputs, one for each of the octal digits, and three outputs that generate the corresponding binary number. It is assumed that only one input has a value of 1 at any given time; otherwise, the circuit has no meaning.\n\n[Table]\nInputsOutputsD7D_6D5D_4D3D2D_1DoA2A_1A_00000000100000000010001000001000100000100001100010000100001000001010100000011010000000111\n\nTABLE 2-2 Truth Table for Octal-to-Binary Encoder\nThe encoder can be implemented with OR gates whose inputs are determined directly from the truth table. Output A_0 = 1 if the input octal digit is 1 or 3 or 5 or 7. Similar conditions apply for the other two outputs. These conditions can be expressed by the following Boolean functions:\nA_0 = D_1 + D_3 + D_5 + D_7\nA_1 = D_2 + D_3 + D_6 + D_7\nA_2 = D_4 + D_5 + D_6 + D_7\nThe encoder can be implemented with three OR gates.",
+  "images": [],
+  "equations": []
+}

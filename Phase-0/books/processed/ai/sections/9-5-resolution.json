@@ -1,0 +1,290 @@
+{
+  "section_id": "9-5-resolution",
+  "title": "9.5 Resolution",
+  "level": 3,
+  "chapter": "III: Knowledge, reasoning, and planning",
+  "parent_id": "9-inference-in-first-order-logic",
+  "children": [],
+  "start_page": 363,
+  "end_page": 374,
+  "text": "Section 9.5.\nResolution\n345\nConstraint logic programming (CLP) allows variables to be constrained rather than\nCONSTRAINT LOGIC\nPROGRAMMING\nbound. A CLP solution is the most speciﬁc set of constraints on the query variables that can\nbe derived from the knowledge base. For example, the solution to the triangle(3,4,Z)\nquery is the constraint 7 >= Z >= 1. Standard logic programs are just a special case of\nCLP in which the solution constraints must be equality constraints—that is, bindings.\nCLP systems incorporate various constraint-solving algorithms for the constraints al-\nlowed in the language. For example, a system that allows linear inequalities on real-valued\nvariables might include a linear programming algorithm for solving those constraints. CLP\nsystems also adopt a much more ﬂexible approach to solving standard logic programming\nqueries. For example, instead of depth-ﬁrst, left-to-right backtracking, they might use any of\nthe more efﬁcient algorithms discussed in Chapter 6, including heuristic conjunct ordering,\nbackjumping, cutset conditioning, and so on. CLP systems therefore combine elements of\nconstraint satisfaction algorithms, logic programming, and deductive databases.\nSeveral systems that allow the programmer more control over the search order for in-\nference have been deﬁned. The MRS language (Genesereth and Smith, 1981; Russell, 1985)\nallows the programmer to write metarules to determine which conjuncts are tried ﬁrst. The\nMETARULE\nuser could write a rule saying that the goal with the fewest variables should be tried ﬁrst or\ncould write domain-speciﬁc rules for particular predicates.\n9.5\nRESOLUTION\nThe last of our three families of logical systems is based on resolution. We saw on page 250\nthat propositional resolution using refutation is a complete inference procedure for proposi-\ntional logic. In this section, we describe how to extend resolution to ﬁrst-order logic.\n9.5.1\nConjunctive normal form for ﬁrst-order logic\nAs in the propositional case, ﬁrst-order resolution requires that sentences be in conjunctive\nnormal form (CNF)—that is, a conjunction of clauses, where each clause is a disjunction of\nliterals.6 Literals can contain variables, which are assumed to be universally quantiﬁed. For\nexample, the sentence\n∀x American(x) ∧Weapon(y) ∧Sells(x, y, z) ∧Hostile(z) ⇒Criminal(x)\nbecomes, in CNF,\n¬American(x) ∨¬Weapon(y) ∨¬Sells(x, y, z) ∨¬Hostile(z) ∨Criminal(x) .\nEvery sentence of ﬁrst-order logic can be converted into an inferentially equivalent CNF\nsentence. In particular, the CNF sentence will be unsatisﬁable just when the original sentence\nis unsatisﬁable, so we have a basis for doing proofs by contradiction on the CNF sentences.\n6 A clause can also be represented as an implication with a conjunction of atoms in the premise and a disjunction\nof atoms in the conclusion (Exercise 7.13). This is called implicative normal form or Kowalski form (especially\nwhen written with a right-to-left implication symbol (Kowalski, 1979)) and is often much easier to read.\n346\n9.\nInference in First-Order Logic\nThe procedure for conversion to CNF is similar to the propositional case, which we saw\non page 253. The principal difference arises from the need to eliminate existential quantiﬁers.\nWe illustrate the procedure by translating the sentence “Everyone who loves all animals is\nloved by someone,” or\n∀x [∀y Animal(y) ⇒Loves(x, y)] ⇒[∃y Loves(y, x)] .\nThe steps are as follows:\n• Eliminate implications:\n∀x [¬∀y ¬Animal(y) ∨Loves(x, y)] ∨[∃y Loves(y, x)] .\n• Move ¬ inwards: In addition to the usual rules for negated connectives, we need rules\nfor negated quantiﬁers. Thus, we have\n¬∀x p\nbecomes\n∃x ¬p\n¬∃x p\nbecomes\n∀x ¬p .\nOur sentence goes through the following transformations:\n∀x [∃y ¬(¬Animal(y) ∨Loves(x, y))] ∨[∃y Loves(y, x)] .\n∀x [∃y ¬¬Animal(y) ∧¬Loves(x, y)] ∨[∃y Loves(y, x)] .\n∀x [∃y Animal(y) ∧¬Loves(x, y)] ∨[∃y Loves(y, x)] .\nNotice how a universal quantiﬁer (∀y) in the premise of the implication has become\nan existential quantiﬁer. The sentence now reads “Either there is some animal that x\ndoesn’t love, or (if this is not the case) someone loves x.” Clearly, the meaning of the\noriginal sentence has been preserved.\n• Standardize variables: For sentences like (∃x P(x))∨(∃x Q(x)) which use the same\nvariable name twice, change the name of one of the variables. This avoids confusion\nlater when we drop the quantiﬁers. Thus, we have\n∀x [∃y Animal(y) ∧¬Loves(x, y)] ∨[∃z Loves(z, x)] .\n• Skolemize: Skolemization is the process of removing existential quantiﬁers by elimi-\nSKOLEMIZATION\nnation. In the simple case, it is just like the Existential Instantiation rule of Section 9.1:\ntranslate ∃x P(x) into P(A), where A is a new constant. However, we can’t apply Ex-\nistential Instantiation to our sentence above because it doesn’t match the pattern ∃v α;\nonly parts of the sentence match the pattern. If we blindly apply the rule to the two\nmatching parts we get\n∀x [Animal(A) ∧¬Loves(x, A)] ∨Loves(B, x) ,\nwhich has the wrong meaning entirely: it says that everyone either fails to love a par-\nticular animal A or is loved by some particular entity B. In fact, our original sentence\nallows each person to fail to love a different animal or to be loved by a different person.\nThus, we want the Skolem entities to depend on x and z:\n∀x [Animal(F(x)) ∧¬Loves(x, F(x))] ∨Loves(G(z), x) .\nHere F and G are Skolem functions. The general rule is that the arguments of the\nSKOLEM FUNCTION\nSkolem function are all the universally quantiﬁed variables in whose scope the exis-\ntential quantiﬁer appears. As with Existential Instantiation, the Skolemized sentence is\nsatisﬁable exactly when the original sentence is satisﬁable.\nSection 9.5.\nResolution\n347\n• Drop universal quantiﬁers: At this point, all remaining variables must be universally\nquantiﬁed. Moreover, the sentence is equivalent to one in which all the universal quan-\ntiﬁers have been moved to the left. We can therefore drop the universal quantiﬁers:\n[Animal(F(x)) ∧¬Loves(x, F(x))] ∨Loves(G(z), x) .\n• Distribute ∨over ∧:\n[Animal(F(x)) ∨Loves(G(z), x)] ∧[¬Loves(x, F(x)) ∨Loves(G(z), x)] .\nThis step may also require ﬂattening out nested conjunctions and disjunctions.\nThe sentence is now in CNF and consists of two clauses. It is quite unreadable. (It may\nhelp to explain that the Skolem function F(x) refers to the animal potentially unloved by x,\nwhereas G(z) refers to someone who might love x.) Fortunately, humans seldom need look\nat CNF sentences—the translation process is easily automated.\n9.5.2\nThe resolution inference rule\nThe resolution rule for ﬁrst-order clauses is simply a lifted version of the propositional reso-\nlution rule given on page 253. Two clauses, which are assumed to be standardized apart so\nthat they share no variables, can be resolved if they contain complementary literals. Propo-\nsitional literals are complementary if one is the negation of the other; ﬁrst-order literals are\ncomplementary if one uniﬁes with the negation of the other. Thus, we have\nℓ1 ∨· · · ∨ℓk,\nm1 ∨· · · ∨mn\nSUBST(θ, ℓ1 ∨· · · ∨ℓi−1 ∨ℓi+1 ∨· · · ∨ℓk ∨m1 ∨· · · ∨mj−1 ∨mj+1 ∨· · · ∨mn)\nwhere UNIFY(ℓi, ¬mj) = θ. For example, we can resolve the two clauses\n[Animal(F(x)) ∨Loves(G(x), x)]\nand\n[¬Loves(u, v) ∨¬Kills(u, v)]\nby eliminating the complementary literals Loves(G(x), x) and ¬Loves(u, v), with uniﬁer\nθ = {u/G(x), v/x}, to produce the resolvent clause\n[Animal(F(x)) ∨¬Kills(G(x), x)] .\nThis rule is called the binary resolution rule because it resolves exactly two literals. The\nBINARY RESOLUTION\nbinary resolution rule by itself does not yield a complete inference procedure. The full reso-\nlution rule resolves subsets of literals in each clause that are uniﬁable. An alternative approach\nis to extend factoring—the removal of redundant literals—to the ﬁrst-order case. Proposi-\ntional factoring reduces two literals to one if they are identical; ﬁrst-order factoring reduces\ntwo literals to one if they are uniﬁable. The uniﬁer must be applied to the entire clause. The\ncombination of binary resolution and factoring is complete.\n9.5.3\nExample proofs\nResolution proves that KB |= α by proving KB ∧¬α unsatisﬁable, that is, by deriving the\nempty clause. The algorithmic approach is identical to the propositional case, described in\n348\n9.\nInference in First-Order Logic\n¬American(x)    ¬Weapon(y)    ¬Sells(x,y,z)   ¬Hostile(z)   Criminal(x)\n¬Criminal(West)\n¬Enemy(Nono,America)\nEnemy(Nono,America)\n¬Missile(x)   Weapon(x)\n¬Weapon(y)   ¬Sells(West,y,z)   ¬Hostile(z)\nMissile(M1)\n¬Missile(y)   ¬Sells(West,y,z)   ¬Hostile(z)\n¬Missile(x)   ¬Owns(Nono,x)    Sells(West,x,Nono)\n¬Sells(West,M1,z)   ¬Hostile(z)\n¬American(West)   ¬Weapon(y)   ¬Sells(West,y,z)   ¬Hostile(z)\nAmerican(West)\n¬Missile(M1)   ¬Owns(Nono,M1)   ¬Hostile(Nono)\nMissile(M1)\n¬Owns(Nono,M1)   ¬Hostile(Nono)\nOwns(Nono,M1)\n¬Enemy(x,America)   Hostile(x)\n¬Hostile(Nono)\n^\n^\n^\n^\n^\n^\n^\n^\n^\n^\n^\n^\n^\n^\n^\n^\n^\n^\n^\nFigure 9.11\nA resolution proof that West is a criminal. At each step, the literals that unify\nare in bold.\nFigure 7.12, so we need not repeat it here. Instead, we give two example proofs. The ﬁrst is\nthe crime example from Section 9.3. The sentences in CNF are\n¬American(x) ∨¬Weapon(y) ∨¬Sells(x, y, z) ∨¬Hostile(z) ∨Criminal(x)\n¬Missile(x) ∨¬Owns(Nono, x) ∨Sells(West, x, Nono)\n¬Enemy(x, America) ∨Hostile(x)\n¬Missile(x) ∨Weapon(x)\nOwns(Nono, M1)\nMissile(M1)\nAmerican(West)\nEnemy(Nono, America) .\nWe also include the negated goal ¬Criminal(West). The resolution proof is shown in Fig-\nure 9.11. Notice the structure: single “spine” beginning with the goal clause, resolving against\nclauses from the knowledge base until the empty clause is generated. This is characteristic\nof resolution on Horn clause knowledge bases. In fact, the clauses along the main spine\ncorrespond exactly to the consecutive values of the goals variable in the backward-chaining\nalgorithm of Figure 9.6. This is because we always choose to resolve with a clause whose\npositive literal uniﬁed with the leftmost literal of the “current” clause on the spine; this is\nexactly what happens in backward chaining. Thus, backward chaining is just a special case\nof resolution with a particular control strategy to decide which resolution to perform next.\nOur second example makes use of Skolemization and involves clauses that are not def-\ninite clauses. This results in a somewhat more complex proof structure. In English, the\nproblem is as follows:\nEveryone who loves all animals is loved by someone.\nAnyone who kills an animal is loved by no one.\nJack loves all animals.\nEither Jack or Curiosity killed the cat, who is named Tuna.\nDid Curiosity kill the cat?\nSection 9.5.\nResolution\n349\nFirst, we express the original sentences, some background knowledge, and the negated goal\nG in ﬁrst-order logic:\nA.\n∀x [∀y Animal(y) ⇒Loves(x, y)] ⇒[∃y Loves(y, x)]\nB.\n∀x [∃z Animal(z) ∧Kills(x, z)] ⇒[∀y ¬Loves(y, x)]\nC.\n∀x Animal(x) ⇒Loves(Jack, x)\nD.\nKills(Jack, Tuna) ∨Kills(Curiosity, Tuna)\nE.\nCat(Tuna)\nF.\n∀x Cat(x) ⇒Animal(x)\n¬G.\n¬Kills(Curiosity, Tuna)\nNow we apply the conversion procedure to convert each sentence to CNF:\nA1.\nAnimal(F(x)) ∨Loves(G(x), x)\nA2.\n¬Loves(x, F(x)) ∨Loves(G(x), x)\nB.\n¬Loves(y, x) ∨¬Animal(z) ∨¬Kills(x, z)\nC.\n¬Animal(x) ∨Loves(Jack, x)\nD.\nKills(Jack, Tuna) ∨Kills(Curiosity, Tuna)\nE.\nCat(Tuna)\nF.\n¬Cat(x) ∨Animal(x)\n¬G.\n¬Kills(Curiosity, Tuna)\nThe resolution proof that Curiosity killed the cat is given in Figure 9.12. In English, the proof\ncould be paraphrased as follows:\nSuppose Curiosity did not kill Tuna. We know that either Jack or Curiosity did; thus\nJack must have. Now, Tuna is a cat and cats are animals, so Tuna is an animal. Because\nanyone who kills an animal is loved by no one, we know that no one loves Jack. On the\nother hand, Jack loves all animals, so someone loves him; so we have a contradiction.\nTherefore, Curiosity killed the cat.\n¬Loves(y, Jack)\nLoves(G(Jack), Jack)\n¬Kills(Curiosity, Tuna)\nKills(Jack, Tuna)   Kills(Curiosity, Tuna)\n¬Cat(x)   Animal(x)\nCat(Tuna)\n¬Animal(F(Jack))   Loves(G(Jack), Jack)\nAnimal(F(x))   Loves(G(x), x) \n¬Loves(y, x)   ¬Kills(x, Tuna)\nKills(Jack, Tuna)\n¬Loves(y, x)   ¬Animal(z)   ¬Kills(x, z)\nAnimal(Tuna)\n¬Loves(x,F(x))   Loves(G(x), x)\n¬Animal(x)   Loves(Jack, x)\n^\n^\n^\n^\n^\n^\n^\n^\n^\nFigure 9.12\nA resolution proof that Curiosity killed the cat. Notice the use of factoring\nin the derivation of the clause Loves(G(Jack), Jack). Notice also in the upper right, the\nuniﬁcation of Loves(x, F(x)) and Loves(Jack, x) can only succeed after the variables have\nbeen standardized apart.\n350\n9.\nInference in First-Order Logic\nThe proof answers the question “Did Curiosity kill the cat?” but often we want to pose more\ngeneral questions, such as “Who killed the cat?” Resolution can do this, but it takes a little\nmore work to obtain the answer. The goal is ∃w Kills(w, Tuna), which, when negated,\nbecomes ¬Kills(w, Tuna) in CNF. Repeating the proof in Figure 9.12 with the new negated\ngoal, we obtain a similar proof tree, but with the substitution {w/Curiosity} in one of the\nsteps. So, in this case, ﬁnding out who killed the cat is just a matter of keeping track of the\nbindings for the query variables in the proof.\nUnfortunately, resolution can produce nonconstructive proofs for existential goals.\nNONCONSTRUCTIVE\nPROOF\nFor example, ¬Kills(w, Tuna) resolves with Kills(Jack, Tuna) ∨Kills(Curiosity, Tuna)\nto give Kills(Jack, Tuna), which resolves again with ¬Kills(w, Tuna) to yield the empty\nclause. Notice that w has two different bindings in this proof; resolution is telling us that,\nyes, someone killed Tuna—either Jack or Curiosity. This is no great surprise! One so-\nlution is to restrict the allowed resolution steps so that the query variables can be bound\nonly once in a given proof; then we need to be able to backtrack over the possible bind-\nings. Another solution is to add a special answer literal to the negated goal, which be-\nANSWER LITERAL\ncomes ¬Kills(w, Tuna) ∨Answer(w). Now, the resolution process generates an answer\nwhenever a clause is generated containing just a single answer literal. For the proof in Fig-\nure 9.12, this is Answer(Curiosity). The nonconstructive proof would generate the clause\nAnswer(Curiosity) ∨Answer(Jack), which does not constitute an answer.\n9.5.4\nCompleteness of resolution\nThis section gives a completeness proof of resolution. It can be safely skipped by those who\nare willing to take it on faith.\nWe show that resolution is refutation-complete, which means that if a set of sentences\nREFUTATION\nCOMPLETENESS\nis unsatisﬁable, then resolution will always be able to derive a contradiction. Resolution\ncannot be used to generate all logical consequences of a set of sentences, but it can be used\nto establish that a given sentence is entailed by the set of sentences. Hence, it can be used to\nﬁnd all answers to a given question, Q(x), by proving that KB ∧¬Q(x) is unsatisﬁable.\nWe take it as given that any sentence in ﬁrst-order logic (without equality) can be rewrit-\nten as a set of clauses in CNF. This can be proved by induction on the form of the sentence,\nusing atomic sentences as the base case (Davis and Putnam, 1960). Our goal therefore is to\nprove the following: if S is an unsatisﬁable set of clauses, then the application of a ﬁnite\nnumber of resolution steps to S will yield a contradiction.\nOur proof sketch follows Robinson’s original proof with some simpliﬁcations from\nGenesereth and Nilsson (1987). The basic structure of the proof (Figure 9.13) is as follows:\n1. First, we observe that if S is unsatisﬁable, then there exists a particular set of ground\ninstances of the clauses of S such that this set is also unsatisﬁable (Herbrand’s theorem).\n2. We then appeal to the ground resolution theorem given in Chapter 7, which states that\npropositional resolution is complete for ground sentences.\n3. We then use a lifting lemma to show that, for any propositional resolution proof using\nthe set of ground sentences, there is a corresponding ﬁrst-order resolution proof using\nthe ﬁrst-order sentences from which the ground sentences were obtained.\nSection 9.5.\nResolution\n351\nResolution can find a contradiction in S'\nThere is a resolution proof for the contradiction in S'\nHerbrand’s theorem\nSome set S' of ground instances is unsatisfiable\nAny set of sentences S is representable in clausal form\nAssume S is unsatisfiable, and in clausal form\nLifting lemma\nGround resolution\ntheorem\nFigure 9.13\nStructure of a completeness proof for resolution.\nTo carry out the ﬁrst step, we need three new concepts:\n• Herbrand universe: If S is a set of clauses, then HS, the Herbrand universe of S, is\nHERBRAND\nUNIVERSE\nthe set of all ground terms constructable from the following:\na. The function symbols in S, if any.\nb. The constant symbols in S, if any; if none, then the constant symbol A.\nFor example, if S contains just the clause ¬P(x, F(x, A))∨¬Q(x, A)∨R(x, B), then\nHS is the following inﬁnite set of ground terms:\n{A, B, F(A, A), F(A, B), F(B, A), F(B, B), F(A, F(A, A)), . . .} .\n• Saturation: If S is a set of clauses and P is a set of ground terms, then P(S), the\nSATURATION\nsaturation of S with respect to P, is the set of all ground clauses obtained by applying\nall possible consistent substitutions of ground terms in P with variables in S.\n• Herbrand base: The saturation of a set S of clauses with respect to its Herbrand uni-\nHERBRAND BASE\nverse is called the Herbrand base of S, written as HS(S). For example, if S contains\nsolely the clause just given, then HS(S) is the inﬁnite set of clauses\n{¬P(A, F(A, A)) ∨¬Q(A, A) ∨R(A, B),\n¬P(B, F(B, A)) ∨¬Q(B, A) ∨R(B, B),\n¬P(F(A, A), F(F(A, A), A)) ∨¬Q(F(A, A), A) ∨R(F(A, A), B),\n¬P(F(A, B), F(F(A, B), A)) ∨¬Q(F(A, B), A) ∨R(F(A, B), B), . . . }\nThese deﬁnitions allow us to state a form of Herbrand’s theorem (Herbrand, 1930):\nHERBRAND’S\nTHEOREM\nIf a set S of clauses is unsatisﬁable, then there exists a ﬁnite subset of HS(S) that\nis also unsatisﬁable.\nLet S′ be this ﬁnite subset of ground sentences. Now, we can appeal to the ground resolution\ntheorem (page 255) to show that the resolution closure RC(S′) contains the empty clause.\nThat is, running propositional resolution to completion on S′ will derive a contradiction.\nNow that we have established that there is always a resolution proof involving some\nﬁnite subset of the Herbrand base of S, the next step is to show that there is a resolution\n352\n9.\nInference in First-Order Logic\nG ¨ODEL’S INCOMPLETENESS THEOREM\nBy slightly extending the language of ﬁrst-order logic to allow for the mathemat-\nical induction schema in arithmetic, Kurt G¨odel was able to show, in his incom-\npleteness theorem, that there are true arithmetic sentences that cannot be proved.\nThe proof of the incompleteness theorem is somewhat beyond the scope of\nthis book, occupying, as it does, at least 30 pages, but we can give a hint here. We\nbegin with the logical theory of numbers. In this theory, there is a single constant,\n0, and a single function, S (the successor function). In the intended model, S(0)\ndenotes 1, S(S(0)) denotes 2, and so on; the language therefore has names for all\nthe natural numbers. The vocabulary also includes the function symbols +, ×, and\nExpt (exponentiation) and the usual set of logical connectives and quantiﬁers. The\nﬁrst step is to notice that the set of sentences that we can write in this language can\nbe enumerated. (Imagine deﬁning an alphabetical order on the symbols and then\narranging, in alphabetical order, each of the sets of sentences of length 1, 2, and\nso on.) We can then number each sentence α with a unique natural number #α\n(the G¨odel number). This is crucial: number theory contains a name for each of\nits own sentences. Similarly, we can number each possible proof P with a G¨odel\nnumber G(P), because a proof is simply a ﬁnite sequence of sentences.\nNow suppose we have a recursively enumerable set A of sentences that are\ntrue statements about the natural numbers. Recalling that A can be named by a\ngiven set of integers, we can imagine writing in our language a sentence α(j, A) of\nthe following sort:\n∀i i is not the G¨odel number of a proof of the sentence whose G¨odel\nnumber is j, where the proof uses only premises in A.\nThen let σ be the sentence α(#σ, A), that is, a sentence that states its own unprov-\nability from A. (That this sentence always exists is true but not entirely obvious.)\nNow we make the following ingenious argument: Suppose that σ is provable\nfrom A; then σ is false (because σ says it cannot be proved). But then we have a\nfalse sentence that is provable from A, so A cannot consist of only true sentences—\na violation of our premise. Therefore, σ is not provable from A. But this is exactly\nwhat σ itself claims; hence σ is a true sentence.\nSo, we have shown (barring 29 1\n2 pages) that for any set of true sentences of\nnumber theory, and in particular any set of basic axioms, there are other true sen-\ntences that cannot be proved from those axioms. This establishes, among other\nthings, that we can never prove all the theorems of mathematics within any given\nsystem of axioms. Clearly, this was an important discovery for mathematics. Its\nsigniﬁcance for AI has been widely debated, beginning with speculations by G¨odel\nhimself. We take up the debate in Chapter 26.\nSection 9.5.\nResolution\n353\nproof using the clauses of S itself, which are not necessarily ground clauses. We start by\nconsidering a single application of the resolution rule. Robinson stated this lemma:\nLet C1 and C2 be two clauses with no shared variables, and let C′\n1 and C′\n2 be\nground instances of C1 and C2. If C′ is a resolvent of C′\n1 and C′\n2, then there exists\na clause C such that (1) C is a resolvent of C1 and C2 and (2) C′ is a ground\ninstance of C.\nThis is called a lifting lemma, because it lifts a proof step from ground clauses up to general\nLIFTING LEMMA\nﬁrst-order clauses. In order to prove his basic lifting lemma, Robinson had to invent uniﬁ-\ncation and derive all of the properties of most general uniﬁers. Rather than repeat the proof\nhere, we simply illustrate the lemma:\nC1 = ¬P(x, F(x, A)) ∨¬Q(x, A) ∨R(x, B)\nC2 = ¬N(G(y), z) ∨P(H(y), z)\nC′\n1 = ¬P(H(B), F(H(B), A)) ∨¬Q(H(B), A) ∨R(H(B), B)\nC′\n2 = ¬N(G(B), F(H(B), A)) ∨P(H(B), F(H(B), A))\nC′ = ¬N(G(B), F(H(B), A)) ∨¬Q(H(B), A) ∨R(H(B), B)\nC = ¬N(G(y), F(H(y), A)) ∨¬Q(H(y), A) ∨R(H(y), B) .\nWe see that indeed C′ is a ground instance of C. In general, for C′\n1 and C′\n2 to have any\nresolvents, they must be constructed by ﬁrst applying to C1 and C2 the most general uniﬁer\nof a pair of complementary literals in C1 and C2. From the lifting lemma, it is easy to derive\na similar statement about any sequence of applications of the resolution rule:\nFor any clause C′ in the resolution closure of S′ there is a clause C in the resolu-\ntion closure of S such that C′ is a ground instance of C and the derivation of C is\nthe same length as the derivation of C′.\nFrom this fact, it follows that if the empty clause appears in the resolution closure of S′, it\nmust also appear in the resolution closure of S. This is because the empty clause cannot be a\nground instance of any other clause. To recap: we have shown that if S is unsatisﬁable, then\nthere is a ﬁnite derivation of the empty clause using the resolution rule.\nThe lifting of theorem proving from ground clauses to ﬁrst-order clauses provides a vast\nincrease in power. This increase comes from the fact that the ﬁrst-order proof need instantiate\nvariables only as far as necessary for the proof, whereas the ground-clause methods were\nrequired to examine a huge number of arbitrary instantiations.\n9.5.5\nEquality\nNone of the inference methods described so far in this chapter handle an assertion of the form\nx = y. Three distinct approaches can be taken. The ﬁrst approach is to axiomatize equality—\nto write down sentences about the equality relation in the knowledge base. We need to say that\nequality is reﬂexive, symmetric, and transitive, and we also have to say that we can substitute\nequals for equals in any predicate or function. So we need three basic axioms, and then one\n354\n9.\nInference in First-Order Logic\nfor each predicate and function:\n∀x x = x\n∀x, y x = y ⇒y = x\n∀x, y, z x = y ∧y = z ⇒x = z\n∀x, y x = y ⇒(P1(x) ⇔P1(y))\n∀x, y x = y ⇒(P2(x) ⇔P2(y))\n...\n∀w, x, y, z w = y ∧x = z ⇒(F1(w, x) = F1(y, z))\n∀w, x, y, z w = y ∧x = z ⇒(F2(w, x) = F2(y, z))\n...\nGiven these sentences, a standard inference procedure such as resolution can perform tasks\nrequiring equality reasoning, such as solving mathematical equations. However, these axioms\nwill generate a lot of conclusions, most of them not helpful to a proof. So there has been a\nsearch for more efﬁcient ways of handling equality. One alternative is to add inference rules\nrather than axioms. The simplest rule, demodulation, takes a unit clause x = y and some\nclause α that contains the term x, and yields a new clause formed by substituting y for x\nwithin α. It works if the term within α uniﬁes with x; it need not be exactly equal to x.\nNote that demodulation is directional; given x = y, the x always gets replaced with y, never\nvice versa. That means that demodulation can be used for simplifying expressions using\ndemodulators such as x + 0 = x or x1 = x. As another example, given\nFather(Father(x)) = PaternalGrandfather (x)\nBirthdate(Father(Father(Bella)), 1926)\nwe can conclude by demodulation\nBirthdate(PaternalGrandfather (Bella), 1926) .\nMore formally, we have\n• Demodulation: For any terms x, y, and z, where z appears somewhere in literal mi\nDEMODULATION\nand where UNIFY(x, z) = θ,\nx = y,\nm1 ∨· · · ∨mn\nSUB(SUBST(θ, x), SUBST(θ, y), m1 ∨· · · ∨mn) .\nwhere SUBST is the usual substitution of a binding list, and SUB(x, y, m) means to\nreplace x with y everywhere that x occurs within m.\nThe rule can also be extended to handle non-unit clauses in which an equality literal appears:\n• Paramodulation: For any terms x, y, and z, where z appears somewhere in literal mi,\nPARAMODULATION\nand where UNIFY(x, z) = θ,\nℓ1 ∨· · · ∨ℓk ∨x = y,\nm1 ∨· · · ∨mn\nSUB(SUBST(θ, x), SUBST(θ, y), SUBST(θ, ℓ1 ∨· · · ∨ℓk ∨m1 ∨· · · ∨mn) .\nFor example, from\nP(F(x, B), x) ∨Q(x)\nand\nF(A, y) = y ∨R(y)\nSection 9.5.\nResolution\n355\nwe have θ = UNIFY(F(A, y), F(x, B)) = {x/A, y/B}, and we can conclude by paramodu-\nlation the sentence\nP(B, A) ∨Q(A) ∨R(B) .\nParamodulation yields a complete inference procedure for ﬁrst-order logic with equality.\nA third approach handles equality reasoning entirely within an extended uniﬁcation\nalgorithm. That is, terms are uniﬁable if they are provably equal under some substitution,\nwhere “provably” allows for equality reasoning. For example, the terms 1 + 2 and 2 + 1\nnormally are not uniﬁable, but a uniﬁcation algorithm that knows that x + y = y + x could\nunify them with the empty substitution. Equational uniﬁcation of this kind can be done with\nEQUATIONAL\nUNIFICATION\nefﬁcient algorithms designed for the particular axioms used (commutativity, associativity, and\nso on) rather than through explicit inference with those axioms. Theorem provers using this\ntechnique are closely related to the CLP systems described in Section 9.4.\n9.5.6\nResolution strategies\nWe know that repeated applications of the resolution inference rule will eventually ﬁnd a\nproof if one exists. In this subsection, we examine strategies that help ﬁnd proofs efﬁciently.\nUnit preference: This strategy prefers to do resolutions where one of the sentences is a single\nUNIT PREFERENCE\nliteral (also known as a unit clause). The idea behind the strategy is that we are trying to\nproduce an empty clause, so it might be a good idea to prefer inferences that produce shorter\nclauses. Resolving a unit sentence (such as P) with any other sentence (such as ¬P ∨¬Q∨R)\nalways yields a clause (in this case, ¬Q ∨R) that is shorter than the other clause. When\nthe unit preference strategy was ﬁrst tried for propositional inference in 1964, it led to a\ndramatic speedup, making it feasible to prove theorems that could not be handled without the\npreference. Unit resolution is a restricted form of resolution in which every resolution step\nmust involve a unit clause. Unit resolution is incomplete in general, but complete for Horn\nclauses. Unit resolution proofs on Horn clauses resemble forward chaining.\nThe OTTER theorem prover (Organized Techniques for Theorem-proving and Effective\nResearch, McCune, 1992), uses a form of best-ﬁrst search. Its heuristic function measures\nthe “weight” of each clause, where lighter clauses are preferred. The exact choice of heuristic\nis up to the user, but generally, the weight of a clause should be correlated with its size or\ndifﬁculty. Unit clauses are treated as light; the search can thus be seen as a generalization of\nthe unit preference strategy.\nSet of support: Preferences that try certain resolutions ﬁrst are helpful, but in general it is\nSET OF SUPPORT\nmore effective to try to eliminate some potential resolutions altogether. For example, we can\ninsist that every resolution step involve at least one element of a special set of clauses—the\nset of support. The resolvent is then added into the set of support. If the set of support is\nsmall relative to the whole knowledge base, the search space will be reduced dramatically.\nWe have to be careful with this approach because a bad choice for the set of support\nwill make the algorithm incomplete. However, if we choose the set of support S so that the\nremainder of the sentences are jointly satisﬁable, then set-of-support resolution is complete.\nFor example, one can use the negated query as the set of support, on the assumption that the\n356\n9.\nInference in First-Order Logic\noriginal knowledge base is consistent. (After all, if it is not consistent, then the fact that the\nquery follows from it is vacuous.) The set-of-support strategy has the additional advantage of\ngenerating goal-directed proof trees that are often easy for humans to understand.\nInput resolution: In this strategy, every resolution combines one of the input sentences (from\nINPUT RESOLUTION\nthe KB or the query) with some other sentence. The proof in Figure 9.11 on page 348 uses\nonly input resolutions and has the characteristic shape of a single “spine” with single sen-\ntences combining onto the spine. Clearly, the space of proof trees of this shape is smaller\nthan the space of all proof graphs. In Horn knowledge bases, Modus Ponens is a kind of\ninput resolution strategy, because it combines an implication from the original KB with some\nother sentences. Thus, it is no surprise that input resolution is complete for knowledge bases\nthat are in Horn form, but incomplete in the general case. The linear resolution strategy is a\nLINEAR RESOLUTION\nslight generalization that allows P and Q to be resolved together either if P is in the original\nKB or if P is an ancestor of Q in the proof tree. Linear resolution is complete.\nSubsumption: The subsumption method eliminates all sentences that are subsumed by (that\nSUBSUMPTION\nis, more speciﬁc than) an existing sentence in the KB. For example, if P(x) is in the KB, then\nthere is no sense in adding P(A) and even less sense in adding P(A) ∨Q(B). Subsumption\nhelps keep the KB small and thus helps keep the search space small.\nPractical uses of resolution theorem provers\nTheorem provers can be applied to the problems involved in the synthesis and veriﬁcation\nSYNTHESIS\nVERIFICATION\nof both hardware and software. Thus, theorem-proving research is carried out in the ﬁelds of\nhardware design, programming languages, and software engineering—not just in AI.\nIn the case of hardware, the axioms describe the interactions between signals and cir-\ncuit elements. (See Section 8.4.2 on page 309 for an example.) Logical reasoners designed\nspecially for veriﬁcation have been able to verify entire CPUs, including their timing prop-\nerties (Srivas and Bickford, 1990). The AURA theorem prover has been applied to design\ncircuits that are more compact than any previous design (Wojciechowski and Wojcik, 1983).\nIn the case of software, reasoning about programs is quite similar to reasoning about\nactions, as in Chapter 7: axioms describe the preconditions and effects of each statement.\nThe formal synthesis of algorithms was one of the ﬁrst uses of theorem provers, as outlined\nby Cordell Green (1969a), who built on earlier ideas by Herbert Simon (1963). The idea\nis to constructively prove a theorem to the effect that “there exists a program p satisfying a\ncertain speciﬁcation.” Although fully automated deductive synthesis, as it is called, has not\nDEDUCTIVE\nSYNTHESIS\nyet become feasible for general-purpose programming, hand-guided deductive synthesis has\nbeen successful in designing several novel and sophisticated algorithms. Synthesis of special-\npurpose programs, such as scientiﬁc computing code, is also an active area of research.\nSimilar techniques are now being applied to software veriﬁcation by systems such as the\nSPIN model checker (Holzmann, 1997). For example, the Remote Agent spacecraft control\nprogram was veriﬁed before and after ﬂight (Havelund et al., 2000). The RSA public key\nencryption algorithm and the Boyer–Moore string-matching algorithm have been veriﬁed this\nway (Boyer and Moore, 1984).",
+  "images": [
+    {
+      "path": "images/9-5-resolution_fig_9-11.png",
+      "type": "diagram",
+      "caption": "Figure 9.11"
+    },
+    {
+      "path": "images/9-5-resolution_fig_9-12.png",
+      "type": "diagram",
+      "caption": "Figure 9.12"
+    },
+    {
+      "path": "images/9-5-resolution_fig_9-13.png",
+      "type": "diagram",
+      "caption": "Figure 9.13"
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/9-5-resolution_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_18.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_19.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_20.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_21.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_22.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_23.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_24.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_25.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_26.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_27.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_28.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_29.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_30.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_31.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_32.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_33.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_34.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_35.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_36.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_37.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_38.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_39.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_40.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_41.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_42.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_43.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_44.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_45.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_46.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_47.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_48.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_49.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_50.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_51.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/9-5-resolution_eq_52.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

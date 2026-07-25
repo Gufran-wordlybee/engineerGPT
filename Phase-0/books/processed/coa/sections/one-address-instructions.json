@@ -1,0 +1,13 @@
+{
+  "section_id": "one-address-instructions",
+  "title": "One-Address Instructions",
+  "level": 4,
+  "chapter": "8-4 Instruction Formats",
+  "parent_id": "three-address-instructions",
+  "children": [],
+  "start_page": 267,
+  "end_page": 267,
+  "text": "One-address instructions use an implied accumulator (AC) register for all data manipulation. For multiplication and division there is a need for a second register. However, here we will neglect the second register and assume that the AC contains the result of all operations. The program to evaluate X = (A + B)*(C + D) is\nT.OAD\n AC \\leftarrow M[A]\nADD\n AC \\leftarrow AC + M[B]\n T M[T] \\leftarrow AC\nSTORE\n C.\nT.OAD\n AC \\leftarrow M[C]\nADD\n D\nT\n AC \\leftarrow AC + M[D]\nMITT.\n AC ← AC * M(T)\nSTORE\n X\n M[X] \\leftarrow AC\nAll operations are done between the AC register and a memory operand. T is the address of a temporary memory location required for storing the intermediate result.",
+  "images": [],
+  "equations": []
+}

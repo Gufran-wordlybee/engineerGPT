@@ -1,0 +1,13 @@
+{
+  "section_id": "a-segment-and-page-table-mapping",
+  "title": "(a) Segment and page table mapping",
+  "level": 4,
+  "chapter": "12-7 Memory Management Hardware",
+  "parent_id": "segmented-page-mapping",
+  "children": [],
+  "start_page": 482,
+  "end_page": 483,
+  "text": "[Table]\nSegmentPageBlock602019604A61_'\n\n(b) Associative memory (TLB)\nFigure 12-24 Logical to physical memory mapping example (all numbers are in hexadecimal).\n12-24(b) shows that pages 2 and 4 of segment 6 have been referenced previously and therefore their corresponding block numbers are stored in the associative memory.\nFrom this example it should be evident that the memory management system can assign any number of pages to each segment. Each logical page can be mapped into any block in physical memory. Pages can move to different blocks in memory depending on memory space requirements. The only updating required is the change of the block number in the page table. Segments can grow or shrink independently without affecting each other. Different segments can use the same block of memory if it is required to share a program by many users. For example, block number 12 in physical memory can be assigned a second logical address F0000 through F00FF. This specifies segment number 15 and page 0, which maps to block 12 as shown in Fig. 12-24(a).",
+  "images": [],
+  "equations": []
+}

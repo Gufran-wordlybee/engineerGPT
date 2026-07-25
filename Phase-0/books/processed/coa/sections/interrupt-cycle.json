@@ -1,0 +1,13 @@
+{
+  "section_id": "interrupt-cycle",
+  "title": "Interrupt Cycle",
+  "level": 1,
+  "chapter": "Interrupt Cycle",
+  "parent_id": null,
+  "children": [],
+  "start_page": 166,
+  "end_page": 167,
+  "text": "We are now ready to list the register transfer statements for the interrupt cycle. The interrupt cycle is initiated after the last execute phase if the interrupt flip-flop R is equal to 1. This flip-flop is set to 1 if IEN = 1 and either FGI or FGO are equal to 1. This can happen with any clock transition except when timing signals T_0, T_1, or T_2 are active. The condition for setting flip-flop R to 1 can be expressed with the following register transfer statement:\nT_0'T_1'T_2'(IEN)(FGI + FGO): R \\leftarrow 1\nThe symbol + between FGI and FGO in the control function designates a logic OR operation. This is ANDed with IEN and T_0'T_1'T_2'.\nmodified fetch phase\nWe now modify the fetch and decode phases of the instruction cycle. Instead of using only timing signals T_0, T_1, and T_2 (as shown in Fig. 5-9) we will AND the three timing signals with R' so that the fetch and decode phases will be recognized from the three control functions R'T_0, R'T_1, and R'T_2. The reason for this is that after the instruction is executed and SC is cleared to 0, the control will go through a fetch phase only if R=0. Otherwise, if R=1, the control will go through an interrupt cycle. The interrupt cycle stores the return address (available in PC) into memory location 0, branches to memory location 1, and clears IEN, R, and SC to 0. This can be done with the following sequence of microoperations:\nRT_0: AR \\leftarrow 0, TR \\leftarrow PC\nRT_1: M[AR] \\leftarrow TR, PC \\leftarrow 0\nRT_7: PC \\leftarrow PC + 1, IEN \\leftarrow 0, R \\leftarrow 0, SC \\leftarrow 0\nDuring the first timing signal AR is cleared to 0, and the content of PC is transferred to the temporary register TR. With the second timing signal, the return address is stored in memory at location 0 and PC is cleared to 0. The third timing signal increments PC to 1, clears IEN and R, and control goes back to T_0 by clearing SC to 0. The beginning of the next instruction cycle has the condition R'T_0 and the content of PC is equal to 1. The control then goes through an instruction cycle that fetches and executes the BUN instruction in location 1.",
+  "images": [],
+  "equations": []
+}

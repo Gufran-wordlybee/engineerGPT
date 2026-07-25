@@ -1,0 +1,22 @@
+{
+  "section_id": "4-7-arithmetic-logic-shift-unit",
+  "title": "4-7 Arithmetic Logic Shift Unit",
+  "level": 1,
+  "chapter": "4-7 Arithmetic Logic Shift Unit",
+  "parent_id": null,
+  "children": [
+    "problems-3",
+    "chapter-five"
+  ],
+  "start_page": 126,
+  "end_page": 129,
+  "text": "Instead of having individual registers performing the microoperations directly, computer systems employ a number of storage registers connected to a common operational unit called an arithmetic logic unit, abbreviated ALU. To\nperform a microoperation, the contents of specified registers are placed in the inputs of the common ALU. The ALU performs an operation and the result of the operation is then transferred to a destination register. The ALU is a combinational circuit so that the entire register transfer operation from the source registers through the ALU and into the destination register can be performed during one clock pulse period. The shift microoperations are often performed in a separate unit, but sometimes the shift unit is made part of the overall ALU.\nThe arithmetic, logic, and shift circuits introduced in previous sections can be combined into one ALU with common selection variables. One stage of an arithmetic logic shift unit is shown in Fig. 4-13. The subscript i designates a typical stage. Inputs A_i and B_i are applied to both the arithmetic and logic\nFigure 4-13 One stage of arithmetic logic shift unit.\nunits. A particular microoperation is selected with inputs S_1 and S_0. A 4 \\times 1 multiplexer at the output chooses between an arithmetic output in E_i and a logic output in H_i. The data in the multiplexer are selected with inputs S_3 and S_2. The other two data inputs to the multiplexer receive inputs A_{i-1} for the shift-right operation and A_{i+1} for the shift-left operation. Note that the diagram shows just one typical stage. The circuit of Fig. 4-13 must be repeated n times for an n-bit ALU. The output carry C_{i+1} of a given arithmetic stage must be connected to the input carry C_i of the next stage in sequence. The input carry to the first stage is the input carry C_{in}, which provides a selection variable for the arithmetic operations.\nThe circuit whose one stage is specified in Fig. 4-13 provides eight arithmetic operation, four logic operations, and two shift operations. Each operation is selected with the five variables S_3, S_2, S_1, S_0, and C_{\\rm in}. The input carry C_{\\rm in} is used for selecting an arithmetic operation only.\nTable 4-8 lists the 14 operations of the ALU. The first eight are arithmetic operations (see Table 4-4) and are selected with S_3S_2 = 00. The next four are logic operations (see Fig. 4-10) and are selected with S_3S_2 = 01. The input carry has no effect during the logic operations and is marked with don't-care ×'s. The last two operations are shift operations and are selected with S_3S_2 = 10 and 11. The other three selection inputs have no effect on the shift.\n\n[Table]\nOperation selectS_3S2SıSoC_{in}OperationFunction00000F = ATransfer A00001F = A + 1Increment A00010F = A + BAddition00011F = A + B + 1Add with carry00100F = A + \\overline{B}Subtract with borrow00101F = A + \\overline{B} + 1Subtraction00110F = A - 1Decrement A00111F = ATransfer A0100×F = A \\wedge BAND0101×F = A \\vee BOR0110×F = A \\oplus BXOR0111×F = \\overline{A}Complement A10×××F = \\operatorname{shr} AShift right A into F11×××F = shl AShift left A into F\n\nTABLE 4-8 Function Table for Arithmetic Logic Shift Unit",
+  "images": [
+    {
+      "path": "images/4-7-arithmetic-logic-shift-unit_img_1.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

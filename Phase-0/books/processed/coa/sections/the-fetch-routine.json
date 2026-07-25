@@ -1,0 +1,13 @@
+{
+  "section_id": "the-fetch-routine",
+  "title": "The Fetch Routine",
+  "level": 4,
+  "chapter": "Computer Configuration",
+  "parent_id": "symbolic-microinstructions",
+  "children": [],
+  "start_page": 235,
+  "end_page": 236,
+  "text": "The control memory has 128 words, and each word contains 20 bits. To microprogram the control memory, it is necessary to determine the bit values of each of the 128 words. The first 64 words (addresses 0 to 63) are to be occupied by the routines for the 16 instructions. The last 64 words may be used for any other purpose. A convenient starting location for the fetch routine is address 64. The microinstructions needed for the fetch routine are\nAR \\leftarrow PC\nDR \\leftarrow M[AR], \\quad PC \\leftarrow PC + 1\nAR \\leftarrow DR(0-10), \\quad CAR(2-5) \\leftarrow DR(11-14), \\quad CAR(0,1,6) \\leftarrow 0\nThe address of the instruction is transferred from PC to AR and the instruction is then read from memory into DR. Since no instruction register is available, the instruction code remains in DR. The address part is transferred to AR and then control is transferred to one of 16 routines by mapping the operation code part of the instruction from DR into CAR.\nThe fetch routine needs three microinstructions, which are placed in control memory at addresses 64, 65, and 66. Using the assembly language conventions defined previously, we can write the symbolic microprogram for the fetch routine as follows:\nThe translation of the symbolic microprogram to binary produces the following binary microprogram. The bit values are obtained from Table 7-1.\nORG\nfetch and decode\n\n[Table]\nBinaryAddressF1F2F3CDBRAD100000011000000000001000001100000100010010100001000010100001010100000000110000000\n\nThe three microinstructions that constitute the fetch routine have been listed in three different representations. The register transfer representation shows the internal register transfer operations that each microinstruction implements. The symbolic representation is useful for writing microprograms in an assembly language format. The binary representation is the actual internal content that must be stored in control memory. It is customary to write microprograms in symbolic form and then use an assembler program to obtain a translation to binary.",
+  "images": [],
+  "equations": []
+}

@@ -1,0 +1,13 @@
+{
+  "section_id": "0000-0111-1000-0110",
+  "title": "0000 0111 1000 0110",
+  "level": 4,
+  "chapter": "Pipeline and Vector Processing",
+  "parent_id": "10-7-decimal-arithmetic-operations",
+  "children": [],
+  "start_page": 377,
+  "end_page": 378,
+  "text": "TABLE 10-5 Decimal Arithmetic Microoperation Symbols\n\n[Table]\nSymbolic DesignationDescription\\underline{A} \\leftarrow A + BAdd decimal numbers and transfer sum into AB9's complement of BA \\leftarrow A + \\overline{B} + 1Content of A plus 10's complement of B into AQ_L \\leftarrow Q_L + 1Increment BCD number in Q_Ldshr ADecimal shift-right register Adshl ADecimal shift-left register A",
+  "images": [],
+  "equations": []
+}

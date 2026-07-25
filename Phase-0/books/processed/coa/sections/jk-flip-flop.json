@@ -1,0 +1,13 @@
+{
+  "section_id": "jk-flip-flop",
+  "title": "JK Flip-Flop",
+  "level": 2,
+  "chapter": "Contents",
+  "parent_id": "contents",
+  "children": [],
+  "start_page": 39,
+  "end_page": 39,
+  "text": "A JK flip-flop is a refinement of the SR flip-flop in that the indeterminate condition of the SR type is defined in the JK type. Inputs J and K behave like inputs S and R to set and clear the flip-flop, respectively. When inputs J and K are both equal to 1, a clock transition switches the outputs of the flip-flop to their complement state.\nThe graphic symbol and characteristic table of the JK flip-flop are shown in Fig. 1-21. The J input is equivalent to the S (set) input of the SR flip-flop, and the K input is equivalent to the R (clear) input. Instead of the indeterminate condition, the JK flip-flop has a complement condition Q(t+1)=Q'(t) when both J and K are equal to 1.",
+  "images": [],
+  "equations": []
+}

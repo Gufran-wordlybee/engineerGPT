@@ -1,0 +1,19 @@
+{
+  "section_id": "half-adder",
+  "title": "Half-Adder",
+  "level": 4,
+  "chapter": "Contents",
+  "parent_id": "1-5-combinational-circuits",
+  "children": [],
+  "start_page": 34,
+  "end_page": 35,
+  "text": "The most basic digital arithmetic circuit is the addition of two binary digits. A combinational circuit that performs the arithmetic addition of two bits is called a half-adder. One that performs the addition of three bits (two significant bits and a previous carry) is called a full-adder. The name of the former stems from the fact that two half-adders are needed to implement a full-adder.\nThe input variables of a half-adder are called the augend and addend bits. The output variables the sum and carry. It is necessary to specify two output variables because the sum of 1+1 is binary 10, which has two digits. We assign symbols x and y to the two input variables, and S (for sum) and C\nFigure 1-16 Half-adder.\n(for carry) to the two output variables. The truth table for the half-adder is shown in Fig. 1-16(a). The C output is 0 unless both inputs are 1. The S output represents the least significant bit of the sum. The Boolean functions for the two outputs can be obtained directly from the truth table:\nS = x'y + xy' = x \\oplus yC = xy\nThe logic diagram is shown in Fig. 1-16(b). It consists of an exclusive-OR gate and an AND gate.",
+  "images": [
+    {
+      "path": "images/half-adder_img_1.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

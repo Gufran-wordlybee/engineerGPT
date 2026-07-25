@@ -1,0 +1,26 @@
+{
+  "section_id": "flip-flop-input-equations",
+  "title": "Flip-Flop Input Equations",
+  "level": 2,
+  "chapter": "Contents",
+  "parent_id": "contents",
+  "children": [
+    "state-table"
+  ],
+  "start_page": 43,
+  "end_page": 45,
+  "text": "An example of a sequential circuit is shown in Fig. 1-25. It has one input variable x, one output variable y, and two clocked D flip-flops. The AND gates, OR gates, and inverter form the combinational logic part of the circuit. The interconnections among the gates in the combinational circuit can be specified by a set of Boolean expressions. The part of the combinational circuit that generates the inputs to flip-flops are described by a set of Boolean expressions called flip-flop input equations. We adopt the convention of using the flip-flop input symbol to denote the input equation variable name and a subscript to\ninput equation\nFigure 1-24 Block diagram of a clocked synchronous sequential circuit.\nFigure 1-25 Example of a sequential circuit.\ndesignate the symbol chosen for the output of the flip-flop. Thus, in Fig. 1-25, we have two input equations, designated D_A and D_B. The first letter in each symbol denotes the D input of a D flip-flop. The subscript letter is the symbol name of the flip-flop. The input equations are Boolean functions for flip-flop input variables and can be derived by inspection of the circuit. Since the output of the OR gate is connected to the D input of flip-flop A, we write the first input equation as\nD_A = Ax + Bx\nwhere A and B are the outputs of the two flip-flops and x is the external input. The second input equation is derived from the single AND gate whose output is connected to the D input of flip-flop B:\nD_R = A'x\nThe sequential circuit also has an external output, which is a function of the input variable and the state of the flip-flops. This output can be specified algebraically by the expression\ny = Ax' + Bx'\nFrom this example we note that a flip-flop input equation is a Boolean expression for a combinational circuit. The subscripted variable is a binary variable name for the output of a combinational circuit. This output is always connected to a flip-flop input.",
+  "images": [
+    {
+      "path": "images/flip-flop-input-equations_img_1.png",
+      "type": "figure",
+      "caption": null
+    },
+    {
+      "path": "images/flip-flop-input-equations_img_2.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

@@ -1,0 +1,13 @@
+{
+  "section_id": "references-7",
+  "title": "REFERENCES",
+  "level": 4,
+  "chapter": "Overlapped Register Windows",
+  "parent_id": "problems-7",
+  "children": [],
+  "start_page": 305,
+  "end_page": 307,
+  "text": "Gear, C. W., Computer Organization and Programming, 3rd ed. New York: McGraw-Hill, 1980.\nGorsline, G. W., Computer Organization: Hardware/Software, 2nd ed. Englewood Cliffs, NJ: Prentice Hall, 1986.\nGray, N. A. B., Introduction to Computer Systems. Englewood Cliffs, NJ: Prentice Hall. 1987.\nHamacher, V. C., Z. G. Vranesic, and S. G. Zaky, Computer Organization, 3rd ed. New York: McGraw-Hill, 1990.\nHays, J. F., Computer Architecture and Organization, 2nd ed. New York: McGraw-Hill, 1988.\nLangholz, G., J. Francioni, and A. Kandel, Elements of Computer Organization. Englewood Cliffs, NJ: Prentice Hall, 1989.\nLevy, H. M., and R. H. Eckhouse, Jr., Computer Programming and Architecture: The VAX-11. Bedford, MA: Digital Press, 1980.\nLippiatt, A. G., and G. L. Wright, The Architecture of Small Computer Systems, 2nd ed. Englewood Cliffs, NJ: Prentice Hall, 1985.\nMano, M. M., Computer Engineering: Hardware Design. Englewood Cliffs, NJ: Prentice Hall, 1988.\nMurray, W. D., Computer and Digital System Architecture. Englewood Cliffs, NJ: Prentice Hall, 1990.\nPatterson, D. A., and J. L. Hennessy, Computer Architecture: A Quantitative Approach. San Mateo, CA: Morgan Kaufmann Publishers, 1990.\nPatterson, D. A., and C. H. Sequin, \"A VLSI RISC.\" IEEE Computer, September 1982, pp. 8–22.\nPollard, L. H., Computer Design and Architecture. Englewood Cliffs, NJ: Prentice Hall, 1990.\nRafiquzzaman, M., and R. Chandra, Modern Computer Architecture. St. Paul, MN: West Publishers, 1988.\nSiewiorek, D., C. G. Bell, and A. Newell, Computer Structures: Principles and Examples. New York: McGraw-Hill, 1982.\nStallings, W., Computer Organization and Architecture, 2nd ed. New York: Macmillan, 1989\nTanenbaum, A. S., Structured Computer Organization, 3rd ed. Englewood Cliffs, NJ: Prentice Hall, 1990.\nTomek, I., Introduction to Computer Organization. Rockville, MD: Computer Science Press, 1981.\nToy, W., and B. Zee, Computer Hardware/Software Architecture. Englewood Cliffs, NJ: Prentice Hall, 1986.\nWard, S. A., and R. H. Halstead, Jr., Computation Structures. Cambridge, MA: MIT Press, 1990.",
+  "images": [],
+  "equations": []
+}

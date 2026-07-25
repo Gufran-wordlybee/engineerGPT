@@ -1,0 +1,24 @@
+{
+  "section_id": "three-state-bus-buffers",
+  "title": "Three-State Bus Buffers",
+  "level": 4,
+  "chapter": "4-3 Bus and Memory Transfers",
+  "parent_id": "4-3-bus-and-memory-transfers",
+  "children": [],
+  "start_page": 111,
+  "end_page": 112,
+  "text": "three-state gate\nhigh-impedance\nbuffer\nbus system\nA bus system can be constructed with three-state gates instead of multiplexers. A three-state gate is a digital circuit that exhibits three states. Two of the states are signals equivalent to logic 1 and 0 as in a conventional gate. The third state is a high-impedance state. The high-impedance state behaves like an open circuit, which means that the output is disconnected and does not have a logic significance. Three-state gates may perform any conventional logic, such as AND or NAND. However, the one most commonly used in the design of a bus system is the buffer gate.\nThe graphic symbol of a three-state buffer gate is shown in Fig. 4-4. It is distinguished from a normal buffer by having both a normal input and a control input. The control input determines the output state. When the control input is equal to 1, the output is enabled and the gate behaves like any conventional buffer, with the output equal to the normal input. When the control input is 0, the output is disabled and the gate goes to a high-impedance state, regardless of the value in the normal input. The high-impedance state of a three-state gate provides a special feature not available in other gates. Because of this feature, a large number of three-state gate outputs can be connected with wires to form a common bus line without endangering loading effects.\nThe construction of a bus system with three-state buffers is demonstrated in Fig. 4-5. The outputs of four buffers are connected together to form a single bus line. (It must be realized that this type of connection cannot be done with gates that do not have three-state outputs.) The control inputs to the buffers determine which of the four normal inputs will communicate with the bus line. No more than one buffer may be in the active state at any given time. The connected buffers must be controlled so that only one three-state buffer has access to the bus line while all other buffers are maintained in a high-impedance state.\nOne way to ensure that no more than one control input is active at any given time is to use a decoder, as shown in the diagram. When the enable input of the decoder is 0, all of its four outputs are 0, and the bus line is in a high-impedance state because all four buffers are disabled. When the enable input is active, one of the three-state buffers will be active, depending on the binary value in the select inputs of the decoder. Careful investigation will reveal that Fig. 4-5 is another way of constructing a 4\\times 1 multiplexer since the circuit can replace the multiplexer in Fig. 4-3.\nTo construct a common bus for four registers of n bits each using three-\nFigure 4-4 Graphic symbols for three-state buffer.\nFigure 4-5 Bus line with three state-buffers.\nstate buffers, we need n circuits with four buffers in each as shown in Fig. 4-5. Each group of four buffers receives one significant bit from the four registers. Each common output produces one of the lines for the common bus for a total of n lines. Only one decoder is necessary to select between the four registers.",
+  "images": [
+    {
+      "path": "images/three-state-bus-buffers_img_1.png",
+      "type": "figure",
+      "caption": null
+    },
+    {
+      "path": "images/three-state-bus-buffers_img_2.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

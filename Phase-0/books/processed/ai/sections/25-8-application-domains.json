@@ -1,0 +1,54 @@
+{
+  "section_id": "25-8-application-domains",
+  "title": "25.8 Application Domains",
+  "level": 3,
+  "chapter": "VI: Communicating, perceiving, and acting",
+  "parent_id": "25-robotics",
+  "children": [],
+  "start_page": 1024,
+  "end_page": 1027,
+  "text": "1006\n25.\nRobotics\n(a)\n(b)\nFigure 25.27\n(a) The Helpmate robot transports food and other medical items in dozens\nof hospitals worldwide. (b) Kiva robots are part of a material-handling system for moving\nshelves in fulﬁllment centers. Image courtesy of Kiva Systems.\nthen updates the robot’s internal models of the environment based on this data. Next, these\nmodels are handed to the planning and control layer, which adjusts the robot’s internal\nPLANNING AND\nCONTROL LAYER\nplans turns them into actual controls for the robot. Those are then communicated back to the\nvehicle through the vehicle interface layer.\nVEHICLE INTERFACE\nLAYER\nThe key to the pipeline architecture is that this all happens in parallel. While the per-\nception layer processes the most recent sensor data, the control layer bases its choices on\nslightly older data. In this way, the pipeline architecture is similar to the human brain. We\ndon’t switch off our motion controllers when we digest new sensor data. Instead, we perceive,\nplan, and act all at the same time. Processes in the pipeline architecture run asynchronously,\nand all computation is data-driven. The resulting system is robust, and it is fast.\nThe architecture in Figure 25.26 also contains other, cross-cutting modules, responsible\nfor establishing communication between the different elements of the pipeline.\n25.8\nAPPLICATION DOMAINS\nHere are some of the prime application domains for robotic technology.\nIndustry and Agriculture. Traditionally, robots have been ﬁelded in areas that require\ndifﬁcult human labor, yet are structured enough to be amenable to robotic automation. The\nbest example is the assembly line, where manipulators routinely perform tasks such as as-\nsembly, part placement, material handling, welding, and painting. In many of these tasks,\nrobots have become more cost-effective than human workers. Outdoors, many of the heavy\nmachines that we use to harvest, mine, or excavate earth have been turned into robots. For\nSection 25.8.\nApplication Domains\n1007\n(a)\n(b)\nFigure 25.28\n(a) Robotic car BOSS, which won the DARPA Urban Challenge. Courtesy\nof Carnegie Mellon University. (b) Surgical robots in the operating room. Image courtesy of\nda Vinci Surgical Systems.\nexample, a project at Carnegie Mellon University has demonstrated that robots can strip paint\noff large ships about 50 times faster than people can, and with a much reduced environmental\nimpact. Prototypes of autonomous mining robots have been found to be faster and more pre-\ncise than people in transporting ore in underground mines. Robots have been used to generate\nhigh-precision maps of abandoned mines and sewer systems. While many of these systems\nare still in their prototype stages, it is only a matter of time until robots will take over much\nof the semimechanical work that is presently performed by people.\nTransportation. Robotic transportation has many facets: from autonomous helicopters\nthat deliver payloads to hard-to-reach locations, to automatic wheelchairs that transport peo-\nple who are unable to control wheelchairs by themselves, to autonomous straddle carriers that\noutperform skilled human drivers when transporting containers from ships to trucks on load-\ning docks. A prime example of indoor transportation robots, or gofers, is the Helpmate robot\nshown in Figure 25.27(a). This robot has been deployed in dozens of hospitals to transport\nfood and other items. In factory settings, autonomous vehicles are now routinely deployed\nto transport goods in warehouses and between production lines. The Kiva system, shown in\nFigure 25.27(b), helps workers at fulﬁllment centers package goods into shipping containers.\nMany of these robots require environmental modiﬁcations for their operation. The most\ncommon modiﬁcations are localization aids such as inductive loops in the ﬂoor, active bea-\ncons, or barcode tags. An open challenge in robotics is the design of robots that can use\nnatural cues, instead of artiﬁcial devices, to navigate, particularly in environments such as the\ndeep ocean where GPS is unavailable.\nRobotic cars. Most of use cars every day. Many of us make cell phone calls while\ndriving. Some of us even text. The sad result: more than a million people die every year in\ntrafﬁc accidents. Robotic cars like BOSS and STANLEY offer hope: Not only will they make\ndriving much safer, but they will also free us from the need to pay attention to the road during\nour daily commute.\nProgress in robotic cars was stimulated by the DARPA Grand Challenge, a race over\n100 miles of unrehearsed desert terrain, which represented a much more challenging task than\n1008\n25.\nRobotics\n(a)\n(b)\nFigure 25.29\n(a) A robot mapping an abandoned coal mine. (b) A 3D map of the mine\nacquired by the robot.\nhad ever been accomplished before. Stanford’s STANLEY vehicle completed the course in less\nthan seven hours in 2005, winning a $2 million prize and a place in the National Museum of\nAmerican History. Figure 25.28(a) depicts BOSS, which in 2007 won the DARPA Urban\nChallenge, a complicated road race on city streets where robots faced other robots and had to\nobey trafﬁc rules.\nHealth care. Robots are increasingly used to assist surgeons with instrument placement\nwhen operating on organs as intricate as brains, eyes, and hearts. Figure 25.28(b) shows such\na system. Robots have become indispensable tools in a range of surgical procedures, such as\nhip replacements, thanks to their high precision. In pilot studies, robotic devices have been\nfound to reduce the danger of lesions when performing colonoscopy. Outside the operating\nroom, researchers have begun to develop robotic aides for elderly and handicapped people,\nsuch as intelligent robotic walkers and intelligent toys that provide reminders to take medica-\ntion and provide comfort. Researchers are also working on robotic devices for rehabilitation\nthat aid people in performing certain exercises.\nHazardous environments. Robots have assisted people in cleaning up nuclear waste,\nmost notably in Chernobyl and Three Mile Island. Robots were present after the collapse\nof the World Trade Center, where they entered structures deemed too dangerous for human\nsearch and rescue crews.\nSome countries have used robots to transport ammunition and to defuse bombs—a no-\ntoriously dangerous task. A number of research projects are presently developing prototype\nrobots for clearing mineﬁelds, on land and at sea. Most existing robots for these tasks are\nteleoperated—a human operates them by remote control. Providing such robots with auton-\nomy is an important next step.\nExploration. Robots have gone where no one has gone before, including the surface\nof Mars (see Figure 25.2(b) and the cover). Robotic arms assist astronauts in deploying\nand retrieving satellites and in building the International Space Station. Robots also help\nexplore under the sea. They are routinely used to acquire maps of sunken ships. Figure 25.29\nshows a robot mapping an abandoned coal mine, along with a 3D model of the mine acquired\nSection 25.8.\nApplication Domains\n1009\n(a)\n(b)\nFigure 25.30\n(a) Roomba, the world’s best-selling mobile robot, vacuums ﬂoors. Image\ncourtesy of iRobot, c⃝2009. (b) Robotic hand modeled after human hand. Image courtesy\nof University of Washington and Carnegie Mellon University.\nusing range sensors. In 1996, a team of researches released a legged robot into the crater\nof an active volcano to acquire data for climate research. Unmanned air vehicles known as\ndrones are used in military operations. Robots are becoming very effective tools for gathering\nDRONE\ninformation in domains that are difﬁcult (or dangerous) for people to access.\nPersonal Services. Service is an up-and-coming application domain of robotics. Ser-\nvice robots assist individuals in performing daily tasks. Commercially available domestic\nservice robots include autonomous vacuum cleaners, lawn mowers, and golf caddies. The\nworld’s most popular mobile robot is a personal service robot: the robotic vacuum cleaner\nRoomba, shown in Figure 25.30(a).\nMore than three million Roombas have been sold.\nROOMBA\nRoomba can navigate autonomously and perform its tasks without human help.\nOther service robots operate in public places, such as robotic information kiosks that\nhave been deployed in shopping malls and trade fairs, or in museums as tour guides. Ser-\nvice tasks require human interaction, and the ability to cope robustly with unpredictable and\ndynamic environments.\nEntertainment. Robots have begun to conquer the entertainment and toy industry.\nIn Figure 25.6(b) we see robotic soccer, a competitive game very much like human soc-\nROBOTIC SOCCER\ncer, but played with autonomous mobile robots. Robot soccer provides great opportunities\nfor research in AI, since it raises a range of problems relevant to many other, more serious\nrobot applications. Annual robotic soccer competitions have attracted large numbers of AI\nresearchers and added a lot of excitement to the ﬁeld of robotics.\nHuman augmentation. A ﬁnal application domain of robotic technology is that of\nhuman augmentation. Researchers have developed legged walking machines that can carry\npeople around, very much like a wheelchair. Several research efforts presently focus on the\ndevelopment of devices that make it easier for people to walk or move their arms by providing\nadditional forces through extraskeletal attachments. If such devices are attached permanently,",
+  "images": [
+    {
+      "path": "images/25-8-application-domains_img_1.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/25-8-application-domains_img_2.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/25-8-application-domains_img_3.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/25-8-application-domains_img_4.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/25-8-application-domains_img_5.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/25-8-application-domains_img_6.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/25-8-application-domains_img_7.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/25-8-application-domains_img_8.png",
+      "type": "raster",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

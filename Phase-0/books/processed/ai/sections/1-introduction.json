@@ -1,0 +1,19 @@
+{
+  "section_id": "1-introduction",
+  "title": "1 Introduction",
+  "level": 2,
+  "chapter": "I: Artificial Intelligence",
+  "parent_id": "i-artificial-intelligence",
+  "children": [
+    "1-1-what-is-ai",
+    "1-2-the-foundations-of-artificial-intelligence",
+    "1-3-the-history-of-artificial-intelligence",
+    "1-4-the-state-of-the-art",
+    "1-5-summary-bibliographical-and-historical-notes-exercises"
+  ],
+  "start_page": 19,
+  "end_page": 19,
+  "text": "1\nINTRODUCTION\nIn which we try to explain why we consider artiﬁcial intelligence to be a subject\nmost worthy of study, and in which we try to decide what exactly it is, this being a\ngood thing to decide before embarking.\nWe call ourselves Homo sapiens—man the wise—because our intelligence is so important\nINTELLIGENCE\nto us. For thousands of years, we have tried to understand how we think; that is, how a mere\nhandful of matter can perceive, understand, predict, and manipulate a world far larger and\nmore complicated than itself. The ﬁeld of artiﬁcial intelligence, or AI, goes further still: it\nARTIFICIAL\nINTELLIGENCE\nattempts not just to understand but also to build intelligent entities.\nAI is one of the newest ﬁelds in science and engineering. Work started in earnest soon\nafter World War II, and the name itself was coined in 1956. Along with molecular biology,\nAI is regularly cited as the “ﬁeld I would most like to be in” by scientists in other disciplines.\nA student in physics might reasonably feel that all the good ideas have already been taken by\nGalileo, Newton, Einstein, and the rest. AI, on the other hand, still has openings for several\nfull-time Einsteins and Edisons.\nAI currently encompasses a huge variety of subﬁelds, ranging from the general (learning\nand perception) to the speciﬁc, such as playing chess, proving mathematical theorems, writing\npoetry, driving a car on a crowded street, and diagnosing diseases. AI is relevant to any\nintellectual task; it is truly a universal ﬁeld.\n1.1\nWHAT IS AI?\nWe have claimed that AI is exciting, but we have not said what it is. In Figure 1.1 we see\neight deﬁnitions of AI, laid out along two dimensions. The deﬁnitions on top are concerned\nwith thought processes and reasoning, whereas the ones on the bottom address behavior. The\ndeﬁnitions on the left measure success in terms of ﬁdelity to human performance, whereas\nthe ones on the right measure against an ideal performance measure, called rationality. A\nRATIONALITY\nsystem is rational if it does the “right thing,” given what it knows.\nHistorically, all four approaches to AI have been followed, each by different people\nwith different methods. A human-centered approach must be in part an empirical science, in-\n1",
+  "images": [],
+  "equations": []
+}

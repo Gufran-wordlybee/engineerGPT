@@ -1,0 +1,21 @@
+{
+  "section_id": "memory-stack",
+  "title": "Memory Stack",
+  "level": 1,
+  "chapter": "Memory Stack",
+  "parent_id": null,
+  "children": [
+    "reverse-polish-notation"
+  ],
+  "start_page": 257,
+  "end_page": 259,
+  "text": "A stack can exist as a stand-alone unit as in Fig. 8-3 or can be implemented in a random-access memory attached to a CPU. The implementation of a stack in the CPU is done by assigning a portion of memory to a stack operation and using a processor register as a stack pointer. Figure 8-4 shows a portion of computer memory partitioned into three segments: program, data, and stack. The program counter PC points at the address of the next instruction in the program. The address register AR points at an array of data. The stack pointer\npop\nFigure 8-4 Computer memory with program, data, and stack segments.\nSP points at the top of the stack. The three registers are connected to a common address bus, and either one can provide an address for memory. PC is used during the fetch phase to read an instruction. AR is used during the execute phase to read an operand. SP is used to push or pop items into or from the stack.\nAs shown in Fig. 8-4, the initial value of SP is 4001 and the stack grows with decreasing addresses. Thus the first item stored in the stack is at address 4000, the second item is stored at address 3999, and the last address that can be used for the stack is 3000. No provisions are available for stack limit checks.\nWe assume that the items in the stack communicate with a data register DR. A new item is inserted with the push operation as follows:\nSP \\leftarrow SP - 1M[SP] \\leftarrow DR\nThe stack pointer is decremented so that it points at the address of the next word. A memory write operation inserts the word from DR into the top of the stack. A new item is deleted with a pop operation as follows:\nDR \\leftarrow M[SP]SP \\leftarrow SP + 1\nThe top item is read from the stack into DR. The stack pointer is then incremented to point at the next item in the stack.\nMost computers do not provide hardware to check for stack overflow (full stack) or underflow (empty stack). The stack limits can be checked by using two processor registers: one to hold the upper limit (3000 in this case), and the other to hold the lower limit (4001 in this case). After a push operation, SP is compared with the upper-limit register and after a pop operation, SP is compared with the lower-limit register.\nThe two microoperations needed for either the push or pop are (1) an access to memory through SP, and (2) updating SP. Which of the two microoperations is done first and whether SP is updated by incrementing or decrementing depends on the organization of the stack. In Fig. 8-4 the stack grows by decreasing the memory address. The stack may be constructed to grow by increasing the memory address as in Fig. 8-3. In such a case, SP is incremented for the push operation and decremented for the pop operation. A stack may be constructed so that SP points at the next empty location above the top of the stack. In this case the sequence of microoperations must be interchanged.\nA stack pointer is loaded with an initial value. This initial value must be the bottom address of an assigned stack in memory. Henceforth, SP is automatically decremented or incremented with every push or pop operation. The advantage of a memory stack is that the CPU can refer to it without having to specify an address, since the address is always available and automatically updated in the stack pointer.",
+  "images": [
+    {
+      "path": "images/memory-stack_img_1.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

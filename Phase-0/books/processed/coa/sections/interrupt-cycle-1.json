@@ -1,0 +1,15 @@
+{
+  "section_id": "interrupt-cycle-1",
+  "title": "Interrupt Cycle",
+  "level": 2,
+  "chapter": "11-5 Priority Interrupt",
+  "parent_id": "11-5-priority-interrupt",
+  "children": [
+    "software-routines"
+  ],
+  "start_page": 419,
+  "end_page": 420,
+  "text": "The interrupt enable flip-flop IEN shown in Fig. 11-14 can be set or cleared by program instructions. When IEN is cleared, the interrupt request coming from IST is neglected by the CPU. The program-controlled IEN bit allows the programmer to choose whether to use the interrupt facility. If an instruction to clear IEN has been inserted in the program, it means that the user does not want his program to be interrupted. An instruction to set IEN indicates that the interrupt facility will be used while the current program is running. Most computers include internal hardware that clears IEN to 0 every time an interrupt is acknowledged by the processor.\nAt the end of each instruction cycle the CPU checks IEN and the interrupt signal from IST. If either is equal to 0, control continues with the next instruction. If both IEN and IST are equal to 1, the CPU goes to an interrupt cycle. During the interrupt cycle the CPU performs the following sequence of microoperations:\nSP \\leftarrow SP - 1 Decrement stack pointer M[SP] \\leftarrow PC Push PC into stack\n\n[Table]\nINTACK \\leftarrow 1Enable interrupt acknowledgePC \\leftarrow VADTransfer vector address to PCIEN \\leftarrow 0Disable further interrupts\n\nGo to fetch next instruction\nThe CPU pushes the return address from PC into the stack. It then acknowledges the interrupt by enabling the INTACK line. The priority interrupt unit responds by placing a unique interrupt vector into the CPU data bus. The CPU transfers the vector address into PC and clears IEN prior to going to the next fetch phase. The instruction read from memory during the next fetch phase will be the one located at the vector address.",
+  "images": [],
+  "equations": []
+}

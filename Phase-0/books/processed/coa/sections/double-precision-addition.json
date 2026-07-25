@@ -1,0 +1,13 @@
+{
+  "section_id": "double-precision-addition",
+  "title": "Double-Precision Addition",
+  "level": 4,
+  "chapter": "6-5 Program Loops",
+  "parent_id": "multiplication-program",
+  "children": [],
+  "start_page": 205,
+  "end_page": 206,
+  "text": "When two 16-bit unsigned numbers are multiplied, the result is a 32-bit product that must be stored in two memory words. A number stored in two memory words is said to have double precision. When a partial product is computed, it is necessary that a double-precision number be added to the shifted multiplicand, which is also a double-precision number. For greater accuracy, the programmer may wish to employ double-precision numbers and perform arithmetic with operands that occupy two memory words. We now develop a program that adds two double-precision numbers.\nOne of the double-precision numbers is placed in two consecutive memory locations, AL and AH, with AL holding the 16 low-order bits. The other number is placed in BL and BH. The program is listed in Table 6-15. The two low-order portions are added and the carry transferred into E. The AC is cleared and the bit in E is circulated into the least significant position of the AC. The two high-order portions are then added to the carry and the double-precision sum is stored in CL and CH.\nTABLE 6-15 Program to Add Two Double-Precision Numbers\n\n[Table]\nLDA ALADD BLSTA CLCLACILADD AHADD BHSTA CH/Load A low\n/Add B low, carry in E\n/Store in C low\n/Clear AC\n/Circulate to bring carry into AC(16)\n/Add A high and carry\n/Add B high\n/Store in C highAL,AH,BL,BH,CL,HLT/Location of operandsCH,",
+  "images": [],
+  "equations": []
+}

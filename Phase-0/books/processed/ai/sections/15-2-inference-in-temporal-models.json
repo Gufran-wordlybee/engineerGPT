@@ -1,0 +1,320 @@
+{
+  "section_id": "15-2-inference-in-temporal-models",
+  "title": "15.2 Inference in Temporal Models",
+  "level": 3,
+  "chapter": "IV: Uncertain knowledge and reasoning",
+  "parent_id": "15-probabilistic-reasoning-over-time",
+  "children": [],
+  "start_page": 588,
+  "end_page": 595,
+  "text": "570\n15.\nProbabilistic Reasoning over Time\nus to incorporate historical records of rainy seasons, or we could add Temperature t,\nHumidityt and Pressuret (perhaps at a range of locations) to allow us to use a physical\nmodel of rainy conditions.\nExercise 15.1 asks you to show that the ﬁrst solution—increasing the order—can always be\nreformulated as an increase in the set of state variables, keeping the order ﬁxed. Notice that\nadding state variables might improve the system’s predictive power but also increases the\nprediction requirements: we now have to predict the new variables as well. Thus, we are\nlooking for a “self-sufﬁcient” set of variables, which really means that we have to understand\nthe “physics” of the process being modeled. The requirement for accurate modeling of the\nprocess is obviously lessened if we can add new sensors (e.g., measurements of temperature\nand pressure) that provide information directly about the new state variables.\nConsider, for example, the problem of tracking a robot wandering randomly on the X–Y\nplane. One might propose that the position and velocity are a sufﬁcient set of state variables:\none can simply use Newton’s laws to calculate the new position, and the velocity may change\nunpredictably. If the robot is battery-powered, however, then battery exhaustion would tend to\nhave a systematic effect on the change in velocity. Because this in turn depends on how much\npower was used by all previous maneuvers, the Markov property is violated. We can restore\nthe Markov property by including the charge level Batteryt as one of the state variables that\nmake up Xt. This helps in predicting the motion of the robot, but in turn requires a model\nfor predicting Batteryt from Batteryt−1 and the velocity. In some cases, that can be done\nreliably, but more often we ﬁnd that error accumulates over time. In that case, accuracy can\nbe improved by adding a new sensor for the battery level.\n15.2\nINFERENCE IN TEMPORAL MODELS\nHaving set up the structure of a generic temporal model, we can formulate the basic inference\ntasks that must be solved:\n• Filtering: This is the task of computing the belief state—the posterior distribution\nFILTERING\nBELIEF STATE\nover the most recent state—given all evidence to date. Filtering2 is also called state\nestimation. In our example, we wish to compute P(Xt | e1:t). In the umbrella example,\nSTATE ESTIMATION\nthis would mean computing the probability of rain today, given all the observations of\nthe umbrella carrier made so far. Filtering is what a rational agent does to keep track\nof the current state so that rational decisions can be made. It turns out that an almost\nidentical calculation provides the likelihood of the evidence sequence, P(e1:t).\n• Prediction: This is the task of computing the posterior distribution over the future state,\nPREDICTION\ngiven all evidence to date. That is, we wish to compute P(Xt+k | e1:t) for some k > 0.\nIn the umbrella example, this might mean computing the probability of rain three days\nfrom now, given all the observations to date. Prediction is useful for evaluating possible\ncourses of action based on their expected outcomes.\n2 The term “ﬁltering” refers to the roots of this problem in early work on signal processing, where the problem\nis to ﬁlter out the noise in a signal by estimating its underlying properties.\nSection 15.2.\nInference in Temporal Models\n571\n• Smoothing: This is the task of computing the posterior distribution over a past state,\nSMOOTHING\ngiven all evidence up to the present. That is, we wish to compute P(Xk | e1:t) for some k\nsuch that 0 ≤k < t. In the umbrella example, it might mean computing the probability\nthat it rained last Wednesday, given all the observations of the umbrella carrier made\nup to today. Smoothing provides a better estimate of the state than was available at the\ntime, because it incorporates more evidence.3\n• Most likely explanation: Given a sequence of observations, we might wish to ﬁnd the\nsequence of states that is most likely to have generated those observations. That is, we\nwish to compute argmaxx1:t P(x1:t | e1:t). For example, if the umbrella appears on each\nof the ﬁrst three days and is absent on the fourth, then the most likely explanation is that\nit rained on the ﬁrst three days and did not rain on the fourth. Algorithms for this task\nare useful in many applications, including speech recognition—where the aim is to ﬁnd\nthe most likely sequence of words, given a series of sounds—and the reconstruction of\nbit strings transmitted over a noisy channel.\nIn addition to these inference tasks, we also have\n• Learning: The transition and sensor models, if not yet known, can be learned from\nobservations. Just as with static Bayesian networks, dynamic Bayes net learning can be\ndone as a by-product of inference. Inference provides an estimate of what transitions\nactually occurred and of what states generated the sensor readings, and these estimates\ncan be used to update the models. The updated models provide new estimates, and the\nprocess iterates to convergence. The overall process is an instance of the expectation-\nmaximization or EM algorithm. (See Section 20.3.)\nNote that learning requires smoothing, rather than ﬁltering, because smoothing provides bet-\nter estimates of the states of the process. Learning with ﬁltering can fail to converge correctly;\nconsider, for example, the problem of learning to solve murders: unless you are an eyewit-\nness, smoothing is always required to infer what happened at the murder scene from the\nobservable variables.\nThe remainder of this section describes generic algorithms for the four inference tasks,\nindependent of the particular kind of model employed. Improvements speciﬁc to each model\nare described in subsequent sections.\n15.2.1\nFiltering and prediction\nAs we pointed out in Section 7.7.3, a useful ﬁltering algorithm needs to maintain a current\nstate estimate and update it, rather than going back over the entire history of percepts for each\nupdate. (Otherwise, the cost of each update increases as time goes by.) In other words, given\nthe result of ﬁltering up to time t, the agent needs to compute the result for t + 1 from the\nnew evidence et+1,\nP(Xt+1 | e1:t+1) = f(et+1, P(Xt | e1:t)) ,\nfor some function f. This process is called recursive estimation. We can view the calculation\nRECURSIVE\nESTIMATION\n3 In particular, when tracking a moving object with inaccurate position observations, smoothing gives a smoother\nestimated trajectory than ﬁltering—hence the name.\n572\n15.\nProbabilistic Reasoning over Time\nas being composed of two parts: ﬁrst, the current state distribution is projected forward from\nt to t+1; then it is updated using the new evidence et+1. This two-part process emerges quite\nsimply when the formula is rearranged:\nP(Xt+1 | e1:t+1) = P(Xt+1 | e1:t, et+1)\n(dividing up the evidence)\n= α P(et+1 | Xt+1, e1:t) P(Xt+1 | e1:t)\n(using Bayes’ rule)\n= α P(et+1 | Xt+1) P(Xt+1 | e1:t)\n(by the sensor Markov assumption).\n(15.4)\nHere and throughout this chapter, α is a normalizing constant used to make probabilities sum\nup to 1. The second term, P(Xt+1 | e1:t) represents a one-step prediction of the next state,\nand the ﬁrst term updates this with the new evidence; notice that P(et+1 | Xt+1) is obtainable\ndirectly from the sensor model. Now we obtain the one-step prediction for the next state by\nconditioning on the current state Xt:\nP(Xt+1 | e1:t+1) = α P(et+1 | Xt+1)\n\n\nxt\nP(Xt+1 | xt, e1:t)P(xt | e1:t)\n= α P(et+1 | Xt+1)\n\n\nxt\nP(Xt+1 | xt)P(xt | e1:t)\n(Markov assumption).\n(15.5)\nWithin the summation, the ﬁrst factor comes from the transition model and the second comes\nfrom the current state distribution. Hence, we have the desired recursive formulation. We can\nthink of the ﬁltered estimate P(Xt | e1:t) as a “message” f1:t that is propagated forward along\nthe sequence, modiﬁed by each transition and updated by each new observation. The process\nis given by\nf1:t+1 = α FORWARD(f1:t, et+1) ,\nwhere FORWARD implements the update described in Equation (15.5) and the process begins\nwith f1:0 = P(X0). When all the state variables are discrete, the time for each update is\nconstant (i.e., independent of t), and the space required is also constant. (The constants\ndepend, of course, on the size of the state space and the speciﬁc type of the temporal model\nin question.) The time and space requirements for updating must be constant if an agent with\nlimited memory is to keep track of the current state distribution over an unbounded sequence\nof observations.\nLet us illustrate the ﬁltering process for two steps in the basic umbrella example (Fig-\nure 15.2.) That is, we will compute P(R2 | u1:2) as follows:\n• On day 0, we have no observations, only the security guard’s prior beliefs; let’s assume\nthat consists of P(R0) = ⟨0.5, 0.5⟩.\n• On day 1, the umbrella appears, so U1 = true. The prediction from t = 0 to t = 1 is\nP(R1) =\n\n\nr0\nP(R1 | r0)P(r0)\n= ⟨0.7, 0.3⟩× 0.5 + ⟨0.3, 0.7⟩× 0.5 = ⟨0.5, 0.5⟩.\nThen the update step simply multiplies by the probability of the evidence for t = 1 and\nnormalizes, as shown in Equation (15.4):\nP(R1 | u1) = α P(u1 | R1)P(R1) = α ⟨0.9, 0.2⟩⟨0.5, 0.5⟩\n= α ⟨0.45, 0.1⟩≈⟨0.818, 0.182⟩.\nSection 15.2.\nInference in Temporal Models\n573\n• On day 2, the umbrella appears, so U2 = true. The prediction from t = 1 to t = 2 is\nP(R2 | u1) =\n\n\nr1\nP(R2 | r1)P(r1 | u1)\n= ⟨0.7, 0.3⟩× 0.818 + ⟨0.3, 0.7⟩× 0.182 ≈⟨0.627, 0.373⟩,\nand updating it with the evidence for t = 2 gives\nP(R2 | u1, u2) = α P(u2 | R2)P(R2 | u1) = α ⟨0.9, 0.2⟩⟨0.627, 0.373⟩\n= α ⟨0.565, 0.075⟩≈⟨0.883, 0.117⟩.\nIntuitively, the probability of rain increases from day 1 to day 2 because rain persists. Exer-\ncise 15.2(a) asks you to investigate this tendency further.\nThe task of prediction can be seen simply as ﬁltering without the addition of new\nevidence. In fact, the ﬁltering process already incorporates a one-step prediction, and it is\neasy to derive the following recursive computation for predicting the state at t + k + 1 from\na prediction for t + k:\nP(Xt+k+1 | e1:t) =\n\n\nxt+k\nP(Xt+k+1 | xt+k)P(xt+k | e1:t) .\n(15.6)\nNaturally, this computation involves only the transition model and not the sensor model.\nIt is interesting to consider what happens as we try to predict further and further into\nthe future. As Exercise 15.2(b) shows, the predicted distribution for rain converges to a\nﬁxed point ⟨0.5, 0.5⟩, after which it remains constant for all time. This is the stationary\ndistribution of the Markov process deﬁned by the transition model. (See also page 537.) A\ngreat deal is known about the properties of such distributions and about the mixing time—\nMIXING TIME\nroughly, the time taken to reach the ﬁxed point. In practical terms, this dooms to failure any\nattempt to predict the actual state for a number of steps that is more than a small fraction of\nthe mixing time, unless the stationary distribution itself is strongly peaked in a small area of\nthe state space. The more uncertainty there is in the transition model, the shorter will be the\nmixing time and the more the future is obscured.\nIn addition to ﬁltering and prediction, we can use a forward recursion to compute the\nlikelihood of the evidence sequence, P(e1:t). This is a useful quantity if we want to compare\ndifferent temporal models that might have produced the same evidence sequence (e.g., two\ndifferent models for the persistence of rain). For this recursion, we use a likelihood message\nℓ1:t(Xt) = P(Xt, e1:t). It is a simple exercise to show that the message calculation is identical\nto that for ﬁltering:\nℓ1:t+1 = FORWARD(ℓ1:t, et+1) .\nHaving computed ℓ1:t, we obtain the actual likelihood by summing out Xt:\nL1:t = P(e1:t) =\n\n\nxt\nℓ1:t(xt) .\n(15.7)\nNotice that the likelihood message represents the probabilities of longer and longer evidence\nsequences as time goes by and so becomes numerically smaller and smaller, leading to under-\nﬂow problems with ﬂoating-point arithmetic. This is an important problem in practice, but\nwe shall not go into solutions here.\n574\n15.\nProbabilistic Reasoning over Time\nX1\nE1\nX0\nXk\nEk\nXt\nEt\nFigure 15.3\nSmoothing computes P(Xk | e1:t), the posterior distribution of the state at\nsome past time k given a complete sequence of observations from 1 to t.\n15.2.2\nSmoothing\nAs we said earlier, smoothing is the process of computing the distribution over past states\ngiven evidence up to the present; that is, P(Xk | e1:t) for 0 ≤k < t. (See Figure 15.3.)\nIn anticipation of another recursive message-passing approach, we can split the computation\ninto two parts—the evidence up to k and the evidence from k + 1 to t,\nP(Xk | e1:t) = P(Xk | e1:k, ek+1:t)\n= α P(Xk | e1:k)P(ek+1:t | Xk, e1:k)\n(using Bayes’ rule)\n= α P(Xk | e1:k)P(ek+1:t | Xk)\n(using conditional independence)\n= α f1:k × bk+1:t .\n(15.8)\nwhere “×” represents pointwise multiplication of vectors. Here we have deﬁned a “back-\nward” message bk+1:t = P(ek+1:t | Xk), analogous to the forward message f1:k. The forward\nmessage f1:k can be computed by ﬁltering forward from 1 to k, as given by Equation (15.5).\nIt turns out that the backward message bk+1:t can be computed by a recursive process that\nruns backward from t:\nP(ek+1:t | Xk) =\n\n\nxk+1\nP(ek+1:t | Xk, xk+1)P(xk+1 | Xk)\n(conditioning on Xk+1)\n=\n\n\nxk+1\nP(ek+1:t | xk+1)P(xk+1 | Xk)\n(by conditional independence)\n=\n\n\nxk+1\nP(ek+1, ek+2:t | xk+1)P(xk+1 | Xk)\n=\n\n\nxk+1\nP(ek+1 | xk+1)P(ek+2:t | xk+1)P(xk+1 | Xk) ,\n(15.9)\nwhere the last step follows by the conditional independence of ek+1 and ek+2:t, given Xk+1.\nOf the three factors in this summation, the ﬁrst and third are obtained directly from the model,\nand the second is the “recursive call.” Using the message notation, we have\nbk+1:t = BACKWARD(bk+2:t, ek+1) ,\nwhere BACKWARD implements the update described in Equation (15.9). As with the forward\nrecursion, the time and space needed for each update are constant and thus independent of t.\nWe can now see that the two terms in Equation (15.8) can both be computed by recur-\nsions through time, one running forward from 1 to k and using the ﬁltering equation (15.5)\nSection 15.2.\nInference in Temporal Models\n575\nand the other running backward from t to k + 1 and using Equation (15.9). Note that the\nbackward phase is initialized with bt+1:t = P(et+1:t | Xt) = P( | Xt)1, where 1 is a vector of\n1s. (Because et+1:t is an empty sequence, the probability of observing it is 1.)\nLet us now apply this algorithm to the umbrella example, computing the smoothed\nestimate for the probability of rain at time k = 1, given the umbrella observations on days 1\nand 2. From Equation (15.8), this is given by\nP(R1 | u1, u2) = α P(R1 | u1) P(u2 | R1) .\n(15.10)\nThe ﬁrst term we already know to be ⟨.818, .182⟩, from the forward ﬁltering process de-\nscribed earlier. The second term can be computed by applying the backward recursion in\nEquation (15.9):\nP(u2 | R1) =\n\n\nr2\nP(u2 | r2)P( | r2)P(r2 | R1)\n= (0.9 × 1 × ⟨0.7, 0.3⟩) + (0.2 × 1 × ⟨0.3, 0.7⟩) = ⟨0.69, 0.41⟩.\nPlugging this into Equation (15.10), we ﬁnd that the smoothed estimate for rain on day 1 is\nP(R1 | u1, u2) = α ⟨0.818, 0.182⟩× ⟨0.69, 0.41⟩≈⟨0.883, 0.117⟩.\nThus, the smoothed estimate for rain on day 1 is higher than the ﬁltered estimate (0.818) in\nthis case. This is because the umbrella on day 2 makes it more likely to have rained on day\n2; in turn, because rain tends to persist, that makes it more likely to have rained on day 1.\nBoth the forward and backward recursions take a constant amount of time per step;\nhence, the time complexity of smoothing with respect to evidence e1:t is O(t). This is the\ncomplexity for smoothing at a particular time step k. If we want to smooth the whole se-\nquence, one obvious method is simply to run the whole smoothing process once for each\ntime step to be smoothed. This results in a time complexity of O(t2). A better approach\nuses a simple application of dynamic programming to reduce the complexity to O(t). A clue\nappears in the preceding analysis of the umbrella example, where we were able to reuse the\nresults of the forward-ﬁltering phase. The key to the linear-time algorithm is to record the\nresults of forward ﬁltering over the whole sequence. Then we run the backward recursion\nfrom t down to 1, computing the smoothed estimate at each step k from the computed back-\nward message bk+1:t and the stored forward message f1:k. The algorithm, aptly called the\nforward–backward algorithm, is shown in Figure 15.4.\nFORWARD–\nBACKWARD\nALGORITHM\nThe alert reader will have spotted that the Bayesian network structure shown in Fig-\nure 15.3 is a polytree as deﬁned on page 528. This means that a straightforward application\nof the clustering algorithm also yields a linear-time algorithm that computes smoothed es-\ntimates for the entire sequence. It is now understood that the forward–backward algorithm\nis in fact a special case of the polytree propagation algorithm used with clustering methods\n(although the two were developed independently).\nThe forward–backward algorithm forms the computational backbone for many applica-\ntions that deal with sequences of noisy observations. As described so far, it has two practical\ndrawbacks. The ﬁrst is that its space complexity can be too high when the state space is large\nand the sequences are long. It uses O(|f|t) space where |f| is the size of the representation of\nthe forward message. The space requirement can be reduced to O(|f| log t) with a concomi-\n576\n15.\nProbabilistic Reasoning over Time\ntant increase in the time complexity by a factor of log t, as shown in Exercise 15.3. In some\ncases (see Section 15.3), a constant-space algorithm can be used.\nThe second drawback of the basic algorithm is that it needs to be modiﬁed to work\nin an online setting where smoothed estimates must be computed for earlier time slices as\nnew observations are continuously added to the end of the sequence. The most common\nrequirement is for ﬁxed-lag smoothing, which requires computing the smoothed estimate\nFIXED-LAG\nSMOOTHING\nP(Xt−d | e1:t) for ﬁxed d. That is, smoothing is done for the time slice d steps behind the\ncurrent time t; as t increases, the smoothing has to keep up. Obviously, we can run the\nforward–backward algorithm over the d-step “window” as each new observation is added,\nbut this seems inefﬁcient. In Section 15.3, we will see that ﬁxed-lag smoothing can, in some\ncases, be done in constant time per update, independent of the lag d.\n15.2.3\nFinding the most likely sequence\nSuppose that [true, true, false, true, true] is the umbrella sequence for the security guard’s\nﬁrst ﬁve days on the job. What is the weather sequence most likely to explain this? Does\nthe absence of the umbrella on day 3 mean that it wasn’t raining, or did the director forget\nto bring it? If it didn’t rain on day 3, perhaps (because weather tends to persist) it didn’t\nrain on day 4 either, but the director brought the umbrella just in case. In all, there are 25\npossible weather sequences we could pick. Is there a way to ﬁnd the most likely one, short of\nenumerating all of them?\nWe could try this linear-time procedure: use smoothing to ﬁnd the posterior distribution\nfor the weather at each time step; then construct the sequence, using at each step the weather\nthat is most likely according to the posterior. Such an approach should set off alarm bells\nin the reader’s head, because the posterior distributions computed by smoothing are distri-\nfunction FORWARD-BACKWARD(ev,prior) returns a vector of probability distributions\ninputs: ev, a vector of evidence values for steps 1, . . . , t\nprior, the prior distribution on the initial state, P(X0)\nlocal variables: fv, a vector of forward messages for steps 0, . . . , t\nb, a representation of the backward message, initially all 1s\nsv, a vector of smoothed estimates for steps 1, . . . , t\nfv[0] ←prior\nfor i = 1 to t do\nfv[i] ←FORWARD(fv[i −1], ev[i])\nfor i = t downto 1 do\nsv[i] ←NORMALIZE(fv[i] × b)\nb ←BACKWARD(b, ev[i])\nreturn sv\nFigure 15.4\nThe forward–backward algorithm for smoothing: computing posterior prob-\nabilities of a sequence of states given a sequence of observations.\nThe FORWARD and\nBACKWARD operators are deﬁned by Equations (15.5) and (15.9), respectively.\nSection 15.2.\nInference in Temporal Models\n577\nRain1\nm1:1\ntrue\nRain5\nm1:5\ntrue\nRain4\nm1:4\ntrue\nRain3\nm1:3\nfalse\nRain2\nm1:2\ntrue\nUmbrellat\n(a)\n(b)\n.8182\n.1818\n.0210\n.0024\n.0334\n.0173\n.0361\n.1237\n.5155\n.0491\ntrue\nfalse\ntrue\nfalse\ntrue\nfalse\ntrue\nfalse\ntrue\nfalse\nFigure 15.5\n(a) Possible state sequences for Raint can be viewed as paths through a graph\nof the possible states at each time step. (States are shown as rectangles to avoid confusion\nwith nodes in a Bayes net.) (b) Operation of the Viterbi algorithm for the umbrella obser-\nvation sequence [true, true, false, true, true]. For each t, we have shown the values of the\nmessage m1:t, which gives the probability of the best sequence reaching each state at time t.\nAlso, for each state, the bold arrow leading into it indicates its best predecessor as measured\nby the product of the preceding sequence probability and the transition probability. Following\nthe bold arrows back from the most likely state in m1:5 gives the most likely sequence.\nbutions over single time steps, whereas to ﬁnd the most likely sequence we must consider\njoint probabilities over all the time steps. The results can in fact be quite different. (See\nExercise 15.4.)\nThere is a linear-time algorithm for ﬁnding the most likely sequence, but it requires a\nlittle more thought. It relies on the same Markov property that yielded efﬁcient algorithms for\nﬁltering and smoothing. The easiest way to think about the problem is to view each sequence\nas a path through a graph whose nodes are the possible states at each time step. Such a\ngraph is shown for the umbrella world in Figure 15.5(a). Now consider the task of ﬁnding\nthe most likely path through this graph, where the likelihood of any path is the product of\nthe transition probabilities along the path and the probabilities of the given observations at\neach state. Let’s focus in particular on paths that reach the state Rain5 = true. Because of\nthe Markov property, it follows that the most likely path to the state Rain5 = true consists of\nthe most likely path to some state at time 4 followed by a transition to Rain5 = true; and the\nstate at time 4 that will become part of the path to Rain5 = true is whichever maximizes the\nlikelihood of that path. In other words, there is a recursive relationship between most likely\npaths to each state xt+1 and most likely paths to each state xt. We can write this relationship\nas an equation connecting the probabilities of the paths:\nmax\nx1...xt P(x1, . . . , xt, Xt+1 | e1:t+1)\n= α P(et+1 | Xt+1) max\nxt\n\nP(Xt+1 | xt) max\nx1...xt−1 P(x1, . . . , xt−1, xt | e1:t)\n\u000e\n.\n(15.11)\nEquation (15.11) is identical to the ﬁltering equation (15.5) except that",
+  "images": [
+    {
+      "path": "images/15-2-inference-in-temporal-models_fig_15-3.png",
+      "type": "diagram",
+      "caption": "Figure 15.3"
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_fig_15-5.png",
+      "type": "diagram",
+      "caption": "Figure 15.5"
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_15-4.png",
+      "type": "equation",
+      "label": "15.4"
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_15-5.png",
+      "type": "equation",
+      "label": "15.5"
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_18.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_19.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_20.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_21.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_22.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_23.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_24.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_15-6.png",
+      "type": "equation",
+      "label": "15.6"
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_26.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_27.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_28.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_15-7.png",
+      "type": "equation",
+      "label": "15.7"
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_30.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_31.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_32.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_33.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_15-8.png",
+      "type": "equation",
+      "label": "15.8"
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_35.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_36.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_37.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_38.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_39.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_40.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_41.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_42.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_43.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_15-9.png",
+      "type": "equation",
+      "label": "15.9"
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_45.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_15-5.png",
+      "type": "equation",
+      "label": "15.5"
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_47.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_15-10.png",
+      "type": "equation",
+      "label": "15.10"
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_49.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_50.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_51.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_52.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_53.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_54.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_55.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_56.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_57.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_58.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-2-inference-in-temporal-models_eq_15-11.png",
+      "type": "equation",
+      "label": "15.11"
+    }
+  ]
+}

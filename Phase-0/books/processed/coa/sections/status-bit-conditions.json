@@ -1,0 +1,19 @@
+{
+  "section_id": "status-bit-conditions",
+  "title": "Status Bit Conditions",
+  "level": 3,
+  "chapter": "8-7 Program Control",
+  "parent_id": "8-7-program-control",
+  "children": [],
+  "start_page": 282,
+  "end_page": 283,
+  "text": "It is sometimes convenient to supplement the ALU circuit in the CPU with a status register where status bit conditions can be stored for further analysis. Status bits are also called condition-code bits or flag bits. Figure 8-8 shows the block diagram of an 8-bit ALU with a 4-bit status register. The four status bits are symbolized by C, S, Z, and V. The bits are set or cleared as a result of an operation performed in the ALU.\nBit C (carry) is set to 1 if the end carry C<sub>8</sub> is 1. It is cleared to 0 if the carry is 0\nBit S (sign) is set to 1 if the highest-order bit F<sub>7</sub> is 1. It is set to 0 if the bit is 0.\nBit Z (zero) is set to 1 if the output of the ALU contains all 0's. It is cleared\nto 0 otherwise. In other words, Z = 1 if the output is zero and Z = 0\\nif the output is not zero.\n4. Bit V (overflow) is set to 1 if the exclusive-OR of the last two carries is equal to 1, and cleared to 0 otherwise. This is the condition for an\nFigure 8-8 Status register bits.\noverflow when negative numbers are in 2's complement (see Sec. 3-3). For the 8-bit ALU, V=1 if the output is greater than +127 or less than -128.\nThe status bits can be checked after an ALU operation to determine certain relationships that exist between the values of A and B. If bit V is set after the addition of two signed numbers, it indicates an overflow condition. If Z is set after an exclusive-OR operation, it indicates that A = B. This is so because x \\oplus x = 0, and the exclusive-OR of two equal operands gives an all-0's result which sets the Z bit. A single bit in A can be checked to determine if it is 0 or 1 by masking all bits except the bit in question and then checking the Z status bit. For example, let A = 101x1100, where x is the bit to be checked. The AND operation of A with B = 00010000 produces a result 000x0000. If x = 0, the Z status bit is set, but if x = 1, the Z bit is cleared since the result is not zero. The AND operation can be generated with the TEST instruction listed in Table 8-10 if the original content of A must be preserved.",
+  "images": [
+    {
+      "path": "images/status-bit-conditions_img_1.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

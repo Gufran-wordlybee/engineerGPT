@@ -1,0 +1,22 @@
+{
+  "section_id": "14-probabilistic-reasoning",
+  "title": "14 Probabilistic Reasoning",
+  "level": 2,
+  "chapter": "IV: Uncertain knowledge and reasoning",
+  "parent_id": "iv-uncertain-knowledge-and-reasoning",
+  "children": [
+    "14-1-representing-knowledge-in-an-uncertain-domain",
+    "14-2-the-semantics-of-bayesian-networks",
+    "14-3-efficient-representation-of-conditional-distributions",
+    "14-4-exact-inference-in-bayesian-networks",
+    "14-5-approximate-inference-in-bayesian-networks",
+    "14-6-relational-and-first-order-probability-models",
+    "14-7-other-approaches-to-uncertain-reasoning",
+    "14-8-summary-bibliographical-and-historical-notes-exercises"
+  ],
+  "start_page": 528,
+  "end_page": 528,
+  "text": "14\nPROBABILISTIC\nREASONING\nIn which we explain how to build network models to reason under uncertainty\naccording to the laws of probability theory.\nChapter 13 introduced the basic elements of probability theory and noted the importance of\nindependence and conditional independence relationships in simplifying probabilistic repre-\nsentations of the world. This chapter introduces a systematic way to represent such relation-\nships explicitly in the form of Bayesian networks. We deﬁne the syntax and semantics of\nthese networks and show how they can be used to capture uncertain knowledge in a natu-\nral and efﬁcient way. We then show how probabilistic inference, although computationally\nintractable in the worst case, can be done efﬁciently in many practical situations. We also\ndescribe a variety of approximate inference algorithms that are often applicable when exact\ninference is infeasible. We explore ways in which probability theory can be applied to worlds\nwith objects and relations—that is, to ﬁrst-order, as opposed to propositional, representations.\nFinally, we survey alternative approaches to uncertain reasoning.\n14.1\nREPRESENTING KNOWLEDGE IN AN UNCERTAIN DOMAIN\nIn Chapter 13, we saw that the full joint probability distribution can answer any question about\nthe domain, but can become intractably large as the number of variables grows. Furthermore,\nspecifying probabilities for possible worlds one by one is unnatural and tedious.\nWe also saw that independence and conditional independence relationships among vari-\nables can greatly reduce the number of probabilities that need to be speciﬁed in order to deﬁne\nthe full joint distribution. This section introduces a data structure called a Bayesian network1\nBAYESIAN NETWORK\nto represent the dependencies among variables. Bayesian networks can represent essentially\nany full joint probability distribution and in many cases can do so very concisely.\n1 This is the most common name, but there are many synonyms, including belief network, probabilistic net-\nwork, causal network, and knowledge map. In statistics, the term graphical model refers to a somewhat\nbroader class that includes Bayesian networks. An extension of Bayesian networks called a decision network or\ninﬂuence diagram is covered in Chapter 16.\n510",
+  "images": [],
+  "equations": []
+}

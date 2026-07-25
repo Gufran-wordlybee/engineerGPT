@@ -1,0 +1,15 @@
+{
+  "section_id": "floating-point-operations",
+  "title": "Floating-Point Operations",
+  "level": 2,
+  "chapter": "Pipeline and Vector Processing",
+  "parent_id": "pipeline-and-vector-processing",
+  "children": [
+    "problems-9"
+  ],
+  "start_page": 383,
+  "end_page": 383,
+  "text": "Decimal floating-point arithmetic operations follow the same procedures as binary operations. The algorithms in Sec. 10-5 can be adopted for decimal data provided that the microoperation symbols are interpreted correctly. The multiplication and division of the mantissas must be done by the methods described above.",
+  "images": [],
+  "equations": []
+}

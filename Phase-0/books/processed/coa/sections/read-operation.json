@@ -1,0 +1,19 @@
+{
+  "section_id": "read-operation",
+  "title": "Read Operation",
+  "level": 2,
+  "chapter": "12-4 Associative Memory",
+  "parent_id": "12-4-associative-memory",
+  "children": [],
+  "start_page": 461,
+  "end_page": 462,
+  "text": "If more than one word in memory matches the unmasked argument field, all the matched words will have 1's in the corresponding bit position of the match register. It is then necessary to scan the bits of the match register one at a time. The matched words are read in sequence by applying a read signal to each word line whose corresponding M<sub>i</sub> bit is a 1.\nFigure 12-9 Match logic for one word of associative memory.\nIn most applications, the associative memory stores a table with no two identical items under a given key. In this case, only one word may match the unmasked argument field. By connecting output M, directly to the read line in the same word position (instead of the M register), the content of the matched word will be presented automatically at the output lines and no special read command signal is needed. Furthermore, if we exclude words having a zero content, an all-zero output will indicate that no match occurred and that the searched item is not available in memory.",
+  "images": [
+    {
+      "path": "images/read-operation_img_1.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

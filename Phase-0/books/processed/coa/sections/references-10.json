@@ -1,0 +1,13 @@
+{
+  "section_id": "references-10",
+  "title": "REFERENCES",
+  "level": 4,
+  "chapter": "11-6 Direct Memory Access (DMA)",
+  "parent_id": "transmission-example",
+  "children": [],
+  "start_page": 444,
+  "end_page": 446,
+  "text": "Gorsline, G. W., Computer Organization: Hardware/Software, 2nd ed. Englewood Cliffs, NI: Prentice Hall, 1986.\nHays, J. F., Computer Architecture and Organization, 2nd ed. New York: McGraw-Hill, 1988.\nHill, F. J., and G. R. Peterson, Digital Systems: Hardware Organization and Design, 3rd ed. New York: John Wiley, 1987.\nHwang, K., and F. A. Briggs, Computer Architecture and Parallel Processing. New York: McGraw-Hill, 1984.\nLippiatt, A. G., and G. L. Wright, The Architecture of Small Computer Systems, 2nd ed. Englewood Cliffs, NJ: Prentice Hall, 1985.\n6. Patterson, D. A., and J. L. Hennessy, Computer Architecture: A Quantitative Approach. San Mateo, CA: Morgan Kaufmann Publishers, 1990.\n7. Pollard, L. H., Computer Design and Architecture. Englewood Cliffs, NJ: Prentice Hall, 1990.\nRafiquzzaman, M., and R. Chandra, Modern Computer Architecture. St. Paul, MN: West Publishing, 1988.\n9. Toy, W., and B. Zee, Computer Hardware/Software Architecture. Englewood Cliffs, NJ: Prentice Hall, 1986.\nWakerly, J. F., Microcomputer Architecture and Programming. New York: John Wiley, 1981.\nWard, S. A., and R. H. Halstead, Jr., Computation Structures. Cambridge, MA: MIT Press, 1990.",
+  "images": [],
+  "equations": []
+}

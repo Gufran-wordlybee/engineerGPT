@@ -1,0 +1,15 @@
+{
+  "section_id": "isz-increment-and-skip-if-zero",
+  "title": "ISZ: Increment and Skip if Zero",
+  "level": 2,
+  "chapter": "5-6 Memory-Reference Instructions",
+  "parent_id": "5-6-memory-reference-instructions",
+  "children": [
+    "control-flowchart"
+  ],
+  "start_page": 159,
+  "end_page": 159,
+  "text": "This instruction increments the word specified by the effective address, and if the incremented value is equal to 0, PC is incremented by 1. The programmer usually stores a negative number (in 2's complement) in the memory word. As this negative number is repeatedly incremented by one, it eventually reaches the value of zero. At that time PC is incremented by one in order to skip the next instruction in the program.\nSince it is not possible to increment a word inside the memory, it is necessary to read the word into DR, increment DR, and store the word back into memory. This is done with the following sequence of microoperations:\nD_6T_4: DR \\leftarrow M[AR]\n\nD_6T_5: DR \\leftarrow DR + 1\n\nD_6T_6: M[AR] \\leftarrow DR, if (DR = 0) then (PC \\leftarrow PC + 1), SC \\leftarrow 0",
+  "images": [],
+  "equations": []
+}

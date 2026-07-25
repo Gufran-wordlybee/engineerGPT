@@ -1,0 +1,13 @@
+{
+  "section_id": "other-alphanumeric-codes",
+  "title": "Other Alphanumeric Codes",
+  "level": 2,
+  "chapter": "Data Representation",
+  "parent_id": "data-representation",
+  "children": [],
+  "start_page": 98,
+  "end_page": 99,
+  "text": "The ASCII code (Table 3-4) is the standard code commonly used for the transmission of binary information. Each character is represented by a 7-bit code and usually an eighth bit is inserted for parity (see Sec. 3-6). The code consists of 128 characters. Ninety-five characters represent graphic symbols that include upper- and lowercase letters, numerals zero to nine, punctuation marks, and special symbols. Twenty-three characters represent format effectors, which are functional characters for controlling the layout of printing or display devices such as carriage return, line feed, horizontal tabulation, and back\nspace. The other 10 characters are used to direct the data communication flow and report its status.\nAnother alphanumeric (sometimes called alphameric) code used in IBM equipment is the EBCDIC (Extended BCD Interchange Code). It uses eight bits for each character (and a ninth bit for parity). EBCDIC has the same character symbols as ASCII but the bit assignment to characters is different.\nWhen alphanumeric characters are used internally in a computer for data processing (not for transmission purposes) it is more convenient to use a 6-bit code to represent 64 characters. A 6-bit code can specify the 26 uppercase letters of the alphabet, numerals zero to nine, and up to 28 special characters. This set of characters is usually sufficient for data-processing purposes. Using fewer bits to code characters has the advantage of reducing the memory space needed to store large quantities of alphanumeric data.",
+  "images": [],
+  "equations": []
+}

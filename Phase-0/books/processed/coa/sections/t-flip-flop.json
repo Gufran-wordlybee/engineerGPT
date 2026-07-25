@@ -1,0 +1,24 @@
+{
+  "section_id": "t-flip-flop",
+  "title": "T Flip-Flop",
+  "level": 2,
+  "chapter": "Contents",
+  "parent_id": "contents",
+  "children": [],
+  "start_page": 39,
+  "end_page": 40,
+  "text": "Another type of flip-flop found in textbooks is the T (toggle) flip-flop. This flip-flop, shown in Fig. 1-22, is obtained from a JK type when inputs J and K are connected to provide a single input designated by T. The T flip-flop\nFigure 1-21 JK flip-flop.\nFigure 1-22 T flip-flop.\ntherefore has only two conditions. When T=0 (J=K=0) a clock transition does not change the state of the flip-flop. When T=1 (J=K=1) a clock transition complements the state of the flip-flop. These conditions can be expressed by a characteristic equation:\nQ(t+1)=Q(t)\\oplus T",
+  "images": [
+    {
+      "path": "images/t-flip-flop_img_1.png",
+      "type": "figure",
+      "caption": null
+    },
+    {
+      "path": "images/t-flip-flop_img_2.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

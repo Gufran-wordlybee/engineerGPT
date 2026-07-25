@@ -1,0 +1,13 @@
+{
+  "section_id": "complement-of-a-function",
+  "title": "Complement of a Function",
+  "level": 2,
+  "chapter": "Contents",
+  "parent_id": "contents",
+  "children": [],
+  "start_page": 25,
+  "end_page": 26,
+  "text": "The complement of a function F when expressed in a truth table is obtained by interchanging 1's and 0's in the values of F in the truth table. When the function is expressed in algebraic form, the complement of the function can be derived by means of DeMorgan's theorem. The general form of DeMorgan's theorem can be expressed as follows:\n(x_1 + x_2 + x_3 + \\dots + x_n)' = x_1' x_2' x_3' \\dots x_n'(x_1 x_2 x_3 \\dots x_n)' = x_1' + x_2' + x_3' + \\dots + x_n'\nFrom the general DeMorgan's theorem we can derive a simple procedure for obtaining the complement of an algebraic expression. This is done by changing all OR operations to AND operations and all AND operations to OR operations and then complementing each individual letter variable. As an example, consider the following expression and its complement:\nF = AB + C'D' + B'D\nF' = (A' + B')(C + D)(B + D')\nThe complement expression is obtained by interchanging AND and OR operations and complementing each individual variable. Note that the complement of C' is C.",
+  "images": [],
+  "equations": []
+}

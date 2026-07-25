@@ -1,0 +1,13 @@
+{
+  "section_id": "shift-operations",
+  "title": "Shift Operations",
+  "level": 1,
+  "chapter": "Shift Operations",
+  "parent_id": null,
+  "children": [],
+  "start_page": 206,
+  "end_page": 207,
+  "text": "The circular-shift operations are machine instructions in the basic computer. The other shifts of interest are the logical shifts and arithmetic shifts. These two shifts can be programmed with a small number of instructions.\nThe logical shift requires that zeros be added to the extreme positions. This is easily accomplished by clearing E and circulating the AC and E. Thus for a logical shift-right operation we need the two instructions\nCLE\nFor a logical shift-left operation we need the two instructions\nCLE\nThe arithmetic shifts depend on the type of representation of negative numbers. For the basic computer we have adopted the signed-2's complement representation. The rules for arithmetic shifts are listed in Sec. 4-6. For an arithmetic right-shift it is necessary that the sign bit in the leftmost position remain unchanged. But the sign bit itself is shifted into the high-order bit\nposition of the number. The program for the arithmetic right-shift requires that we set E to the same value as the sign bit and circulate right, thus:\nCLE /Clear E to D\nSPA /Skip if AC is positive; E remains D\nCME /AC is negative; set E to 1\nCTR /Circulate E and AC\nFor arithmetic shift-left it is necessary that the added bit in the least significant position be 0. This is easily done by clearing E prior to the circulate-left operation. The sign bit must not change during this shift. With a circulate instruction, the sign bit moves into E. It is then necessary to compare the sign bit with the value of E after the operation. If the two values are equal, the arithmetic shift has been correctly implemented. If they are not equal, an overflow occurs. An overflow indicates that the unshifted number was too large. When multiplied by 2 (by means of the shift), the number so obtained exceeds the capacity of the AC.",
+  "images": [],
+  "equations": []
+}

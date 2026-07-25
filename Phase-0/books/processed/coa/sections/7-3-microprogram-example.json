@@ -1,0 +1,13 @@
+{
+  "section_id": "7-3-microprogram-example",
+  "title": "7-3 Microprogram Example",
+  "level": 1,
+  "chapter": "7-3 Microprogram Example",
+  "parent_id": null,
+  "children": [],
+  "start_page": 229,
+  "end_page": 229,
+  "text": "Once the configuration of a computer and its microprogrammed control unit is established, the designer's task is to generate the microcode for the control memory. This code generation is called microprogramming and is a process similar to conventional machine language programming. To appreciate this process, we present here a simple digital computer and show how it is microprogrammed. The computer used here is similar but not identical to the basic computer introduced in Chap. 5.",
+  "images": [],
+  "equations": []
+}

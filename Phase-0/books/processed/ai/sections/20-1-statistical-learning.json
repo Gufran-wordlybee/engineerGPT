@@ -1,0 +1,70 @@
+{
+  "section_id": "20-1-statistical-learning",
+  "title": "20.1 Statistical Learning",
+  "level": 3,
+  "chapter": "V: Learning",
+  "parent_id": "20-learning-probabilistic-models",
+  "children": [],
+  "start_page": 820,
+  "end_page": 823,
+  "text": "20\nLEARNING\nPROBABILISTIC MODELS\nIn which we view learning as a form of uncertain reasoning from observations.\nChapter 13 pointed out the prevalence of uncertainty in real environments. Agents can handle\nuncertainty by using the methods of probability and decision theory, but ﬁrst they must learn\ntheir probabilistic theories of the world from experience. This chapter explains how they\ncan do that, by formulating the learning task itself as a process of probabilistic inference\n(Section 20.1). We will see that a Bayesian view of learning is extremely powerful, providing\ngeneral solutions to the problems of noise, overﬁtting, and optimal prediction. It also takes\ninto account the fact that a less-than-omniscient agent can never be certain about which theory\nof the world is correct, yet must still make decisions by using some theory of the world.\nWe describe methods for learning probability models—primarily Bayesian networks—\nin Sections 20.2 and 20.3. Some of the material in this chapter is fairly mathematical, al-\nthough the general lessons can be understood without plunging into the details. It may beneﬁt\nthe reader to review Chapters 13 and 14 and peek at Appendix A.\n20.1\nSTATISTICAL LEARNING\nThe key concepts in this chapter, just as in Chapter 18, are data and hypotheses. Here, the\ndata are evidence—that is, instantiations of some or all of the random variables describing the\ndomain. The hypotheses in this chapter are probabilistic theories of how the domain works,\nincluding logical theories as a special case.\nConsider a simple example. Our favorite Surprise candy comes in two ﬂavors: cherry\n(yum) and lime (ugh). The manufacturer has a peculiar sense of humor and wraps each piece\nof candy in the same opaque wrapper, regardless of ﬂavor. The candy is sold in very large\nbags, of which there are known to be ﬁve kinds—again, indistinguishable from the outside:\nh1: 100% cherry,\nh2: 75% cherry + 25% lime,\nh3: 50% cherry + 50% lime,\nh4: 25% cherry + 75% lime,\nh5: 100% lime .\n802\nSection 20.1.\nStatistical Learning\n803\nGiven a new bag of candy, the random variable H (for hypothesis) denotes the type of the\nbag, with possible values h1 through h5. H is not directly observable, of course. As the\npieces of candy are opened and inspected, data are revealed—D1, D2, . . ., DN, where each\nDi is a random variable with possible values cherry and lime. The basic task faced by the\nagent is to predict the ﬂavor of the next piece of candy.1 Despite its apparent triviality, this\nscenario serves to introduce many of the major issues. The agent really does need to infer a\ntheory of its world, albeit a very simple one.\nBayesian learning simply calculates the probability of each hypothesis, given the data,\nBAYESIAN LEARNING\nand makes predictions on that basis. That is, the predictions are made by using all the hy-\npotheses, weighted by their probabilities, rather than by using just a single “best” hypothesis.\nIn this way, learning is reduced to probabilistic inference. Let D represent all the data, with\nobserved value d; then the probability of each hypothesis is obtained by Bayes’ rule:\nP(hi | d) = αP(d | hi)P(hi) .\n(20.1)\nNow, suppose we want to make a prediction about an unknown quantity X. Then we have\nP(X | d) =\n\n\ni\nP(X | d, hi)P(hi | d) =\n\n\ni\nP(X | hi)P(hi | d) ,\n(20.2)\nwhere we have assumed that each hypothesis determines a probability distribution over X.\nThis equation shows that predictions are weighted averages over the predictions of the indi-\nvidual hypotheses. The hypotheses themselves are essentially “intermediaries” between the\nraw data and the predictions. The key quantities in the Bayesian approach are the hypothesis\nprior, P(hi), and the likelihood of the data under each hypothesis, P(d | hi).\nHYPOTHESIS PRIOR\nLIKELIHOOD\nFor our candy example, we will assume for the time being that the prior distribution\nover h1, . . . , h5 is given by ⟨0.1, 0.2, 0.4, 0.2, 0.1⟩, as advertised by the manufacturer. The\nlikelihood of the data is calculated under the assumption that the observations are i.i.d. (see\npage 708), so that\nP(d | hi) =\n\u0019\nj\nP(dj | hi) .\n(20.3)\nFor example, suppose the bag is really an all-lime bag (h5) and the ﬁrst 10 candies are all\nlime; then P(d | h3) is 0.510, because half the candies in an h3 bag are lime.2 Figure 20.1(a)\nshows how the posterior probabilities of the ﬁve hypotheses change as the sequence of 10\nlime candies is observed. Notice that the probabilities start out at their prior values, so h3\nis initially the most likely choice and remains so after 1 lime candy is unwrapped. After 2\nlime candies are unwrapped, h4 is most likely; after 3 or more, h5 (the dreaded all-lime bag)\nis the most likely. After 10 in a row, we are fairly certain of our fate. Figure 20.1(b) shows\nthe predicted probability that the next candy is lime, based on Equation (20.2). As we would\nexpect, it increases monotonically toward 1.\n1 Statistically sophisticated readers will recognize this scenario as a variant of the urn-and-ball setup. We ﬁnd\nurns and balls less compelling than candy; furthermore, candy lends itself to other tasks, such as deciding whether\nto trade the bag with a friend—see Exercise 20.2.\n2 We stated earlier that the bags of candy are very large; otherwise, the i.i.d. assumption fails to hold. Technically,\nit is more correct (but less hygienic) to rewrap each candy after inspection and return it to the bag.\n804\n20.\nLearning Probabilistic Models\n 0\n 0.2\n 0.4\n 0.6\n 0.8\n 1\n 0\n 2\n 4\n 6\n 8\n 10\nPosterior probability of hypothesis\nNumber of observations in d\nP(h1 | d)\nP(h2 | d)\nP(h3 | d)\nP(h4 | d)\nP(h5 | d)\n 0.4\n 0.5\n 0.6\n 0.7\n 0.8\n 0.9\n 1\n 0\n 2\n 4\n 6\n 8\n 10\nProbability that next candy is lime\nNumber of observations in d\n(a)\n(b)\nFigure 20.1\n(a) Posterior probabilities P(hi | d1, . . . , dN) from Equation (20.1).\nThe\nnumber of observations N ranges from 1 to 10, and each observation is of a lime candy.\n(b) Bayesian prediction P(dN+1 = lime | d1, . . . , dN) from Equation (20.2).\nThe example shows that the Bayesian prediction eventually agrees with the true hy-\npothesis. This is characteristic of Bayesian learning. For any ﬁxed prior that does not rule\nout the true hypothesis, the posterior probability of any false hypothesis will, under certain\ntechnical conditions, eventually vanish. This happens simply because the probability of gen-\nerating “uncharacteristic” data indeﬁnitely is vanishingly small. (This point is analogous to\none made in the discussion of PAC learning in Chapter 18.) More important, the Bayesian\nprediction is optimal, whether the data set be small or large. Given the hypothesis prior, any\nother prediction is expected to be correct less often.\nThe optimality of Bayesian learning comes at a price, of course. For real learning\nproblems, the hypothesis space is usually very large or inﬁnite, as we saw in Chapter 18. In\nsome cases, the summation in Equation (20.2) (or integration, in the continuous case) can be\ncarried out tractably, but in most cases we must resort to approximate or simpliﬁed methods.\nA very common approximation—one that is usually adopted in science—is to make pre-\ndictions based on a single most probable hypothesis—that is, an hi that maximizes P(hi | d).\nThis is often called a maximum a posteriori or MAP (pronounced “em-ay-pee”) hypothesis.\nMAXIMUM A\nPOSTERIORI\nPredictions made according to an MAP hypothesis hMAP are approximately Bayesian to the\nextent that P(X | d) ≈P(X | hMAP). In our candy example, hMAP = h5 after three lime can-\ndies in a row, so the MAP learner then predicts that the fourth candy is lime with probability\n1.0—a much more dangerous prediction than the Bayesian prediction of 0.8 shown in Fig-\nure 20.1(b). As more data arrive, the MAP and Bayesian predictions become closer, because\nthe competitors to the MAP hypothesis become less and less probable.\nAlthough our example doesn’t show it, ﬁnding MAP hypotheses is often much easier\nthan Bayesian learning, because it requires solving an optimization problem instead of a large\nsummation (or integration) problem. We will see examples of this later in the chapter.\nSection 20.1.\nStatistical Learning\n805\nIn both Bayesian learning and MAP learning, the hypothesis prior P(hi) plays an im-\nportant role. We saw in Chapter 18 that overﬁtting can occur when the hypothesis space\nis too expressive, so that it contains many hypotheses that ﬁt the data set well. Rather than\nplacing an arbitrary limit on the hypotheses to be considered, Bayesian and MAP learning\nmethods use the prior to penalize complexity. Typically, more complex hypotheses have a\nlower prior probability—in part because there are usually many more complex hypotheses\nthan simple hypotheses. On the other hand, more complex hypotheses have a greater capac-\nity to ﬁt the data. (In the extreme case, a lookup table can reproduce the data exactly with\nprobability 1.) Hence, the hypothesis prior embodies a tradeoff between the complexity of a\nhypothesis and its degree of ﬁt to the data.\nWe can see the effect of this tradeoff most clearly in the logical case, where H contains\nonly deterministic hypotheses. In that case, P(d | hi) is 1 if hi is consistent and 0 otherwise.\nLooking at Equation (20.1), we see that hMAP will then be the simplest logical theory that\nis consistent with the data. Therefore, maximum a posteriori learning provides a natural\nembodiment of Ockham’s razor.\nAnother insight into the tradeoff between complexity and degree of ﬁt is obtained by\ntaking the logarithm of Equation (20.1). Choosing hMAP to maximize P(d | hi)P(hi) is\nequivalent to minimizing\n−log2 P(d | hi) −log2 P(hi) .\nUsing the connection between information encoding and probability that we introduced in\nChapter 18.3.4, we see that the −log2 P(hi) term equals the number of bits required to spec-\nify the hypothesis hi. Furthermore, −log2 P(d | hi) is the additional number of bits required\nto specify the data, given the hypothesis. (To see this, consider that no bits are required\nif the hypothesis predicts the data exactly—as with h5 and the string of lime candies—and\nlog2 1 = 0.) Hence, MAP learning is choosing the hypothesis that provides maximum com-\npression of the data. The same task is addressed more directly by the minimum description\nlength, or MDL, learning method. Whereas MAP learning expresses simplicity by assigning\nhigher probabilities to simpler hypotheses, MDL expresses it directly by counting the bits in\na binary encoding of the hypotheses and data.\nA ﬁnal simpliﬁcation is provided by assuming a uniform prior over the space of hy-\npotheses. In that case, MAP learning reduces to choosing an hi that maximizes P(d | hi).\nThis is called a maximum-likelihood (ML) hypothesis, hML. Maximum-likelihood learning\nMAXIMUM-\nLIKELIHOOD\nis very common in statistics, a discipline in which many researchers distrust the subjective\nnature of hypothesis priors. It is a reasonable approach when there is no reason to prefer one\nhypothesis over another a priori—for example, when all hypotheses are equally complex. It\nprovides a good approximation to Bayesian and MAP learning when the data set is large,\nbecause the data swamps the prior distribution over hypotheses, but it has problems (as we\nshall see) with small data sets.",
+  "images": [
+    {
+      "path": "images/20-1-statistical-learning_diagram_1.png",
+      "type": "diagram",
+      "caption": null
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/20-1-statistical-learning_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-1-statistical-learning_eq_20-1.png",
+      "type": "equation",
+      "label": "20.1"
+    },
+    {
+      "path": "images/20-1-statistical-learning_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-1-statistical-learning_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-1-statistical-learning_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-1-statistical-learning_eq_20-2.png",
+      "type": "equation",
+      "label": "20.2"
+    },
+    {
+      "path": "images/20-1-statistical-learning_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-1-statistical-learning_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-1-statistical-learning_eq_20-3.png",
+      "type": "equation",
+      "label": "20.3"
+    },
+    {
+      "path": "images/20-1-statistical-learning_eq_10.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

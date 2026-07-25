@@ -1,0 +1,32 @@
+{
+  "section_id": "data-representation",
+  "title": "Data Representation",
+  "level": 1,
+  "chapter": "Data Representation",
+  "parent_id": null,
+  "children": [
+    "in-this-chapter-2",
+    "3-1-data-types",
+    "number-systems",
+    "decimal-representation",
+    "alphanumeric-representation",
+    "3-2-complements",
+    "r-1s-complement",
+    "rs-complement",
+    "subtraction-of-unsigned-numbers",
+    "3-3-fixed-point-representation",
+    "arithmetic-addition",
+    "decimal-fixed-point-representation",
+    "3-4-floating-point-representation",
+    "3-5-other-binary-codes",
+    "gray-code",
+    "other-decimal-codes",
+    "other-alphanumeric-codes",
+    "3-6-error-detection-codes"
+  ],
+  "start_page": 79,
+  "end_page": 79,
+  "text": "",
+  "images": [],
+  "equations": []
+}

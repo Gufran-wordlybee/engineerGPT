@@ -1,0 +1,15 @@
+{
+  "section_id": "control-of-single-flip-flops",
+  "title": "Control of Single Flip-flops",
+  "level": 1,
+  "chapter": "Control of Single Flip-flops",
+  "parent_id": null,
+  "children": [
+    "control-of-common-bus"
+  ],
+  "start_page": 172,
+  "end_page": 172,
+  "text": "The control gates for the seven flip-flops can be determined in a similar manner. For example, Table 5-6 shows that IEN may change as a result of the two instructions ION and IOF.\npB_7: IEN \\leftarrow 1\npB_6: IEN \\leftarrow 0\nwhere p = D_7 I T_3 and B_7 and B_6 are bits 7 and 6 of IR, respectively. Moreover, at the end of the interrupt cycle IEN is cleared to 0.\nRT_2: IEN \\leftarrow 0\nIf we use a JK flip-flip for IEN, the control gate logic will be as shown in Fig. 5-17.",
+  "images": [],
+  "equations": []
+}

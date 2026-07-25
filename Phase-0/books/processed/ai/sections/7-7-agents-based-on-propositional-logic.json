@@ -1,0 +1,185 @@
+{
+  "section_id": "7-7-agents-based-on-propositional-logic",
+  "title": "7.7 Agents Based on Propositional Logic",
+  "level": 3,
+  "chapter": "III: Knowledge, reasoning, and planning",
+  "parent_id": "7-logical-agents",
+  "children": [],
+  "start_page": 283,
+  "end_page": 291,
+  "text": "Section 7.7.\nAgents Based on Propositional Logic\n265\n7.7\nAGENTS BASED ON PROPOSITIONAL LOGIC\nIn this section, we bring together what we have learned so far in order to construct wumpus\nworld agents that use propositional logic. The ﬁrst step is to enable the agent to deduce, to the\nextent possible, the state of the world given its percept history. This requires writing down a\ncomplete logical model of the effects of actions. We also show how the agent can keep track of\nthe world efﬁciently without going back into the percept history for each inference. Finally,\nwe show how the agent can use logical inference to construct plans that are guaranteed to\nachieve its goals.\n7.7.1\nThe current state of the world\nAs stated at the beginning of the chapter, a logical agent operates by deducing what to do\nfrom a knowledge base of sentences about the world. The knowledge base is composed of\naxioms—general knowledge about how the world works—and percept sentences obtained\nfrom the agent’s experience in a particular world. In this section, we focus on the problem of\ndeducing the current state of the wumpus world—where am I, is that square safe, and so on.\nWe began collecting axioms in Section 7.4.3. The agent knows that the starting square\ncontains no pit (¬P1,1) and no wumpus (¬W1,1). Furthermore, for each square, it knows that\nthe square is breezy if and only if a neighboring square has a pit; and a square is smelly if and\nonly if a neighboring square has a wumpus. Thus, we include a large collection of sentences\nof the following form:\nB1,1 ⇔(P1,2 ∨P2,1)\nS1,1 ⇔(W1,2 ∨W2,1)\n· · ·\nThe agent also knows that there is exactly one wumpus. This is expressed in two parts. First,\nwe have to say that there is at least one wumpus:\nW1,1 ∨W1,2 ∨· · · ∨W4,3 ∨W4,4 .\nThen, we have to say that there is at most one wumpus. For each pair of locations, we add a\nsentence saying that at least one of them must be wumpus-free:\n¬W1,1 ∨¬W1,2\n¬W1,1 ∨¬W1,3\n· · ·\n¬W4,3 ∨¬W4,4 .\nSo far, so good. Now let’s consider the agent’s percepts. If there is currently a stench, one\nmight suppose that a proposition Stench should be added to the knowledge base. This is not\nquite right, however: if there was no stench at the previous time step, then ¬Stench would al-\nready be asserted, and the new assertion would simply result in a contradiction. The problem\nis solved when we realize that a percept asserts something only about the current time. Thus,\nif the time step (as supplied to MAKE-PERCEPT-SENTENCE in Figure 7.1) is 4, then we add\n266\n7.\nLogical Agents\nStench4 to the knowledge base, rather than Stench—neatly avoiding any contradiction with\n¬Stench3. The same goes for the breeze, bump, glitter, and scream percepts.\nThe idea of associating propositions with time steps extends to any aspect of the world\nthat changes over time. For example, the initial knowledge base includes L0\n1,1—the agent is in\nsquare [1, 1] at time 0—as well as FacingEast0, HaveArrow 0, and WumpusAlive0. We use\nthe word ﬂuent (from the Latin ﬂuens, ﬂowing) to refer an aspect of the world that changes.\nFLUENT\n“Fluent” is a synonym for “state variable,” in the sense described in the discussion of factored\nrepresentations in Section 2.4.7 on page 57. Symbols associated with permanent aspects of\nthe world do not need a time superscript and are sometimes called atemporal variables.\nATEMPORAL\nVARIABLE\nWe can connect stench and breeze percepts directly to the properties of the squares\nwhere they are experienced through the location ﬂuent as follows.10 For any time step t and\nany square [x, y], we assert\nLt\nx,y ⇒(Breezet ⇔Bx,y)\nLt\nx,y ⇒(Stencht ⇔Sx,y) .\nNow, of course, we need axioms that allow the agent to keep track of ﬂuents such as Lt\nx,y.\nThese ﬂuents change as the result of actions taken by the agent, so, in the terminology of\nChapter 3, we need to write down the transition model of the wumpus world as a set of\nlogical sentences.\nFirst, we need proposition symbols for the occurrences of actions. As with percepts,\nthese symbols are indexed by time; thus, Forward 0 means that the agent executes the Forward\naction at time 0. By convention, the percept for a given time step happens ﬁrst, followed by\nthe action for that time step, followed by a transition to the next time step.\nTo describe how the world changes, we can try writing effect axioms that specify the\nEFFECT AXIOM\noutcome of an action at the next time step. For example, if the agent is at location [1, 1] facing\neast at time 0 and goes Forward, the result is that the agent is in square [2, 1] and no longer\nis in [1, 1]:\nL0\n1,1 ∧FacingEast0 ∧Forward 0 ⇒(L1\n2,1 ∧¬L1\n1,1) .\n(7.1)\nWe would need one such sentence for each possible time step, for each of the 16 squares,\nand each of the four orientations. We would also need similar sentences for the other actions:\nGrab, Shoot, Climb, TurnLeft, and TurnRight.\nLet us suppose that the agent does decide to move Forward at time 0 and asserts this\nfact into its knowledge base. Given the effect axiom in Equation (7.1), combined with the\ninitial assertions about the state at time 0, the agent can now deduce that it is in [2, 1]. That\nis, ASK(KB, L1\n2,1) = true. So far, so good. Unfortunately, the news elsewhere is less good:\nif we ASK(KB, HaveArrow 1), the answer is false, that is, the agent cannot prove it still\nhas the arrow; nor can it prove it doesn’t have it! The information has been lost because the\neffect axiom fails to state what remains unchanged as the result of an action. The need to do\nthis gives rise to the frame problem.11 One possible solution to the frame problem would\nFRAME PROBLEM\n10 Section 7.4.3 conveniently glossed over this requirement.\n11 The name “frame problem” comes from “frame of reference” in physics—the assumed stationary background\nwith respect to which motion is measured. It also has an analogy to the frames of a movie, in which normally\nmost of the background stays constant while changes occur in the foreground.\nSection 7.7.\nAgents Based on Propositional Logic\n267\nbe to add frame axioms explicitly asserting all the propositions that remain the same. For\nFRAME AXIOM\nexample, for each time t we would have\nForward t ⇒(HaveArrow t ⇔HaveArrow t+1)\nForward t ⇒(WumpusAlivet ⇔WumpusAlivet+1)\n· · ·\nwhere we explicitly mention every proposition that stays unchanged from time t to time\nt + 1 under the action Forward. Although the agent now knows that it still has the arrow\nafter moving forward and that the wumpus hasn’t died or come back to life, the proliferation\nof frame axioms seems remarkably inefﬁcient. In a world with m different actions and n\nﬂuents, the set of frame axioms will be of size O(mn). This speciﬁc manifestation of the\nframe problem is sometimes called the representational frame problem. Historically, the\nREPRESENTATIONAL\nFRAME PROBLEM\nproblem was a signiﬁcant one for AI researchers; we explore it further in the notes at the end\nof the chapter.\nThe representational frame problem is signiﬁcant because the real world has very many\nﬂuents, to put it mildly. Fortunately for us humans, each action typically changes no more\nthan some small number k of those ﬂuents—the world exhibits locality. Solving the repre-\nLOCALITY\nsentational frame problem requires deﬁning the transition model with a set of axioms of size\nO(mk) rather than size O(mn). There is also an inferential frame problem: the problem\nINFERENTIAL FRAME\nPROBLEM\nof projecting forward the results of a t step plan of action in time O(kt) rather than O(nt).\nThe solution to the problem involves changing one’s focus from writing axioms about\nactions to writing axioms about ﬂuents. Thus, for each ﬂuent F, we will have an axiom that\ndeﬁnes the truth value of F t+1 in terms of ﬂuents (including F itself) at time t and the actions\nthat may have occurred at time t. Now, the truth value of F t+1 can be set in one of two ways:\neither the action at time t causes F to be true at t + 1, or F was already true at time t and the\naction at time t does not cause it to be false. An axiom of this form is called a successor-state\naxiom and has this schema:\nSUCCESSOR-STATE\nAXIOM\nF t+1 ⇔ActionCausesF t ∨(F t ∧¬ActionCausesNotF t) .\nOne of the simplest successor-state axioms is the one for HaveArrow. Because there is no\naction for reloading, the ActionCausesF t part goes away and we are left with\nHaveArrow t+1 ⇔(HaveArrow t ∧¬Shoott) .\n(7.2)\nFor the agent’s location, the successor-state axioms are more elaborate. For example, Lt+1\n1,1\nis true if either (a) the agent moved Forward from [1, 2] when facing south, or from [2, 1]\nwhen facing west; or (b) Lt\n1,1 was already true and the action did not cause movement (either\nbecause the action was not Forward or because the action bumped into a wall). Written out\nin propositional logic, this becomes\nLt+1\n1,1\n⇔\n(Lt\n1,1 ∧(¬Forward t ∨Bumpt+1))\n∨(Lt\n1,2 ∧(Southt ∧Forward t))\n(7.3)\n∨(Lt\n2,1 ∧(Westt ∧Forward t)) .\nExercise 7.26 asks you to write out axioms for the remaining wumpus world ﬂuents.\n268\n7.\nLogical Agents\nGiven a complete set of successor-state axioms and the other axioms listed at the begin-\nning of this section, the agent will be able to ASK and answer any answerable question about\nthe current state of the world. For example, in Section 7.2 the initial sequence of percepts and\nactions is\n¬Stench0 ∧¬Breeze0 ∧¬Glitter 0 ∧¬Bump0 ∧¬Scream0 ; Forward 0\n¬Stench1 ∧Breeze1 ∧¬Glitter 1 ∧¬Bump1 ∧¬Scream1 ; TurnRight1\n¬Stench2 ∧Breeze2 ∧¬Glitter 2 ∧¬Bump2 ∧¬Scream2 ; TurnRight2\n¬Stench3 ∧Breeze3 ∧¬Glitter 3 ∧¬Bump3 ∧¬Scream3 ; Forward 3\n¬Stench4 ∧¬Breeze4 ∧¬Glitter 4 ∧¬Bump4 ∧¬Scream4 ; TurnRight4\n¬Stench5 ∧¬Breeze5 ∧¬Glitter 5 ∧¬Bump5 ∧¬Scream5 ; Forward 5\nStench6 ∧¬Breeze6 ∧¬Glitter 6 ∧¬Bump6 ∧¬Scream6\nAt this point, we have ASK(KB, L6\n1,2) = true, so the agent knows where it is. Moreover,\nASK(KB, W1,3) = true and ASK(KB, P3,1) = true, so the agent has found the wumpus and\none of the pits. The most important question for the agent is whether a square is OK to move\ninto, that is, the square contains no pit nor live wumpus. It’s convenient to add axioms for\nthis, having the form\nOK t\nx,y ⇔¬Px,y ∧¬(Wx,y ∧WumpusAlivet) .\nFinally, ASK(KB, OK 6\n2,2) = true, so the square [2, 2] is OK to move into. In fact, given a\nsound and complete inference algorithm such as DPLL, the agent can answer any answerable\nquestion about which squares are OK—and can do so in just a few milliseconds for small-to-\nmedium wumpus worlds.\nSolving the representational and inferential frame problems is a big step forward, but\na pernicious problem remains: we need to conﬁrm that all the necessary preconditions of an\naction hold for it to have its intended effect. We said that the Forward action moves the agent\nahead unless there is a wall in the way, but there are many other unusual exceptions that could\ncause the action to fail: the agent might trip and fall, be stricken with a heart attack, be carried\naway by giant bats, etc. Specifying all these exceptions is called the qualiﬁcation problem.\nQUALIFICATION\nPROBLEM\nThere is no complete solution within logic; system designers have to use good judgment in\ndeciding how detailed they want to be in specifying their model, and what details they want\nto leave out. We will see in Chapter 13 that probability theory allows us to summarize all the\nexceptions without explicitly naming them.\n7.7.2\nA hybrid agent\nThe ability to deduce various aspects of the state of the world can be combined fairly straight-\nforwardly with condition–action rules and with problem-solving algorithms from Chapters 3\nand 4 to produce a hybrid agent for the wumpus world. Figure 7.20 shows one possible way\nHYBRID AGENT\nto do this. The agent program maintains and updates a knowledge base as well as a current\nplan. The initial knowledge base contains the atemporal axioms—those that don’t depend\non t, such as the axiom relating the breeziness of squares to the presence of pits. At each\ntime step, the new percept sentence is added along with all the axioms that depend on t, such\nSection 7.7.\nAgents Based on Propositional Logic\n269\nas the successor-state axioms. (The next section explains why the agent doesn’t need axioms\nfor future time steps.) Then, the agent uses logical inference, by ASKing questions of the\nknowledge base, to work out which squares are safe and which have yet to be visited.\nThe main body of the agent program constructs a plan based on a decreasing priority of\ngoals. First, if there is a glitter, the program constructs a plan to grab the gold, follow a route\nback to the initial location, and climb out of the cave. Otherwise, if there is no current plan,\nthe program plans a route to the closest safe square that it has not visited yet, making sure\nthe route goes through only safe squares. Route planning is done with A∗search, not with\nASK. If there are no safe squares to explore, the next step—if the agent still has an arrow—is\nto try to make a safe square by shooting at one of the possible wumpus locations. These are\ndetermined by asking where ASK(KB, ¬Wx,y) is false—that is, where it is not known that\nthere is not a wumpus. The function PLAN-SHOT (not shown) uses PLAN-ROUTE to plan a\nsequence of actions that will line up this shot. If this fails, the program looks for a square to\nexplore that is not provably unsafe—that is, a square for which ASK(KB, ¬OK t\nx,y) returns\nfalse. If there is no such square, then the mission is impossible and the agent retreats to [1, 1]\nand climbs out of the cave.\n7.7.3\nLogical state estimation\nThe agent program in Figure 7.20 works quite well, but it has one major weakness: as time\ngoes by, the computational expense involved in the calls to ASK goes up and up. This happens\nmainly because the required inferences have to go back further and further in time and involve\nmore and more proposition symbols. Obviously, this is unsustainable—we cannot have an\nagent whose time to process each percept grows in proportion to the length of its life! What\nwe really need is a constant update time—that is, independent of t. The obvious answer is to\nsave, or cache, the results of inference, so that the inference process at the next time step can\nCACHING\nbuild on the results of earlier steps instead of having to start again from scratch.\nAs we saw in Section 4.4, the past history of percepts and all their ramiﬁcations can\nbe replaced by the belief state—that is, some representation of the set of all possible current\nstates of the world.12 The process of updating the belief state as new percepts arrive is called\nstate estimation. Whereas in Section 4.4 the belief state was an explicit list of states, here\nwe can use a logical sentence involving the proposition symbols associated with the current\ntime step, as well as the atemporal symbols. For example, the logical sentence\nWumpusAlive1 ∧L1\n2,1 ∧B2,1 ∧(P3,1 ∨P2,2)\n(7.4)\nrepresents the set of all states at time 1 in which the wumpus is alive, the agent is at [2, 1],\nthat square is breezy, and there is a pit in [3, 1] or [2, 2] or both.\nMaintaining an exact belief state as a logical formula turns out not to be easy. If there\nare n ﬂuent symbols for time t, then there are 2n possible states—that is, assignments of truth\nvalues to those symbols. Now, the set of belief states is the powerset (set of all subsets) of the\nset of physical states. There are 2n physical states, hence 22n belief states. Even if we used\nthe most compact possible encoding of logical formulas, with each belief state represented\n12 We can think of the percept history itself as a representation of the belief state, but one that makes inference\nincreasingly expensive as the history gets longer.\n270\n7.\nLogical Agents\nfunction HYBRID-WUMPUS-AGENT(percept) returns an action\ninputs: percept, a list, [stench,breeze,glitter,bump,scream]\npersistent: KB, a knowledge base, initially the atemporal “wumpus physics”\nt, a counter, initially 0, indicating time\nplan, an action sequence, initially empty\nTELL(KB, MAKE-PERCEPT-SENTENCE(percept,t))\nTELL the KB the temporal “physics” sentences for time t\nsafe ←{[x, y] : ASK(KB,OK t\nx,y) = true}\nif ASK(KB,Glitter t) = true then\nplan ←[Grab] + PLAN-ROUTE(current,{[1,1]},safe) + [Climb]\nif plan is empty then\nunvisited ←{[x, y] : ASK(KB, Lt′\nx,y) = false for all t′ ≤t}\nplan ←PLAN-ROUTE(current,unvisited ∩safe,safe)\nif plan is empty and ASK(KB,HaveArrow t) = true then\npossible wumpus ←{[x, y] : ASK(KB, ¬ Wx,y) = false}\nplan ←PLAN-SHOT(current,possible wumpus,safe)\nif plan is empty then // no choice but to take a risk\nnot unsafe ←{[x, y] : ASK(KB, ¬ OK t\nx,y) = false}\nplan ←PLAN-ROUTE(current,unvisited ∩not unsafe,safe)\nif plan is empty then\nplan ←PLAN-ROUTE(current,{[1, 1]},safe) + [Climb]\naction ←POP(plan)\nTELL(KB, MAKE-ACTION-SENTENCE(action,t))\nt ←t + 1\nreturn action\nfunction PLAN-ROUTE(current,goals,allowed) returns an action sequence\ninputs: current, the agent’s current position\ngoals, a set of squares; try to plan a route to one of them\nallowed, a set of squares that can form part of the route\nproblem ←ROUTE-PROBLEM(current,goals,allowed)\nreturn A*-GRAPH-SEARCH(problem)\nFigure 7.20\nA hybrid agent program for the wumpus world. It uses a propositional knowl-\nedge base to infer the state of the world, and a combination of problem-solving search and\ndomain-speciﬁc code to decide what actions to take.\nby a unique binary number, we would need numbers with log2(22n) = 2n bits to label the\ncurrent belief state. That is, exact state estimation may require logical formulas whose size is\nexponential in the number of symbols.\nOne very common and natural scheme for approximate state estimation is to represent\nbelief states as conjunctions of literals, that is, 1-CNF formulas. To do this, the agent program\nsimply tries to prove Xt and ¬Xt for each symbol Xt (as well as each atemporal symbol\nwhose truth value is not yet known), given the belief state at t −1. The conjunction of\nSection 7.7.\nAgents Based on Propositional Logic\n271\nFigure 7.21\nDepiction of a 1-CNF belief state (bold outline) as a simply representable,\nconservative approximation to the exact (wiggly) belief state (shaded region with dashed\noutline). Each possible world is shown as a circle; the shaded ones are consistent with all the\npercepts.\nprovable literals becomes the new belief state, and the previous belief state is discarded.\nIt is important to understand that this scheme may lose some information as time goes\nalong. For example, if the sentence in Equation (7.4) were the true belief state, then neither\nP3,1 nor P2,2 would be provable individually and neither would appear in the 1-CNF belief\nstate. (Exercise 7.27 explores one possible solution to this problem.) On the other hand,\nbecause every literal in the 1-CNF belief state is proved from the previous belief state, and\nthe initial belief state is a true assertion, we know that entire 1-CNF belief state must be\ntrue. Thus, the set of possible states represented by the 1-CNF belief state includes all states\nthat are in fact possible given the full percept history. As illustrated in Figure 7.21, the 1-\nCNF belief state acts as a simple outer envelope, or conservative approximation, around the\nCONSERVATIVE\nAPPROXIMATION\nexact belief state. We see this idea of conservative approximations to complicated sets as a\nrecurring theme in many areas of AI.\n7.7.4\nMaking plans by propositional inference\nThe agent in Figure 7.20 uses logical inference to determine which squares are safe, but uses\nA∗search to make plans. In this section, we show how to make plans by logical inference.\nThe basic idea is very simple:\n1. Construct a sentence that includes\n(a) Init0, a collection of assertions about the initial state;\n(b) Transition1, . . . , Transitiont, the successor-state axioms for all possible actions\nat each time up to some maximum time t;\n(c) the assertion that the goal is achieved at time t: HaveGoldt ∧ClimbedOutt.\n272\n7.\nLogical Agents\n2. Present the whole sentence to a SAT solver. If the solver ﬁnds a satisfying model, then\nthe goal is achievable; if the sentence is unsatisﬁable, then the planning problem is\nimpossible.\n3. Assuming a model is found, extract from the model those variables that represent ac-\ntions and are assigned true. Together they represent a plan to achieve the goals.\nA propositional planning procedure, SATPLAN, is shown in Figure 7.22. It implements the\nbasic idea just given, with one twist. Because the agent does not know how many steps it\nwill take to reach the goal, the algorithm tries each possible number of steps t, up to some\nmaximum conceivable plan length Tmax. In this way, it is guaranteed to ﬁnd the shortest plan\nif one exists. Because of the way SATPLAN searches for a solution, this approach cannot\nbe used in a partially observable environment; SATPLAN would just set the unobservable\nvariables to the values it needs to create a solution.\nfunction SATPLAN(init, transition, goal,T max) returns solution or failure\ninputs: init, transition, goal, constitute a description of the problem\nT max, an upper limit for plan length\nfor t = 0 to T max do\ncnf ←TRANSLATE-TO-SAT(init, transition, goal,t)\nmodel ←SAT-SOLVER(cnf )\nif model is not null then\nreturn EXTRACT-SOLUTION(model)\nreturn failure\nFigure 7.22\nThe SATPLAN algorithm. The planning problem is translated into a CNF\nsentence in which the goal is asserted to hold at a ﬁxed time step t and axioms are included\nfor each time step up to t. If the satisﬁability algorithm ﬁnds a model, then a plan is extracted\nby looking at those proposition symbols that refer to actions and are assigned true in the\nmodel. If no model exists, then the process is repeated with the goal moved one step later.\nThe key step in using SATPLAN is the construction of the knowledge base. It might\nseem, on casual inspection, that the wumpus world axioms in Section 7.7.1 sufﬁce for steps\n1(a) and 1(b) above. There is, however, a signiﬁcant difference between the requirements for\nentailment (as tested by ASK) and those for satisﬁability. Consider, for example, the agent’s\nlocation, initially [1, 1], and suppose the agent’s unambitious goal is to be in [2, 1] at time 1.\nThe initial knowledge base contains L0\n1,1 and the goal is L1\n2,1. Using ASK, we can prove L1\n2,1\nif Forward0 is asserted, and, reassuringly, we cannot prove L1\n2,1 if, say, Shoot0 is asserted\ninstead. Now, SATPLAN will ﬁnd the plan [Forward0]; so far, so good. Unfortunately,\nSATPLAN also ﬁnds the plan [Shoot0]. How could this be? To ﬁnd out, we inspect the model\nthat SATPLAN constructs: it includes the assignment L0\n2,1, that is, the agent can be in [2, 1]\nat time 1 by being there at time 0 and shooting. One might ask, “Didn’t we say the agent is in\n[1, 1] at time 0?” Yes, we did, but we didn’t tell the agent that it can’t be in two places at once!\nFor entailment, L0\n2,1 is unknown and cannot, therefore, be used in a proof; for satisﬁability,\nSection 7.7.\nAgents Based on Propositional Logic\n273\non the other hand, L0\n2,1 is unknown and can, therefore, be set to whatever value helps to\nmake the goal true. For this reason, SATPLAN is a good debugging tool for knowledge bases\nbecause it reveals places where knowledge is missing. In this particular case, we can ﬁx the\nknowledge base by asserting that, at each time step, the agent is in exactly one location, using\na collection of sentences similar to those used to assert the existence of exactly one wumpus.\nAlternatively, we can assert ¬L0\nx,y for all locations other than [1, 1]; the successor-state axiom\nfor location takes care of subsequent time steps. The same ﬁxes also work to make sure the\nagent has only one orientation.\nSATPLAN has more surprises in store, however. The ﬁrst is that it ﬁnds models with\nimpossible actions, such as shooting with no arrow. To understand why, we need to look more\ncarefully at what the successor-state axioms (such as Equation (7.3)) say about actions whose\npreconditions are not satisﬁed. The axioms do predict correctly that nothing will happen when\nsuch an action is executed (see Exercise 10.14), but they do not say that the action cannot be\nexecuted! To avoid generating plans with illegal actions, we must add precondition axioms\nPRECONDITION\nAXIOMS\nstating that an action occurrence requires the preconditions to be satisﬁed.13 For example, we\nneed to say, for each time t, that\nShoot t ⇒HaveArrow t .\nThis ensures that if a plan selects the Shoot action at any time, it must be the case that the\nagent has an arrow at that time.\nSATPLAN’s second surprise is the creation of plans with multiple simultaneous actions.\nFor example, it may come up with a model in which both Forward 0 and Shoot0 are true,\nwhich is not allowed. To eliminate this problem, we introduce action exclusion axioms: for\nACTION EXCLUSION\nAXIOM\nevery pair of actions At\ni and At\nj we add the axiom\n¬At\ni ∨¬At\nj .\nIt might be pointed out that walking forward and shooting at the same time is not so hard to\ndo, whereas, say, shooting and grabbing at the same time is rather impractical. By imposing\naction exclusion axioms only on pairs of actions that really do interfere with each other, we\ncan allow for plans that include multiple simultaneous actions—and because SATPLAN ﬁnds\nthe shortest legal plan, we can be sure that it will take advantage of this capability.\nTo summarize, SATPLAN ﬁnds models for a sentence containing the initial state, the\ngoal, the successor-state axioms, the precondition axioms, and the action exclusion axioms.\nIt can be shown that this collection of axioms is sufﬁcient, in the sense that there are no\nlonger any spurious “solutions.” Any model satisfying the propositional sentence will be a\nvalid plan for the original problem. Modern SAT-solving technology makes the approach\nquite practical. For example, a DPLL-style solver has no difﬁculty in generating the 11-step\nsolution for the wumpus world instance shown in Figure 7.2.\nThis section has described a declarative approach to agent construction: the agent works\nby a combination of asserting sentences in the knowledge base and performing logical infer-\nence. This approach has some weaknesses hidden in phrases such as “for each time t” and\n13 Notice that the addition of precondition axioms means that we need not include preconditions for actions in\nthe successor-state axioms.",
+  "images": [
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_fig_7-21.png",
+      "type": "diagram",
+      "caption": "Figure 7.21"
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_eq_7-1.png",
+      "type": "equation",
+      "label": "7.1"
+    },
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_eq_7-2.png",
+      "type": "equation",
+      "label": "7.2"
+    },
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_eq_18.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_eq_19.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_eq_20.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_eq_21.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_eq_22.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_eq_7-3.png",
+      "type": "equation",
+      "label": "7.3"
+    },
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_eq_24.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_eq_25.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_eq_26.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_eq_7-4.png",
+      "type": "equation",
+      "label": "7.4"
+    },
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_eq_28.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_eq_29.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_eq_30.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_eq_31.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_eq_32.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-7-agents-based-on-propositional-logic_eq_33.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

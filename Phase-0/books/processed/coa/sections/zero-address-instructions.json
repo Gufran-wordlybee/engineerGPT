@@ -1,0 +1,13 @@
+{
+  "section_id": "zero-address-instructions",
+  "title": "Zero-Address Instructions",
+  "level": 3,
+  "chapter": "8-4 Instruction Formats",
+  "parent_id": "8-4-instruction-formats",
+  "children": [],
+  "start_page": 267,
+  "end_page": 267,
+  "text": "A stack-organized computer does not use an address field for the instructions ADD and MUL. The PUSH and POP instructions, however, need an address field to specify the operand that communicates with the stack. The following program shows how X = (A + B)*(C + D) will be written for a stack-organized computer. (TOS stands for top of stack.)\nPUSH\n TOS ← A\nPIISH\n TOS \\leftarrow B\nADD\n TOS \\leftarrow (A + B)\nPUSH\n C\n TOS \\leftarrow C\nPUSH\n TOS \\leftarrow D\nADD\n TOS \\leftarrow (C + D)\nMUL\n TOS \\leftarrow (C + D) * (A + B)\nPOP\n Х\n M[X] \\leftarrow TOS\nTo evaluate arithmetic expressions in a stack computer, it is necessary to convert the expression into reverse Polish notation. The name \"zero-address\" is given to this type of computer because of the absence of an address field in the computational instructions.",
+  "images": [],
+  "equations": []
+}

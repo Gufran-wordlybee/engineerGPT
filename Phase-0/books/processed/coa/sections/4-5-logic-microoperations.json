@@ -1,0 +1,13 @@
+{
+  "section_id": "4-5-logic-microoperations",
+  "title": "4-5 Logic Microoperations",
+  "level": 4,
+  "chapter": "Binary Adder-Subtractor",
+  "parent_id": "binary-incrementer",
+  "children": [],
+  "start_page": 118,
+  "end_page": 119,
+  "text": "Logic microoperations specify binary operations for strings of bits stored in registers. These operations consider each bit of the register separately and treat them as binary variables. For example, the exclusive-OR microoperation with the contents of two registers R1 and R2 is symbolized by the statement\nIt specifies a logic microoperation to be executed on the individual bits of the registers provided that the control variable P=1. As a numerical example, assume that each register has four bits. Let the content of R1 be 1010 and the content of R2 be 1100. The exclusive-OR microoperation stated above symbolizes the following logic computation:\n1010 Content of R11100 Content of R20110 Content of R1 after P = 1\nThe content of R1, after the execution of the microoperation, is equal to the bit-by-bit exclusive-OR operation on pairs of bits in R2 and previous values of R1. The logic microoperations are seldom used in scientific computations, but they are very useful for bit manipulation of binary data and for making logical decisions.\nSpecial symbols will be adopted for the logic microoperations OR, AND, and complement, to distinguish them from the corresponding symbols used to express Boolean functions. The symbol \\vee will be used to denote an OR microoperation and the symbol \\wedge to denote an AND microoperation. The complement microoperation is the same as the 1's complement and uses a bar on top of the symbol that denotes the register name. By using different symbols, it will be possible to differentiate between a logic microoperation and a control (or Boolean) function. Another reason for adopting two sets of symbols is to be able to distinguish the symbol +, when used to symbolize an arithmetic plus, from a logic OR operation. Although the + symbol has two meanings, it will be possible to distinguish between them by noting where the symbol occurs. When the symbol + occurs in a microoperation, it will denote an arithmetic plus. When it occurs in a control (or Boolean) function, it will denote an OR operation. We will never use it to symbolize an OR microoperation. For example, in the statement\nP + Q: R1 \\leftarrow R2 + R3, R4 \\leftarrow R5 \\lor R6\nthe + between P and Q is an OR operation between two binary variables of a control function. The + between R2 and R3 specifies an add microoperation. The OR microoperation is designated by the symbol \\bigvee between registers R5 and R6.",
+  "images": [],
+  "equations": []
+}

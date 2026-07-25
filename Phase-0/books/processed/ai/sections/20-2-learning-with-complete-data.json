@@ -1,0 +1,390 @@
+{
+  "section_id": "20-2-learning-with-complete-data",
+  "title": "20.2 Learning with Complete Data",
+  "level": 3,
+  "chapter": "V: Learning",
+  "parent_id": "20-learning-probabilistic-models",
+  "children": [],
+  "start_page": 824,
+  "end_page": 833,
+  "text": "806\n20.\nLearning Probabilistic Models\n20.2\nLEARNING WITH COMPLETE DATA\nThe general task of learning a probability model, given data that are assumed to be generated\nfrom that model, is called density estimation. (The term applied originally to probability\nDENSITY ESTIMATION\ndensity functions for continuous variables, but is used now for discrete distributions too.)\nThis section covers the simplest case, where we have complete data. Data are com-\nCOMPLETE DATA\nplete when each data point contains values for every variable in the probability model being\nlearned. We focus on parameter learning—ﬁnding the numerical parameters for a proba-\nPARAMETER\nLEARNING\nbility model whose structure is ﬁxed. For example, we might be interested in learning the\nconditional probabilities in a Bayesian network with a given structure. We will also look\nbrieﬂy at the problem of learning structure and at nonparametric density estimation.\n20.2.1\nMaximum-likelihood parameter learning: Discrete models\nSuppose we buy a bag of lime and cherry candy from a new manufacturer whose lime–cherry\nproportions are completely unknown; the fraction could be anywhere between 0 and 1. In\nthat case, we have a continuum of hypotheses. The parameter in this case, which we call\nθ, is the proportion of cherry candies, and the hypothesis is hθ. (The proportion of limes is\njust 1 −θ.) If we assume that all proportions are equally likely a priori, then a maximum-\nlikelihood approach is reasonable. If we model the situation with a Bayesian network, we\nneed just one random variable, Flavor (the ﬂavor of a randomly chosen candy from the bag).\nIt has values cherry and lime, where the probability of cherry is θ (see Figure 20.2(a)). Now\nsuppose we unwrap N candies, of which c are cherries and ℓ= N −c are limes. According\nto Equation (20.3), the likelihood of this particular data set is\nP(d | hθ) =\nN\n\u0019\nj = 1\nP(dj | hθ) = θc · (1 −θ)ℓ.\nThe maximum-likelihood hypothesis is given by the value of θ that maximizes this expres-\nsion. The same value is obtained by maximizing the log likelihood,\nLOG LIKELIHOOD\nL(d | hθ) = log P(d | hθ) =\nN\n\n\nj = 1\nlog P(dj | hθ) = c log θ + ℓlog(1 −θ) .\n(By taking logarithms, we reduce the product to a sum over the data, which is usually easier\nto maximize.) To ﬁnd the maximum-likelihood value of θ, we differentiate L with respect to\nθ and set the resulting expression to zero:\ndL(d | hθ)\ndθ\n= c\nθ −\nℓ\n1 −θ = 0\n⇒\nθ =\nc\nc + ℓ= c\nN .\nIn English, then, the maximum-likelihood hypothesis hML asserts that the actual proportion\nof cherries in the bag is equal to the observed proportion in the candies unwrapped so far!\nIt appears that we have done a lot of work to discover the obvious. In fact, though,\nwe have laid out one standard method for maximum-likelihood parameter learning, a method\nwith broad applicability:\nSection 20.2.\nLearning with Complete Data\n807\nFlavor\nP(F=cherry)\n(a)\nθ\nP(F=cherry)\nFlavor\nWrapper\n(b)\nθ\nF\ncherry\nlime\nP(W=red | F)\nθ1\nθ2\nFigure 20.2\n(a) Bayesian network model for the case of candies with an unknown propor-\ntion of cherries and limes. (b) Model for the case where the wrapper color depends (proba-\nbilistically) on the candy ﬂavor.\n1. Write down an expression for the likelihood of the data as a function of the parameter(s).\n2. Write down the derivative of the log likelihood with respect to each parameter.\n3. Find the parameter values such that the derivatives are zero.\nThe trickiest step is usually the last. In our example, it was trivial, but we will see that in\nmany cases we need to resort to iterative solution algorithms or other numerical optimization\ntechniques, as described in Chapter 4. The example also illustrates a signiﬁcant problem\nwith maximum-likelihood learning in general: when the data set is small enough that some\nevents have not yet been observed—for instance, no cherry candies—the maximum-likelihood\nhypothesis assigns zero probability to those events. Various tricks are used to avoid this\nproblem, such as initializing the counts for each event to 1 instead of 0.\nLet us look at another example. Suppose this new candy manufacturer wants to give a\nlittle hint to the consumer and uses candy wrappers colored red and green. The Wrapper for\neach candy is selected probabilistically, according to some unknown conditional distribution,\ndepending on the ﬂavor. The corresponding probability model is shown in Figure 20.2(b).\nNotice that it has three parameters: θ, θ1, and θ2. With these parameters, the likelihood of\nseeing, say, a cherry candy in a green wrapper can be obtained from the standard semantics\nfor Bayesian networks (page 513):\nP(Flavor = cherry, Wrapper = green | hθ,θ1,θ2)\n= P(Flavor = cherry | hθ,θ1,θ2)P(Wrapper = green | Flavor = cherry, hθ,θ1,θ2)\n= θ · (1 −θ1) .\nNow we unwrap N candies, of which c are cherries and ℓare limes. The wrapper counts are\nas follows: rc of the cherries have red wrappers and gc have green, while rℓof the limes have\nred and gℓhave green. The likelihood of the data is given by\nP(d | hθ,θ1,θ2) = θc(1 −θ)ℓ· θrc\n1 (1 −θ1)gc · θrℓ\n2 (1 −θ2)gℓ.\n808\n20.\nLearning Probabilistic Models\nThis looks pretty horrible, but taking logarithms helps:\nL = [c log θ + ℓlog(1 −θ)] + [rc log θ1 + gc log(1 −θ1)] + [rℓlog θ2 + gℓlog(1 −θ2)] .\nThe beneﬁt of taking logs is clear: the log likelihood is the sum of three terms, each of which\ncontains a single parameter. When we take derivatives with respect to each parameter and set\nthem to zero, we get three independent equations, each containing just one parameter:\n∂L\n∂θ =\nc\nθ −\nℓ\n1−θ = 0\n⇒\nθ =\nc\nc+ℓ\n∂L\n∂θ1 =\nrc\nθ1 −\ngc\n1−θ1 = 0\n⇒\nθ1 =\nrc\nrc+gc\n∂L\n∂θ2 =\nrℓ\nθ2 −\ngℓ\n1−θ2 = 0\n⇒\nθ2 =\nrℓ\nrℓ+gℓ.\nThe solution for θ is the same as before. The solution for θ1, the probability that a cherry\ncandy has a red wrapper, is the observed fraction of cherry candies with red wrappers, and\nsimilarly for θ2.\nThese results are very comforting, and it is easy to see that they can be extended to any\nBayesian network whose conditional probabilities are represented as tables. The most impor-\ntant point is that, with complete data, the maximum-likelihood parameter learning problem\nfor a Bayesian network decomposes into separate learning problems, one for each parameter.\n(See Exercise 20.6 for the nontabulated case, where each parameter affects several conditional\nprobabilities.) The second point is that the parameter values for a variable, given its parents,\nare just the observed frequencies of the variable values for each setting of the parent values.\nAs before, we must be careful to avoid zeroes when the data set is small.\n20.2.2\nNaive Bayes models\nProbably the most common Bayesian network model used in machine learning is the naive\nBayes model ﬁrst introduced on page 499. In this model, the “class” variable C (which is to\nbe predicted) is the root and the “attribute” variables Xi are the leaves. The model is “naive”\nbecause it assumes that the attributes are conditionally independent of each other, given the\nclass. (The model in Figure 20.2(b) is a naive Bayes model with class Flavor and just one\nattribute, Wrapper.) Assuming Boolean variables, the parameters are\nθ = P(C = true), θi1 = P(Xi = true | C = true), θi2 = P(Xi = true | C = false).\nThe maximum-likelihood parameter values are found in exactly the same way as for Fig-\nure 20.2(b). Once the model has been trained in this way, it can be used to classify new exam-\nples for which the class variable C is unobserved. With observed attribute values x1, . . . , xn,\nthe probability of each class is given by\nP(C | x1, . . . , xn) = α P(C)\n\u0019\ni\nP(xi | C) .\nA deterministic prediction can be obtained by choosing the most likely class. Figure 20.3\nshows the learning curve for this method when it is applied to the restaurant problem from\nChapter 18. The method learns fairly well but not as well as decision-tree learning; this is\npresumably because the true hypothesis—which is a decision tree—is not representable ex-\nactly using a naive Bayes model. Naive Bayes learning turns out to do surprisingly well in a\nwide range of applications; the boosted version (Exercise 20.4) is one of the most effective\nSection 20.2.\nLearning with Complete Data\n809\n0.4\n0.5\n0.6\n0.7\n0.8\n0.9\n1\n0\n20\n40\n60\n80\n100\nProportion correct on test set\nTraining set size\nDecision tree\nNaive Bayes\nFigure 20.3\nThe learning curve for naive Bayes learning applied to the restaurant problem\nfrom Chapter 18; the learning curve for decision-tree learning is shown for comparison.\ngeneral-purpose learning algorithms. Naive Bayes learning scales well to very large prob-\nlems: with n Boolean attributes, there are just 2n + 1 parameters, and no search is required\nto ﬁnd hML, the maximum-likelihood naive Bayes hypothesis. Finally, naive Bayes learning\nsystems have no difﬁculty with noisy or missing data and can give probabilistic predictions\nwhen appropriate.\n20.2.3\nMaximum-likelihood parameter learning: Continuous models\nContinuous probability models such as the linear Gaussian model were introduced in Sec-\ntion 14.3. Because continuous variables are ubiquitous in real-world applications, it is impor-\ntant to know how to learn the parameters of continuous models from data. The principles for\nmaximum-likelihood learning are identical in the continuous and discrete cases.\nLet us begin with a very simple case: learning the parameters of a Gaussian density\nfunction on a single variable. That is, the data are generated as follows:\nP(x) =\n1\n√\n2πσ e−(x−μ)2\n2σ2\n.\nThe parameters of this model are the mean μ and the standard deviation σ. (Notice that the\nnormalizing “constant” depends on σ, so we cannot ignore it.) Let the observed values be\nx1, . . . , xN. Then the log likelihood is\nL =\nN\n\n\nj = 1\nlog\n1\n√\n2πσ\ne−\n(xj−μ)2\n2σ2\n= N(−log\n√\n2π −log σ) −\nN\n\n\nj = 1\n(xj −μ)2\n2σ2\n.\nSetting the derivatives to zero as usual, we obtain\n∂L\n∂μ = −1\nσ2\n\u0002N\nj=1(xj −μ) = 0\n⇒\nμ =\nP\nj xj\nN\n∂L\n∂σ = −N\nσ + 1\nσ3\n\u0002N\nj=1(xj −μ)2 = 0\n⇒\nσ =\n\t P\nj(xj−μ)2\nN\n.\n(20.4)\nThat is, the maximum-likelihood value of the mean is the sample average and the maximum-\nlikelihood value of the standard deviation is the square root of the sample variance. Again,\nthese are comforting results that conﬁrm “commonsense” practice.\n810\n20.\nLearning Probabilistic Models\n0\n0.2\n0.4\n0.6\n0.8\n1\nx\n0 0.20.40.60.81\ny\n0\n0.5\n1\n1.5\n2\n2.5\n3\n3.5\n4\nP(y |x)\n0\n0.2\n0.4\n0.6\n0.8\n1\n0\n0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9\n1\ny\nx\n(a)\n(b)\nFigure 20.4\n(a) A linear Gaussian model described as y = θ1x + θ2 plus Gaussian noise\nwith ﬁxed variance. (b) A set of 50 data points generated from this model.\nNow consider a linear Gaussian model with one continuous parent X and a continuous\nchild Y . As explained on page 520, Y has a Gaussian distribution whose mean depends\nlinearly on the value of X and whose standard deviation is ﬁxed. To learn the conditional\ndistribution P(Y | X), we can maximize the conditional likelihood\nP(y | x) =\n1\n√\n2πσe−(y−(θ1x+θ2))2\n2σ2\n.\n(20.5)\nHere, the parameters are θ1, θ2, and σ. The data are a collection of (xj, yj) pairs, as illustrated\nin Figure 20.4. Using the usual methods (Exercise 20.5), we can ﬁnd the maximum-likelihood\nvalues of the parameters. The point here is different. If we consider just the parameters θ1\nand θ2 that deﬁne the linear relationship between x and y, it becomes clear that maximizing\nthe log likelihood with respect to these parameters is the same as minimizing the numerator\n(y −(θ1x + θ2))2 in the exponent of Equation (20.5). This is the L2 loss, the squared er-\nror between the actual value y and the prediction θ1x + θ2. This is the quantity minimized\nby the standard linear regression procedure described in Section 18.6. Now we can under-\nstand why: minimizing the sum of squared errors gives the maximum-likelihood straight-line\nmodel, provided that the data are generated with Gaussian noise of ﬁxed variance.\n20.2.4\nBayesian parameter learning\nMaximum-likelihood learning gives rise to some very simple procedures, but it has some\nserious deﬁciencies with small data sets. For example, after seeing one cherry candy, the\nmaximum-likelihood hypothesis is that the bag is 100% cherry (i.e., θ = 1.0). Unless one’s\nhypothesis prior is that bags must be either all cherry or all lime, this is not a reasonable\nconclusion. It is more likely that the bag is a mixture of lime and cherry. The Bayesian\napproach to parameter learning starts by deﬁning a prior probability distribution over the\npossible hypotheses. We call this the hypothesis prior. Then, as data arrives, the posterior\nHYPOTHESIS PRIOR\nprobability distribution is updated.\nSection 20.2.\nLearning with Complete Data\n811\n0\n0.5\n1\n1.5\n2\n2.5\n0\n0.2\n0.4\n0.6\n0.8\n1\nP(Θ = θ)\nParameter θ\n[1,1]\n[2,2]\n[5,5]\n0\n1\n2\n3\n4\n5\n6\n0\n0.2\n0.4\n0.6\n0.8\n1\nP(Θ = θ)\nParameter θ\n[3,1]\n[6,2]\n[30,10]\n(a)\n(b)\nFigure 20.5\nExamples of the beta[a, b] distribution for different values of [a, b].\nThe candy example in Figure 20.2(a) has one parameter, θ: the probability that a ran-\ndomly selected piece of candy is cherry-ﬂavored. In the Bayesian view, θ is the (unknown)\nvalue of a random variable Θ that deﬁnes the hypothesis space; the hypothesis prior is just\nthe prior distribution P(Θ). Thus, P(Θ = θ) is the prior probability that the bag has a fraction\nθ of cherry candies.\nIf the parameter θ can be any value between 0 and 1, then P(Θ) must be a continuous\ndistribution that is nonzero only between 0 and 1 and that integrates to 1. The uniform density\nP(θ) = Uniform[0, 1](θ) is one candidate. (See Chapter 13.) It turns out that the uniform\ndensity is a member of the family of beta distributions. Each beta distribution is deﬁned by\nBETA DISTRIBUTION\ntwo hyperparameters3 a and b such that\nHYPERPARAMETER\nbeta[a, b](θ) = α θa−1(1 −θ)b−1 ,\n(20.6)\nfor θ in the range [0, 1]. The normalization constant α, which makes the distribution integrate\nto 1, depends on a and b. (See Exercise 20.7.) Figure 20.5 shows what the distribution looks\nlike for various values of a and b. The mean value of the distribution is a/(a + b), so larger\nvalues of a suggest a belief that Θ is closer to 1 than to 0. Larger values of a + b make the\ndistribution more peaked, suggesting greater certainty about the value of Θ. Thus, the beta\nfamily provides a useful range of possibilities for the hypothesis prior.\nBesides its ﬂexibility, the beta family has another wonderful property: if Θ has a prior\nbeta[a, b], then, after a data point is observed, the posterior distribution for Θ is also a beta\ndistribution. In other words, beta is closed under update. The beta family is called the\nconjugate prior for the family of distributions for a Boolean variable.4 Let’s see how this\nCONJUGATE PRIOR\nworks. Suppose we observe a cherry candy; then we have\n3 They are called hyperparameters because they parameterize a distribution over θ, which is itself a parameter.\n4 Other conjugate priors include the Dirichlet family for the parameters of a discrete multivalued distribution\nand the Normal–Wishart family for the parameters of a Gaussian distribution. See Bernardo and Smith (1994).\n812\n20.\nLearning Probabilistic Models\nFlavor1\nWrapper1\nFlavor2\nWrapper2\nFlavor3\nWrapper3\nΘ\nΘ1\nΘ2\nFigure 20.6\nA Bayesian network that corresponds to a Bayesian learning process. Poste-\nrior distributions for the parameter variables Θ, Θ1, and Θ2 can be inferred from their prior\ndistributions and the evidence in the Flavor i and Wrapper i variables.\nP(θ | D1 = cherry) = α P(D1 = cherry | θ)P(θ)\n= α′ θ · beta[a, b](θ) = α′ θ · θa−1(1 −θ)b−1\n= α′ θa(1 −θ)b−1 = beta[a + 1, b](θ) .\nThus, after seeing a cherry candy, we simply increment the a parameter to get the posterior;\nsimilarly, after seeing a lime candy, we increment the b parameter. Thus, we can view the a\nand b hyperparameters as virtual counts, in the sense that a prior beta[a, b] behaves exactly\nVIRTUAL COUNTS\nas if we had started out with a uniform prior beta[1, 1] and seen a −1 actual cherry candies\nand b −1 actual lime candies.\nBy examining a sequence of beta distributions for increasing values of a and b, keeping\nthe proportions ﬁxed, we can see vividly how the posterior distribution over the parameter\nΘ changes as data arrive. For example, suppose the actual bag of candy is 75% cherry. Fig-\nure 20.5(b) shows the sequence beta[3, 1], beta[6, 2], beta[30, 10]. Clearly, the distribution\nis converging to a narrow peak around the true value of Θ. For large data sets, then, Bayesian\nlearning (at least in this case) converges to the same answer as maximum-likelihood learning.\nNow let us consider a more complicated case. The network in Figure 20.2(b) has three\nparameters, θ, θ1, and θ2, where θ1 is the probability of a red wrapper on a cherry candy and\nθ2 is the probability of a red wrapper on a lime candy. The Bayesian hypothesis prior must\ncover all three parameters—that is, we need to specify P(Θ, Θ1, Θ2). Usually, we assume\nparameter independence:\nPARAMETER\nINDEPENDENCE\nP(Θ, Θ1, Θ2) = P(Θ)P(Θ1)P(Θ2) .\nSection 20.2.\nLearning with Complete Data\n813\nWith this assumption, each parameter can have its own beta distribution that is updated sep-\narately as data arrive. Figure 20.6 shows how we can incorporate the hypothesis prior and\nany data into one Bayesian network. The nodes Θ, Θ1, Θ2 have no parents. But each time\nwe make an observation of a wrapper and corresponding ﬂavor of a piece of candy, we add a\nnode Flavor i, which is dependent on the ﬂavor parameter Θ:\nP(Flavor i = cherry | Θ = θ) = θ .\nWe also add a node Wrapper i, which is dependent on Θ1 and Θ2:\nP(Wrapper i = red | Flavor i = cherry, Θ1 = θ1) = θ1\nP(Wrapper i = red | Flavor i = lime, Θ2 = θ2) = θ2 .\nNow, the entire Bayesian learning process can be formulated as an inference problem. We\nadd new evidence nodes, then query the unknown nodes (in this case, Θ, Θ1, Θ2). This for-\nmulation of learning and prediction makes it clear that Bayesian learning requires no extra\n“principles of learning.” Furthermore, there is, in essence, just one learning algorithm —the\ninference algorithm for Bayesian networks. Of course, the nature of these networks is some-\nwhat different from those of Chapter 14 because of the potentially huge number of evidence\nvariables representing the training set and the prevalence of continuous-valued parameter\nvariables.\n20.2.5\nLearning Bayes net structures\nSo far, we have assumed that the structure of the Bayes net is given and we are just trying to\nlearn the parameters. The structure of the network represents basic causal knowledge about\nthe domain that is often easy for an expert, or even a naive user, to supply. In some cases,\nhowever, the causal model may be unavailable or subject to dispute—for example, certain\ncorporations have long claimed that smoking does not cause cancer—so it is important to\nunderstand how the structure of a Bayes net can be learned from data. This section gives a\nbrief sketch of the main ideas.\nThe most obvious approach is to search for a good model. We can start with a model\ncontaining no links and begin adding parents for each node, ﬁtting the parameters with the\nmethods we have just covered and measuring the accuracy of the resulting model. Alterna-\ntively, we can start with an initial guess at the structure and use hill-climbing or simulated\nannealing search to make modiﬁcations, retuning the parameters after each change in the\nstructure. Modiﬁcations can include reversing, adding, or deleting links. We must not in-\ntroduce cycles in the process, so many algorithms assume that an ordering is given for the\nvariables, and that a node can have parents only among those nodes that come earlier in the\nordering (just as in the construction process in Chapter 14). For full generality, we also need\nto search over possible orderings.\nThere are two alternative methods for deciding when a good structure has been found.\nThe ﬁrst is to test whether the conditional independence assertions implicit in the structure are\nactually satisﬁed in the data. For example, the use of a naive Bayes model for the restaurant\nproblem assumes that\nP(Fri/Sat, Bar | WillWait) = P(Fri/Sat | WillWait)P(Bar | WillWait)\n814\n20.\nLearning Probabilistic Models\nand we can check in the data that the same equation holds between the corresponding condi-\ntional frequencies. But even if the structure describes the true causal nature of the domain,\nstatistical ﬂuctuations in the data set mean that the equation will never be satisﬁed exactly,\nso we need to perform a suitable statistical test to see if there is sufﬁcient evidence that the\nindependence hypothesis is violated. The complexity of the resulting network will depend\non the threshold used for this test—the stricter the independence test, the more links will be\nadded and the greater the danger of overﬁtting.\nAn approach more consistent with the ideas in this chapter is to assess the degree to\nwhich the proposed model explains the data (in a probabilistic sense). We must be careful\nhow we measure this, however. If we just try to ﬁnd the maximum-likelihood hypothesis,\nwe will end up with a fully connected network, because adding more parents to a node can-\nnot decrease the likelihood (Exercise 20.8). We are forced to penalize model complexity in\nsome way. The MAP (or MDL) approach simply subtracts a penalty from the likelihood of\neach structure (after parameter tuning) before comparing different structures. The Bayesian\napproach places a joint prior over structures and parameters. There are usually far too many\nstructures to sum over (superexponential in the number of variables), so most practitioners\nuse MCMC to sample over structures.\nPenalizing complexity (whether by MAP or Bayesian methods) introduces an important\nconnection between the optimal structure and the nature of the representation for the condi-\ntional distributions in the network. With tabular distributions, the complexity penalty for a\nnode’s distribution grows exponentially with the number of parents, but with, say, noisy-OR\ndistributions, it grows only linearly. This means that learning with noisy-OR (or other com-\npactly parameterized) models tends to produce learned structures with more parents than does\nlearning with tabular distributions.\n20.2.6\nDensity estimation with nonparametric models\nIt is possible to learn a probability model without making any assumptions about its structure\nand parameterization by adopting the nonparametric methods of Section 18.8. The task of\nnonparametric density estimation is typically done in continuous domains, such as that\nNONPARAMETRIC\nDENSITY ESTIMATION\nshown in Figure 20.7(a). The ﬁgure shows a probability density function on a space deﬁned\nby two continuous variables. In Figure 20.7(b) we see a sample of data points from this\ndensity function. The question is, can we recover the model from the samples?\nFirst we will consider k-nearest-neighbors models. (In Chapter 18 we saw nearest-\nneighbor models for classiﬁcation and regression; here we see them for density estimation.)\nGiven a sample of data points, to estimate the unknown probability density at a query point x\nwe can simply measure the density of the data points in the neighborhood of x. Figure 20.7(b)\nshows two query points (small squares). For each query point we have drawn the smallest\ncircle that encloses 10 neighbors—the 10-nearest-neighborhood. We can see that the central\ncircle is large, meaning there is a low density there, and the circle on the right is small,\nmeaning there is a high density there. In Figure 20.8 we show three plots of density estimation\nusing k-nearest-neighbors, for different values of k. It seems clear that (b) is about right,\nwhile (a) is too spiky (k is too small) and (c) is too smooth (k is too big).\nSection 20.2.\nLearning with Complete Data\n815\n0\n0.2\n0.4\n0.6\n0.8\n1\n0\n0.2\n0.4\n0.6\n0.8\n1\n0\n2\n4\n6\n8\n10\n12\n14\n16\n18\nDensity\n 0.3\n 0.4\n 0.5\n 0.6\n 0.7\n 0.8\n 0.9\n 1\n 0\n 0.2\n 0.4\n 0.6\n 0.8\n 1\n(a)\n(b)\nFigure 20.7\n(a) A 3D plot of the mixture of Gaussians from Figure 20.11(a). (b) A 128-\npoint sample of points from the mixture, together with two query points (small squares) and\ntheir 10-nearest-neighborhoods (medium and large circles).\n0 0.20.40.60.8\n0 0.20.40.60.81\nDensity\n0 0.20.40.60.8\n0 0.20.40.60.81\nDensity\n0 0.20.40.60.8\n0 0.20.40.60.81\nDensity\n(a)\n(b)\n(c)\nFigure 20.8\nDensity estimation using k-nearest-neighbors, applied to the data in Fig-\nure 20.7(b), for k = 3, 10, and 40 respectively. k = 3 is too spiky, 40 is too smooth, and\n10 is just about right. The best value for k can be chosen by cross-validation.\n0 0.20.40.60.8\n0 0.20.40.60.81\nDensity\n0 0.20.40.60.8\n0 0.20.40.60.81\nDensity\n0 0.20.40.60.8\n0 0.20.40.60.81\nDensity\n(a)\n(b)\n(c)\nFigure 20.9\nKernel density estimation for the data in Figure 20.7(b), using Gaussian ker-\nnels with w = 0.02, 0.07, and 0.20 respectively. w = 0.07 is about right.",
+  "images": [
+    {
+      "path": "images/20-2-learning-with-complete-data_fig_20-2.png",
+      "type": "diagram",
+      "caption": "Figure 20.2"
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_diagram_2.png",
+      "type": "diagram",
+      "caption": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_fig_20-6.png",
+      "type": "diagram",
+      "caption": "Figure 20.6"
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_diagram_4.png",
+      "type": "diagram",
+      "caption": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_fig_20-7.png",
+      "type": "diagram",
+      "caption": "Figure 20.7"
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_fig_20-7.png",
+      "type": "diagram",
+      "caption": "Figure 20.7"
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_fig_20-7.png",
+      "type": "diagram",
+      "caption": "Figure 20.7"
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_fig_20-7.png",
+      "type": "diagram",
+      "caption": "Figure 20.7"
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_fig_20-8.png",
+      "type": "diagram",
+      "caption": "Figure 20.8"
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_fig_20-8.png",
+      "type": "diagram",
+      "caption": "Figure 20.8"
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_fig_20-8.png",
+      "type": "diagram",
+      "caption": "Figure 20.8"
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_18.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_19.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_20.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_21.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_22.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_23.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_24.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_25.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_26.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_27.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_28.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_29.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_30.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_31.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_32.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_33.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_34.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_35.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_36.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_37.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_38.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_39.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_40.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_41.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_42.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_43.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_44.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_45.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_46.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_47.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_48.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_49.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_50.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_20-4.png",
+      "type": "equation",
+      "label": "20.4"
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_52.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_53.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_54.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_20-5.png",
+      "type": "equation",
+      "label": "20.5"
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_56.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_57.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_58.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_20-6.png",
+      "type": "equation",
+      "label": "20.6"
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_60.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_61.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_62.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_63.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-2-learning-with-complete-data_eq_64.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

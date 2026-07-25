@@ -1,0 +1,21 @@
+{
+  "section_id": "15-probabilistic-reasoning-over-time",
+  "title": "15 Probabilistic Reasoning over Time",
+  "level": 2,
+  "chapter": "IV: Uncertain knowledge and reasoning",
+  "parent_id": "iv-uncertain-knowledge-and-reasoning",
+  "children": [
+    "15-1-time-and-uncertainty",
+    "15-2-inference-in-temporal-models",
+    "15-3-hidden-markov-models",
+    "15-4-kalman-filters",
+    "15-5-dynamic-bayesian-networks",
+    "15-6-keeping-track-of-many-objects",
+    "15-7-summary-bibliographical-and-historical-notes-exercises"
+  ],
+  "start_page": 584,
+  "end_page": 584,
+  "text": "15\nPROBABILISTIC\nREASONING OVER TIME\nIn which we try to interpret the present, understand the past, and perhaps predict\nthe future, even when very little is crystal clear.\nAgents in partially observable environments must be able to keep track of the current state, to\nthe extent that their sensors allow. In Section 4.4 we showed a methodology for doing that: an\nagent maintains a belief state that represents which states of the world are currently possible.\nFrom the belief state and a transition model, the agent can predict how the world might\nevolve in the next time step. From the percepts observed and a sensor model, the agent can\nupdate the belief state. This is a pervasive idea: in Chapter 4 belief states were represented by\nexplicitly enumerated sets of states, whereas in Chapters 7 and 11 they were represented by\nlogical formulas. Those approaches deﬁned belief states in terms of which world states were\npossible, but could say nothing about which states were likely or unlikely. In this chapter, we\nuse probability theory to quantify the degree of belief in elements of the belief state.\nAs we show in Section 15.1, time itself is handled in the same way as in Chapter 7: a\nchanging world is modeled using a variable for each aspect of the world state at each point in\ntime. The transition and sensor models may be uncertain: the transition model describes the\nprobability distribution of the variables at time t, given the state of the world at past times,\nwhile the sensor model describes the probability of each percept at time t, given the current\nstate of the world. Section 15.2 deﬁnes the basic inference tasks and describes the gen-\neral structure of inference algorithms for temporal models. Then we describe three speciﬁc\nkinds of models: hidden Markov models, Kalman ﬁlters, and dynamic Bayesian net-\nworks (which include hidden Markov models and Kalman ﬁlters as special cases). Finally,\nSection 15.6 examines the problems faced when keeping track of more than one thing.\n15.1\nTIME AND UNCERTAINTY\nWe have developed our techniques for probabilistic reasoning in the context of static worlds,\nin which each random variable has a single ﬁxed value. For example, when repairing a car,\nwe assume that whatever is broken remains broken during the process of diagnosis; our job\nis to infer the state of the car from observed evidence, which also remains ﬁxed.\n566",
+  "images": [],
+  "equations": []
+}

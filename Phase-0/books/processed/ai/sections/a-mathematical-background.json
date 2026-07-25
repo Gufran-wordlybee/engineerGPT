@@ -1,0 +1,23 @@
+{
+  "section_id": "a-mathematical-background",
+  "title": "A: Mathematical background",
+  "level": 1,
+  "chapter": "VII: Conclusions",
+  "parent_id": null,
+  "children": [
+    "a-1-complexity-analysis-and-o-notation",
+    "a-2-vectors-matrices-and-linear-algebra",
+    "a-3-probability-distributions"
+  ],
+  "start_page": 1071,
+  "end_page": 1071,
+  "text": "A\nMATHEMATICAL\nBACKGROUND\nA.1\nCOMPLEXITY ANALYSIS AND O() NOTATION\nComputer scientists are often faced with the task of comparing algorithms to see how fast\nthey run or how much memory they require. There are two approaches to this task. The ﬁrst\nis benchmarking—running the algorithms on a computer and measuring speed in seconds\nBENCHMARKING\nand memory consumption in bytes. Ultimately, this is what really matters, but a benchmark\ncan be unsatisfactory because it is so speciﬁc: it measures the performance of a particular\nprogram written in a particular language, running on a particular computer, with a particular\ncompiler and particular input data. From the single result that the benchmark provides, it\ncan be difﬁcult to predict how well the algorithm would do on a different compiler, com-\nputer, or data set. The second approach relies on a mathematical analysis of algorithms,\nANALYSIS OF\nALGORITHMS\nindependently of the particular implementation and input, as discussed below.\nA.1.1\nAsymptotic analysis\nWe will consider algorithm analysis through the following example, a program to compute\nthe sum of a sequence of numbers:\nfunction SUMMATION(sequence) returns a number\nsum ←0\nfor i = 1 to LENGTH(sequence) do\nsum ←sum + sequence[i]\nreturn sum\nThe ﬁrst step in the analysis is to abstract over the input, in order to ﬁnd some parameter or\nparameters that characterize the size of the input. In this example, the input can be charac-\nterized by the length of the sequence, which we will call n. The second step is to abstract\nover the implementation, to ﬁnd some measure that reﬂects the running time of the algorithm\nbut is not tied to a particular compiler or computer. For the SUMMATION program, this could\nbe just the number of lines of code executed, or it could be more detailed, measuring the\nnumber of additions, assignments, array references, and branches executed by the algorithm.\n1053",
+  "images": [],
+  "equations": [
+    {
+      "path": "images/a-mathematical-background_eq_1.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

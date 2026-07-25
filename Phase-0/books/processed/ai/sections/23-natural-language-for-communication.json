@@ -1,0 +1,20 @@
+{
+  "section_id": "23-natural-language-for-communication",
+  "title": "23 Natural Language for Communication",
+  "level": 2,
+  "chapter": "VI: Communicating, perceiving, and acting",
+  "parent_id": "vi-communicating-perceiving-and-acting",
+  "children": [
+    "23-1-phrase-structure-grammars",
+    "23-2-syntactic-analysis-parsing",
+    "23-3-augmented-grammars-and-semantic-interpretation",
+    "23-4-machine-translation",
+    "23-5-speech-recognition",
+    "23-6-summary-bibliographical-and-historical-notes-exercises"
+  ],
+  "start_page": 906,
+  "end_page": 906,
+  "text": "23\nNATURAL LANGUAGE\nFOR COMMUNICATION\nIn which we see how humans communicate with one another in natural language,\nand how computer agents might join in the conversation.\nCommunication is the intentional exchange of information brought about by the production\nCOMMUNICATION\nand perception of signs drawn from a shared system of conventional signs. Most animals use\nSIGN\nsigns to represent important messages: food here, predator nearby, approach, withdraw, let’s\nmate. In a partially observable world, communication can help agents be successful because\nthey can learn information that is observed or inferred by others. Humans are the most chatty\nof all species, and if computer agents are to be helpful, they’ll need to learn to speak the\nlanguage. In this chapter we look at language models for communication. Models aimed at\ndeep understanding of a conversation necessarily need to be more complex than the simple\nmodels aimed at, say, spam classiﬁcation. We start with grammatical models of the phrase\nstructure of sentences, add semantics to the model, and then apply it to machine translation\nand speech recognition.\n23.1\nPHRASE STRUCTURE GRAMMARS\nThe n-gram language models of Chapter 22 were based on sequences of words. The big\nissue for these models is data sparsity—with a vocabulary of, say, 105 words, there are 1015\ntrigram probabilities to estimate, and so a corpus of even a trillion words will not be able to\nsupply reliable estimates for all of them. We can address the problem of sparsity through\ngeneralization. From the fact that “black dog” is more frequent than “dog black” and similar\nobservations, we can form the generalization that adjectives tend to come before nouns in\nEnglish (whereas they tend to follow nouns in French: “chien noir” is more frequent). Of\ncourse there are always exceptions; “galore” is an adjective that follows the noun it modiﬁes.\nDespite the exceptions, the notion of a lexical category (also known as a part of speech) such\nLEXICAL CATEGORY\nas noun or adjective is a useful generalization—useful in its own right, but more so when we\nstring together lexical categories to form syntactic categories such as noun phrase or verb\nSYNTACTIC\nCATEGORIES\nphrase, and combine these syntactic categories into trees representing the phrase structure\nPHRASE STRUCTURE\nof sentences: nested phrases, each marked with a category.\n888",
+  "images": [],
+  "equations": []
+}

@@ -1,0 +1,84 @@
+{
+  "section_id": "17-3-policy-iteration",
+  "title": "17.3 Policy Iteration",
+  "level": 3,
+  "chapter": "IV: Uncertain knowledge and reasoning",
+  "parent_id": "17-making-complex-decisions",
+  "children": [],
+  "start_page": 674,
+  "end_page": 675,
+  "text": "656\n17.\nMaking Complex Decisions\nstop after a ﬁnite number of iterations, and we can bound the policy loss that results from\nexecuting the corresponding MEU policy. As a ﬁnal note, all of the results in this section\ndepend on discounting with γ < 1. If γ = 1 and the environment contains terminal states,\nthen a similar set of convergence results and error bounds can be derived whenever certain\ntechnical conditions are satisﬁed.\n17.3\nPOLICY ITERATION\nIn the previous section, we observed that it is possible to get an optimal policy even when\nthe utility function estimate is inaccurate. If one action is clearly better than all others, then\nthe exact magnitude of the utilities on the states involved need not be precise. This insight\nsuggests an alternative way to ﬁnd optimal policies. The policy iteration algorithm alternates\nPOLICY ITERATION\nthe following two steps, beginning from some initial policy π0:\n• Policy evaluation: given a policy πi, calculate Ui = Uπi, the utility of each state if πi\nPOLICY EVALUATION\nwere to be executed.\n• Policy improvement: Calculate a new MEU policy πi+1, using one-step look-ahead\nPOLICY\nIMPROVEMENT\nbased on Ui (as in Equation (17.4)).\nThe algorithm terminates when the policy improvement step yields no change in the utilities.\nAt this point, we know that the utility function Ui is a ﬁxed point of the Bellman update, so\nit is a solution to the Bellman equations, and πi must be an optimal policy. Because there are\nonly ﬁnitely many policies for a ﬁnite state space, and each iteration can be shown to yield a\nbetter policy, policy iteration must terminate. The algorithm is shown in Figure 17.7.\nThe policy improvement step is obviously straightforward, but how do we implement\nthe POLICY-EVALUATION routine? It turns out that doing so is much simpler than solving\nthe standard Bellman equations (which is what value iteration does), because the action in\neach state is ﬁxed by the policy. At the ith iteration, the policy πi speciﬁes the action πi(s) in\n0\n0.2\n0.4\n0.6\n0.8\n1\n0\n2\n4\n6\n8\n10\n12\n14\nMax error/Policy loss\nNumber of iterations\nMax error\nPolicy loss\nFigure 17.6\nThe maximum error ||Ui −U|| of the utility estimates and the policy loss\n||U πi −U||, as a function of the number of iterations of value iteration.\nSection 17.3.\nPolicy Iteration\n657\nstate s. This means that we have a simpliﬁed version of the Bellman equation (17.5) relating\nthe utility of s (under πi) to the utilities of its neighbors:\nUi(s) = R(s) + γ\n\n\ns′\nP(s′ | s, πi(s))Ui(s′) .\n(17.10)\nFor example, suppose πi is the policy shown in Figure 17.2(a). Then we have πi(1, 1) = Up,\nπi(1, 2) = Up, and so on, and the simpliﬁed Bellman equations are\nUi(1, 1) = −0.04 + 0.8Ui(1, 2) + 0.1Ui(1, 1) + 0.1Ui(2, 1) ,\nUi(1, 2) = −0.04 + 0.8Ui(1, 3) + 0.2Ui(1, 2) ,\n...\nThe important point is that these equations are linear, because the “max” operator has been\nremoved. For n states, we have n linear equations with n unknowns, which can be solved\nexactly in time O(n3) by standard linear algebra methods.\nFor small state spaces, policy evaluation using exact solution methods is often the most\nefﬁcient approach. For large state spaces, O(n3) time might be prohibitive. Fortunately, it\nis not necessary to do exact policy evaluation. Instead, we can perform some number of\nsimpliﬁed value iteration steps (simpliﬁed because the policy is ﬁxed) to give a reasonably\ngood approximation of the utilities. The simpliﬁed Bellman update for this process is\nUi+1(s) ←R(s) + γ\n\n\ns′\nP(s′ | s, πi(s))Ui(s′) ,\nand this is repeated k times to produce the next utility estimate. The resulting algorithm is\ncalled modiﬁed policy iteration. It is often much more efﬁcient than standard policy iteration\nMODIFIED POLICY\nITERATION\nor value iteration.\nfunction POLICY-ITERATION(mdp) returns a policy\ninputs: mdp, an MDP with states S, actions A(s), transition model P(s′ | s, a)\nlocal variables: U , a vector of utilities for states in S, initially zero\nπ, a policy vector indexed by state, initially random\nrepeat\nU ←POLICY-EVALUATION(π,U ,mdp)\nunchanged? ←true\nfor each state s in S do\nif\nmax\na ∈A(s)\n\n\ns′\nP(s′ | s, a) U [s′] >\n\n\ns′\nP(s′ | s, π[s]) U [s′] then do\nπ[s] ←argmax\na ∈A(s)\n\n\ns′\nP(s′ | s, a) U [s′]\nunchanged? ←false\nuntil unchanged?\nreturn π\nFigure 17.7\nThe policy iteration algorithm for calculating an optimal policy.",
+  "images": [],
+  "equations": [
+    {
+      "path": "images/17-3-policy-iteration_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-3-policy-iteration_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-3-policy-iteration_eq_17-10.png",
+      "type": "equation",
+      "label": "17.10"
+    },
+    {
+      "path": "images/17-3-policy-iteration_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-3-policy-iteration_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-3-policy-iteration_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-3-policy-iteration_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-3-policy-iteration_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-3-policy-iteration_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-3-policy-iteration_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-3-policy-iteration_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-3-policy-iteration_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-3-policy-iteration_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-3-policy-iteration_eq_14.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

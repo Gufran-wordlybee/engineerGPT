@@ -1,0 +1,95 @@
+{
+  "section_id": "16-6-the-value-of-information",
+  "title": "16.6 The Value of Information",
+  "level": 3,
+  "chapter": "IV: Uncertain knowledge and reasoning",
+  "parent_id": "16-making-simple-decisions",
+  "children": [],
+  "start_page": 646,
+  "end_page": 650,
+  "text": "628\n16.\nMaking Simple Decisions\nU\nAirport Site\nLitigation\nConstruction\nAir Traffic\nFigure 16.7\nA simpliﬁed representation of the airport-siting problem. Chance nodes cor-\nresponding to outcome states have been factored out.\na change in the utility table. In the action-utility diagram, Figure 16.7, on the other hand,\nall such changes have to be reﬂected by changes to the action-utility table. Essentially, the\naction-utility formulation is a compiled version of the original formulation.\n16.5.2\nEvaluating decision networks\nActions are selected by evaluating the decision network for each possible setting of the deci-\nsion node. Once the decision node is set, it behaves exactly like a chance node that has been\nset as an evidence variable. The algorithm for evaluating decision networks is the following:\n1. Set the evidence variables for the current state.\n2. For each possible value of the decision node:\n(a) Set the decision node to that value.\n(b) Calculate the posterior probabilities for the parent nodes of the utility node, using\na standard probabilistic inference algorithm.\n(c) Calculate the resulting utility for the action.\n3. Return the action with the highest utility.\nThis is a straightforward extension of the Bayesian network algorithm and can be incorpo-\nrated directly into the agent design given in Figure 13.1 on page 484. We will see in Chap-\nter 17 that the possibility of executing several actions in sequence makes the problem much\nmore interesting.\n16.6\nTHE VALUE OF INFORMATION\nIn the preceding analysis, we have assumed that all relevant information, or at least all avail-\nable information, is provided to the agent before it makes its decision. In practice, this is\nSection 16.6.\nThe Value of Information\n629\nhardly ever the case. One of the most important parts of decision making is knowing what\nquestions to ask. For example, a doctor cannot expect to be provided with the results of all\npossible diagnostic tests and questions at the time a patient ﬁrst enters the consulting room.10\nTests are often expensive and sometimes hazardous (both directly and because of associated\ndelays). Their importance depends on two factors: whether the test results would lead to a\nsigniﬁcantly better treatment plan, and how likely the various test results are.\nThis section describes information value theory, which enables an agent to choose\nINFORMATION VALUE\nTHEORY\nwhat information to acquire. We assume that, prior to selecting a “real” action represented\nby the decision node, the agent can acquire the value of any of the potentially observable\nchance variables in the model. Thus, information value theory involves a simpliﬁed form\nof sequential decision making—simpliﬁed because the observation actions affect only the\nagent’s belief state, not the external physical state. The value of any particular observation\nmust derive from the potential to affect the agent’s eventual physical action; and this potential\ncan be estimated directly from the decision model itself.\n16.6.1\nA simple example\nSuppose an oil company is hoping to buy one of n indistinguishable blocks of ocean-drilling\nrights. Let us assume further that exactly one of the blocks contains oil worth C dollars, while\nthe others are worthless. The asking price of each block is C/n dollars. If the company is\nrisk-neutral, then it will be indifferent between buying a block and not buying one.\nNow suppose that a seismologist offers the company the results of a survey of block\nnumber 3, which indicates deﬁnitively whether the block contains oil. How much should\nthe company be willing to pay for the information? The way to answer this question is to\nexamine what the company would do if it had the information:\n• With probability 1/n, the survey will indicate oil in block 3. In this case, the company\nwill buy block 3 for C/n dollars and make a proﬁt of C −C/n = (n −1)C/n dollars.\n• With probability (n−1)/n, the survey will show that the block contains no oil, in which\ncase the company will buy a different block. Now the probability of ﬁnding oil in one\nof the other blocks changes from 1/n to 1/(n −1), so the company makes an expected\nproﬁt of C/(n −1) −C/n = C/n(n −1) dollars.\nNow we can calculate the expected proﬁt, given the survey information:\n1\nn × (n −1)C\nn\n+ n −1\nn\n×\nC\nn(n −1) = C/n .\nTherefore, the company should be willing to pay the seismologist up to C/n dollars for the\ninformation: the information is worth as much as the block itself.\nThe value of information derives from the fact that with the information, one’s course\nof action can be changed to suit the actual situation. One can discriminate according to the\nsituation, whereas without the information, one has to do what’s best on average over the\npossible situations. In general, the value of a given piece of information is deﬁned to be the\ndifference in expected value between best actions before and after information is obtained.\n10 In the United States, the only question that is always asked beforehand is whether the patient has insurance.\n630\n16.\nMaking Simple Decisions\n16.6.2\nA general formula for perfect information\nIt is simple to derive a general mathematical formula for the value of information. We assume\nthat exact evidence can be obtained about the value of some random variable Ej (that is, we\nlearn Ej = ej), so the phrase value of perfect information (VPI) is used.11\nVALUE OF PERFECT\nINFORMATION\nLet the agent’s initial evidence be e. Then the value of the current best action α is\ndeﬁned by\nEU (α|e) = max\na\n\n\ns′\nP(RESULT(a) = s′ | a, e) U(s′) ,\nand the value of the new best action (after the new evidence Ej = ej is obtained) will be\nEU (αej|e, ej) = max\na\n\n\ns′\nP(RESULT(a) = s′ | a, e, ej) U(s′) .\nBut Ej is a random variable whose value is currently unknown, so to determine the value of\ndiscovering Ej, given current information e we must average over all possible values ejk that\nwe might discover for Ej, using our current beliefs about its value:\nVPI e(Ej) =\n\u001f\n\nk\nP(Ej = ejk|e) EU (αejk|e, Ej = ejk)\n \n−EU (α|e) .\nTo get some intuition for this formula, consider the simple case where there are only two\nactions, a1 and a2, from which to choose. Their current expected utilities are U1 and U2. The\ninformation Ej = ejk will yield some new expected utilities U′\n1 and U′\n2 for the actions, but\nbefore we obtain Ej, we will have some probability distributions over the possible values of\nU′\n1 and U′\n2 (which we assume are independent).\nSuppose that a1 and a2 represent two different routes through a mountain range in\nwinter. a1 is a nice, straight highway through a low pass, and a2 is a winding dirt road over\nthe top. Just given this information, a1 is clearly preferable, because it is quite possible that\na2 is blocked by avalanches, whereas it is unlikely that anything blocks a1. U1 is therefore\nclearly higher than U2. It is possible to obtain satellite reports Ej on the actual state of each\nroad that would give new expectations, U′\n1 and U′\n2, for the two crossings. The distributions\nfor these expectations are shown in Figure 16.8(a). Obviously, in this case, it is not worth the\nexpense of obtaining satellite reports, because it is unlikely that the information derived from\nthem will change the plan. With no change, information has no value.\nNow suppose that we are choosing between two different winding dirt roads of slightly\ndifferent lengths and we are carrying a seriously injured passenger. Then, even when U1\nand U2 are quite close, the distributions of U′\n1 and U′\n2 are very broad. There is a signiﬁcant\npossibility that the second route will turn out to be clear while the ﬁrst is blocked, and in this\n11 There is no loss of expressiveness in requiring perfect information. Suppose we wanted to model the case\nin which we become somewhat more certain about a variable. We can do that by introducing another variable\nabout which we learn perfect information. For example, suppose we initially have broad uncertainty about the\nvariable Temperature. Then we gain the perfect knowledge Thermometer = 37; this gives us imperfect\ninformation about the true Temperature, and the uncertainty due to measurement error is encoded in the sensor\nmodel P(Thermometer | Temperature). See Exercise 16.17 for another example.\nSection 16.6.\nThe Value of Information\n631\n(c)\nP(U | Ej)\nU1\nU2\nU\n(b)\nP(U | Ej)\nU1\nU2\nU\n(a)\nP(U | Ej)\nU1\nU2\nU\nFigure 16.8\nThree generic cases for the value of information. In (a), a1 will almost cer-\ntainly remain superior to a2, so the information is not needed. In (b), the choice is unclear and\nthe information is crucial. In (c), the choice is unclear, but because it makes little difference,\nthe information is less valuable. (Note: The fact that U2 has a high peak in (c) means that its\nexpected value is known with higher certainty than U1.)\ncase the difference in utilities will be very high. The VPI formula indicates that it might be\nworthwhile getting the satellite reports. Such a situation is shown in Figure 16.8(b).\nFinally, suppose that we are choosing between the two dirt roads in summertime, when\nblockage by avalanches is unlikely. In this case, satellite reports might show one route to be\nmore scenic than the other because of ﬂowering alpine meadows, or perhaps wetter because\nof errant streams. It is therefore quite likely that we would change our plan if we had the\ninformation. In this case, however, the difference in value between the two routes is still\nlikely to be very small, so we will not bother to obtain the reports. This situation is shown in\nFigure 16.8(c).\nIn sum, information has value to the extent that it is likely to cause a change of plan\nand to the extent that the new plan will be signiﬁcantly better than the old plan.\n16.6.3\nProperties of the value of information\nOne might ask whether it is possible for information to be deleterious: can it actually have\nnegative expected value? Intuitively, one should expect this to be impossible. After all, one\ncould in the worst case just ignore the information and pretend that one has never received it.\nThis is conﬁrmed by the following theorem, which applies to any decision-theoretic agent:\nThe expected value of information is nonnegative:\n∀e, Ej VPI e(Ej) ≥0 .\nThe theorem follows directly from the deﬁnition of VPI, and we leave the proof as an exercise\n(Exercise 16.18). It is, of course, a theorem about expected value, not actual value. Additional\ninformation can easily lead to a plan that turns out to be worse than the original plan if the\ninformation happens to be misleading. For example, a medical test that gives a false positive\nresult may lead to unnecessary surgery; but that does not mean that the test shouldn’t be done.\n632\n16.\nMaking Simple Decisions\nIt is important to remember that VPI depends on the current state of information, which\nis why it is subscripted. It can change as more information is acquired. For any given piece\nof evidence Ej, the value of acquiring it can go down (e.g., if another variable strongly\nconstrains the posterior for Ej) or up (e.g., if another variable provides a clue on which Ej\nbuilds, enabling a new and better plan to be devised). Thus, VPI is not additive. That is,\nVPI e(Ej, Ek)̸ = VPI e(Ej) + VPI e(Ek)\n(in general) .\nVPI is, however, order independent. That is,\nVPI e(Ej, Ek) = VPI e(Ej) + VPI e,ej(Ek) = VPI e(Ek) + VPI e,ek(Ej) .\nOrder independence distinguishes sensing actions from ordinary actions and simpliﬁes the\nproblem of calculating the value of a sequence of sensing actions.\n16.6.4\nImplementation of an information-gathering agent\nA sensible agent should ask questions in a reasonable order, should avoid asking questions\nthat are irrelevant, should take into account the importance of each piece of information in\nrelation to its cost, and should stop asking questions when that is appropriate. All of these\ncapabilities can be achieved by using the value of information as a guide.\nFigure 16.9 shows the overall design of an agent that can gather information intel-\nligently before acting. For now, we assume that with each observable evidence variable\nEj, there is an associated cost, Cost(Ej), which reﬂects the cost of obtaining the evidence\nthrough tests, consultants, questions, or whatever. The agent requests what appears to be the\nmost efﬁcient observation in terms of utility gain per unit cost. We assume that the result of\nthe action Request(Ej) is that the next percept provides the value of Ej. If no observation is\nworth its cost, the agent selects a “real” action.\nThe agent algorithm we have described implements a form of information gathering\nthat is called myopic. This is because it uses the VPI formula shortsightedly, calculating the\nMYOPIC\nvalue of information as if only a single evidence variable will be acquired. Myopic control\nis based on the same heuristic idea as greedy search and often works well in practice. (For\nexample, it has been shown to outperform expert physicians in selecting diagnostic tests.)\nfunction INFORMATION-GATHERING-AGENT(percept) returns an action\npersistent: D, a decision network\nintegrate percept into D\nj ←the value that maximizes VPI (Ej) / Cost(Ej)\nif VPI (Ej) > Cost(Ej)\nreturn REQUEST(Ej)\nelse return the best action from D\nFigure 16.9\nDesign of a simple information-gathering agent. The agent works by repeat-\nedly selecting the observation with the highest information value, until the cost of the next\nobservation is greater than its expected beneﬁt.",
+  "images": [
+    {
+      "path": "images/16-6-the-value-of-information_fig_16-7.png",
+      "type": "diagram",
+      "caption": "Figure 16.7"
+    },
+    {
+      "path": "images/16-6-the-value-of-information_fig_16-8.png",
+      "type": "diagram",
+      "caption": "Figure 16.8"
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/16-6-the-value-of-information_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/16-6-the-value-of-information_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/16-6-the-value-of-information_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/16-6-the-value-of-information_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/16-6-the-value-of-information_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/16-6-the-value-of-information_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/16-6-the-value-of-information_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/16-6-the-value-of-information_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/16-6-the-value-of-information_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/16-6-the-value-of-information_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/16-6-the-value-of-information_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/16-6-the-value-of-information_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/16-6-the-value-of-information_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/16-6-the-value-of-information_eq_14.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

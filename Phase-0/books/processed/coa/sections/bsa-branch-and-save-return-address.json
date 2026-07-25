@@ -1,0 +1,19 @@
+{
+  "section_id": "bsa-branch-and-save-return-address",
+  "title": "BSA: Branch and Save Return Address",
+  "level": 4,
+  "chapter": "5-6 Memory-Reference Instructions",
+  "parent_id": "bun-branch-unconditionally",
+  "children": [],
+  "start_page": 157,
+  "end_page": 159,
+  "text": "This instruction is useful for branching to a portion of the program called a subroutine or procedure. When executed, the BSA instruction stores the address of the next instruction in sequence (which is available in PC) into a memory location specified by the effective address. The effective address plus one is then transferred to PC to serve as the address of the first instruction in the subroutine. This operation was specified in Table 5-4 with the following register transfer:\nM[AR] \\leftarrow PC, PC \\leftarrow AR + 1\nA numerical example that demonstrates how this instruction is used with a subroutine is shown in Fig. 5-10. The BSA instruction is assumed to be in memory at address 20. The I bit is 0 and the address part of the instruction has the binary equivalent of 135. After the fetch and decode phases, PC contains 21, which is the address of the next instruction in the program (referred to as the return address). AR holds the effective address 135. This is shown in part (a) of the figure. The BSA instruction performs the following numerical operation:\nreturn address\nM[135] \\leftarrow 21, PC \\leftarrow 135 + 1 = 136\nThe result of this operation is shown in part (b) of the figure. The return address 21 is stored in memory location 135 and control continues with the subroutine program starting from address 136. The return to the original program (at address 21) is accomplished by means of an indirect BUN instruction placed at the end of the subroutine. When this instruction is executed, control goes to the indirect phase to read the effective address at location 135, where it finds the previously saved address 21. When the BUN instruction is executed, the effective address 21 is transferred to PC. The next instruction cycle finds PC with the value 21, so control continues to execute the instruction at the return address.\nsubroutine call\nThe BSA instruction performs the function usually referred to as a subroutine call. The indirect BUN instruction at the end of the subroutine performs the function referred to as a subroutine return. In most commercial computers, the return address associated with a subroutine is stored in either a processor\nFigure 5-10 Example of BSA instruction execution.\n(a) Memory, PC, and AR at time T_4\n(b) Memory and PC after execution\nregister or in a portion of memory called a stack. This is discussed in more detail in Sec. 8-7.\nIt is not possible to perform the operation of the BSA instruction in one clock cycle when we use the bus system of the basic computer. To use the memory and the bus properly, the BSA instruction must be executed with a sequence of two microoperations:\nD_5T_4: M[AR] \\leftarrow PC, AR \\leftarrow AR + 1\nD_5T_5: PC \\leftarrow AR, SC \\leftarrow 0\nTiming signal T_4 initiates a memory write operation, places the content of PC onto the bus, and enables the INR input of AR. The memory write operation is completed and AR is incremented by the time the next clock transition occurs. The bus is used at T_6 to transfer the content of AR to PC.",
+  "images": [
+    {
+      "path": "images/bsa-branch-and-save-return-address_img_1.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

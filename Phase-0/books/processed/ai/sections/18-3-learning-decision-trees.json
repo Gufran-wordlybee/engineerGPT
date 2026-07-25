@@ -1,0 +1,295 @@
+{
+  "section_id": "18-3-learning-decision-trees",
+  "title": "18.3 Learning Decision Trees",
+  "level": 3,
+  "chapter": "V: Learning",
+  "parent_id": "18-learning-from-examples",
+  "children": [],
+  "start_page": 715,
+  "end_page": 725,
+  "text": "Section 18.3.\nLearning Decision Trees\n697\nhypothesis space H to allow polynomials over both x and sin(x), and ﬁnd that the data in\n(c) can be ﬁtted exactly by a simple function of the form ax + b + c sin(x). This shows the\nimportance of the choice of hypothesis space. We say that a learning problem is realizable if\nREALIZABLE\nthe hypothesis space contains the true function. Unfortunately, we cannot always tell whether\na given learning problem is realizable, because the true function is not known.\nIn some cases, an analyst looking at a problem is willing to make more ﬁne-grained\ndistinctions about the hypothesis space, to say—even before seeing any data—not just that a\nhypothesis is possible or impossible, but rather how probable it is. Supervised learning can\nbe done by choosing the hypothesis h∗that is most probable given the data:\nh∗= argmax\nh∈H\nP(h|data) .\nBy Bayes’ rule this is equivalent to\nh∗= argmax\nh∈H\nP(data|h) P(h) .\nThen we can say that the prior probability P(h) is high for a degree-1 or -2 polynomial,\nlower for a degree-7 polynomial, and especially low for degree-7 polynomials with large,\nsharp spikes as in Figure 18.1(b). We allow unusual-looking functions when the data say we\nreally need them, but we discourage them by giving them a low prior probability.\nWhy not let H be the class of all Java programs, or Turing machines? After all, every\ncomputable function can be represented by some Turing machine, and that is the best we\ncan do. One problem with this idea is that it does not take into account the computational\ncomplexity of learning. There is a tradeoff between the expressiveness of a hypothesis space\nand the complexity of ﬁnding a good hypothesis within that space. For example, ﬁtting a\nstraight line to data is an easy computation; ﬁtting high-degree polynomials is somewhat\nharder; and ﬁtting Turing machines is in general undecidable. A second reason to prefer\nsimple hypothesis spaces is that presumably we will want to use h after we have learned it,\nand computing h(x) when h is a linear function is guaranteed to be fast, while computing\nan arbitrary Turing machine program is not even guaranteed to terminate. For these reasons,\nmost work on learning has focused on simple representations.\nWe will see that the expressiveness–complexity tradeoff is not as simple as it ﬁrst seems:\nit is often the case, as we saw with ﬁrst-order logic in Chapter 8, that an expressive language\nmakes it possible for a simple hypothesis to ﬁt the data, whereas restricting the expressiveness\nof the language means that any consistent hypothesis must be very complex. For example,\nthe rules of chess can be written in a page or two of ﬁrst-order logic, but require thousands of\npages when written in propositional logic.\n18.3\nLEARNING DECISION TREES\nDecision tree induction is one of the simplest and yet most successful forms of machine\nlearning. We ﬁrst describe the representation—the hypothesis space—and then show how to\nlearn a good hypothesis.\n698\n18.\nLearning from Examples\n18.3.1\nThe decision tree representation\nA decision tree represents a function that takes as input a vector of attribute values and\nDECISION TREE\nreturns a “decision”—a single output value. The input and output values can be discrete or\ncontinuous. For now we will concentrate on problems where the inputs have discrete values\nand the output has exactly two possible values; this is Boolean classiﬁcation, where each\nexample input will be classiﬁed as true (a positive example) or false (a negative example).\nPOSITIVE\nNEGATIVE\nA decision tree reaches its decision by performing a sequence of tests. Each internal\nnode in the tree corresponds to a test of the value of one of the input attributes, Ai, and\nthe branches from the node are labeled with the possible values of the attribute, Ai = vik.\nEach leaf node in the tree speciﬁes a value to be returned by the function. The decision tree\nrepresentation is natural for humans; indeed, many “How To” manuals (e.g., for car repair)\nare written entirely as a single decision tree stretching over hundreds of pages.\nAs an example, we will build a decision tree to decide whether to wait for a table at a\nrestaurant. The aim here is to learn a deﬁnition for the goal predicate WillWait. First we\nGOAL PREDICATE\nlist the attributes that we will consider as part of the input:\n1. Alternate: whether there is a suitable alternative restaurant nearby.\n2. Bar: whether the restaurant has a comfortable bar area to wait in.\n3. Fri/Sat: true on Fridays and Saturdays.\n4. Hungry: whether we are hungry.\n5. Patrons: how many people are in the restaurant (values are None, Some, and Full).\n6. Price: the restaurant’s price range ($, $$, $$$).\n7. Raining: whether it is raining outside.\n8. Reservation: whether we made a reservation.\n9. Type: the kind of restaurant (French, Italian, Thai, or burger).\n10. WaitEstimate: the wait estimated by the host (0–10 minutes, 10–30, 30–60, or >60).\nNote that every variable has a small set of possible values; the value of WaitEstimate, for\nexample, is not an integer, rather it is one of the four discrete values 0–10, 10–30, 30–60, or\n>60. The decision tree usually used by one of us (SR) for this domain is shown in Figure 18.2.\nNotice that the tree ignores the Price and Type attributes. Examples are processed by the tree\nstarting at the root and following the appropriate branch until a leaf is reached. For instance,\nan example with Patrons = Full and WaitEstimate = 0–10 will be classiﬁed as positive\n(i.e., yes, we will wait for a table).\n18.3.2\nExpressiveness of decision trees\nA Boolean decision tree is logically equivalent to the assertion that the goal attribute is true\nif and only if the input attributes satisfy one of the paths leading to a leaf with value true.\nWriting this out in propositional logic, we have\nGoal ⇔(Path1 ∨Path2 ∨· · ·) ,\nwhere each Path is a conjunction of attribute-value tests required to follow that path. Thus,\nthe whole expression is equivalent to disjunctive normal form (see page 283), which means\nSection 18.3.\nLearning Decision Trees\n699\nthat any function in propositional logic can be expressed as a decision tree. As an example,\nthe rightmost path in Figure 18.2 is\nPath = (Patrons = Full ∧WaitEstimate = 0–10) .\nFor a wide variety of problems, the decision tree format yields a nice, concise result. But\nsome functions cannot be represented concisely. For example, the majority function, which\nreturns true if and only if more than half of the inputs are true, requires an exponentially\nlarge decision tree. In other words, decision trees are good for some kinds of functions and\nbad for others. Is there any kind of representation that is efﬁcient for all kinds of functions?\nUnfortunately, the answer is no. We can show this in a general way. Consider the set of all\nBoolean functions on n attributes. How many different functions are in this set? This is just\nthe number of different truth tables that we can write down, because the function is deﬁned\nby its truth table. A truth table over n attributes has 2n rows, one for each combination of\nvalues of the attributes. We can consider the “answer” column of the table as a 2n-bit number\nthat deﬁnes the function. That means there are 22n different functions (and there will be more\nthan that number of trees, since more than one tree can compute the same function). This is\na scary number. For example, with just the ten Boolean attributes of our restaurant problem\nthere are 21024 or about 10308 different functions to choose from, and for 20 attributes there\nare over 10300,000. We will need some ingenious algorithms to ﬁnd good hypotheses in such\na large space.\n18.3.3\nInducing decision trees from examples\nAn example for a Boolean decision tree consists of an (x, y) pair, where x is a vector of values\nfor the input attributes, and y is a single Boolean output value. A training set of 12 examples\nNo\n Yes\nNo\n Yes\nNo\n Yes\nNo\n Yes\nNone\nSome\nFull\n>60\n30-60\n10-30\n0-10\nNo\n Yes\nAlternate?\nHungry?\nReservation?\nBar?\nRaining?\nAlternate?\nPatrons?\nFri/Sat?\nNo\nYes\nNo\nYes\nYes\nYes\nNo\n Yes\nNo\nYes\nYes\nNo\nYes\nNo\n Yes\nYes\nNo\nWaitEstimate?\nFigure 18.2\nA decision tree for deciding whether to wait for a table.\n700\n18.\nLearning from Examples\nExample\nInput Attributes\nGoal\nAlt\nBar\nFri\nHun\nPat\nPrice Rain\nRes\nType\nEst\nWillWait\nx1\nYes\nNo\nNo\nYes\nSome\n$$$\nNo\nYes\nFrench\n0–10\ny1 = Yes\nx2\nYes\nNo\nNo\nYes\nFull\n$\nNo\nNo\nThai\n30–60\ny2 = No\nx3\nNo\nYes\nNo\nNo\nSome\n$\nNo\nNo\nBurger\n0–10\ny3 = Yes\nx4\nYes\nNo\nYes\nYes\nFull\n$\nYes\nNo\nThai\n10–30\ny4 = Yes\nx5\nYes\nNo\nYes\nNo\nFull\n$$$\nNo\nYes\nFrench\n>60\ny5 = No\nx6\nNo\nYes\nNo\nYes\nSome\n$$\nYes\nYes\nItalian\n0–10\ny6 = Yes\nx7\nNo\nYes\nNo\nNo\nNone\n$\nYes\nNo\nBurger\n0–10\ny7 = No\nx8\nNo\nNo\nNo\nYes\nSome\n$$\nYes\nYes\nThai\n0–10\ny8 = Yes\nx9\nNo\nYes\nYes\nNo\nFull\n$\nYes\nNo\nBurger\n>60\ny9 = No\nx10\nYes\nYes\nYes\nYes\nFull\n$$$\nNo\nYes\nItalian\n10–30\ny10 = No\nx11\nNo\nNo\nNo\nNo\nNone\n$\nNo\nNo\nThai\n0–10\ny11 = No\nx12\nYes\nYes\nYes\nYes\nFull\n$\nNo\nNo\nBurger\n30–60\ny12 = Yes\nFigure 18.3\nExamples for the restaurant domain.\nis shown in Figure 18.3. The positive examples are the ones in which the goal WillWait is\ntrue (x1, x3, . . .); the negative examples are the ones in which it is false (x2, x5, . . .).\nWe want a tree that is consistent with the examples and is as small as possible. Un-\nfortunately, no matter how we measure size, it is an intractable problem to ﬁnd the smallest\nconsistent tree; there is no way to efﬁciently search through the 22n trees. With some simple\nheuristics, however, we can ﬁnd a good approximate solution: a small (but not smallest) con-\nsistent tree. The DECISION-TREE-LEARNING algorithm adopts a greedy divide-and-conquer\nstrategy: always test the most important attribute ﬁrst. This test divides the problem up into\nsmaller subproblems that can then be solved recursively. By “most important attribute,” we\nmean the one that makes the most difference to the classiﬁcation of an example. That way, we\nhope to get to the correct classiﬁcation with a small number of tests, meaning that all paths in\nthe tree will be short and the tree as a whole will be shallow.\nFigure 18.4(a) shows that Type is a poor attribute, because it leaves us with four possible\noutcomes, each of which has the same number of positive as negative examples. On the other\nhand, in (b) we see that Patrons is a fairly important attribute, because if the value is None or\nSome, then we are left with example sets for which we can answer deﬁnitively (No and Yes,\nrespectively). If the value is Full, we are left with a mixed set of examples. In general, after\nthe ﬁrst attribute test splits up the examples, each outcome is a new decision tree learning\nproblem in itself, with fewer examples and one less attribute. There are four cases to consider\nfor these recursive problems:\n1. If the remaining examples are all positive (or all negative), then we are done: we can\nanswer Yes or No. Figure 18.4(b) shows examples of this happening in the None and\nSome branches.\n2. If there are some positive and some negative examples, then choose the best attribute to\nsplit them. Figure 18.4(b) shows Hungry being used to split the remaining examples.\n3. If there are no examples left, it means that no example has been observed for this com-\nSection 18.3.\nLearning Decision Trees\n701\n(a)\nNone\nSome\nFull\nPatrons?\nYes\nNo\nHungry?\n(b)\nNo\nYes\n12\n1\n3\n4\n6\n8\n2\n5\n7\n9\n10 11\nFrench\nItalian\nThai\nBurger\nType?\n12\n1\n3\n4\n6\n8\n2\n5\n7\n9\n10 11\n1\n5\n6\n10\n4\n8\n2\n11\n12\n3\n7\n9\n7\n11\n1\n3\n6\n8\n12\n4\n2\n5\n9\n10\n12\n4\n2\n10\n5\n9\nFigure 18.4\nSplitting the examples by testing on attributes. At each node we show the\npositive (light boxes) and negative (dark boxes) examples remaining. (a) Splitting on Type\nbrings us no nearer to distinguishing between positive and negative examples. (b) Splitting\non Patrons does a good job of separating positive and negative examples. After splitting on\nPatrons, Hungry is a fairly good second test.\nbination of attribute values, and we return a default value calculated from the plurality\nclassiﬁcation of all the examples that were used in constructing the node’s parent. These\nare passed along in the variable parent examples.\n4. If there are no attributes left, but both positive and negative examples, it means that\nthese examples have exactly the same description, but different classiﬁcations. This can\nhappen because there is an error or noise in the data; because the domain is nondeter-\nNOISE\nministic; or because we can’t observe an attribute that would distinguish the examples.\nThe best we can do is return the plurality classiﬁcation of the remaining examples.\nThe DECISION-TREE-LEARNING algorithm is shown in Figure 18.5. Note that the set of\nexamples is crucial for constructing the tree, but nowhere do the examples appear in the tree\nitself. A tree consists of just tests on attributes in the interior nodes, values of attributes on\nthe branches, and output values on the leaf nodes. The details of the IMPORTANCE function\nare given in Section 18.3.4. The output of the learning algorithm on our sample training\nset is shown in Figure 18.6. The tree is clearly different from the original tree shown in\nFigure 18.2. One might conclude that the learning algorithm is not doing a very good job\nof learning the correct function. This would be the wrong conclusion to draw, however. The\nlearning algorithm looks at the examples, not at the correct function, and in fact, its hypothesis\n(see Figure 18.6) not only is consistent with all the examples, but is considerably simpler\nthan the original tree! The learning algorithm has no reason to include tests for Raining and\nReservation, because it can classify all the examples without them. It has also detected an\ninteresting and previously unsuspected pattern: the ﬁrst author will wait for Thai food on\nweekends. It is also bound to make some mistakes for cases where it has seen no examples.\nFor example, it has never seen a case where the wait is 0–10 minutes but the restaurant is full.\n702\n18.\nLearning from Examples\nfunction DECISION-TREE-LEARNING(examples,attributes,parent examples) returns\na tree\nif examples is empty then return PLURALITY-VALUE(parent examples)\nelse if all examples have the same classiﬁcation then return the classiﬁcation\nelse if attributes is empty then return PLURALITY-VALUE(examples)\nelse\nA ←argmaxa ∈attributes IMPORTANCE(a, examples)\ntree ←a new decision tree with root test A\nfor each value vk of A do\nexs ←{e : e ∈examples and e.A = vk}\nsubtree ←DECISION-TREE-LEARNING(exs,attributes −A,examples)\nadd a branch to tree with label (A = vk) and subtree subtree\nreturn tree\nFigure 18.5\nThe decision-tree learning algorithm.\nThe function IMPORTANCE is de-\nscribed in Section 18.3.4. The function PLURALITY-VALUE selects the most common output\nvalue among a set of examples, breaking ties randomly.\nNone\nSome\nFull\nPatrons?\nNo\nYes\nNo\n Yes\nHungry?\nNo\nNo\n Yes\nFri/Sat?\nYes\nNo\nYes\nType?\nFrench\nItalian\nThai\nBurger\nYes\nNo\nFigure 18.6\nThe decision tree induced from the 12-example training set.\nIn that case it says not to wait when Hungry is false, but I (SR) would certainly wait. With\nmore training examples the learning program could correct this mistake.\nWe note there is a danger of over-interpreting the tree that the algorithm selects. When\nthere are several variables of similar importance, the choice between them is somewhat arbi-\ntrary: with slightly different input examples, a different variable would be chosen to split on\nﬁrst, and the whole tree would look completely different. The function computed by the tree\nwould still be similar, but the structure of the tree can vary widely.\nWe can evaluate the accuracy of a learning algorithm with a learning curve, as shown\nLEARNING CURVE\nin Figure 18.7. We have 100 examples at our disposal, which we split into a training set and\nSection 18.3.\nLearning Decision Trees\n703\n0.4\n0.5\n0.6\n0.7\n0.8\n0.9\n1\n0\n20\n40\n60\n80\n100\nProportion correct on test set\nTraining set size\nFigure 18.7\nA learning curve for the decision tree learning algorithm on 100 randomly\ngenerated examples in the restaurant domain. Each data point is the average of 20 trials.\na test set. We learn a hypothesis h with the training set and measure its accuracy with the test\nset. We do this starting with a training set of size 1 and increasing one at a time up to size\n99. For each size we actually repeat the process of randomly splitting 20 times, and average\nthe results of the 20 trials. The curve shows that as the training set size grows, the accuracy\nincreases. (For this reason, learning curves are also called happy graphs.) In this graph we\nreach 95% accuracy, and it looks like the curve might continue to increase with more data.\n18.3.4\nChoosing attribute tests\nThe greedy search used in decision tree learning is designed to approximately minimize the\ndepth of the ﬁnal tree. The idea is to pick the attribute that goes as far as possible toward\nproviding an exact classiﬁcation of the examples. A perfect attribute divides the examples\ninto sets, each of which are all positive or all negative and thus will be leaves of the tree. The\nPatrons attribute is not perfect, but it is fairly good. A really useless attribute, such as Type,\nleaves the example sets with roughly the same proportion of positive and negative examples\nas the original set.\nAll we need, then, is a formal measure of “fairly good” and “really useless” and we can\nimplement the IMPORTANCE function of Figure 18.5. We will use the notion of information\ngain, which is deﬁned in terms of entropy, the fundamental quantity in information theory\nENTROPY\n(Shannon and Weaver, 1949).\nEntropy is a measure of the uncertainty of a random variable; acquisition of information\ncorresponds to a reduction in entropy. A random variable with only one value—a coin that\nalways comes up heads—has no uncertainty and thus its entropy is deﬁned as zero; thus, we\ngain no information by observing its value. A ﬂip of a fair coin is equally likely to come up\nheads or tails, 0 or 1, and we will soon show that this counts as “1 bit” of entropy. The roll\nof a fair four-sided die has 2 bits of entropy, because it takes two bits to describe one of four\nequally probable choices. Now consider an unfair coin that comes up heads 99% of the time.\nIntuitively, this coin has less uncertainty than the fair coin—if we guess heads we’ll be wrong\nonly 1% of the time—so we would like it to have an entropy measure that is close to zero, but\n704\n18.\nLearning from Examples\npositive. In general, the entropy of a random variable V with values vk, each with probability\nP(vk), is deﬁned as\nEntropy:\nH(V ) =\n\n\nk\nP(vk) log2\n1\nP(vk) = −\n\n\nk\nP(vk) log2 P(vk) .\nWe can check that the entropy of a fair coin ﬂip is indeed 1 bit:\nH(Fair) = −(0.5 log2 0.5 + 0.5 log2 0.5) = 1 .\nIf the coin is loaded to give 99% heads, we get\nH(Loaded) = −(0.99 log2 0.99 + 0.01 log2 0.01) ≈0.08 bits.\nIt will help to deﬁne B(q) as the entropy of a Boolean random variable that is true with\nprobability q:\nB(q) = −(q log2 q + (1 −q) log2(1 −q)) .\nThus, H(Loaded) = B(0.99) ≈0.08. Now let’s get back to decision tree learning. If a\ntraining set contains p positive examples and n negative examples, then the entropy of the\ngoal attribute on the whole set is\nH(Goal) = B\n\np\np + n\n\u000e\n.\nThe restaurant training set in Figure 18.3 has p = n = 6, so the corresponding entropy is\nB(0.5) or exactly 1 bit. A test on a single attribute A might give us only part of this 1 bit. We\ncan measure exactly how much by looking at the entropy remaining after the attribute test.\nAn attribute A with d distinct values divides the training set E into subsets E1, . . . , Ed.\nEach subset Ek has pk positive examples and nk negative examples, so if we go along that\nbranch, we will need an additional B(pk/(pk + nk)) bits of information to answer the ques-\ntion. A randomly chosen example from the training set has the kth value for the attribute with\nprobability (pk + nk)/(p + n), so the expected entropy remaining after testing attribute A is\nRemainder(A) =\nd\n\n\nk=1\npk+nk\np+n B(\npk\npk+nk ) .\nThe information gain from the attribute test on A is the expected reduction in entropy:\nINFORMATION GAIN\nGain(A) = B(\np\np+n) −Remainder(A) .\nIn fact Gain(A) is just what we need to implement the IMPORTANCE function. Returning to\nthe attributes considered in Figure 18.4, we have\nGain(Patrons) = 1 −\n$ 2\n12B(0\n2) + 4\n12B(4\n4) + 6\n12B(2\n6)\n%\n≈0.541 bits,\nGain(Type) = 1 −\n$ 2\n12B(1\n2) + 2\n12B(1\n2) + 4\n12B(2\n4) + 4\n12B(2\n4)\n%\n= 0 bits,\nconﬁrming our intuition that Patrons is a better attribute to split on. In fact, Patrons has\nthe maximum gain of any of the attributes and would be chosen by the decision-tree learning\nalgorithm as the root.\nSection 18.3.\nLearning Decision Trees\n705\n18.3.5\nGeneralization and overﬁtting\nOn some problems, the DECISION-TREE-LEARNING algorithm will generate a large tree\nwhen there is actually no pattern to be found. Consider the problem of trying to predict\nwhether the roll of a die will come up as 6 or not. Suppose that experiments are carried out\nwith various dice and that the attributes describing each training example include the color\nof the die, its weight, the time when the roll was done, and whether the experimenters had\ntheir ﬁngers crossed. If the dice are fair, the right thing to learn is a tree with a single node\nthat says “no,” But the DECISION-TREE-LEARNING algorithm will seize on any pattern it\ncan ﬁnd in the input. If it turns out that there are 2 rolls of a 7-gram blue die with ﬁngers\ncrossed and they both come out 6, then the algorithm may construct a path that predicts 6 in\nthat case. This problem is called overﬁtting. A general phenomenon, overﬁtting occurs with\nOVERFITTING\nall types of learners, even when the target function is not at all random. In Figure 18.1(b) and\n(c), we saw polynomial functions overﬁtting the data. Overﬁtting becomes more likely as the\nhypothesis space and the number of input attributes grows, and less likely as we increase the\nnumber of training examples.\nFor decision trees, a technique called decision tree pruning combats overﬁtting. Prun-\nDECISION TREE\nPRUNING\ning works by eliminating nodes that are not clearly relevant. We start with a full tree, as\ngenerated by DECISION-TREE-LEARNING. We then look at a test node that has only leaf\nnodes as descendants. If the test appears to be irrelevant—detecting only noise in the data—\nthen we eliminate the test, replacing it with a leaf node. We repeat this process, considering\neach test with only leaf descendants, until each one has either been pruned or accepted as is.\nThe question is, how do we detect that a node is testing an irrelevant attribute? Suppose\nwe are at a node consisting of p positive and n negative examples. If the attribute is irrelevant,\nwe would expect that it would split the examples into subsets that each have roughly the same\nproportion of positive examples as the whole set, p/(p + n), and so the information gain will\nbe close to zero.2 Thus, the information gain is a good clue to irrelevance. Now the question\nis, how large a gain should we require in order to split on a particular attribute?\nWe can answer this question by using a statistical signiﬁcance test. Such a test begins\nSIGNIFICANCE TEST\nby assuming that there is no underlying pattern (the so-called null hypothesis). Then the ac-\nNULL HYPOTHESIS\ntual data are analyzed to calculate the extent to which they deviate from a perfect absence of\npattern. If the degree of deviation is statistically unlikely (usually taken to mean a 5% prob-\nability or less), then that is considered to be good evidence for the presence of a signiﬁcant\npattern in the data. The probabilities are calculated from standard distributions of the amount\nof deviation one would expect to see in random sampling.\nIn this case, the null hypothesis is that the attribute is irrelevant and, hence, that the\ninformation gain for an inﬁnitely large sample would be zero. We need to calculate the\nprobability that, under the null hypothesis, a sample of size v = n + p would exhibit the\nobserved deviation from the expected distribution of positive and negative examples. We can\nmeasure the deviation by comparing the actual numbers of positive and negative examples in\n2 The gain will be strictly positive except for the unlikely case where all the proportions are exactly the same.\n(See Exercise 18.5.)\n706\n18.\nLearning from Examples\neach subset, pk and nk, with the expected numbers, ˆpk and ˆnk, assuming true irrelevance:\nˆpk = p × pk + nk\np + n\nˆnk = n × pk + nk\np + n\n.\nA convenient measure of the total deviation is given by\nΔ =\nd\n\n\nk=1\n(pk −ˆpk)2\nˆpk\n+ (nk −ˆnk)2\nˆnk\n.\nUnder the null hypothesis, the value of Δ is distributed according to the χ2 (chi-squared)\ndistribution with v −1 degrees of freedom. We can use a χ2 table or a standard statistical\nlibrary routine to see if a particular Δ value conﬁrms or rejects the null hypothesis. For\nexample, consider the restaurant type attribute, with four values and thus three degrees of\nfreedom. A value of Δ = 7.82 or more would reject the null hypothesis at the 5% level (and a\nvalue of Δ = 11.35 or more would reject at the 1% level). Exercise 18.8 asks you to extend the\nDECISION-TREE-LEARNING algorithm to implement this form of pruning, which is known\nas χ2 pruning.\nχ2 PRUNING\nWith pruning, noise in the examples can be tolerated. Errors in the example’s label (e.g.,\nan example (x, Yes) that should be (x, No)) give a linear increase in prediction error, whereas\nerrors in the descriptions of examples (e.g., Price = $ when it was actually Price = $$) have\nan asymptotic effect that gets worse as the tree shrinks down to smaller sets. Pruned trees\nperform signiﬁcantly better than unpruned trees when the data contain a large amount of\nnoise. Also, the pruned trees are often much smaller and hence easier to understand.\nOne ﬁnal warning: You might think that χ2 pruning and information gain look similar,\nso why not combine them using an approach called early stopping—have the decision tree\nEARLY STOPPING\nalgorithm stop generating nodes when there is no good attribute to split on, rather than going\nto all the trouble of generating nodes and then pruning them away. The problem with early\nstopping is that it stops us from recognizing situations where there is no one good attribute,\nbut there are combinations of attributes that are informative. For example, consider the XOR\nfunction of two binary attributes. If there are roughly equal number of examples for all four\ncombinations of input values, then neither attribute will be informative, yet the correct thing\nto do is to split on one of the attributes (it doesn’t matter which one), and then at the second\nlevel we will get splits that are informative. Early stopping would miss this, but generate-\nand-then-prune handles it correctly.\n18.3.6\nBroadening the applicability of decision trees\nIn order to extend decision tree induction to a wider variety of problems, a number of issues\nmust be addressed. We will brieﬂy mention several, suggesting that a full understanding is\nbest obtained by doing the associated exercises:\n• Missing data: In many domains, not all the attribute values will be known for every\nexample. The values might have gone unrecorded, or they might be too expensive to\nobtain. This gives rise to two problems: First, given a complete decision tree, how\nshould one classify an example that is missing one of the test attributes? Second, how\nSection 18.3.\nLearning Decision Trees\n707\nshould one modify the information-gain formula when some examples have unknown\nvalues for the attribute? These questions are addressed in Exercise 18.9.\n• Multivalued attributes: When an attribute has many possible values, the information\ngain measure gives an inappropriate indication of the attribute’s usefulness. In the ex-\ntreme case, an attribute such as ExactTime has a different value for every example,\nwhich means each subset of examples is a singleton with a unique classiﬁcation, and\nthe information gain measure would have its highest value for this attribute. But choos-\ning this split ﬁrst is unlikely to yield the best tree. One solution is to use the gain ratio\nGAIN RATIO\n(Exercise 18.10). Another possibility is to allow a Boolean test of the form A = vk, that\nis, picking out just one of the possible values for an attribute, leaving the remaining\nvalues to possibly be tested later in the tree.\n• Continuous and integer-valued input attributes: Continuous or integer-valued at-\ntributes such as Height and Weight, have an inﬁnite set of possible values. Rather than\ngenerate inﬁnitely many branches, decision-tree learning algorithms typically ﬁnd the\nsplit point that gives the highest information gain. For example, at a given node in\nSPLIT POINT\nthe tree, it might be the case that testing on Weight > 160 gives the most informa-\ntion. Efﬁcient methods exist for ﬁnding good split points: start by sorting the values\nof the attribute, and then consider only split points that are between two examples in\nsorted order that have different classiﬁcations, while keeping track of the running totals\nof positive and negative examples on each side of the split point. Splitting is the most\nexpensive part of real-world decision tree learning applications.\n• Continuous-valued output attributes: If we are trying to predict a numerical output\nvalue, such as the price of an apartment, then we need a regression tree rather than a\nREGRESSION TREE\nclassiﬁcation tree. A regression tree has at each leaf a linear function of some subset\nof numerical attributes, rather than a single value. For example, the branch for two-\nbedroom apartments might end with a linear function of square footage, number of\nbathrooms, and average income for the neighborhood. The learning algorithm must\ndecide when to stop splitting and begin applying linear regression (see Section 18.6)\nover the attributes.\nA decision-tree learning system for real-world applications must be able to handle all of\nthese problems. Handling continuous-valued variables is especially important, because both\nphysical and ﬁnancial processes provide numerical data. Several commercial packages have\nbeen built that meet these criteria, and they have been used to develop thousands of ﬁelded\nsystems. In many areas of industry and commerce, decision trees are usually the ﬁrst method\ntried when a classiﬁcation method is to be extracted from a data set. One important property\nof decision trees is that it is possible for a human to understand the reason for the output of the\nlearning algorithm. (Indeed, this is a legal requirement for ﬁnancial decisions that are subject\nto anti-discrimination laws.) This is a property not shared by some other representations,\nsuch as neural networks.",
+  "images": [
+    {
+      "path": "images/18-3-learning-decision-trees_fig_18-2.png",
+      "type": "diagram",
+      "caption": "Figure 18.2"
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_fig_18-4.png",
+      "type": "diagram",
+      "caption": "Figure 18.4"
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_fig_18-5.png",
+      "type": "diagram",
+      "caption": "Figure 18.5"
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/18-3-learning-decision-trees_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_18.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_19.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_20.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_21.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_22.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_23.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_24.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_25.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_26.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_27.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_28.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_29.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_30.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_31.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_32.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_33.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_34.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_35.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_36.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_37.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_38.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_39.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_40.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_41.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_42.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_43.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_44.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_45.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_46.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_47.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_48.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_49.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_50.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_51.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_52.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-3-learning-decision-trees_eq_53.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

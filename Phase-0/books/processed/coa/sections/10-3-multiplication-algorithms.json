@@ -1,0 +1,15 @@
+{
+  "section_id": "10-3-multiplication-algorithms",
+  "title": "10-3 Multiplication Algorithms",
+  "level": 2,
+  "chapter": "Pipeline and Vector Processing",
+  "parent_id": "pipeline-and-vector-processing",
+  "children": [
+    "hardware-implementation-for-signed-magnitude-data"
+  ],
+  "start_page": 347,
+  "end_page": 348,
+  "text": "Multiplication of two fixed-point binary numbers in signed-magnitude representation is done with paper and pencil by a process of successive shift and add operations. This process is best illustrated with a numerical example.\nThe process consists of looking at successive bits of the multiplier, least significant bit first. If the multiplier bit is a 1, the multiplicand is copied down; otherwise, zeros are copied down. The numbers copied down in successive lines are shifted one position to the left from the previous number. Finally, the numbers are added and their sum forms the product.\nThe sign of the product is determined from the signs of the multiplicand and multiplier. If they are alike, the sign of the product is positive. If they are unlike, the sign of the product is negative.",
+  "images": [],
+  "equations": []
+}

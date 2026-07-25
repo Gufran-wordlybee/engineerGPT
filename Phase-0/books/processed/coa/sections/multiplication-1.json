@@ -1,0 +1,41 @@
+{
+  "section_id": "multiplication-1",
+  "title": "Multiplication",
+  "level": 2,
+  "chapter": "Pipeline and Vector Processing",
+  "parent_id": "pipeline-and-vector-processing",
+  "children": [
+    "division-1"
+  ],
+  "start_page": 378,
+  "end_page": 381,
+  "text": "The multiplication of fixed-point decimal numbers is similar to binary except for the way the partial products are formed. A decimal multiplier has digits that range in value from 0 to 9, whereas a binary multiplier has only 0 and 1 digits. In the binary case, the multiplicand is added to the partial product if the multiplier bit is 1. In the decimal case, the multiplicand must be multiplied by the digit multipler and the result added to the partial product. This operation can be accomplished by adding the multiplicand to the partial product a number of times equal to the value of the multiplier digit.\nThe registers organization for the decimal multiplication is shown in Fig. 10-21. We are assuming here four-digit numbers, with each digit occupying four bits, for a total of 16 bits for each number. There are three registers, A, B, and Q, each having a corresponding sign flip-flop A_s, B_s, and Q_s.\n(a) Parallel decimal addition: 624 + 879 = 1503\n(b) Digit-serial, bit-parallel decimal addition\n(c) All serial decimal addition\nFigure 10-20 Three ways of adding decimal numbers.\nFigure 10-21 Registers for decimal arithmetic multiplication and division.\nRegisters A and B have four more bits designated by A_c and B_c that provide an extension of one more digit to the registers. The BCD arithmetic unit adds the five digits in parallel and places the sum in the five-digit A register. The end-carry goes to flip-flop E. The purpose of digit A_c is to accommodate an overflow while adding the multiplicand to the partial product during multiplication. The purpose of digit B_c is to form the 9's complement of the divisor when subtracted from the partial remainder during the division operation. The least significant digit in register Q is denoted by Q_L. This digit can be incremented or decremented.\nA decimal operand coming from memory consists of 17 bits. One bit (the sign) is transferred to B_s and the magnitude of the operand is placed in the lower 16 bits of B_s. Both B_s and A_s are cleared initially. The result of the operation is also 17 bits long and does not use the A_s part of the A register.\nThe decimal multiplication algorithm is shown in Fig. 10-22. Initially, the entire A register and B_t are cleared and the sequence counter SC is set to a number k equal to the number of digits in the multiplier. The low-order digit of the multiplier in Q_t is checked. If it is not equal to 0, the multiplicand in B is added to the partial product in A once and Q_t is decremented. Q_t is checked again and the process is repeated until it is equal to 0. In this way, the multiplicand in B is added to the partial product a number of times equal to the multiplier digit. Any temporary overflow digit will reside in A_t and can range in value from 0 to 9.\nNext, the partial product and the multiplier are shifted once to the right. This places zero in A_r and transfers the next multiplier quotient into Q_L. The process is then repeated k times to form a double-length product in AQ.\nFigure 10-22 Flowchart for decimal multiplication.",
+  "images": [
+    {
+      "path": "images/multiplication_img_1.png",
+      "type": "figure",
+      "caption": null
+    },
+    {
+      "path": "images/multiplication_img_2.png",
+      "type": "figure",
+      "caption": null
+    },
+    {
+      "path": "images/multiplication_img_3.png",
+      "type": "figure",
+      "caption": null
+    },
+    {
+      "path": "images/multiplication_img_4.png",
+      "type": "figure",
+      "caption": null
+    },
+    {
+      "path": "images/multiplication_img_5.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

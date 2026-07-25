@@ -1,0 +1,18 @@
+{
+  "section_id": "20-learning-probabilistic-models",
+  "title": "20 Learning Probabilistic Models",
+  "level": 2,
+  "chapter": "V: Learning",
+  "parent_id": "v-learning",
+  "children": [
+    "20-1-statistical-learning",
+    "20-2-learning-with-complete-data",
+    "20-3-learning-with-hidden-variables-the-em-algorithm",
+    "20-4-summary-bibliographical-and-historical-notes-exercises"
+  ],
+  "start_page": 820,
+  "end_page": 820,
+  "text": "20\nLEARNING\nPROBABILISTIC MODELS\nIn which we view learning as a form of uncertain reasoning from observations.\nChapter 13 pointed out the prevalence of uncertainty in real environments. Agents can handle\nuncertainty by using the methods of probability and decision theory, but ﬁrst they must learn\ntheir probabilistic theories of the world from experience. This chapter explains how they\ncan do that, by formulating the learning task itself as a process of probabilistic inference\n(Section 20.1). We will see that a Bayesian view of learning is extremely powerful, providing\ngeneral solutions to the problems of noise, overﬁtting, and optimal prediction. It also takes\ninto account the fact that a less-than-omniscient agent can never be certain about which theory\nof the world is correct, yet must still make decisions by using some theory of the world.\nWe describe methods for learning probability models—primarily Bayesian networks—\nin Sections 20.2 and 20.3. Some of the material in this chapter is fairly mathematical, al-\nthough the general lessons can be understood without plunging into the details. It may beneﬁt\nthe reader to review Chapters 13 and 14 and peek at Appendix A.\n20.1\nSTATISTICAL LEARNING\nThe key concepts in this chapter, just as in Chapter 18, are data and hypotheses. Here, the\ndata are evidence—that is, instantiations of some or all of the random variables describing the\ndomain. The hypotheses in this chapter are probabilistic theories of how the domain works,\nincluding logical theories as a special case.\nConsider a simple example. Our favorite Surprise candy comes in two ﬂavors: cherry\n(yum) and lime (ugh). The manufacturer has a peculiar sense of humor and wraps each piece\nof candy in the same opaque wrapper, regardless of ﬂavor. The candy is sold in very large\nbags, of which there are known to be ﬁve kinds—again, indistinguishable from the outside:\nh1: 100% cherry,\nh2: 75% cherry + 25% lime,\nh3: 50% cherry + 50% lime,\nh4: 25% cherry + 75% lime,\nh5: 100% lime .\n802",
+  "images": [],
+  "equations": []
+}

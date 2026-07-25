@@ -1,0 +1,24 @@
+{
+  "section_id": "parallel-priority-interrupt",
+  "title": "Parallel Priority Interrupt",
+  "level": 2,
+  "chapter": "11-5 Priority Interrupt",
+  "parent_id": "11-5-priority-interrupt",
+  "children": [],
+  "start_page": 416,
+  "end_page": 418,
+  "text": "The parallel priority interrupt method uses a register whose bits are set separately by the interrupt signal from each device. Priority is established according to the position of the bits in the register. In addition to the interrupt register, the circuit may include a mask register whose purpose is to control the status of each interrupt request. The mask register can be programmed to disable\nFigure 11-13 One stage of the daisy-chain priority arrangement.\nlower-priority interrupts while a higher-priority device is being serviced. It can also provide a facility that allows a high-priority device to interrupt the CPU while a lower-priority device is being serviced.\nThe priority logic for a system of four interrupt sources is shown in Fig. 11-14. It consists of an interrupt register whose individual bits are set by external conditions and cleared by program instructions. The magnetic disk, being a high-speed device, is given the highest priority. The printer has the next priority, followed by a character reader and a keyboard. The mask register has the same number of bits as the interrupt register. By means of program instructions, it is possible to set or reset any bit in the mask register. Each interrupt bit and its corresponding mask bit are applied to an AND gate to produce the four inputs to a priority encoder. In this way an interrupt is recognized only if its corresponding mask bit is set to 1 by the program. The priority encoder generates two bits of the vector address, which is transferred to the CPU.\nAnother output from the encoder sets an interrupt status flip-flop IST when an interrupt that is not masked occurs. The interrupt enable flip-flop IEN can be set or cleared by the program to provide an overall control over the interrupt system. The outputs of IST ANDed with IEN provide a common interrupt signal for the CPU. The interrupt acknowledge INTACK signal from the CPU enables the bus buffers in the output register and a vector address VAD is placed into the data bus. We will now explain the priority encoder circuit and then discuss the interaction between the priority interrupt controller and the CPU.\npriority logic\nFigure 11-14 Priority interrupt hardware.",
+  "images": [
+    {
+      "path": "images/parallel-priority-interrupt_img_1.png",
+      "type": "figure",
+      "caption": null
+    },
+    {
+      "path": "images/parallel-priority-interrupt_img_2.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

@@ -1,0 +1,23 @@
+{
+  "section_id": "25-robotics",
+  "title": "25 Robotics",
+  "level": 2,
+  "chapter": "VI: Communicating, perceiving, and acting",
+  "parent_id": "vi-communicating-perceiving-and-acting",
+  "children": [
+    "25-1-introduction",
+    "25-2-robot-hardware",
+    "25-3-robotic-perception",
+    "25-4-planning-to-move",
+    "25-5-planning-uncertain-movements",
+    "25-6-moving",
+    "25-7-robotic-software-architectures",
+    "25-8-application-domains",
+    "25-9-summary-bibliographical-and-historical-notes-exercises"
+  ],
+  "start_page": 989,
+  "end_page": 989,
+  "text": "25\nROBOTICS\nIn which agents are endowed with physical effectors with which to do mischief.\n25.1\nINTRODUCTION\nRobots are physical agents that perform tasks by manipulating the physical world. To do so,\nROBOT\nthey are equipped with effectors such as legs, wheels, joints, and grippers. Effectors have\nEFFECTOR\na single purpose: to assert physical forces on the environment.1 Robots are also equipped\nwith sensors, which allow them to perceive their environment. Present day robotics em-\nSENSOR\nploys a diverse set of sensors, including cameras and lasers to measure the environment, and\ngyroscopes and accelerometers to measure the robot’s own motion.\nMost of today’s robots fall into one of three primary categories. Manipulators, or robot\nMANIPULATOR\narms (Figure 25.1(a)), are physically anchored to their workplace, for example in a factory\nassembly line or on the International Space Station. Manipulator motion usually involves\na chain of controllable joints, enabling such robots to place their effectors in any position\nwithin the workplace. Manipulators are by far the most common type of industrial robots,\nwith approximately one million units installed worldwide. Some mobile manipulators are\nused in hospitals to assist surgeons. Few car manufacturers could survive without robotic\nmanipulators, and some manipulators have even been used to generate original artwork.\nThe second category is the mobile robot. Mobile robots move about their environment\nMOBILE ROBOT\nusing wheels, legs, or similar mechanisms. They have been put to use delivering food in\nhospitals, moving containers at loading docks, and similar tasks. Unmanned ground vehi-\ncles, or UGVs, drive autonomously on streets, highways, and off-road. The planetary rover\nUGV\nPLANETARY ROVER\nshown in Figure 25.2(b) explored Mars for a period of 3 months in 1997. Subsequent NASA\nrobots include the twin Mars Exploration Rovers (one is depicted on the cover of this book),\nwhich landed in 2003 and were still operating six years later. Other types of mobile robots\ninclude unmanned air vehicles (UAVs), commonly used for surveillance, crop-spraying, and\nUAV\n1 In Chapter 2 we talked about actuators, not effectors. Here we distinguish the effector (the physical device)\nfrom the actuator (the control line that communicates a command to the effector).\n971",
+  "images": [],
+  "equations": []
+}

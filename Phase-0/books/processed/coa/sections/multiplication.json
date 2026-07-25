@@ -1,0 +1,21 @@
+{
+  "section_id": "multiplication",
+  "title": "Multiplication",
+  "level": 2,
+  "chapter": "Pipeline and Vector Processing",
+  "parent_id": "pipeline-and-vector-processing",
+  "children": [
+    "division"
+  ],
+  "start_page": 367,
+  "end_page": 369,
+  "text": "The multiplication of two floating-point numbers requires that we multiply the mantissas and add the exponents. No comparison of exponents or alignment of mantissas is necessary. The multiplication of the mantissas is performed in the same way as in fixed-point to provide a double-precision product. The double-precision answer is used in fixed-point numbers to increase the accuracy of the product. In floating-point, the range of a single-precision mantissa combined with the exponent is usually accurate enough so that only single-precision numbers are maintained. Thus the half most significant bits of the mantissa product and the exponent will be taken together to form a single-precision floating-point product.\nThe multiplication algorithm can be subdivided into four parts:\nCheck for zeros.\n2. Add the exponents.\n3. Multiply the mantissas.\n4. Normalize the product.\nSteps 2 and 3 can be done simultaneously if separate adders are available for the mantissas and exponents.\nThe flowchart for floating-point multiplication is shown in Fig. 10-16. The two operands are checked to determine if they contain a zero. If either operand is equal to zero, the product in the AC is set to zero and the operation is\nFigure 10-16 Multiplication of floating-point numbers.\nterminated. If neither of the operands is equal to zero, the process continues with the exponent addition.\nThe exponent of the multiplier is in q and the adder is between exponents a and b. It is necessary to transfer the exponents from q to a, add the two exponents, and transfer the sum into a. Since both exponents are biased by the addition of a constant, the exponent sum will have double this bias. The correct biased exponent for the product is obtained by subtracting the bias number from the sum.\nThe multiplication of the mantissas is done as in the fixed-point case with the product residing in A and Q. Overflow cannot occur during multiplication, so there is no need to check for it.\nThe product may have an underflow, so the most significant bit in A is checked. If it is a 1, the product is already normalized. If it is a 0, the mantissa in AQ is shifted left and the exponent decremented. Note that only one normalization shift is necessary. The multiplier and multiplicand were originally normalized and contained fractions. The smallest normalized operand is 0.1, so the smallest possible product is 0.01. Therefore, only one leading zero may occur.\nAlthough the low-order half of the mantissa is in Q, we do not use it for the floating-point product. Only the value in the AC is taken as the product.",
+  "images": [
+    {
+      "path": "images/multiplication_img_1.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

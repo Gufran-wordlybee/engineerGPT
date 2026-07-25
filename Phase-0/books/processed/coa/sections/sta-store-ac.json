@@ -1,0 +1,13 @@
+{
+  "section_id": "sta-store-ac",
+  "title": "STA: Store AC",
+  "level": 4,
+  "chapter": "5-6 Memory-Reference Instructions",
+  "parent_id": "5-6-memory-reference-instructions",
+  "children": [],
+  "start_page": 157,
+  "end_page": 157,
+  "text": "This instruction stores the content of AC into the memory word specified by the effective address. Since the output of AC is applied to the bus and the data input of memory is connected to the bus, we can execute this instruction with one microoperation:\nD_3T_4: M[AR] \\leftarrow AC, SC \\leftarrow 0",
+  "images": [],
+  "equations": []
+}

@@ -1,0 +1,21 @@
+{
+  "section_id": "parallel-arbitration-logic",
+  "title": "Parallel Arbitration Logic",
+  "level": 2,
+  "chapter": "13-3 Interprocessor Arbitration",
+  "parent_id": "13-3-interprocessor-arbitration",
+  "children": [
+    "dynamic-arbitration-algorithms"
+  ],
+  "start_page": 502,
+  "end_page": 504,
+  "text": "The parallel bus arbitration technique uses an external priority encoder and a decoder as shown in Fig. 13-11. Each bus arbiter in the parallel scheme has a bus request output line and a bus acknowledge input line. Each arbiter enables the request line when its processor is requesting access to the system\nFigure 13-11 Parallel arbitration.\nbus. The processor takes control of the bus if its acknowledge input line is enabled. The bus busy line provides an orderly transfer of control, as in the daisy-chaining case.\nFigure 1\\overline{3}-11 shows the request lines from four arbiters going into a 4 \\times 2 priority encoder. The output of the encoder generates a 2-bit code which represents the highest-priority unit among those requesting the bus. The truth table of the priority encoder can be found in Table 11-2 (Sec. 11-5). The 2-bit code from the encoder output drives a 2 \\times 4 decoder which enables the proper acknowledge line to grant bus access to the highest-priority unit.\nWe can now explain the function of the bus arbitration signals listed in Table 13-1. The bus priority-in BPRN and bus priority-out BPRO are used for a daisy-chain connection of bus arbitration circuits. The bus busy signal BUSY is an open-collector output used to instruct all arbiters when the bus is busy conducting a transfer. The common bus request CBRQ is also an open-collector output that serves to instruct the arbiter if there are any other arbiters of lower-priority requesting use of the system bus. The signals used to construct a parallel arbitration procedure are bus request BREQ and priority-in BPRN,\ncorresponding to the request and acknowledge signals in Fig. 13-11. The bus clock BCLK is used to synchronize all bus transactions.",
+  "images": [
+    {
+      "path": "images/parallel-arbitration-logic_img_1.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

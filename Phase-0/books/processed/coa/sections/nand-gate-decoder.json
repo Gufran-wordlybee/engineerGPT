@@ -1,0 +1,19 @@
+{
+  "section_id": "nand-gate-decoder",
+  "title": "NAND Gate Decoder",
+  "level": 4,
+  "chapter": "Digital Components",
+  "parent_id": "2-2-decoders",
+  "children": [],
+  "start_page": 59,
+  "end_page": 60,
+  "text": "Some decoders are constructed with NAND instead of AND gates. Since a NAND gate produces the AND operation with an inverted output, it becomes more economical to generate the decoder outputs in their complement form. A 2-to-4-line decoder with an enable input constructed with NAND gates is shown in Fig. 2-2. The circuit operates with complemented outputs and a complemented enable input E. The decoder is enabled when E is equal to 0. As indicated by the truth table, only one output is equal to 0 at any given time; the other three outputs are equal to 1. The output whose value is equal to 0 represents the equivalent binary number in inputs A_1 and A_0. The circuit is disabled when E is equal to 1, regardless of the values of the other two inputs.\nFigure 2-2 2-to-4-line decoder with NAND gates.\n\n[Table]\nEA_1A_0D_0D_1D_2D_30001001110011011010110101111101××1111\n\n(b) Truth table\nWhen the circuit is disabled, none of the outputs are selected and all outputs are equal to 1. In general, a decoder may operate with complemented or uncomplemented outputs. The enable input may be activated with a 0 or with a 1 signal level. Some decoders have two or more enable inputs that must satisfy a given logic condition in order to enable the circuit.",
+  "images": [
+    {
+      "path": "images/nand-gate-decoder_img_1.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

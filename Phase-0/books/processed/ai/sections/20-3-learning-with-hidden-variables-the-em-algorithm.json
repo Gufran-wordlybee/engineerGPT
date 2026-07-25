@@ -1,0 +1,370 @@
+{
+  "section_id": "20-3-learning-with-hidden-variables-the-em-algorithm",
+  "title": "20.3 Learning with Hidden Variables: The EM Algorithm",
+  "level": 3,
+  "chapter": "V: Learning",
+  "parent_id": "20-learning-probabilistic-models",
+  "children": [],
+  "start_page": 834,
+  "end_page": 842,
+  "text": "816\n20.\nLearning Probabilistic Models\nAnother possibility is to use kernel functions, as we did for locally weighted regres-\nsion. To apply a kernel model to density estimation, assume that each data point generates its\nown little density function, using a Gaussian kernel. The estimated density at a query point x\nis then the average density as given by each kernel function:\nP(x) = 1\nN\nN\n\n\nj=1\nK(x, xj) .\nWe will assume spherical Gaussians with standard deviation w along each axis:\nK(x, xj) =\n1\n(w2√\n2π)d e−\nD(x,xj)2\n2w2\n,\nwhere d is the number of dimensions in x and D is the Euclidean distance function. We\nstill have the problem of choosing a suitable value for kernel width w; Figure 20.9 shows\nvalues that are too small, just right, and too large. A good value of w can be chosen by using\ncross-validation.\n20.3\nLEARNING WITH HIDDEN VARIABLES: THE EM ALGORITHM\nThe preceding section dealt with the fully observable case. Many real-world problems have\nhidden variables (sometimes called latent variables), which are not observable in the data\nLATENT VARIABLE\nthat are available for learning. For example, medical records often include the observed\nsymptoms, the physician’s diagnosis, the treatment applied, and perhaps the outcome of the\ntreatment, but they seldom contain a direct observation of the disease itself! (Note that the\ndiagnosis is not the disease; it is a causal consequence of the observed symptoms, which are in\nturn caused by the disease.) One might ask, “If the disease is not observed, why not construct\na model without it?” The answer appears in Figure 20.10, which shows a small, ﬁctitious\ndiagnostic model for heart disease. There are three observable predisposing factors and three\nobservable symptoms (which are too depressing to name). Assume that each variable has\nthree possible values (e.g., none, moderate, and severe). Removing the hidden variable\nfrom the network in (a) yields the network in (b); the total number of parameters increases\nfrom 78 to 708. Thus, latent variables can dramatically reduce the number of parameters\nrequired to specify a Bayesian network. This, in turn, can dramatically reduce the amount of\ndata needed to learn the parameters.\nHidden variables are important, but they do complicate the learning problem. In Fig-\nure 20.10(a), for example, it is not obvious how to learn the conditional distribution for\nHeartDisease, given its parents, because we do not know the value of HeartDisease in each\ncase; the same problem arises in learning the distributions for the symptoms. This section\ndescribes an algorithm called expectation–maximization, or EM, that solves this problem\nEXPECTATION–\nMAXIMIZATION\nin a very general way. We will show three examples and then provide a general description.\nThe algorithm seems like magic at ﬁrst, but once the intuition has been developed, one can\nﬁnd applications for EM in a huge range of learning problems.\nSection 20.3.\nLearning with Hidden Variables: The EM Algorithm\n817\nSmoking\nDiet\nExercise\nSymptom1\nSymptom2\nSymptom3\n(a)\n(b)\nHeartDisease\nSmoking\nDiet\nExercise\nSymptom1\nSymptom2\nSymptom3\n2\n2\n2\n54\n6\n6\n6\n2\n2\n2\n54\n162\n486\nFigure 20.10\n(a) A simple diagnostic network for heart disease, which is assumed to be\na hidden variable. Each variable has three possible values and is labeled with the number\nof independent parameters in its conditional distribution; the total number is 78. (b) The\nequivalent network with HeartDisease removed. Note that the symptom variables are no\nlonger conditionally independent given their parents. This network requires 708 parameters.\n20.3.1\nUnsupervised clustering: Learning mixtures of Gaussians\nUnsupervised clustering is the problem of discerning multiple categories in a collection of\nUNSUPERVISED\nCLUSTERING\nobjects. The problem is unsupervised because the category labels are not given. For example,\nsuppose we record the spectra of a hundred thousand stars; are there different types of stars\nrevealed by the spectra, and, if so, how many types and what are their characteristics? We\nare all familiar with terms such as “red giant” and “white dwarf,” but the stars do not carry\nthese labels on their hats—astronomers had to perform unsupervised clustering to identify\nthese categories. Other examples include the identiﬁcation of species, genera, orders, and\nso on in the Linnæan taxonomy and the creation of natural kinds for ordinary objects (see\nChapter 12).\nUnsupervised clustering begins with data. Figure 20.11(b) shows 500 data points, each\nof which speciﬁes the values of two continuous attributes. The data points might correspond\nto stars, and the attributes might correspond to spectral intensities at two particular frequen-\ncies. Next, we need to understand what kind of probability distribution might have generated\nthe data. Clustering presumes that the data are generated from a mixture distribution, P.\nMIXTURE\nDISTRIBUTION\nSuch a distribution has k components, each of which is a distribution in its own right. A\nCOMPONENT\ndata point is generated by ﬁrst choosing a component and then generating a sample from that\ncomponent. Let the random variable C denote the component, with values 1, . . . , k; then the\nmixture distribution is given by\nP(x) =\nk\n\n\ni = 1\nP(C = i) P(x | C = i) ,\nwhere x refers to the values of the attributes for a data point. For continuous data, a natural\nchoice for the component distributions is the multivariate Gaussian, which gives the so-called\nmixture of Gaussians family of distributions. The parameters of a mixture of Gaussians are\nMIXTURE OF\nGAUSSIANS\n818\n20.\nLearning Probabilistic Models\n0\n0.2\n0.4\n0.6\n0.8\n1\n0\n0.2\n0.4\n0.6\n0.8\n1\n0\n0.2\n0.4\n0.6\n0.8\n1\n0\n0.2\n0.4\n0.6\n0.8\n1\n0\n0.2\n0.4\n0.6\n0.8\n1\n0\n0.2\n0.4\n0.6\n0.8\n1\n(a)\n(b)\n(c)\nFigure 20.11\n(a) A Gaussian mixture model with three components; the weights (left-to-\nright) are 0.2, 0.3, and 0.5. (b) 500 data points sampled from the model in (a). (c) The model\nreconstructed by EM from the data in (b).\nwi = P(C = i) (the weight of each component), μi (the mean of each component), and Σi\n(the covariance of each component). Figure 20.11(a) shows a mixture of three Gaussians;\nthis mixture is in fact the source of the data in (b) as well as being the model shown in\nFigure 20.7(a) on page 815.\nThe unsupervised clustering problem, then, is to recover a mixture model like the one\nin Figure 20.11(a) from raw data like that in Figure 20.11(b). Clearly, if we knew which com-\nponent generated each data point, then it would be easy to recover the component Gaussians:\nwe could just select all the data points from a given component and then apply (a multivariate\nversion of) Equation (20.4) (page 809) for ﬁtting the parameters of a Gaussian to a set of data.\nOn the other hand, if we knew the parameters of each component, then we could, at least in\na probabilistic sense, assign each data point to a component. The problem is that we know\nneither the assignments nor the parameters.\nThe basic idea of EM in this context is to pretend that we know the parameters of the\nmodel and then to infer the probability that each data point belongs to each component. After\nthat, we reﬁt the components to the data, where each component is ﬁtted to the entire data set\nwith each point weighted by the probability that it belongs to that component. The process\niterates until convergence. Essentially, we are “completing” the data by inferring probability\ndistributions over the hidden variables—which component each data point belongs to—based\non the current model. For the mixture of Gaussians, we initialize the mixture-model parame-\nters arbitrarily and then iterate the following two steps:\n1. E-step: Compute the probabilities pij = P(C = i | xj), the probability that datum xj\nwas generated by component i. By Bayes’ rule, we have pij = αP(xj | C = i)P(C = i).\nThe term P(xj | C = i) is just the probability at xj of the ith Gaussian, and the term\nP(C = i) is just the weight parameter for the ith Gaussian. Deﬁne ni = \u0002\nj pij, the\neffective number of data points currently assigned to component i.\n2. M-step: Compute the new mean, covariance, and component weights using the follow-\ning steps in sequence:\nSection 20.3.\nLearning with Hidden Variables: The EM Algorithm\n819\nμi ←\n\n\nj\npijxj/ni\nΣi ←\n\n\nj\npij(xj −μi)(xj −μi)⊤/ni\nwi ←ni/N\nwhere N is the total number of data points. The E-step, or expectation step, can be viewed\nas computing the expected values pij of the hidden indicator variables Zij, where Zij is 1 if\nINDICATOR VARIABLE\ndatum xj was generated by the ith component and 0 otherwise. The M-step, or maximization\nstep, ﬁnds the new values of the parameters that maximize the log likelihood of the data,\ngiven the expected values of the hidden indicator variables.\nThe ﬁnal model that EM learns when it is applied to the data in Figure 20.11(a) is shown\nin Figure 20.11(c); it is virtually indistinguishable from the original model from which the\ndata were generated. Figure 20.12(a) plots the log likelihood of the data according to the\ncurrent model as EM progresses.\nThere are two points to notice. First, the log likelihood for the ﬁnal learned model\nslightly exceeds that of the original model, from which the data were generated. This might\nseem surprising, but it simply reﬂects the fact that the data were generated randomly and\nmight not provide an exact reﬂection of the underlying model. The second point is that EM\nincreases the log likelihood of the data at every iteration. This fact can be proved in general.\nFurthermore, under certain conditions (that hold in ost cases), EM can be proven to reach\na local maximum in likelihood. (In rare cases, it could reach a saddle point or even a local\nminimum.) In this sense, EM resembles a gradient-based hill-climbing algorithm, but notice\nthat it has no “step size” parameter.\n-200\n-100\n0\n100\n200\n300\n400\n500\n600\n700\n0\n5\n10\n15\n20\nLog-likelihood L\nIteration number\n-2025\n-2020\n-2015\n-2010\n-2005\n-2000\n-1995\n-1990\n-1985\n-1980\n-1975\n0\n20\n40\n60\n80\n100\n120\nLog-likelihood L\nIteration number\n(a)\n(b)\nFigure 20.12\nGraphs showing the log likelihood of the data, L, as a function of the EM\niteration. The horizontal line shows the log likelihood according to the true model. (a) Graph\nfor the Gaussian mixture model in Figure 20.11. (b) Graph for the Bayesian network in\nFigure 20.13(a).\n820\n20.\nLearning Probabilistic Models\n(a)\n(b)\nC\nX\nHole\nBag\nP(Bag=1)\nθ\nWrapper\nFlavor\nBag\n1\n2\nP(F=cherry | B)\nθF2\nθF1\nFigure 20.13\n(a) A mixture model for candy. The proportions of different ﬂavors, wrap-\npers, presence of holes depend on the bag, which is not observed. (b) Bayesian network for\na Gaussian mixture. The mean and covariance of the observable variables X depend on the\ncomponent C.\nThings do not always go as well as Figure 20.12(a) might suggest. It can happen, for\nexample, that one Gaussian component shrinks so that it covers just a single data point. Then\nits variance will go to zero and its likelihood will go to inﬁnity! Another problem is that\ntwo components can “merge,” acquiring identical means and variances and sharing their data\npoints. These kinds of degenerate local maxima are serious problems, especially in high\ndimensions. One solution is to place priors on the model parameters and to apply the MAP\nversion of EM. Another is to restart a component with new random parameters if it gets too\nsmall or too close to another component. Sensible initialization also helps.\n20.3.2\nLearning Bayesian networks with hidden variables\nTo learn a Bayesian network with hidden variables, we apply the same insights that worked\nfor mixtures of Gaussians. Figure 20.13 represents a situation in which there are two bags of\ncandies that have been mixed together. Candies are described by three features: in addition\nto the Flavor and the Wrapper, some candies have a Hole in the middle and some do not.\nThe distribution of candies in each bag is described by a naive Bayes model: the features\nare independent, given the bag, but the conditional probability distribution for each feature\ndepends on the bag. The parameters are as follows: θ is the prior probability that a candy\ncomes from Bag 1; θF 1 and θF 2 are the probabilities that the ﬂavor is cherry, given that the\ncandy comes from Bag 1 or Bag 2 respectively; θW 1 and θW 2 give the probabilities that the\nwrapper is red; and θH1 and θH2 give the probabilities that the candy has a hole. Notice that\nthe overall model is a mixture model. (In fact, we can also model the mixture of Gaussians\nas a Bayesian network, as shown in Figure 20.13(b).) In the ﬁgure, the bag is a hidden\nvariable because, once the candies have been mixed together, we no longer know which bag\neach candy came from. In such a case, can we recover the descriptions of the two bags by\nSection 20.3.\nLearning with Hidden Variables: The EM Algorithm\n821\nobserving candies from the mixture? Let us work through an iteration of EM for this problem.\nFirst, let’s look at the data. We generated 1000 samples from a model whose true parameters\nare as follows:\nθ = 0.5, θF 1 = θW 1 = θH1 = 0.8, θF 2 = θW 2 = θH2 = 0.3 .\n(20.7)\nThat is, the candies are equally likely to come from either bag; the ﬁrst is mostly cherries\nwith red wrappers and holes; the second is mostly limes with green wrappers and no holes.\nThe counts for the eight possible kinds of candy are as follows:\nW = red\nW = green\nH = 1 H = 0 H = 1 H = 0\nF = cherry\n273\n93\n104\n90\nF = lime\n79\n100\n94\n167\nWe start by initializing the parameters. For numerical simplicity, we arbitrarily choose5\nθ(0) = 0.6, θ(0)\nF 1 = θ(0)\nW 1 = θ(0)\nH1 = 0.6, θ(0)\nF 2 = θ(0)\nW 2 = θ(0)\nH2 = 0.4 .\n(20.8)\nFirst, let us work on the θ parameter. In the fully observable case, we would estimate this\ndirectly from the observed counts of candies from bags 1 and 2. Because the bag is a hidden\nvariable, we calculate the expected counts instead. The expected count ˆN(Bag = 1) is the\nsum, over all candies, of the probability that the candy came from bag 1:\nθ(1) = ˆN(Bag = 1)/N =\nN\n\n\nj = 1\nP(Bag = 1 | ﬂavor j, wrapper j, holesj)/N .\nThese probabilities can be computed by any inference algorithm for Bayesian networks. For\na naive Bayes model such as the one in our example, we can do the inference “by hand,”\nusing Bayes’ rule and applying conditional independence:\nθ(1) = 1\nN\nN\n\n\nj = 1\nP(ﬂavor j | Bag = 1)P(wrapper j | Bag = 1)P(holesj | Bag = 1)P(Bag = 1)\n\u0002\ni P(ﬂavor j | Bag = i)P(wrapper j | Bag = i)P(holesj | Bag = i)P(Bag = i) .\nApplying this formula to, say, the 273 red-wrapped cherry candies with holes, we get a con-\ntribution of\n273\n1000 ·\nθ(0)\nF 1θ(0)\nW 1θ(0)\nH1θ(0)\nθ(0)\nF 1θ(0)\nW 1θ(0)\nH1θ(0) + θ(0)\nF 2θ(0)\nW 2θ(0)\nH2(1 −θ(0))\n≈0.22797 .\nContinuing with the other seven kinds of candy in the table of counts, we obtain θ(1) = 0.6124.\nNow let us consider the other parameters, such as θF 1. In the fully observable case, we\nwould estimate this directly from the observed counts of cherry and lime candies from bag 1.\nThe expected count of cherry candies from bag 1 is given by\n\n\nj:Flavor j = cherry\nP(Bag = 1 | Flavor j = cherry, wrapper j, holesj) .\n5 It is better in practice to choose them randomly, to avoid local maxima due to symmetry.\n822\n20.\nLearning Probabilistic Models\nAgain, these probabilities can be calculated by any Bayes net algorithm. Completing this\nprocess, we obtain the new values of all the parameters:\nθ(1) = 0.6124, θ(1)\nF 1 = 0.6684, θ(1)\nW 1 = 0.6483, θ(1)\nH1 = 0.6558,\nθ(1)\nF 2 = 0.3887, θ(1)\nW 2 = 0.3817, θ(1)\nH2 = 0.3827 .\n(20.9)\nThe log likelihood of the data increases from about −2044 initially to about −2021 after\nthe ﬁrst iteration, as shown in Figure 20.12(b). That is, the update improves the likelihood\nitself by a factor of about e23 ≈1010. By the tenth iteration, the learned model is a better\nﬁt than the original model (L = −1982.214). Thereafter, progress becomes very slow. This\nis not uncommon with EM, and many practical systems combine EM with a gradient-based\nalgorithm such as Newton–Raphson (see Chapter 4) for the last phase of learning.\nThe general lesson from this example is that the parameter updates for Bayesian net-\nwork learning with hidden variables are directly available from the results of inference on\neach example. Moreover, only local posterior probabilities are needed for each parame-\nter. Here, “local” means that the CPT for each variable Xi can be learned from posterior\nprobabilities involving just Xi and its parents Ui. Deﬁning θijk to be the CPT parameter\nP(Xi = xij | Ui = uik), the update is given by the normalized expected counts as follows:\nθijk ←ˆN(Xi = xij, Ui = uik)/ ˆN(Ui = uik) .\nThe expected counts are obtained by summing over the examples, computing the probabilities\nP(Xi = xij, Ui = uik) for each by using any Bayes net inference algorithm. For the exact\nalgorithms—including variable elimination—all these probabilities are obtainable directly as\na by-product of standard inference, with no need for extra computations speciﬁc to learning.\nMoreover, the information needed for learning is available locally for each parameter.\n20.3.3\nLearning hidden Markov models\nOur ﬁnal application of EM involves learning the transition probabilities in hidden Markov\nmodels (HMMs). Recall from Section 15.3 that a hidden Markov model can be represented\nby a dynamic Bayes net with a single discrete state variable, as illustrated in Figure 20.14.\nEach data point consists of an observation sequence of ﬁnite length, so the problem is to\nlearn the transition probabilities from a set of observation sequences (or from just one long\nsequence).\nWe have already worked out how to learn Bayes nets, but there is one complication:\nin Bayes nets, each parameter is distinct; in a hidden Markov model, on the other hand, the\nindividual transition probabilities from state i to state j at time t, θijt = P(Xt+1 = j | Xt = i),\nare repeated across time—that is, θijt = θij for all t. To estimate the transition probability\nfrom state i to state j, we simply calculate the expected proportion of times that the system\nundergoes a transition to state j when in state i:\nθij ←\n\n\nt\nˆN(Xt+1 = j, Xt = i)/\n\n\nt\nˆN(Xt = i) .\nThe expected counts are computed by an HMM inference algorithm. The forward–backward\nalgorithm shown in Figure 15.4 can be modiﬁed very easily to compute the necessary prob-\nabilities. One important point is that the probabilities required are obtained by smoothing\nSection 20.3.\nLearning with Hidden Variables: The EM Algorithm\n823\n0.3\nf\n0.7\nt\nP(R )\n1\nR0\n0.7\nP(R0)\n0.2\nf\n0.9\nt\nP(U )\n1\nR1\nUmbrella1\nRain0\nRain1\n0.7\nP(R0)\n4\n0.2\nf\n0.9\nt\nP(U )\nR4\nf\nt\n0.3\n0.7\nP(R  )\n4\nR3\nUmbrella4\nRain4\n0.2\nf\n0.9\nt\nP(U )\n3\nR3\nf\nt\nR\n0.3\n0.7\nP(R  )\n3\n2\nUmbrella3\nRain3\n0.2\nf\n0.9\nt\nP(U )\n2\nR2\nf\nt\nR\n0.3\n0.7\nP(R )\n2\n1\nUmbrella2\nRain2\n0.2\nf\n0.9\nt\nP(U )\n1\nR1\nf\nt\nR\n0.3\n0.7\nP(R )\n1\n0\nUmbrella1\nRain0\nRain1\nFigure 20.14\nAn unrolled dynamic Bayesian network that represents a hidden Markov\nmodel (repeat of Figure 15.16).\nrather than ﬁltering; that is, we need to pay attention to subsequent evidence in estimating\nthe probability that a particular transition occurred. The evidence in a murder case is usually\nobtained after the crime (i.e., the transition from state i to state j) has taken place.\n20.3.4\nThe general form of the EM algorithm\nWe have seen several instances of the EM algorithm. Each involves computing expected\nvalues of hidden variables for each example and then recomputing the parameters, using the\nexpected values as if they were observed values. Let x be all the observed values in all the\nexamples, let Z denote all the hidden variables for all the examples, and let θ be all the\nparameters for the probability model. Then the EM algorithm is\nθ(i+1) = argmax\nθ\n\n\nz\nP(Z = z | x, θ(i))L(x, Z = z | θ) .\nThis equation is the EM algorithm in a nutshell. The E-step is the computation of the summa-\ntion, which is the expectation of the log likelihood of the “completed” data with respect to the\ndistribution P(Z = z | x, θ(i)), which is the posterior over the hidden variables, given the data.\nThe M-step is the maximization of this expected log likelihood with respect to the parame-\nters. For mixtures of Gaussians, the hidden variables are the Zijs, where Zij is 1 if example j\nwas generated by component i. For Bayes nets, Zij is the value of unobserved variable Xi in\nexample j. For HMMs, Zjt is the state of the sequence in example j at time t. Starting from\nthe general form, it is possible to derive an EM algorithm for a speciﬁc application once the\nappropriate hidden variables have been identiﬁed.\nAs soon as we understand the general idea of EM, it becomes easy to derive all sorts\nof variants and improvements. For example, in many cases the E-step—the computation of\nposteriors over the hidden variables—is intractable, as in large Bayes nets. It turns out that\none can use an approximate E-step and still obtain an effective learning algorithm. With a\nsampling algorithm such as MCMC (see Section 14.5), the learning process is very intuitive:\neach state (conﬁguration of hidden and observed variables) visited by MCMC is treated ex-\nactly as if it were a complete observation. Thus, the parameters can be updated directly after\neach MCMC transition. Other forms of approximate inference, such as variational and loopy\nmethods, have also proved effective for learning very large networks.\n824\n20.\nLearning Probabilistic Models\n20.3.5\nLearning Bayes net structures with hidden variables\nIn Section 20.2.5, we discussed the problem of learning Bayes net structures with complete\ndata. When unobserved variables may be inﬂuencing the data that are observed, things get\nmore difﬁcult. In the simplest case, a human expert might tell the learning algorithm that cer-\ntain hidden variables exist, leaving it to the algorithm to ﬁnd a place for them in the network\nstructure. For example, an algorithm might try to learn the structure shown in Figure 20.10(a)\non page 817, given the information that HeartDisease (a three-valued variable) should be in-\ncluded in the model. As in the complete-data case, the overall algorithm has an outer loop that\nsearches over structures and an inner loop that ﬁts the network parameters given the structure.\nIf the learning algorithm is not told which hidden variables exist, then there are two\nchoices: either pretend that the data is really complete—which may force the algorithm to\nlearn a parameter-intensive model such as the one in Figure 20.10(b)—or invent new hidden\nvariables in order to simplify the model. The latter approach can be implemented by including\nnew modiﬁcation choices in the structure search: in addition to modifying links, the algorithm\ncan add or delete a hidden variable or change its arity. Of course, the algorithm will not know\nthat the new variable it has invented is called HeartDisease; nor will it have meaningful\nnames for the values. Fortunately, newly invented hidden variables will usually be connected\nto preexisting variables, so a human expert can often inspect the local conditional distributions\ninvolving the new variable and ascertain its meaning.\nAs in the complete-data case, pure maximum-likelihood structure learning will result in\na completely connected network (moreover, one with no hidden variables), so some form of\ncomplexity penalty is required. We can also apply MCMC to sample many possible network\nstructures, thereby approximating Bayesian learning. For example, we can learn mixtures of\nGaussians with an unknown number of components by sampling over the number; the approx-\nimate posterior distribution for the number of Gaussians is given by the sampling frequencies\nof the MCMC process.\nFor the complete-data case, the inner loop to learn the parameters is very fast—just a\nmatter of extracting conditional frequencies from the data set. When there are hidden vari-\nables, the inner loop may involve many iterations of EM or a gradient-based algorithm, and\neach iteration involves the calculation of posteriors in a Bayes net, which is itself an NP-hard\nproblem. To date, this approach has proved impractical for learning complex models. One\npossible improvement is the so-called structural EM algorithm, which operates in much the\nSTRUCTURAL EM\nsame way as ordinary (parametric) EM except that the algorithm can update the structure\nas well as the parameters. Just as ordinary EM uses the current parameters to compute the\nexpected counts in the E-step and then applies those counts in the M-step to choose new\nparameters, structural EM uses the current structure to compute expected counts and then ap-\nplies those counts in the M-step to evaluate the likelihood for potential new structures. (This\ncontrasts with the outer-loop/inner-loop method, which computes new expected counts for\neach potential structure.) In this way, structural EM may make several structural alterations\nto the network without once recomputing the expected counts, and is capable of learning non-\ntrivial Bayes net structures. Nonetheless, much work remains to be done before we can say\nthat the structure-learning problem is solved.",
+  "images": [
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_fig_20-10.png",
+      "type": "diagram",
+      "caption": "Figure 20.10"
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_fig_20-10.png",
+      "type": "diagram",
+      "caption": "Figure 20.10"
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_diagram_3.png",
+      "type": "diagram",
+      "caption": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_fig_20-13.png",
+      "type": "diagram",
+      "caption": "Figure 20.13"
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_fig_20-14.png",
+      "type": "diagram",
+      "caption": "Figure 20.14"
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_18.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_19.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_20-7.png",
+      "type": "equation",
+      "label": "20.7"
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_21.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_22.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_23.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_24.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_25.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_26.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_27.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_28.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_29.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_30.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_31.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_20-8.png",
+      "type": "equation",
+      "label": "20.8"
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_33.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_34.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_35.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_36.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_37.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_38.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_39.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_40.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_41.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_42.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_43.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_44.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_45.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_46.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_47.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_48.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_49.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_50.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_51.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_52.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_53.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_54.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_55.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_56.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_57.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_58.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_59.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_20-9.png",
+      "type": "equation",
+      "label": "20.9"
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_61.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_62.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_63.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_64.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_65.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/20-3-learning-with-hidden-variables-the-em-algorithm_eq_66.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

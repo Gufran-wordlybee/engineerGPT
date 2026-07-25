@@ -1,0 +1,79 @@
+{
+  "section_id": "24-3-object-recognition-by-appearance",
+  "title": "24.3 Object Recognition by Appearance",
+  "level": 3,
+  "chapter": "VI: Communicating, perceiving, and acting",
+  "parent_id": "24-perception",
+  "children": [],
+  "start_page": 960,
+  "end_page": 964,
+  "text": "942\n24.\nPerception\n(a)\n(b)\n(c)\n(d)\nFigure 24.11\n(a) Original image. (b) Boundary contours, where the higher the Pb value,\nthe darker the contour. (c) Segmentation into regions, corresponding to a ﬁne partition of\nthe image. Regions are rendered in their mean colors. (d) Segmentation into regions, corre-\nsponding to a coarser partition of the image, resulting in fewer regions. (Courtesy of Pablo\nArbelaez, Michael Maire, Charles Fowlkes, and Jitendra Malik)\nThe alternative approach is based on trying to “cluster” the pixels into regions based on\ntheir brightness, color, and texture. Shi and Malik (2000) set this up as a graph partitioning\nproblem. The nodes of the graph correspond to pixels, and edges to connections between\npixels. The weight Wij on the edge connecting a pair of pixels i and j is based on how similar\nthe two pixels are in brightness, color, texture, etc. Partitions that minimize a normalized cut\ncriterion are then found. Roughly speaking, the criterion for partitioning the graph is to\nminimize the sum of weights of connections across the groups of pixels and maximize the\nsum of weights of connections within the groups.\nSegmentation based purely on low-level, local attributes such as brightness and color\ncannot be expected to deliver the ﬁnal correct boundaries of all the objects in the scene. To\nreliably ﬁnd object boundaries we need high-level knowledge of the likely kinds of objects\nin the scene. Representing this knowledge is a topic of active research. A popular strategy is\nto produce an over-segmentation of an image, containing hundreds of homogeneous regions\nknown as superpixels. From there, knowledge-based algorithms can take over; they will\nSUPERPIXELS\nﬁnd it easier to deal with hundreds of superpixels rather than millions of raw pixels. How to\nexploit high-level knowledge of objects is the subject of the next section.\n24.3\nOBJECT RECOGNITION BY APPEARANCE\nAppearance is shorthand for what an object tends to look like. Some object categories—for\nAPPEARANCE\nexample, baseballs—vary rather little in appearance; all of the objects in the category look\nabout the same under most circumstances. In this case, we can compute a set of features\ndescribing each class of images likely to contain the object, then test it with a classiﬁer.\nSection 24.3.\nObject Recognition by Appearance\n943\nOther object categories—for example, houses or ballet dancers—vary greatly. A house\ncan have different size, color, and shape and can look different from different angles. A dancer\nlooks different in each pose, or when the stage lights change colors. A useful abstraction is to\nsay that some objects are made up of local patterns which tend to move around with respect to\none another. We can then ﬁnd the object by looking at local histograms of detector responses,\nwhich expose whether some part is present but suppress the details of where it is.\nTesting each class of images with a learned classiﬁer is an important general recipe.\nIt works extremely well for faces looking directly at the camera, because at low resolution\nand under reasonable lighting, all such faces look quite similar. The face is round, and quite\nbright compared to the eye sockets; these are dark, because they are sunken, and the mouth is\na dark slash, as are the eyebrows. Major changes of illumination can cause some variations in\nthis pattern, but the range of variation is quite manageable. That makes it possible to detect\nface positions in an image that contains faces. Once a computational challenge, this feature\nis now commonplace in even inexpensive digital cameras.\nFor the moment, we will consider only faces where the nose is oriented vertically; we\nwill deal with rotated faces below. We sweep a round window of ﬁxed size over the image,\ncompute features for it, and present the features to a classiﬁer. This strategy is sometimes\ncalled the sliding window. Features need to be robust to shadows and to changes in brightness\nSLIDING WINDOW\ncaused by illumination changes. One strategy is to build features out of gradient orientations.\nAnother is to estimate and correct the illumination in each image window. To ﬁnd faces of\ndifferent sizes, repeat the sweep over larger or smaller versions of the image. Finally, we\npostprocess the responses across scales and locations to produce the ﬁnal set of detections.\nPostprocessing is important, because it is unlikely that we have chosen a window size\nthat is exactly the right size for a face (even if we use multiple sizes). Thus, we will likely\nhave several overlapping windows that each report a match for a face. However, if we use\na classiﬁer that can report strength of response (for example, logistic regression or a support\nvector machine) we can combine these partial overlapping matches at nearby locations to\nyield a single high-quality match. That gives us a face detector that can search over locations\nand scales. To search rotations as well, we use two steps. We train a regression procedure\nto estimate the best orientation of any face present in a window. Now, for each window, we\nestimate the orientation, reorient the window, then test whether a vertical face is present with\nour classiﬁer. All this yields a system whose architecture is sketched in Figure 24.12.\nTraining data is quite easily obtained. There are several data sets of marked-up face\nimages, and rotated face windows are easy to build (just rotate a window from a training\ndata set). One trick that is widely used is to take each example window, then produce new\nexamples by changing the orientation of the window, the center of the window, or the scale\nvery slightly. This is an easy way of getting a bigger data set that reﬂects real images fairly\nwell; the trick usually improves performance signiﬁcantly. Face detectors built along these\nlines now perform very well for frontal faces (side views are harder).\n944\n24.\nPerception\nImage\nResponses\nDetections\nNon-maximal \nsuppresion\nCorrect\nillumination\nEstimate\norientation\nRotate\nwindow\nFeatures\nClassifier\nFigure 24.12\nFace ﬁnding systems vary, but most follow the architecture illustrated in\ntwo parts here. On the top, we go from images to responses, then apply non-maximum\nsuppression to ﬁnd the strongest local response. The responses are obtained by the process\nillustrated on the bottom. We sweep a window of ﬁxed size over larger and smaller versions\nof the image, so as to ﬁnd smaller or larger faces, respectively. The illumination in the\nwindow is corrected, and then a regression engine (quite often, a neural net) predicts the\norientation of the face. The window is corrected to this orientation and then presented to a\nclassiﬁer. Classiﬁer outputs are then postprocessed to ensure that only one face is placed at\neach location in the image.\n24.3.1\nComplex appearance and pattern elements\nMany objects produce much more complex patterns than faces do. This is because several\neffects can move features around in an image of the object. Effects include (Figure 24.13)\n• Foreshortening, which causes a pattern viewed at a slant to be signiﬁcantly distorted.\n• Aspect, which causes objects to look different when seen from different directions.\nEven as simple an object as a doughnut has several aspects; seen from the side, it looks\nlike a ﬂattened oval, but from above it is an annulus.\n• Occlusion, where some parts are hidden from some viewing directions. Objects can\nocclude one another, or parts of an object can occlude other parts, an effect known as\nself-occlusion.\n• Deformation, where internal degrees of freedom of the object change its appearance.\nFor example, people can move their arms and legs around, generating a very wide range\nof different body conﬁgurations.\nHowever, our recipe of searching across location and scale can still work. This is because\nsome structure will be present in the images produced by the object. For example, a picture\nof a car is likely to show some of headlights, doors, wheels, windows, and hubcaps, though\nthey may be in somewhat different arrangements in different pictures. This suggests modeling\nobjects with pattern elements—collections of parts. These pattern elements may move around\nSection 24.3.\nObject Recognition by Appearance\n945\nForeshortening\nAspect\nOcclusion\nDeformation\nFigure 24.13\nSources of appearance variation. First, elements can foreshorten, like the\ncircular patch on the top left. This patch is viewed at a slant, and so is elliptical in the\nimage. Second, objects viewed from different directions can change shape quite dramatically,\na phenomenon known as aspect. On the top right are three different aspects of a doughnut.\nOcclusion causes the handle of the mug on the bottom left to disappear when the mug is\nrotated. In this case, because the body and handle belong to the same mug, we have self-\nocclusion. Finally, on the bottom right, some objects can deform dramatically.\nwith respect to one another, but if most of the pattern elements are present in about the right\nplace, then the object is present. An object recognizer is then a collection of features that can\ntell whether the pattern elements are present, and whether they are in about the right place.\nThe most obvious approach is to represent the image window with a histogram of the\npattern elements that appear there. This approach does not work particularly well, because\ntoo many patterns get confused with one another. For example, if the pattern elements are\ncolor pixels, the French, UK, and Netherlands ﬂags will get confused because they have\napproximately the same color histograms, though the colors are arranged in very different\nways. Quite simple modiﬁcations of histograms yield very useful features. The trick is to\npreserve some spatial detail in the representation; for example, headlights tend to be at the\nfront of a car and wheels tend to be at the bottom. Histogram-based features have been\nsuccessful in a wide variety of recognition applications; we will survey pedestrian detection.\n24.3.2\nPedestrian detection with HOG features\nThe World Bank estimates that each year car accidents kill about 1.2 million people, of whom\nabout two thirds are pedestrians. This means that detecting pedestrians is an important appli-\ncation problem, because cars that can automatically detect and avoid pedestrians might save\nmany lives. Pedestrians wear many different kinds of clothing and appear in many different\nconﬁgurations, but, at relatively low resolution, pedestrians can have a fairly characteristic\nappearance. The most usual cases are lateral or frontal views of a walk. In these cases,\n946\n24.\nPerception\nImage\nOrientation\nhistograms\nPositive\ncomponents\nNegative\ncomponents\nFigure 24.14\nLocal orientation histograms are a powerful feature for recognizing even\nquite complex objects. On the left, an image of a pedestrian. On the center left, local orien-\ntation histograms for patches. We then apply a classiﬁer such as a support vector machine\nto ﬁnd the weights for each histogram that best separate the positive examples of pedestrians\nfrom non-pedestrians. We see that the positively weighted components look like the outline\nof a person. The negative components are less clear; they represent all the patterns that are\nnot pedestrians. Figure from Dalal and Triggs (2005) c⃝IEEE.\nwe see either a “lollipop” shape — the torso is wider than the legs, which are together in\nthe stance phase of the walk — or a “scissor” shape — where the legs are swinging in the\nwalk. We expect to see some evidence of arms and legs, and the curve around the shoulders\nand head also tends to visible and quite distinctive. This means that, with a careful feature\nconstruction, we can build a useful moving-window pedestrian detector.\nThere isn’t always a strong contrast between the pedestrian and the background, so it\nis better to use orientations than edges to represent the image window. Pedestrians can move\ntheir arms and legs around, so we should use a histogram to suppress some spatial detail in\nthe feature. We break up the window into cells, which could overlap, and build an orientation\nhistogram in each cell. Doing so will produce a feature that can tell whether the head-and-\nshoulders curve is at the top of the window or at the bottom, but will not change if the head\nmoves slightly.\nOne further trick is required to make a good feature. Because orientation features are\nnot affected by illumination brightness, we cannot treat high-contrast edges specially. This\nmeans that the distinctive curves on the boundary of a pedestrian are treated in the same way\nas ﬁne texture detail in clothing or in the background, and so the signal may be submerged\nin noise. We can recover contrast information by counting gradient orientations with weights\nthat reﬂect how signiﬁcant a gradient is compared to other gradients in the same cell. We\nwill write || ∇Ix || for the gradient magnitude at point x in the image, write C for the cell\nwhose histogram we wish to compute, and write wx,C for the weight that we will use for the",
+  "images": [
+    {
+      "path": "images/24-3-object-recognition-by-appearance_img_1.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-3-object-recognition-by-appearance_img_2.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-3-object-recognition-by-appearance_img_3.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-3-object-recognition-by-appearance_img_4.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-3-object-recognition-by-appearance_img_5.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-3-object-recognition-by-appearance_img_6.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-3-object-recognition-by-appearance_img_7.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-3-object-recognition-by-appearance_fig_24-12.png",
+      "type": "diagram",
+      "caption": "Figure 24.12"
+    },
+    {
+      "path": "images/24-3-object-recognition-by-appearance_fig_24-13.png",
+      "type": "diagram",
+      "caption": "Figure 24.13"
+    },
+    {
+      "path": "images/24-3-object-recognition-by-appearance_img_8.png",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-3-object-recognition-by-appearance_img_9.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-3-object-recognition-by-appearance_img_10.png",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/24-3-object-recognition-by-appearance_img_11.jpeg",
+      "type": "raster",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

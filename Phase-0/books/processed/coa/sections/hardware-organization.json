@@ -1,0 +1,24 @@
+{
+  "section_id": "hardware-organization",
+  "title": "Hardware Organization",
+  "level": 4,
+  "chapter": "12-4 Associative Memory",
+  "parent_id": "12-4-associative-memory",
+  "children": [],
+  "start_page": 458,
+  "end_page": 460,
+  "text": "The block diagram of an associative memory is shown in Fig. 12-6. It consists of a memory array and logic for m words with n bits per word. The argument register A and key register K each have n bits, one for each bit of a word. The match register M has m bits, one for each memory word. Each word in memory is compared in parallel with the content of the argument register. The words that match the bits of the argument register set a corresponding bit in the match register. After the matching process, those bits in the match register that have been set indicate the fact that their corresponding words have been matched. Reading is accomplished by a sequential access to memory for those words whose corresponding bits in the match register have been set.\nThe key register provides a mask for choosing a particular field or key in the argument word. The entire argument is compared with each memory word if the key register contains all 1's. Otherwise, only those bits in the argument that have 1's in their corresponding position of the key register are compared. Thus the key provides a mask or identifying piece of information which\nFigure 12-6 Block diagram of associative memory.\nspecifies how the reference to memory is made. To illustrate with a numerical example, suppose that the argument register A and the key register K have the bit configuration shown below. Only the three leftmost bits of A are compared with memory words because K has 1's in these positions.\n\n[Table]\nΑ101 111100K111 000000Word 1100 111100no matchWord 2101 000001match\n\nWord 2 matches the unmasked argument field because the three leftmost bits of the argument and the word are equal.\nThe relation between the memory array and external registers in an associative memory is shown in Fig. 12-7. The cells in the array are marked by the letter C with two subcripts. The first subscript gives the word number and the second specifies the bit position in the word. Thus cell C_{ij} is the cell for bit j in word i. A bit A_j in the argument register is compared with all the bits in column j of the array provided that K_j = 1. This is done for all columns j = 1, 2, \\ldots, n. If a match occurs between all the unmasked bits of the argument and the bits in word i, the corresponding bit M_i in the match register is set to 1. If one or more unmasked bits of the argument and the word do not match, M_i is cleared to 0.\nFigure 12-7 Associative memory of m word, n cells per word.\nThe internal organization of a typical cell C_{ij} is shown in Fig. 12-8. It consists of a flip-flop storage element F_{ij} and the circuits for reading, writing, and matching the cell. The input bit is transferred into the storage cell during a write operation. The bit stored is read out during a read operation. The match logic compares the content of the storage cell with the corresponding unmasked bit of the argument and provides an output for the decision logic that sets the bit in M_{ij}.",
+  "images": [
+    {
+      "path": "images/hardware-organization_img_1.png",
+      "type": "figure",
+      "caption": null
+    },
+    {
+      "path": "images/hardware-organization_img_2.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

@@ -1,0 +1,13 @@
+{
+  "section_id": "subtraction-of-unsigned-numbers",
+  "title": "Subtraction of Unsigned Numbers",
+  "level": 2,
+  "chapter": "Data Representation",
+  "parent_id": "data-representation",
+  "children": [],
+  "start_page": 88,
+  "end_page": 89,
+  "text": "The direct method of subtraction taught in elementary schools uses the borrow concept. In this method we borrow a 1 from a higher significant position when the minuend digit is smaller than the corresponding subtrahend digit. This seems to be easiest when people perform subtraction with paper and pencil. When subtraction is implemented with digital hardware, this method is found to be less efficient than the method that uses complements.\nThe subtraction of two n-digit unsigned numbers M - N(N \\neq 0) in base r can be done as follows:\n1. Add the minuend M to the r's complement of the subtrahend N. This performs M + (r^n N) = M N + r^n.\nIf M ≥ N, the sum will produce an end carry r\" which is discarded, and what is left is the result M N.\n3. If M < N, the sum does not produce an end carry and is equal to r<sup>n</sup> (N M), which is the r's complement of (N M). To obtain the answer in a familiar form, take the r's complement of the sum and place a negative sign in front.\nConsider, for example, the subtraction 72532 - 13250 = 59282. The 10's complement of 13250 is 86750. Therefore:\nM = 72532\n\n10's complement of N = +86750\n\n5um = 159282\n\nDiscard end carry 10^5 = -100000\n\n4nswer = 59282\nNow consider an example with M < N. The subtraction 13250 - 72532 produces negative 59282. Using the procedure with complements, we have\nM = 1325010's complement of N = +\\frac{27468}{40718}Sum = \\frac{1}{40718}\nsubtraction\nend carry\nThere is no end carry\nAnswer is negative 59282 = 10's complement of 40718\nSince we are dealing with unsigned numbers, there is really no way to get an unsigned result for the second example. When working with paper and pencil, we recognize that the answer must be changed to a signed negative number. When subtracting with complements, the negative answer is recognized by the absence of the end carry and the complemented result.\nSubtraction with complements is done with binary numbers in a similar manner using the same procedure outlined above. Using the two binary numbers X = 1010100 and Y = 1000011, we perform the subtraction X - Y and Y - X using 2's complements:\nX = 1010100\n2's complement of Y = +0111101\nSum = 10010001\nDiscard end carry 2^7 = -10000000\nAnswer: X - Y = 1000011\n2's complement of X = +0101100\nSum = 1101111\nThere is no end carry\nAnswer is negative 0010001 = 2's complement of 1101111",
+  "images": [],
+  "equations": []
+}

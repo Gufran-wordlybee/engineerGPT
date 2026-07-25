@@ -1,0 +1,120 @@
+{
+  "section_id": "21-2-passive-reinforcement-learning",
+  "title": "21.2 Passive Reinforcement Learning",
+  "level": 3,
+  "chapter": "V: Learning",
+  "parent_id": "21-reinforcement-learning",
+  "children": [],
+  "start_page": 850,
+  "end_page": 856,
+  "text": "832\n21.\nReinforcement Learning\n21.2\nPASSIVE REINFORCEMENT LEARNING\nTo keep things simple, we start with the case of a passive learning agent using a state-based\nrepresentation in a fully observable environment. In passive learning, the agent’s policy π\nis ﬁxed: in state s, it always executes the action π(s). Its goal is simply to learn how good\nthe policy is—that is, to learn the utility function Uπ(s). We will use as our example the\n4 × 3 world introduced in Chapter 17. Figure 21.1 shows a policy for that world and the\ncorresponding utilities. Clearly, the passive learning task is similar to the policy evaluation\ntask, part of the policy iteration algorithm described in Section 17.3. The main difference\nis that the passive learning agent does not know the transition model P(s′ | s, a), which\nspeciﬁes the probability of reaching state s′ from state s after doing action a; nor does it\nknow the reward function R(s), which speciﬁes the reward for each state.\n–1\n+1\n1\n2\n3\n1\n2\n3\n4\n1\n2\n3\n1\n2\n3\n–1\n+ 1\n4\n0.611\n0.812\n0.655\n0.762\n0.918\n0.705\n0.660\n0.868\n 0.388\n(a)\n(b)\nFigure 21.1\n(a) A policy π for the 4 × 3 world; this policy happens to be optimal with\nrewards of R(s) = −0.04 in the nonterminal states and no discounting. (b) The utilities of\nthe states in the 4 ×3 world, given policy π.\nThe agent executes a set of trials in the environment using its policy π. In each trial, the\nTRIAL\nagent starts in state (1,1) and experiences a sequence of state transitions until it reaches one\nof the terminal states, (4,2) or (4,3). Its percepts supply both the current state and the reward\nreceived in that state. Typical trials might look like this:\n(1, 1)-.04⇝(1, 2)-.04⇝(1, 3)-.04⇝(1, 2)-.04⇝(1, 3)-.04⇝(2, 3)-.04⇝(3, 3)-.04⇝(4, 3)+1\n(1, 1)-.04⇝(1, 2)-.04⇝(1, 3)-.04⇝(2, 3)-.04⇝(3, 3)-.04⇝(3, 2)-.04⇝(3, 3)-.04⇝(4, 3)+1\n(1, 1)-.04⇝(2, 1)-.04⇝(3, 1)-.04⇝(3, 2)-.04⇝(4, 2)-1 .\nNote that each state percept is subscripted with the reward received. The object is to use the\ninformation about rewards to learn the expected utility Uπ(s) associated with each nontermi-\nnal state s. The utility is deﬁned to be the expected sum of (discounted) rewards obtained if\nSection 21.2.\nPassive Reinforcement Learning\n833\npolicy π is followed. As in Equation (17.2) on page 650, we write\nUπ(s) = E\n\" ∞\n\n\nt = 0\nγtR(St)\n#\n(21.1)\nwhere R(s) is the reward for a state, St (a random variable) is the state reached at time t when\nexecuting policy π, and S0 = s. We will include a discount factor γ in all of our equations,\nbut for the 4 × 3 world we will set γ = 1.\n21.2.1\nDirect utility estimation\nA simple method for direct utility estimation was invented in the late 1950s in the area of\nDIRECT UTILITY\nESTIMATION\nadaptive control theory by Widrow and Hoff (1960). The idea is that the utility of a state\nADAPTIVE CONTROL\nTHEORY\nis the expected total reward from that state onward (called the expected reward-to-go), and\nREWARD-TO-GO\neach trial provides a sample of this quantity for each state visited. For example, the ﬁrst trial\nin the set of three given earlier provides a sample total reward of 0.72 for state (1,1), two\nsamples of 0.76 and 0.84 for (1,2), two samples of 0.80 and 0.88 for (1,3), and so on. Thus,\nat the end of each sequence, the algorithm calculates the observed reward-to-go for each state\nand updates the estimated utility for that state accordingly, just by keeping a running average\nfor each state in a table. In the limit of inﬁnitely many trials, the sample average will converge\nto the true expectation in Equation (21.1).\nIt is clear that direct utility estimation is just an instance of supervised learning where\neach example has the state as input and the observed reward-to-go as output. This means\nthat we have reduced reinforcement learning to a standard inductive learning problem, as\ndiscussed in Chapter 18. Section 21.4 discusses the use of more powerful kinds of represen-\ntations for the utility function. Learning techniques for those representations can be applied\ndirectly to the observed data.\nDirect utility estimation succeeds in reducing the reinforcement learning problem to\nan inductive learning problem, about which much is known. Unfortunately, it misses a very\nimportant source of information, namely, the fact that the utilities of states are not indepen-\ndent! The utility of each state equals its own reward plus the expected utility of its successor\nstates. That is, the utility values obey the Bellman equations for a ﬁxed policy (see also\nEquation (17.10)):\nUπ(s) = R(s) + γ\n\n\ns′\nP(s′ | s, π(s))Uπ(s′) .\n(21.2)\nBy ignoring the connections between states, direct utility estimation misses opportunities for\nlearning. For example, the second of the three trials given earlier reaches the state (3,2),\nwhich has not previously been visited. The next transition reaches (3,3), which is known\nfrom the ﬁrst trial to have a high utility. The Bellman equation suggests immediately that\n(3,2) is also likely to have a high utility, because it leads to (3,3), but direct utility estimation\nlearns nothing until the end of the trial. More broadly, we can view direct utility estimation\nas searching for U in a hypothesis space that is much larger than it needs to be, in that it\nincludes many functions that violate the Bellman equations. For this reason, the algorithm\noften converges very slowly.\n834\n21.\nReinforcement Learning\nfunction PASSIVE-ADP-AGENT(percept) returns an action\ninputs: percept, a percept indicating the current state s′ and reward signal r ′\npersistent: π, a ﬁxed policy\nmdp, an MDP with model P, rewards R, discount γ\nU , a table of utilities, initially empty\nNsa, a table of frequencies for state–action pairs, initially zero\nNs′|sa, a table of outcome frequencies given state–action pairs, initially zero\ns, a, the previous state and action, initially null\nif s′ is new then U [s′] ←r ′; R[s′] ←r ′\nif s is not null then\nincrement Nsa[s,a] and Ns′|sa[s′,s,a]\nfor each t such that Ns′|sa[t,s,a] is nonzero do\nP(t | s, a) ←Ns′|sa[t,s,a] / Nsa[s,a]\nU ←POLICY-EVALUATION(π,U ,mdp)\nif s′.TERMINAL? then s,a ←null else s,a ←s′,π[s′]\nreturn a\nFigure 21.2\nA passive reinforcement learning agent based on adaptive dynamic program-\nming. The POLICY-EVALUATION function solves the ﬁxed-policy Bellman equations, as\ndescribed on page 657.\n21.2.2\nAdaptive dynamic programming\nAn adaptive dynamic programming (or ADP) agent takes advantage of the constraints\nADAPTIVE DYNAMIC\nPROGRAMMING\namong the utilities of states by learning the transition model that connects them and solv-\ning the corresponding Markov decision process using a dynamic programming method. For\na passive learning agent, this means plugging the learned transition model P(s′ | s, π(s)) and\nthe observed rewards R(s) into the Bellman equations (21.2) to calculate the utilities of the\nstates. As we remarked in our discussion of policy iteration in Chapter 17, these equations\nare linear (no maximization involved) so they can be solved using any linear algebra pack-\nage. Alternatively, we can adopt the approach of modiﬁed policy iteration (see page 657),\nusing a simpliﬁed value iteration process to update the utility estimates after each change to\nthe learned model. Because the model usually changes only slightly with each observation,\nthe value iteration process can use the previous utility estimates as initial values and should\nconverge quite quickly.\nThe process of learning the model itself is easy, because the environment is fully ob-\nservable. This means that we have a supervised learning task where the input is a state–action\npair and the output is the resulting state. In the simplest case, we can represent the tran-\nsition model as a table of probabilities. We keep track of how often each action outcome\noccurs and estimate the transition probability P(s′ | s, a) from the frequency with which s′\nis reached when executing a in s. For example, in the three trials given on page 832, Right\nis executed three times in (1,3) and two out of three times the resulting state is (2,3), so\nP((2, 3) | (1, 3), Right) is estimated to be 2/3.\nSection 21.2.\nPassive Reinforcement Learning\n835\n0\n0.2\n0.4\n0.6\n0.8\n1\n0\n20\n40\n60\n80\n100\nUtility estimates\nNumber of trials\n(1,1)\n(1,3)\n(3,2)\n(3,3)\n(4,3)\n0\n0.1\n0.2\n0.3\n0.4\n0.5\n0.6\n0\n20\n40\n60\n80\n100\nRMS error in utility\nNumber of trials\n(a)\n(b)\nFigure 21.3\nThe passive ADP learning curves for the 4×3 world, given the optimal policy\nshown in Figure 21.1. (a) The utility estimates for a selected subset of states, as a function\nof the number of trials. Notice the large changes occurring around the 78th trial—this is the\nﬁrst time that the agent falls into the −1 terminal state at (4,2). (b) The root-mean-square\nerror (see Appendix A) in the estimate for U(1, 1), averaged over 20 runs of 100 trials each.\nThe full agent program for a passive ADP agent is shown in Figure 21.2. Its perfor-\nmance on the 4 × 3 world is shown in Figure 21.3. In terms of how quickly its value es-\ntimates improve, the ADP agent is limited only by its ability to learn the transition model.\nIn this sense, it provides a standard against which to measure other reinforcement learning\nalgorithms. It is, however, intractable for large state spaces. In backgammon, for example, it\nwould involve solving roughly 1050 equations in 1050 unknowns.\nA reader familiar with the Bayesian learning ideas of Chapter 20 will have noticed that\nthe algorithm in Figure 21.2 is using maximum-likelihood estimation to learn the transition\nmodel; moreover, by choosing a policy based solely on the estimated model it is acting as\nif the model were correct. This is not necessarily a good idea! For example, a taxi agent\nthat didn’t know about how trafﬁc lights might ignore a red light once or twice without no\nill effects and then formulate a policy to ignore red lights from then on. Instead, it might\nbe a good idea to choose a policy that, while not optimal for the model estimated by maxi-\nmum likelihood, works reasonably well for the whole range of models that have a reasonable\nchance of being the true model. There are two mathematical approaches that have this ﬂavor.\nThe ﬁrst approach, Bayesian reinforcement learning, assumes a prior probability\nBAYESIAN\nREINFORCEMENT\nLEARNING\nP(h) for each hypothesis h about what the true model is; the posterior probability P(h | e) is\nobtained in the usual way by Bayes’ rule given the observations to date. Then, if the agent has\ndecided to stop learning, the optimal policy is the one that gives the highest expected utility.\nLet uπ\nh be the expected utility, averaged over all possible start states, obtained by executing\npolicy π in model h. Then we have\nπ∗= argmax\nπ\n\n\nh\nP(h | e)uπ\nh .\n836\n21.\nReinforcement Learning\nIn some special cases, this policy can even be computed! If the agent will continue learning\nin the future, however, then ﬁnding an optimal policy becomes considerably more difﬁcult,\nbecause the agent must consider the effects of future observations on its beliefs about the\ntransition model. The problem becomes a POMDP whose belief states are distributions over\nmodels. This concept provides an analytical foundation for understanding the exploration\nproblem described in Section 21.3.\nThe second approach, derived from robust control theory, allows for a set of possible\nROBUST CONTROL\nTHEORY\nmodels H and deﬁnes an optimal robust policy as one that gives the best outcome in the worst\ncase over H:\nπ∗= argmax\nπ\nmin\nh uπ\nh .\nOften, the set H will be the set of models that exceed some likelihood threshold on P(h | e),\nso the robust and Bayesian approaches are related. Sometimes, the robust solution can be\ncomputed efﬁciently. There are, moreover, reinforcement learning algorithms that tend to\nproduce robust solutions, although we do not cover them here.\n21.2.3\nTemporal-difference learning\nSolving the underlying MDP as in the preceding section is not the only way to bring the\nBellman equations to bear on the learning problem. Another way is to use the observed\ntransitions to adjust the utilities of the observed states so that they agree with the constraint\nequations. Consider, for example, the transition from (1,3) to (2,3) in the second trial on\npage 832. Suppose that, as a result of the ﬁrst trial, the utility estimates are U π(1, 3) = 0.84\nand Uπ(2, 3) = 0.92. Now, if this transition occurred all the time, we would expect the utili-\nties to obey the equation\nUπ(1, 3) = −0.04 + Uπ(2, 3) ,\nso Uπ(1, 3) would be 0.88. Thus, its current estimate of 0.84 might be a little low and should\nbe increased. More generally, when a transition occurs from state s to state s′, we apply the\nfollowing update to Uπ(s):\nUπ(s) ←Uπ(s) + α(R(s) + γ Uπ(s′) −Uπ(s)) .\n(21.3)\nHere, α is the learning rate parameter. Because this update rule uses the difference in utilities\nbetween successive states, it is often called the temporal-difference, or TD, equation.\nTEMPORAL-\nDIFFERENCE\nAll temporal-difference methods work by adjusting the utility estimates towards the\nideal equilibrium that holds locally when the utility estimates are correct. In the case of pas-\nsive learning, the equilibrium is given by Equation (21.2). Now Equation (21.3) does in fact\ncause the agent to reach the equilibrium given by Equation (21.2), but there is some subtlety\ninvolved. First, notice that the update involves only the observed successor s′, whereas the\nactual equilibrium conditions involve all possible next states. One might think that this causes\nan improperly large change in Uπ(s) when a very rare transition occurs; but, in fact, because\nrare transitions occur only rarely, the average value of U π(s) will converge to the correct\nvalue. Furthermore, if we change α from a ﬁxed parameter to a function that decreases as\nthe number of times a state has been visited increases, then U π(s) itself will converge to the\nSection 21.2.\nPassive Reinforcement Learning\n837\nfunction PASSIVE-TD-AGENT(percept) returns an action\ninputs: percept, a percept indicating the current state s′ and reward signal r ′\npersistent: π, a ﬁxed policy\nU , a table of utilities, initially empty\nNs, a table of frequencies for states, initially zero\ns, a, r, the previous state, action, and reward, initially null\nif s′ is new then U [s′] ←r ′\nif s is not null then\nincrement N s[s]\nU [s] ←U [s] + α(Ns[s])(r + γ U [s′] −U [s])\nif s′.TERMINAL? then s,a,r ←null else s,a,r ←s′,π[s′],r ′\nreturn a\nFigure 21.4\nA passive reinforcement learning agent that learns utility estimates using tem-\nporal differences. The step-size function α(n) is chosen to ensure convergence, as described\nin the text.\ncorrect value.1 This gives us the agent program shown in Figure 21.4. Figure 21.5 illustrates\nthe performance of the passive TD agent on the 4 × 3 world. It does not learn quite as fast as\nthe ADP agent and shows much higher variability, but it is much simpler and requires much\nless computation per observation. Notice that TD does not need a transition model to perform\nits updates. The environment supplies the connection between neighboring states in the form\nof observed transitions.\nThe ADP approach and the TD approach are actually closely related. Both try to make\nlocal adjustments to the utility estimates in order to make each state “agree” with its succes-\nsors. One difference is that TD adjusts a state to agree with its observed successor (Equa-\ntion (21.3)), whereas ADP adjusts the state to agree with all of the successors that might\noccur, weighted by their probabilities (Equation (21.2)). This difference disappears when\nthe effects of TD adjustments are averaged over a large number of transitions, because the\nfrequency of each successor in the set of transitions is approximately proportional to its prob-\nability. A more important difference is that whereas TD makes a single adjustment per ob-\nserved transition, ADP makes as many as it needs to restore consistency between the utility\nestimates U and the environment model P. Although the observed transition makes only a\nlocal change in P, its effects might need to be propagated throughout U . Thus, TD can be\nviewed as a crude but efﬁcient ﬁrst approximation to ADP.\nEach adjustment made by ADP could be seen, from the TD point of view, as a re-\nsult of a “pseudoexperience” generated by simulating the current environment model. It\nis possible to extend the TD approach to use an environment model to generate several\npseudoexperiences—transitions that the TD agent can imagine might happen, given its current\nmodel. For each observed transition, the TD agent can generate a large number of imaginary\n1 The technical conditions are given on page 725. In Figure 21.5 we have used α(n) = 60/(59 + n), which\nsatisﬁes the conditions.\n838\n21.\nReinforcement Learning\n0\n0.2\n0.4\n0.6\n0.8\n1\n0\n100\n200\n300\n400\n500\nUtility estimates\nNumber of trials\n(1,1)\n(1,3)\n(2,1)\n(3,3)\n(4,3)\n0\n0.1\n0.2\n0.3\n0.4\n0.5\n0.6\n0\n20\n40\n60\n80\n100\nRMS error in utility\nNumber of trials\n(a)\n(b)\nFigure 21.5\nThe TD learning curves for the 4 × 3 world. (a) The utility estimates for a\nselected subset of states, as a function of the number of trials. (b) The root-mean-square error\nin the estimate for U(1, 1), averaged over 20 runs of 500 trials each. Only the ﬁrst 100 trials\nare shown to enable comparison with Figure 21.3.\ntransitions. In this way, the resulting utility estimates will approximate more and more closely\nthose of ADP—of course, at the expense of increased computation time.\nIn a similar vein, we can generate more efﬁcient versions of ADP by directly approxi-\nmating the algorithms for value iteration or policy iteration. Even though the value iteration\nalgorithm is efﬁcient, it is intractable if we have, say, 10100 states. However, many of the\nnecessary adjustments to the state values on each iteration will be extremely tiny. One pos-\nsible approach to generating reasonably good answers quickly is to bound the number of\nadjustments made after each observed transition. One can also use a heuristic to rank the pos-\nsible adjustments so as to carry out only the most signiﬁcant ones. The prioritized sweeping\nPRIORITIZED\nSWEEPING\nheuristic prefers to make adjustments to states whose likely successors have just undergone a\nlarge adjustment in their own utility estimates. Using heuristics like this, approximate ADP\nalgorithms usually can learn roughly as fast as full ADP, in terms of the number of training se-\nquences, but can be several orders of magnitude more efﬁcient in terms of computation. (See\nExercise 21.3.) This enables them to handle state spaces that are far too large for full ADP.\nApproximate ADP algorithms have an additional advantage: in the early stages of learning a\nnew environment, the environment model P often will be far from correct, so there is little\npoint in calculating an exact utility function to match it. An approximation algorithm can use\na minimum adjustment size that decreases as the environment model becomes more accurate.\nThis eliminates the very long value iterations that can occur early in learning due to large\nchanges in the model.",
+  "images": [
+    {
+      "path": "images/21-2-passive-reinforcement-learning_fig_21-1.png",
+      "type": "diagram",
+      "caption": "Figure 21.1"
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/21-2-passive-reinforcement-learning_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-2-passive-reinforcement-learning_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-2-passive-reinforcement-learning_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-2-passive-reinforcement-learning_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-2-passive-reinforcement-learning_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-2-passive-reinforcement-learning_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-2-passive-reinforcement-learning_eq_21-1.png",
+      "type": "equation",
+      "label": "21.1"
+    },
+    {
+      "path": "images/21-2-passive-reinforcement-learning_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-2-passive-reinforcement-learning_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-2-passive-reinforcement-learning_eq_21-2.png",
+      "type": "equation",
+      "label": "21.2"
+    },
+    {
+      "path": "images/21-2-passive-reinforcement-learning_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-2-passive-reinforcement-learning_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-2-passive-reinforcement-learning_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-2-passive-reinforcement-learning_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-2-passive-reinforcement-learning_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-2-passive-reinforcement-learning_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-2-passive-reinforcement-learning_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-2-passive-reinforcement-learning_eq_18.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-2-passive-reinforcement-learning_eq_21-3.png",
+      "type": "equation",
+      "label": "21.3"
+    },
+    {
+      "path": "images/21-2-passive-reinforcement-learning_eq_20.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

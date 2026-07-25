@@ -1,0 +1,15 @@
+{
+  "section_id": "bun-branch-unconditionally",
+  "title": "BUN: Branch Unconditionally",
+  "level": 3,
+  "chapter": "5-6 Memory-Reference Instructions",
+  "parent_id": "5-6-memory-reference-instructions",
+  "children": [
+    "bsa-branch-and-save-return-address"
+  ],
+  "start_page": 157,
+  "end_page": 157,
+  "text": "This instruction transfers the program to the instruction specified by the effective address. Remember that PC holds the address of the instruction to be read from memory in the next instruction cycle. PC is incremented at time T_1 to prepare it for the address of the next instruction in the program sequence. The BUN instruction allows the programmer to specify an instruction out of sequence and we say that the program branches (or jumps) unconditionally. The instruction is executed with one microoperation:\nD_4T_4: PC \\leftarrow AR, SC \\leftarrow 0\nThe effective address from AR is transferred through the common bus to PC. Resetting SC to 0 transfers control to T_0. The next instruction is then fetched and executed from the memory address given by the new value in PC.",
+  "images": [],
+  "equations": []
+}

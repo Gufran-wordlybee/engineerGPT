@@ -1,0 +1,100 @@
+{
+  "section_id": "14-2-the-semantics-of-bayesian-networks",
+  "title": "14.2 The Semantics of Bayesian Networks",
+  "level": 3,
+  "chapter": "IV: Uncertain knowledge and reasoning",
+  "parent_id": "14-probabilistic-reasoning",
+  "children": [],
+  "start_page": 531,
+  "end_page": 535,
+  "text": "Section 14.2.\nThe Semantics of Bayesian Networks\n513\ninﬁnite set of circumstances in which the alarm might fail to go off (high humidity, power\nfailure, dead battery, cut wires, a dead mouse stuck inside the bell, etc.) or John or Mary\nmight fail to call and report it (out to lunch, on vacation, temporarily deaf, passing helicopter,\netc.). In this way, a small agent can cope with a very large world, at least approximately. The\ndegree of approximation can be improved if we introduce additional relevant information.\n14.2\nTHE SEMANTICS OF BAYESIAN NETWORKS\nThe previous section described what a network is, but not what it means. There are two\nways in which one can understand the semantics of Bayesian networks. The ﬁrst is to see\nthe network as a representation of the joint probability distribution. The second is to view\nit as an encoding of a collection of conditional independence statements. The two views are\nequivalent, but the ﬁrst turns out to be helpful in understanding how to construct networks,\nwhereas the second is helpful in designing inference procedures.\n14.2.1\nRepresenting the full joint distribution\nViewed as a piece of “syntax,” a Bayesian network is a directed acyclic graph with some\nnumeric parameters attached to each node. One way to deﬁne what the network means—its\nsemantics—is to deﬁne the way in which it represents a speciﬁc joint distribution over all the\nvariables. To do this, we ﬁrst need to retract (temporarily) what we said earlier about the pa-\nrameters associated with each node. We said that those parameters correspond to conditional\nprobabilities P(Xi | Parents(Xi)); this is a true statement, but until we assign semantics to\nthe network as a whole, we should think of them just as numbers θ(Xi | Parents(Xi)).\nA generic entry in the joint distribution is the probability of a conjunction of particular\nassignments to each variable, such as P(X1 = x1 ∧. . . ∧Xn = xn). We use the notation\nP(x1, . . . , xn) as an abbreviation for this. The value of this entry is given by the formula\nP(x1, . . . , xn) =\nn\n\u0019\ni = 1\nθ(xi | parents(Xi)) ,\n(14.1)\nwhere parents(Xi) denotes the values of Parents(Xi) that appear in x1, . . . , xn. Thus,\neach entry in the joint distribution is represented by the product of the appropriate elements\nof the conditional probability tables (CPTs) in the Bayesian network.\nFrom this deﬁnition, it is easy to prove that the parameters θ(Xi | Parents(Xi)) are\nexactly the conditional probabilities P(Xi | Parents(Xi)) implied by the joint distribution\n(see Exercise 14.2). Hence, we can rewrite Equation (14.1) as\nP(x1, . . . , xn) =\nn\n\u0019\ni = 1\nP(xi | parents(Xi)) .\n(14.2)\nIn other words, the tables we have been calling conditional probability tables really are con-\nditional probability tables according to the semantics deﬁned in Equation (14.1).\nTo illustrate this, we can calculate the probability that the alarm has sounded, but neither\na burglary nor an earthquake has occurred, and both John and Mary call. We multiply entries\n514\n14.\nProbabilistic Reasoning\nfrom the joint distribution (using single-letter names for the variables):\nP(j, m, a, ¬b, ¬e) = P(j | a)P(m | a)P(a | ¬b ∧¬e)P(¬b)P(¬e)\n= 0.90 × 0.70 × 0.001 × 0.999 × 0.998 = 0.000628 .\nSection 13.3 explained that the full joint distribution can be used to answer any query about\nthe domain. If a Bayesian network is a representation of the joint distribution, then it too can\nbe used to answer any query, by summing all the relevant joint entries. Section 14.4 explains\nhow to do this, but also describes methods that are much more efﬁcient.\nA method for constructing Bayesian networks\nEquation (14.2) deﬁnes what a given Bayesian network means. The next step is to explain\nhow to construct a Bayesian network in such a way that the resulting joint distribution is a\ngood representation of a given domain. We will now show that Equation (14.2) implies certain\nconditional independence relationships that can be used to guide the knowledge engineer in\nconstructing the topology of the network. First, we rewrite the entries in the joint distribution\nin terms of conditional probability, using the product rule (see page 486):\nP(x1, . . . , xn) = P(xn | xn−1, . . . , x1)P(xn−1, . . . , x1) .\nThen we repeat the process, reducing each conjunctive probability to a conditional probability\nand a smaller conjunction. We end up with one big product:\nP(x1, . . . , xn) = P(xn | xn−1, . . . , x1)P(xn−1 | xn−2, . . . , x1) · · · P(x2 | x1)P(x1)\n=\nn\n\u0019\ni = 1\nP(xi | xi−1, . . . , x1) .\nThis identity is called the chain rule. It holds for any set of random variables. Comparing it\nCHAIN RULE\nwith Equation (14.2), we see that the speciﬁcation of the joint distribution is equivalent to the\ngeneral assertion that, for every variable Xi in the network,\nP(Xi | Xi−1, . . . , X1) = P(Xi | Parents(Xi)) ,\n(14.3)\nprovided that Parents(Xi) ⊆{Xi−1, . . . , X1}. This last condition is satisﬁed by numbering\nthe nodes in a way that is consistent with the partial order implicit in the graph structure.\nWhat Equation (14.3) says is that the Bayesian network is a correct representation of\nthe domain only if each node is conditionally independent of its other predecessors in the\nnode ordering, given its parents. We can satisfy this condition with this methodology:\n1. Nodes: First determine the set of variables that are required to model the domain. Now\norder them, {X1, . . . , Xn}. Any order will work, but the resulting network will be more\ncompact if the variables are ordered such that causes precede effects.\n2. Links: For i = 1 to n do:\n• Choose, from X1, . . . , Xi−1, a minimal set of parents for Xi, such that Equa-\ntion (14.3) is satisﬁed.\n• For each parent insert a link from the parent to Xi.\n• CPTs: Write down the conditional probability table, P(Xi|Parents(Xi)).\nSection 14.2.\nThe Semantics of Bayesian Networks\n515\nIntuitively, the parents of node Xi should contain all those nodes in X1, . . . , Xi−1 that\ndirectly inﬂuence Xi. For example, suppose we have completed the network in Figure 14.2\nexcept for the choice of parents for MaryCalls. MaryCalls is certainly inﬂuenced by whether\nthere is a Burglary or an Earthquake, but not directly inﬂuenced. Intuitively, our knowledge\nof the domain tells us that these events inﬂuence Mary’s calling behavior only through their\neffect on the alarm. Also, given the state of the alarm, whether John calls has no inﬂuence on\nMary’s calling. Formally speaking, we believe that the following conditional independence\nstatement holds:\nP(MaryCalls | JohnCalls, Alarm, Earthquake, Burglary) = P(MaryCalls | Alarm) .\nThus, Alarm will be the only parent node for MaryCalls.\nBecause each node is connected only to earlier nodes, this construction method guaran-\ntees that the network is acyclic. Another important property of Bayesian networks is that they\ncontain no redundant probability values. If there is no redundancy, then there is no chance\nfor inconsistency: it is impossible for the knowledge engineer or domain expert to create a\nBayesian network that violates the axioms of probability.\nCompactness and node ordering\nAs well as being a complete and nonredundant representation of the domain, a Bayesian net-\nwork can often be far more compact than the full joint distribution. This property is what\nmakes it feasible to handle domains with many variables. The compactness of Bayesian net-\nworks is an example of a general property of locally structured (also called sparse) systems.\nLOCALLY\nSTRUCTURED\nSPARSE\nIn a locally structured system, each subcomponent interacts directly with only a bounded\nnumber of other components, regardless of the total number of components. Local structure\nis usually associated with linear rather than exponential growth in complexity. In the case of\nBayesian networks, it is reasonable to suppose that in most domains each random variable\nis directly inﬂuenced by at most k others, for some constant k. If we assume n Boolean\nvariables for simplicity, then the amount of information needed to specify each conditional\nprobability table will be at most 2k numbers, and the complete network can be speciﬁed by\nn2k numbers. In contrast, the joint distribution contains 2n numbers. To make this concrete,\nsuppose we have n = 30 nodes, each with ﬁve parents (k = 5). Then the Bayesian network\nrequires 960 numbers, but the full joint distribution requires over a billion.\nThere are domains in which each variable can be inﬂuenced directly by all the others,\nso that the network is fully connected. Then specifying the conditional probability tables re-\nquires the same amount of information as specifying the joint distribution. In some domains,\nthere will be slight dependencies that should strictly be included by adding a new link. But\nif these dependencies are tenuous, then it may not be worth the additional complexity in the\nnetwork for the small gain in accuracy. For example, one might object to our burglary net-\nwork on the grounds that if there is an earthquake, then John and Mary would not call even\nif they heard the alarm, because they assume that the earthquake is the cause. Whether to\nadd the link from Earthquake to JohnCalls and MaryCalls (and thus enlarge the tables)\ndepends on comparing the importance of getting more accurate probabilities with the cost of\nspecifying the extra information.\n516\n14.\nProbabilistic Reasoning\nJohnCalls\nMaryCalls\nAlarm\nBurglary\nEarthquake\nMaryCalls\nAlarm\nEarthquake\nBurglary\nJohnCalls\n(a)\n(b)\nFigure 14.3\nNetwork structure depends on order of introduction. In each network, we\nhave introduced nodes in top-to-bottom order.\nEven in a locally structured domain, we will get a compact Bayesian network only if\nwe choose the node ordering well. What happens if we happen to choose the wrong or-\nder? Consider the burglary example again. Suppose we decide to add the nodes in the order\nMaryCalls, JohnCalls, Alarm, Burglary, Earthquake. We then get the somewhat more\ncomplicated network shown in Figure 14.3(a). The process goes as follows:\n• Adding MaryCalls: No parents.\n• Adding JohnCalls: If Mary calls, that probably means the alarm has gone off, which\nof course would make it more likely that John calls.\nTherefore, JohnCalls needs\nMaryCalls as a parent.\n• Adding Alarm: Clearly, if both call, it is more likely that the alarm has gone off than if\njust one or neither calls, so we need both MaryCalls and JohnCalls as parents.\n• Adding Burglary: If we know the alarm state, then the call from John or Mary might\ngive us information about our phone ringing or Mary’s music, but not about burglary:\nP(Burglary | Alarm, JohnCalls, MaryCalls) = P(Burglary | Alarm) .\nHence we need just Alarm as parent.\n• Adding Earthquake: If the alarm is on, it is more likely that there has been an earth-\nquake. (The alarm is an earthquake detector of sorts.) But if we know that there has\nbeen a burglary, then that explains the alarm, and the probability of an earthquake would\nbe only slightly above normal. Hence, we need both Alarm and Burglary as parents.\nThe resulting network has two more links than the original network in Figure 14.2 and re-\nquires three more probabilities to be speciﬁed. What’s worse, some of the links represent\ntenuous relationships that require difﬁcult and unnatural probability judgments, such as as-\nSection 14.2.\nThe Semantics of Bayesian Networks\n517\nsessing the probability of Earthquake, given Burglary and Alarm. This phenomenon is\nquite general and is related to the distinction between causal and diagnostic models intro-\nduced in Section 13.5.1 (see also Exercise 8.13). If we try to build a diagnostic model with\nlinks from symptoms to causes (as from MaryCalls to Alarm or Alarm to Burglary), we\nend up having to specify additional dependencies between otherwise independent causes (and\noften between separately occurring symptoms as well). If we stick to a causal model, we end\nup having to specify fewer numbers, and the numbers will often be easier to come up with. In\nthe domain of medicine, for example, it has been shown by Tversky and Kahneman (1982)\nthat expert physicians prefer to give probability judgments for causal rules rather than for\ndiagnostic ones.\nFigure 14.3(b) shows a very bad node ordering: MaryCalls, JohnCalls, Earthquake,\nBurglary, Alarm. This network requires 31 distinct probabilities to be speciﬁed—exactly the\nsame number as the full joint distribution. It is important to realize, however, that any of the\nthree networks can represent exactly the same joint distribution. The last two versions simply\nfail to represent all the conditional independence relationships and hence end up specifying a\nlot of unnecessary numbers instead.\n14.2.2\nConditional independence relations in Bayesian networks\nWe have provided a “numerical” semantics for Bayesian networks in terms of the represen-\ntation of the full joint distribution, as in Equation (14.2). Using this semantics to derive a\nmethod for constructing Bayesian networks, we were led to the consequence that a node is\nconditionally independent of its other predecessors, given its parents. It turns out that we\ncan also go in the other direction. We can start from a “topological” semantics that speciﬁes\nthe conditional independence relationships encoded by the graph structure, and from this we\ncan derive the “numerical” semantics. The topological semantics2 speciﬁes that each vari-\nable is conditionally independent of its non-descendants, given its parents. For example, in\nDESCENDANT\nFigure 14.2, JohnCalls is independent of Burglary, Earthquake, and MaryCalls given the\nvalue of Alarm. The deﬁnition is illustrated in Figure 14.4(a). From these conditional inde-\npendence assertions and the interpretation of the network parameters θ(Xi | Parents(Xi))\nas speciﬁcations of conditional probabilities P(Xi | Parents(Xi)), the full joint distribution\ngiven in Equation (14.2) can be reconstructed. In this sense, the “numerical” semantics and\nthe “topological” semantics are equivalent.\nAnother important independence property is implied by the topological semantics: a\nnode is conditionally independent of all other nodes in the network, given its parents, children,\nand children’s parents—that is, given its Markov blanket. (Exercise 14.7 asks you to prove\nMARKOV BLANKET\nthis.) For example, Burglary is independent of JohnCalls and MaryCalls, given Alarm and\nEarthquake. This property is illustrated in Figure 14.4(b).\n2 There is also a general topological criterion called d-separation for deciding whether a set of nodes X is\nconditionally independent of another set Y, given a third set Z. The criterion is rather complicated and is not\nneeded for deriving the algorithms in this chapter, so we omit it. Details may be found in Pearl (1988) or Darwiche\n(2009). Shachter (1998) gives a more intuitive method of ascertaining d-separation.",
+  "images": [
+    {
+      "path": "images/14-2-the-semantics-of-bayesian-networks_fig_14-3.png",
+      "type": "diagram",
+      "caption": "Figure 14.3"
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/14-2-the-semantics-of-bayesian-networks_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-2-the-semantics-of-bayesian-networks_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-2-the-semantics-of-bayesian-networks_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-2-the-semantics-of-bayesian-networks_eq_14-1.png",
+      "type": "equation",
+      "label": "14.1"
+    },
+    {
+      "path": "images/14-2-the-semantics-of-bayesian-networks_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-2-the-semantics-of-bayesian-networks_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-2-the-semantics-of-bayesian-networks_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-2-the-semantics-of-bayesian-networks_eq_14-2.png",
+      "type": "equation",
+      "label": "14.2"
+    },
+    {
+      "path": "images/14-2-the-semantics-of-bayesian-networks_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-2-the-semantics-of-bayesian-networks_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-2-the-semantics-of-bayesian-networks_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-2-the-semantics-of-bayesian-networks_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-2-the-semantics-of-bayesian-networks_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-2-the-semantics-of-bayesian-networks_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-2-the-semantics-of-bayesian-networks_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-2-the-semantics-of-bayesian-networks_eq_14-3.png",
+      "type": "equation",
+      "label": "14.3"
+    }
+  ]
+}

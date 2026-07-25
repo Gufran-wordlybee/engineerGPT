@@ -1,0 +1,19 @@
+{
+  "section_id": "16-1-combining-beliefs-and-desires-under-uncertainty",
+  "title": "16.1 Combining Beliefs and Desires under Uncertainty",
+  "level": 3,
+  "chapter": "IV: Uncertain knowledge and reasoning",
+  "parent_id": "16-making-simple-decisions",
+  "children": [],
+  "start_page": 628,
+  "end_page": 628,
+  "text": "16\nMAKING SIMPLE\nDECISIONS\nIn which we see how an agent should make decisions so that it gets what it wants—\non average, at least.\nIn this chapter, we ﬁll in the details of how utility theory combines with probability theory to\nyield a decision-theoretic agent—an agent that can make rational decisions based on what it\nbelieves and what it wants. Such an agent can make decisions in contexts in which uncertainty\nand conﬂicting goals leave a logical agent with no way to decide: a goal-based agent has a\nbinary distinction between good (goal) and bad (non-goal) states, while a decision-theoretic\nagent has a continuous measure of outcome quality.\nSection 16.1 introduces the basic principle of decision theory: the maximization of\nexpected utility. Section 16.2 shows that the behavior of any rational agent can be captured\nby supposing a utility function that is being maximized. Section 16.3 discusses the nature of\nutility functions in more detail, and in particular their relation to individual quantities such as\nmoney. Section 16.4 shows how to handle utility functions that depend on several quantities.\nIn Section 16.5, we describe the implementation of decision-making systems. In particular,\nwe introduce a formalism called a decision network (also known as an inﬂuence diagram)\nthat extends Bayesian networks by incorporating actions and utilities. The remainder of the\nchapter discusses issues that arise in applications of decision theory to expert systems.\n16.1\nCOMBINING BELIEFS AND DESIRES UNDER UNCERTAINTY\nDecision theory, in its simplest form, deals with choosing among actions based on the desir-\nability of their immediate outcomes; that is, the environment is assumed to be episodic in the\nsense deﬁned on page 43. (This assumption is relaxed in Chapter 17.) In Chapter 3 we used\nthe notation RESULT(s0, a) for the state that is the deterministic outcome of taking action a\nin state s0. In this chapter we deal with nondeterministic partially observable environments.\nSince the agent may not know the current state, we omit it and deﬁne RESULT(a) as a random\nvariable whose values are the possible outcome states. The probability of outcome s′, given\nevidence observations e, is written\nP(RESULT(a) = s′ | a, e) ,\n610",
+  "images": [],
+  "equations": [
+    {
+      "path": "images/16-1-combining-beliefs-and-desires-under-uncertainty_eq_1.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

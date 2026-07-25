@@ -1,0 +1,18 @@
+{
+  "section_id": "26-philosophical-foundations",
+  "title": "26 Philosophical Foundations",
+  "level": 2,
+  "chapter": "VII: Conclusions",
+  "parent_id": "vii-conclusions",
+  "children": [
+    "26-1-weak-ai-can-machines-act-intelligently",
+    "26-2-strong-ai-can-machines-really-think",
+    "26-3-the-ethics-and-risks-of-developing-artificial-intellige",
+    "26-4-summary-bibliographical-and-historical-notes-exercises"
+  ],
+  "start_page": 1038,
+  "end_page": 1038,
+  "text": "26\nPHILOSOPHICAL\nFOUNDATIONS\nIn which we consider what it means to think and whether artifacts could and\nshould ever do so.\nPhilosophers have been around far longer than computers and have been trying to resolve\nsome questions that relate to AI: How do minds work? Is it possible for machines to act\nintelligently in the way that people do, and if they did, would they have real, conscious\nminds? What are the ethical implications of intelligent machines?\nFirst, some terminology: the assertion that machines could act as if they were intelligent\nis called the weak AI hypothesis by philosophers, and the assertion that machines that do so\nWEAK AI\nare actually thinking (not just simulating thinking) is called the strong AI hypothesis.\nSTRONG AI\nMost AI researchers take the weak AI hypothesis for granted, and don’t care about the\nstrong AI hypothesis—as long as their program works, they don’t care whether you call it a\nsimulation of intelligence or real intelligence. All AI researchers should be concerned with\nthe ethical implications of their work.\n26.1\nWEAK AI: CAN MACHINES ACT INTELLIGENTLY?\nThe proposal for the 1956 summer workshop that deﬁned the ﬁeld of Artiﬁcial Intelligence\n(McCarthy et al., 1955) made the assertion that “Every aspect of learning or any other feature\nof intelligence can be so precisely described that a machine can be made to simulate it.” Thus,\nAI was founded on the assumption that weak AI is possible. Others have asserted that weak\nAI is impossible: “Artiﬁcial intelligence pursued within the cult of computationalism stands\nnot even a ghost of a chance of producing durable results” (Sayre, 1993).\nClearly, whether AI is impossible depends on how it is deﬁned. In Section 1.1, we de-\nﬁned AI as the quest for the best agent program on a given architecture. With this formulation,\nAI is by deﬁnition possible: for any digital architecture with k bits of program storage there\nare exactly 2k agent programs, and all we have to do to ﬁnd the best one is enumerate and test\nthem all. This might not be feasible for large k, but philosophers deal with the theoretical,\nnot the practical.\n1020",
+  "images": [],
+  "equations": []
+}

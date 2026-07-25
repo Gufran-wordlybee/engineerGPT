@@ -1,0 +1,22 @@
+{
+  "section_id": "adder-and-logic-circuit",
+  "title": "Adder and Logic Circuit",
+  "level": 2,
+  "chapter": "5-10 Design of Accumulator Logic",
+  "parent_id": "5-10-design-of-accumulator-logic",
+  "children": [
+    "problems-4",
+    "references-4"
+  ],
+  "start_page": 176,
+  "end_page": 177,
+  "text": "The adder and logic circuit can be subdivided into 16 stages, with each stage corresponding to one bit of AC. The internal construction of the register is as shown in Fig. 2-11. Looking back at that figure we note that each stage has a JK flip-flop, two OR gates, and two AND gates. The load (LD) input is connected to the inputs of the AND gates. Figure 5-21 shows one such AC register stage (with the OR gates removed). The input is labeled I_i and the output AC(i). When the LD input is enabled, the 16 inputs I_i for i=0,1,2,\\ldots,15 are transferred to AC (0–15).\nadder and logic circuit\nOne stage of the adder and logic circuit consists of seven AND gates, one OR gate and a full-adder (FA), as shown in Fig. 5-21. The inputs of the gates with symbolic names come from the outputs of gates marked with the same symbolic name in Fig. 5-20. For example, the input marked ADD in Fig. 5-21 is connected to the output marked ADD in Fig. 5-20.\nThe AND operation is achieved by ANDing AC(i) with the corresponding bit in the data register DR(i). The ADD operation is obtained using a binary adder similar to the one shown in Fig. 4-6. One stage of the adder uses a\nFigure 5-21 One stage of adder and logic circuit.\nfull-adder with the corresponding input and output carries. The transfer from INPR to AC is only for bits 0 through 7. The complement microoperation is obtained by inverting the bit value in AC. The shift-right operation transfers the bit from AC(i+1), and the shift-left operation transfers the bit from AC(i-1). The complete adder and logic circuit consists of 16 stages connected together.",
+  "images": [
+    {
+      "path": "images/adder-and-logic-circuit_img_1.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

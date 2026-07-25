@@ -1,0 +1,190 @@
+{
+  "section_id": "14-3-efficient-representation-of-conditional-distributions",
+  "title": "14.3 Efficient Representation of Conditional Distributions",
+  "level": 3,
+  "chapter": "IV: Uncertain knowledge and reasoning",
+  "parent_id": "14-probabilistic-reasoning",
+  "children": [],
+  "start_page": 536,
+  "end_page": 539,
+  "text": "518\n14.\nProbabilistic Reasoning\n. . .\n. . .\nU1\nX\nUm\nYn\nZnj\nY1\nZ1j\n. . .\n. . .\nU1\nUm\nYn\nZnj\nY1\nZ1j\nX\n(a)\n(b)\nFigure 14.4\n(a) A node X is conditionally independent of its non-descendants (e.g., the\nZijs) given its parents (the Uis shown in the gray area). (b) A node X is conditionally\nindependent of all other nodes in the network given its Markov blanket (the gray area).\n14.3\nEFFICIENT REPRESENTATION OF CONDITIONAL DISTRIBUTIONS\nEven if the maximum number of parents k is smallish, ﬁlling in the CPT for a node requires\nup to O(2k) numbers and perhaps a great deal of experience with all the possible conditioning\ncases. In fact, this is a worst-case scenario in which the relationship between the parents and\nthe child is completely arbitrary. Usually, such relationships are describable by a canonical\ndistribution that ﬁts some standard pattern. In such cases, the complete table can be speciﬁed\nCANONICAL\nDISTRIBUTION\nby naming the pattern and perhaps supplying a few parameters—much easier than supplying\nan exponential number of parameters.\nThe simplest example is provided by deterministic nodes. A deterministic node has\nDETERMINISTIC\nNODES\nits value speciﬁed exactly by the values of its parents, with no uncertainty. The relationship\ncan be a logical one: for example, the relationship between the parent nodes Canadian, US,\nMexican and the child node NorthAmerican is simply that the child is the disjunction of\nthe parents. The relationship can also be numerical: for example, if the parent nodes are\nthe prices of a particular model of car at several dealers and the child node is the price that\na bargain hunter ends up paying, then the child node is the minimum of the parent values;\nor if the parent nodes are a lake’s inﬂows (rivers, runoff, precipitation) and outﬂows (rivers,\nevaporation, seepage) and the child is the change in the water level of the lake, then the value\nof the child is the sum of the inﬂow parents minus the sum of the outﬂow parents.\nUncertain relationships can often be characterized by so-called noisy logical relation-\nships. The standard example is the noisy-OR relation, which is a generalization of the log-\nNOISY-OR\nical OR. In propositional logic, we might say that Fever is true if and only if Cold, Flu, or\nMalaria is true. The noisy-OR model allows for uncertainty about the ability of each par-\nent to cause the child to be true—the causal relationship between parent and child may be\nSection 14.3.\nEfﬁcient Representation of Conditional Distributions\n519\ninhibited, and so a patient could have a cold, but not exhibit a fever. The model makes two\nassumptions. First, it assumes that all the possible causes are listed. (If some are missing,\nwe can always add a so-called leak node that covers “miscellaneous causes.”) Second, it\nLEAK NODE\nassumes that inhibition of each parent is independent of inhibition of any other parents: for\nexample, whatever inhibits Malaria from causing a fever is independent of whatever inhibits\nFlu from causing a fever. Given these assumptions, Fever is false if and only if all its true\nparents are inhibited, and the probability of this is the product of the inhibition probabilities\nq for each parent. Let us suppose these individual inhibition probabilities are as follows:\nqcold = P(¬fever | cold, ¬ﬂu, ¬malaria) = 0.6 ,\nqﬂu = P(¬fever | ¬cold, ﬂu, ¬malaria) = 0.2 ,\nqmalaria = P(¬fever | ¬cold, ¬ﬂu, malaria) = 0.1 .\nThen, from this information and the noisy-OR assumptions, the entire CPT can be built. The\ngeneral rule is that\nP(xi | parents(Xi)) = 1 −\n\u0019\n{j:Xj = true}\nqj ,\nwhere the product is taken over the parents that are set to true for that row of the CPT. The\nfollowing table illustrates this calculation:\nCold\nFlu\nMalaria P(Fever) P(¬Fever)\nF\nF\nF\n0.0\n1.0\nF\nF\nT\n0.9\n0.1\nF\nT\nF\n0.8\n0.2\nF\nT\nT\n0.98\n0.02 = 0.2 × 0.1\nT\nF\nF\n0.4\n0.6\nT\nF\nT\n0.94\n0.06 = 0.6 × 0.1\nT\nT\nF\n0.88\n0.12 = 0.6 × 0.2\nT\nT\nT\n0.988\n0.012 = 0.6 × 0.2 × 0.1\nIn general, noisy logical relationships in which a variable depends on k parents can be de-\nscribed using O(k) parameters instead of O(2k) for the full conditional probability table.\nThis makes assessment and learning much easier. For example, the CPCS network (Prad-\nhan et al., 1994) uses noisy-OR and noisy-MAX distributions to model relationships among\ndiseases and symptoms in internal medicine. With 448 nodes and 906 links, it requires only\n8,254 values instead of 133,931,430 for a network with full CPTs.\nBayesian nets with continuous variables\nMany real-world problems involve continuous quantities, such as height, mass, temperature,\nand money; in fact, much of statistics deals with random variables whose domains are contin-\nuous. By deﬁnition, continuous variables have an inﬁnite number of possible values, so it is\nimpossible to specify conditional probabilities explicitly for each value. One possible way to\nhandle continuous variables is to avoid them by using discretization—that is, dividing up the\nDISCRETIZATION\n520\n14.\nProbabilistic Reasoning\nHarvest\nSubsidy\nBuys\nCost\nFigure 14.5\nA simple network with discrete variables (Subsidy and Buys) and continuous\nvariables (Harvest and Cost).\npossible values into a ﬁxed set of intervals. For example, temperatures could be divided into\n(<0oC), (0oC−100oC), and (>100oC). Discretization is sometimes an adequate solution,\nbut often results in a considerable loss of accuracy and very large CPTs. The most com-\nmon solution is to deﬁne standard families of probability density functions (see Appendix A)\nthat are speciﬁed by a ﬁnite number of parameters. For example, a Gaussian (or normal)\nPARAMETER\ndistribution N(μ, σ2)(x) has the mean μ and the variance σ2 as parameters. Yet another\nsolution—sometimes called a nonparametric representation—is to deﬁne the conditional\nNONPARAMETRIC\ndistribution implicitly with a collection of instances, each containing speciﬁc values of the\nparent and child variables. We explore this approach further in Chapter 18.\nA network with both discrete and continuous variables is called a hybrid Bayesian\nnetwork. To specify a hybrid network, we have to specify two new kinds of distributions:\nHYBRID BAYESIAN\nNETWORK\nthe conditional distribution for a continuous variable given discrete or continuous parents;\nand the conditional distribution for a discrete variable given continuous parents. Consider the\nsimple example in Figure 14.5, in which a customer buys some fruit depending on its cost,\nwhich depends in turn on the size of the harvest and whether the government’s subsidy scheme\nis operating. The variable Cost is continuous and has continuous and discrete parents; the\nvariable Buys is discrete and has a continuous parent.\nFor the Cost variable, we need to specify P(Cost | Harvest, Subsidy). The discrete\nparent is handled by enumeration—that is, by specifying both P(Cost | Harvest, subsidy)\nand P(Cost | Harvest, ¬subsidy). To handle Harvest, we specify how the distribution over\nthe cost c depends on the continuous value h of Harvest. In other words, we specify the\nparameters of the cost distribution as a function of h. The most common choice is the linear\nGaussian distribution, in which the child has a Gaussian distribution whose mean μ varies\nLINEAR GAUSSIAN\nlinearly with the value of the parent and whose standard deviation σ is ﬁxed. We need two\ndistributions, one for subsidy and one for ¬subsidy, with different parameters:\nP(c | h, subsidy) = N(ath + bt, σ2\nt )(c) =\n1\nσt\n√\n2π e−1\n2\n“ c−(ath+bt)\nσt\n”2\nP(c | h, ¬subsidy) = N(afh + bf, σ2\nf)(c) =\n1\nσf\n√\n2π e\n−1\n2\n„\nc−(af h+bf )\nσf\n«2\n.\nFor this example, then, the conditional distribution for Cost is speciﬁed by naming the linear\nGaussian distribution and providing the parameters at, bt, σt, af, bf, and σf. Figures 14.6(a)\nSection 14.3.\nEfﬁcient Representation of Conditional Distributions\n521\n0 2 4 6 8 10\nCost c\n024681012\nHarvest h\n0\n0.1\n0.2\n0.3\n0.4\nP(c | h, subsidy)\n0 2 4 6 8 10\nCost c\n024681012\nHarvest h\n0\n0.1\n0.2\n0.3\n0.4\nP(c | h, ¬subsidy)\n0 2 4 6 8 10\nCost c\n024681012\nHarvest h\n0\n0.1\n0.2\n0.3\n0.4\nP(c | h)\n(a)\n(b)\n(c)\nFigure 14.6\nThe graphs in (a) and (b) show the probability distribution over Cost as a\nfunction of Harvest size, with Subsidy true and false, respectively. Graph (c) shows the\ndistribution P(Cost | Harvest), obtained by summing over the two subsidy cases.\nand (b) show these two relationships. Notice that in each case the slope is negative, because\ncost decreases as supply increases. (Of course, the assumption of linearity implies that the\ncost becomes negative at some point; the linear model is reasonable only if the harvest size is\nlimited to a narrow range.) Figure 14.6(c) shows the distribution P(c | h), averaging over the\ntwo possible values of Subsidy and assuming that each has prior probability 0.5. This shows\nthat even with very simple models, quite interesting distributions can be represented.\nThe linear Gaussian conditional distribution has some special properties. A network\ncontaining only continuous variables with linear Gaussian distributions has a joint distribu-\ntion that is a multivariate Gaussian distribution (see Appendix A) over all the variables (Exer-\ncise 14.9). Furthermore, the posterior distribution given any evidence also has this property.3\nWhen discrete variables are added as parents (not as children) of continuous variables, the\nnetwork deﬁnes a conditional Gaussian, or CG, distribution: given any assignment to the\nCONDITIONAL\nGAUSSIAN\ndiscrete variables, the distribution over the continuous variables is a multivariate Gaussian.\nNow we turn to the distributions for discrete variables with continuous parents. Con-\nsider, for example, the Buys node in Figure 14.5. It seems reasonable to assume that the\ncustomer will buy if the cost is low and will not buy if it is high and that the probability of\nbuying varies smoothly in some intermediate region. In other words, the conditional distribu-\ntion is like a “soft” threshold function. One way to make soft thresholds is to use the integral\nof the standard normal distribution:\nΦ(x) =\n\u001a x\n−∞\nN(0, 1)(x)dx .\nThen the probability of Buys given Cost might be\nP(buys | Cost = c) = Φ((−c + μ)/σ) ,\nwhich means that the cost threshold occurs around μ, the width of the threshold region is pro-\nportional to σ, and the probability of buying decreases as cost increases. This probit distri-\n3 It follows that inference in linear Gaussian networks takes only O(n3) time in the worst case, regardless of the\nnetwork topology. In Section 14.4, we see that inference for networks of discrete variables is NP-hard.",
+  "images": [
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_fig_14-4.png",
+      "type": "diagram",
+      "caption": "Figure 14.4"
+    },
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_fig_14-5.png",
+      "type": "diagram",
+      "caption": "Figure 14.5"
+    },
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_fig_14-6.png",
+      "type": "diagram",
+      "caption": "Figure 14.6"
+    },
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_fig_14-6.png",
+      "type": "diagram",
+      "caption": "Figure 14.6"
+    },
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_fig_14-6.png",
+      "type": "diagram",
+      "caption": "Figure 14.6"
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_eq_18.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_eq_19.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_eq_20.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_eq_21.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_eq_22.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_eq_23.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_eq_24.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_eq_25.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_eq_26.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_eq_27.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_eq_28.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_eq_29.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/14-3-efficient-representation-of-conditional-distributions_eq_30.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

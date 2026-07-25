@@ -1,0 +1,19 @@
+{
+  "section_id": "memory-address-map",
+  "title": "Memory Address Map",
+  "level": 2,
+  "chapter": "12-2 Main Memory",
+  "parent_id": "12-2-main-memory",
+  "children": [],
+  "start_page": 451,
+  "end_page": 453,
+  "text": "The designer of a computer system must calculate the amount of memory required for the particular application and assign it to either RAM or ROM. The interconnection between memory and processor is then established from knowledge of the size of memory needed and the type of RAM and ROM chips available. The addressing of memory can be established by means of a table that specifies the memory address assigned to each chip. The table, called a memory address map, is a pictorial representation of assigned address space for each chip in the system.\nTo demonstrate with a particular example, assume that a computer system needs 512 bytes of RAM and 512 bytes of ROM. The RAM and ROM chips\nFigure 12-3 Typical ROM chip.\nto be used are specified in Figs. 12-2 and 12-3. The memory address map for this configuration is shown in Table 12-1. The component column specifies whether a RAM or a ROM chip is used. The hexadecimal address column assigns a range of hexadecimal equivalent addresses for each chip. The address bus lines are listed in the third column. Although there are 16 lines in the address bus, the table shows only 10 lines because the other 6 are not used in this example and are assumed to be zero. The small x's under the address bus lines designate those lines that must be connected to the address inputs in each chip. The RAM chips have 128 bytes and need seven address lines. The ROM chip has 512 bytes and needs 9 address lines. The x's are always assigned to the low-order bus lines: lines 1 through 7 for the RAM and lines 1 through 9 for the ROM. It is now necessary to distinguish between four RAM chips by assigning to each a different address. For this particular example we choose bus lines 8 and 9 to represent four distinct binary combinations. Note that any other pair of unused bus lines can be chosen for this purpose. The table clearly shows that the nine low-order bus lines constitute a memory space for RAM equal to 2° = 512 bytes. The distinction between a RAM and ROM address is done with another bus line. Here we choose line 10 for this purpose. When line 10 is 0, the CPU selects a RAM, and when this line is equal to 1, it selects the ROM.\nThe equivalent hexadecimal address for each chip is obtained from the information under the address bus assignment. The address bus lines are\n\n[Table]\nHexadecimalAldress bu18Componentaddress10987654321RAM 10000-007F000.хxxхххRAM 20080-00FF001ххχĺххххRAM 30100-017F010хххххXхRAM 40180-01FF011хххххххROM0200-03FF1ххххххххх\n\nTABLE 12-1 Memory Address Map for Microprocomputer\nsubdivided into groups of four bits each so that each group can be represented with a hexadecimal digit. The first hexadecimal digit represents lines 13 to 16 and is always 0. The next hexadecimal digit represents lines 9 to 12, but lines 11 and 12 are always 0. The range of hexadecimal addresses for each component is determined from the x's associated with it. These x's represent a binary number that can range from an all-0's to an all-1's value.",
+  "images": [
+    {
+      "path": "images/memory-address-map_img_1.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

@@ -1,0 +1,395 @@
+{
+  "section_id": "18-7-artificial-neural-networks",
+  "title": "18.7 Artificial Neural Networks",
+  "level": 3,
+  "chapter": "V: Learning",
+  "parent_id": "18-learning-from-examples",
+  "children": [],
+  "start_page": 745,
+  "end_page": 754,
+  "text": "Section 18.7.\nArtiﬁcial Neural Networks\n727\n 0.4\n 0.5\n 0.6\n 0.7\n 0.8\n 0.9\n 1\n 0\n 1000\n 2000\n 3000\n 4000\n 5000\nSquared error per example\nNumber of weight updates\n 0.4\n 0.5\n 0.6\n 0.7\n 0.8\n 0.9\n 1\n 0\n 20000 40000 60000 80000 100000\nSquared error per example\nNumber of weight updates\n 0.4\n 0.5\n 0.6\n 0.7\n 0.8\n 0.9\n 1\n 0\n 20000 40000 60000 80000 100000\nSquared error per example\nNumber of weight updates\n(a)\n(b)\n(c)\nFigure 18.18\nRepeat of the experiments in Figure 18.16 using logistic regression and\nsquared error. The plot in (a) covers 5000 iterations rather than 1000, while (b) and (c) use\nthe same scale.\nThe derivative g′ of the logistic function satisﬁes g′(z) = g(z)(1 −g(z)), so we have\ng′(w · x) = g(w · x)(1 −g(w · x)) = hw(x)(1 −hw(x))\nso the weight update for minimizing the loss is\nwi ←wi + α (y −hw(x)) × hw(x)(1 −hw(x)) × xi .\n(18.8)\nRepeating the experiments of Figure 18.16 with logistic regression instead of the linear\nthreshold classiﬁer, we obtain the results shown in Figure 18.18. In (a), the linearly sep-\narable case, logistic regression is somewhat slower to converge, but behaves much more\npredictably. In (b) and (c), where the data are noisy and nonseparable, logistic regression\nconverges far more quickly and reliably. These advantages tend to carry over into real-world\napplications and logistic regression has become one of the most popular classiﬁcation tech-\nniques for problems in medicine, marketing and survey analysis, credit scoring, public health,\nand other applications.\n18.7\nARTIFICIAL NEURAL NETWORKS\nWe turn now to what seems to be a somewhat unrelated topic: the brain. In fact, as we\nwill see, the technical ideas we have discussed so far in this chapter turn out to be useful in\nbuilding mathematical models of the brain’s activity; conversely, thinking about the brain has\nhelped in extending the scope of the technical ideas.\nChapter 1 touched brieﬂy on the basic ﬁndings of neuroscience—in particular, the hy-\npothesis that mental activity consists primarily of electrochemical activity in networks of\nbrain cells called neurons. (Figure 1.2 on page 11 showed a schematic diagram of a typical\nneuron.) Inspired by this hypothesis, some of the earliest AI work aimed to create artiﬁcial\nneural networks. (Other names for the ﬁeld include connectionism, parallel distributed\nNEURAL NETWORK\nprocessing, and neural computation.) Figure 18.19 shows a simple mathematical model\nof the neuron devised by McCulloch and Pitts (1943). Roughly speaking, it “ﬁres” when a\nlinear combination of its inputs exceeds some (hard or soft) threshold—that is, it implements\n728\n18.\nLearning from Examples\nOutput\nΣ\nInput\nLinks\nActivation\nFunction\nInput\nFunction\nOutput\nLinks\na0 = 1\naj = g(inj)\naj\ng\ninj\nwi,j\nw0,j\nBias Weight\nai\nFigure 18.19\nA simple mathematical model for a neuron. The unit’s output activation is\naj = g(\u0002n\ni = 0 wi,jai), where ai is the output activation of unit i and wi,j is the weight on the\nlink from unit i to this unit.\na linear classiﬁer of the kind described in the preceding section. A neural network is just a\ncollection of units connected together; the properties of the network are determined by its\ntopology and the properties of the “neurons.”\nSince 1943, much more detailed and realistic models have been developed, both for\nneurons and for larger systems in the brain, leading to the modern ﬁeld of computational\nneuroscience. On the other hand, researchers in AI and statistics became interested in the\nCOMPUTATIONAL\nNEUROSCIENCE\nmore abstract properties of neural networks, such as their ability to perform distributed com-\nputation, to tolerate noisy inputs, and to learn. Although we understand now that other kinds\nof systems—including Bayesian networks—have these properties, neural networks remain\none of the most popular and effective forms of learning system and are worthy of study in\ntheir own right.\n18.7.1\nNeural network structures\nNeural networks are composed of nodes or units (see Figure 18.19) connected by directed\nUNIT\nlinks. A link from unit i to unit j serves to propagate the activation ai from i to j.8 Each link\nLINK\nACTIVATION\nalso has a numeric weight wi,j associated with it, which determines the strength and sign of\nWEIGHT\nthe connection. Just as in linear regression models, each unit has a dummy input a0 = 1 with\nan associated weight w0,j. Each unit j ﬁrst computes a weighted sum of its inputs:\ninj =\nn\n\n\ni = 0\nwi,jai .\nThen it applies an activation function g to this sum to derive the output:\nACTIVATION\nFUNCTION\naj = g(inj) = g\n\u001f n\n\n\ni = 0\nwi,jai\n \n.\n(18.9)\n8 A note on notation: for this section, we are forced to suspend our usual conventions. Input attributes are still\nindexed by i , so that an “external” activation ai is given by input xi; but index j will refer to internal units\nrather than examples. Throughout this section, the mathematical derivations concern a single generic example x,\nomitting the usual summations over examples to obtain results for the whole data set.\nSection 18.7.\nArtiﬁcial Neural Networks\n729\nThe activation function g is typically either a hard threshold (Figure 18.17(a)), in which case\nthe unit is called a perceptron, or a logistic function (Figure 18.17(b)), in which case the term\nPERCEPTRON\nsigmoid perceptron is sometimes used. Both of these nonlinear activation function ensure\nSIGMOID\nPERCEPTRON\nthe important property that the entire network of units can represent a nonlinear function (see\nExercise 18.22). As mentioned in the discussion of logistic regression (page 725), the logistic\nactivation function has the added advantage of being differentiable.\nHaving decided on the mathematical model for individual “neurons,” the next task is\nto connect them together to form a network. There are two fundamentally distinct ways to\ndo this. A feed-forward network has connections only in one direction—that is, it forms a\nFEED-FORWARD\nNETWORK\ndirected acyclic graph. Every node receives input from “upstream” nodes and delivers output\nto “downstream” nodes; there are no loops. A feed-forward network represents a function of\nits current input; thus, it has no internal state other than the weights themselves. A recurrent\nnetwork, on the other hand, feeds its outputs back into its own inputs. This means that\nRECURRENT\nNETWORK\nthe activation levels of the network form a dynamical system that may reach a stable state or\nexhibit oscillations or even chaotic behavior. Moreover, the response of the network to a given\ninput depends on its initial state, which may depend on previous inputs. Hence, recurrent\nnetworks (unlike feed-forward networks) can support short-term memory. This makes them\nmore interesting as models of the brain, but also more difﬁcult to understand. This section\nwill concentrate on feed-forward networks; some pointers for further reading on recurrent\nnetworks are given at the end of the chapter.\nFeed-forward networks are usually arranged in layers, such that each unit receives input\nLAYERS\nonly from units in the immediately preceding layer. In the next two subsections, we will look\nat single-layer networks, in which every unit connects directly from the network’s inputs to\nits outputs, and multilayer networks, which have one or more layers of hidden units that are\nHIDDEN UNIT\nnot connected to the outputs of the network. So far in this chapter, we have considered only\nlearning problems with a single output variable y, but neural networks are often used in cases\nwhere multiple outputs are appropriate. For example, if we want to train a network to add\ntwo input bits, each a 0 or a 1, we will need one output for the sum bit and one for the carry\nbit. Also, when the learning problem involves classiﬁcation into more than two classes—for\nexample, when learning to categorize images of handwritten digits—it is common to use one\noutput unit for each class.\n18.7.2\nSingle-layer feed-forward neural networks (perceptrons)\nA network with all the inputs connected directly to the outputs is called a single-layer neural\nnetwork, or a perceptron network. Figure 18.20 shows a simple two-input, two-output\nPERCEPTRON\nNETWORK\nperceptron network. With such a network, we might hope to learn the two-bit adder function,\nfor example. Here are all the training data we will need:\nx1\nx2\ny3 (carry)\ny4 (sum)\n0\n0\n0\n0\n0\n1\n0\n1\n1\n0\n0\n1\n1\n1\n1\n0\n730\n18.\nLearning from Examples\nThe ﬁrst thing to notice is that a perceptron network with m outputs is really m separate\nnetworks, because each weight affects only one of the outputs. Thus, there will be m sepa-\nrate training processes. Furthermore, depending on the type of activation function used, the\ntraining processes will be either the perceptron learning rule (Equation (18.7) on page 724)\nor gradient descent rule for the logistic regression (Equation (18.8) on page 727).\nIf you try either method on the two-bit-adder data, something interesting happens. Unit\n3 learns the carry function easily, but unit 4 completely fails to learn the sum function. No,\nunit 4 is not defective! The problem is with the sum function itself. We saw in Section 18.6\nthat linear classiﬁers (whether hard or soft) can represent linear decision boundaries in the in-\nput space. This works ﬁne for the carry function, which is a logical AND (see Figure 18.21(a)).\nThe sum function, however, is an XOR (exclusive OR) of the two inputs. As Figure 18.21(c)\nillustrates, this function is not linearly separable so the perceptron cannot learn it.\nThe linearly separable functions constitute just a small fraction of all Boolean func-\ntions; Exercise 18.20 asks you to quantify this fraction. The inability of perceptrons to learn\neven such simple functions as XOR was a signiﬁcant setback to the nascent neural network\nw3,5\n3,6\nw\n4,5\nw\n4,6\nw\n5\n6\nw1,3\n1,4\nw\n2,3\nw\n2,4\nw\n1\n2\n3\n4\nw1,3\n1,4\nw\n2,3\nw\n2,4\nw\n1\n2\n3\n4\n(b)\n(a)\nFigure 18.20\n(a) A perceptron network with two inputs and two output units. (b) A neural\nnetwork with two inputs, one hidden layer of two units, and one output unit. Not shown are\nthe dummy inputs and their associated weights.\n(a) x1 and x2\n1\n0\n0\n1\nx1\nx2\n(b) x1 or x2\n0\n1\n1\n0\nx1\nx2\n(c) x1 xor x2\n?\n0\n1\n1\n0\nx1\nx2\nFigure 18.21\nLinear separability in threshold perceptrons. Black dots indicate a point in\nthe input space where the value of the function is 1, and white dots indicate a point where the\nvalue is 0. The perceptron returns 1 on the region on the non-shaded side of the line. In (c),\nno such line exists that correctly classiﬁes the inputs.\nSection 18.7.\nArtiﬁcial Neural Networks\n731\n0.4\n0.5\n0.6\n0.7\n0.8\n0.9\n1\n0\n10\n20\n30\n40\n50\n60\n70\n80\n90 100\nProportion correct on test set\nTraining set size\nPerceptron\nDecision tree\n0.4\n0.5\n0.6\n0.7\n0.8\n0.9\n1\n0\n10\n20\n30\n40\n50\n60\n70\n80\n90 100\nProportion correct on test set\nTraining set size\nPerceptron\nDecision tree\n(a)\n(b)\nFigure 18.22\nComparing the performance of perceptrons and decision trees. (a) Percep-\ntrons are better at learning the majority function of 11 inputs. (b) Decision trees are better at\nlearning the WillWait predicate in the restaurant example.\ncommunity in the 1960s. Perceptrons are far from useless, however. Section 18.6.4 noted\nthat logistic regression (i.e., training a sigmoid perceptron) is even today a very popular and\neffective tool. Moreover, a perceptron can represent some quite “complex” Boolean func-\ntions very compactly. For example, the majority function, which outputs a 1 only if more\nthan half of its n inputs are 1, can be represented by a perceptron with each wi = 1 and with\nw0 = −n/2. A decision tree would need exponentially many nodes to represent this function.\nFigure 18.22 shows the learning curve for a perceptron on two different problems. On\nthe left, we show the curve for learning the majority function with 11 Boolean inputs (i.e.,\nthe function outputs a 1 if 6 or more inputs are 1). As we would expect, the perceptron learns\nthe function quite quickly, because the majority function is linearly separable. On the other\nhand, the decision-tree learner makes no progress, because the majority function is very hard\n(although not impossible) to represent as a decision tree. On the right, we have the restaurant\nexample. The solution problem is easily represented as a decision tree, but is not linearly\nseparable. The best plane through the data correctly classiﬁes only 65%.\n18.7.3\nMultilayer feed-forward neural networks\n(McCulloch and Pitts, 1943) were well aware that a single threshold unit would not solve all\ntheir problems. In fact, their paper proves that such a unit can represent the basic Boolean\nfunctions AND, OR, and NOT and then goes on to argue that any desired functionality can be\nobtained by connecting large numbers of units into (possibly recurrent) networks of arbitrary\ndepth. The problem was that nobody knew how to train such networks.\nThis turns out to be an easy problem if we think of a network the right way: as a\nfunction hw(x) parameterized by the weights w. Consider the simple network shown in Fig-\nure 18.20(b), which has two input units, two hidden units, and two output unit. (In addition,\neach unit has a dummy input ﬁxed at 1.) Given an input vector x = (x1, x2), the activations\n732\n18.\nLearning from Examples\n-4\n-2\n0\n2\n4\nx1\n-4 -2 0 2 4\nx2\n0\n0.2\n0.4\n0.6\n0.8\n1\nhW(x1, x2)\n-4\n-2\n0\n2\n4\nx1\n-4 -2 0 2 4\nx2\n0\n0.2\n0.4\n0.6\n0.8\n1\nhW(x1, x2)\n(a)\n(b)\nFigure 18.23\n(a) The result of combining two opposite-facing soft threshold functions to\nproduce a ridge. (b) The result of combining two ridges to produce a bump.\nof the input units are set to (a1, a2) = (x1, x2). The output at unit 5 is given by\na5 = g(w0,5,+w3,5 a3 + w4,5 a4)\n= g(w0,5,+w3,5 g(w0,3 + w1,3 a1 + w2,3 a2) + w4,5 g(w04 + w1,4 a1 + w2,4 a2))\n= g(w0,5,+w3,5 g(w0,3 + w1,3 x1 + w2,3 x2) + w4,5 g(w04 + w1,4 x1 + w2,4 x2)).\nThus, we have the output expressed as a function of the inputs and the weights. A similar\nexpression holds for unit 6. As long as we can calculate the derivatives of such expressions\nwith respect to the weights, we can use the gradient-descent loss-minimization method to\ntrain the network. Section 18.7.4 shows exactly how to do this. And because the function\nrepresented by a network can be highly nonlinear—composed, as it is, of nested nonlinear soft\nthreshold functions—we can see neural networks as a tool for doing nonlinear regression.\nNONLINEAR\nREGRESSION\nBefore delving into learning rules, let us look at the ways in which networks generate\ncomplicated functions. First, remember that each unit in a sigmoid network represents a soft\nthreshold in its input space, as shown in Figure 18.17(c) (page 726). With one hidden layer\nand one output layer, as in Figure 18.20(b), each output unit computes a soft-thresholded\nlinear combination of several such functions. For example, by adding two opposite-facing\nsoft threshold functions and thresholding the result, we can obtain a “ridge” function as shown\nin Figure 18.23(a). Combining two such ridges at right angles to each other (i.e., combining\nthe outputs from four hidden units), we obtain a “bump” as shown in Figure 18.23(b).\nWith more hidden units, we can produce more bumps of different sizes in more places.\nIn fact, with a single, sufﬁciently large hidden layer, it is possible to represent any continuous\nfunction of the inputs with arbitrary accuracy; with two layers, even discontinuous functions\ncan be represented.9 Unfortunately, for any particular network structure, it is harder to char-\nacterize exactly which functions can be represented and which ones cannot.\n9 The proof is complex, but the main point is that the required number of hidden units grows exponentially with\nthe number of inputs. For example, 2n/n hidden units are needed to encode all Boolean functions of n inputs.\nSection 18.7.\nArtiﬁcial Neural Networks\n733\n18.7.4\nLearning in multilayer networks\nFirst, let us dispense with one minor complication arising in multilayer networks: interactions\namong the learning problems when the network has multiple outputs. In such cases, we\nshould think of the network as implementing a vector function hw rather than a scalar function\nhw; for example, the network in Figure 18.20(b) returns a vector [a5, a6]. Similarly, the\ntarget output will be a vector y. Whereas a perceptron network decomposes into m separate\nlearning problems for an m-output problem, this decomposition fails in a multilayer network.\nFor example, both a5 and a6 in Figure 18.20(b) depend on all of the input-layer weights, so\nupdates to those weights will depend on errors in both a5 and a6. Fortunately, this dependency\nis very simple in the case of any loss function that is additive across the components of the\nerror vector y −hw(x). For the L2 loss, we have, for any weight w,\n∂\n∂wLoss(w) = ∂\n∂w|y −hw(x)|2 = ∂\n∂w\n\n\nk\n(yk −ak)2 =\n\n\nk\n∂\n∂w(yk −ak)2\n(18.10)\nwhere the index k ranges over nodes in the output layer. Each term in the ﬁnal summation\nis just the gradient of the loss for the kth output, computed as if the other outputs did not\nexist. Hence, we can decompose an m-output learning problem into m learning problems,\nprovided we remember to add up the gradient contributions from each of them when updating\nthe weights.\nThe major complication comes from the addition of hidden layers to the network.\nWhereas the error y −hw at the output layer is clear, the error at the hidden layers seems\nmysterious because the training data do not say what value the hidden nodes should have.\nFortunately, it turns out that we can back-propagate the error from the output layer to the\nBACK-PROPAGATION\nhidden layers. The back-propagation process emerges directly from a derivation of the overall\nerror gradient. First, we will describe the process with an intuitive justiﬁcation; then, we will\nshow the derivation.\nAt the output layer, the weight-update rule is identical to Equation (18.8). We have\nmultiple output units, so let Errk be the kth component of the error vector y −hw. We will\nalso ﬁnd it convenient to deﬁne a modiﬁed error Δk = Errk × g′(ink), so that the weight-\nupdate rule becomes\nwj,k ←wj,k + α × aj × Δk .\n(18.11)\nTo update the connections between the input units and the hidden units, we need to deﬁne a\nquantity analogous to the error term for output nodes. Here is where we do the error back-\npropagation. The idea is that hidden node j is “responsible” for some fraction of the error Δk\nin each of the output nodes to which it connects. Thus, the Δk values are divided according\nto the strength of the connection between the hidden node and the output node and are prop-\nagated back to provide the Δj values for the hidden layer. The propagation rule for the Δ\nvalues is the following:\nΔj = g′(inj)\n\n\nk\nwj,kΔk .\n(18.12)\n734\n18.\nLearning from Examples\nfunction BACK-PROP-LEARNING(examples,network) returns a neural network\ninputs: examples, a set of examples, each with input vector x and output vector y\nnetwork, a multilayer network with L layers, weights wi,j, activation function g\nlocal variables: Δ, a vector of errors, indexed by network node\nrepeat\nfor each weight wi,j in network do\nwi,j ←a small random number\nfor each example (x, y) in examples do\n/* Propagate the inputs forward to compute the outputs */\nfor each node i in the input layer do\nai ←xi\nfor ℓ= 2 to L do\nfor each node j in layer ℓdo\ninj ←\u0002\ni wi,j ai\naj ←g(inj)\n/* Propagate deltas backward from output layer to input layer */\nfor each node j in the output layer do\nΔ[j] ←g′(inj) × (yj −aj)\nfor ℓ= L −1 to 1 do\nfor each node i in layer ℓdo\nΔ[i] ←g′(ini) \u0002\nj wi,j Δ[j]\n/* Update every weight in network using deltas */\nfor each weight wi,j in network do\nwi,j ←wi,j + α × ai × Δ[j]\nuntil some stopping criterion is satisﬁed\nreturn network\nFigure 18.24\nThe back-propagation algorithm for learning in multilayer networks.\nNow the weight-update rule for the weights between the inputs and the hidden layer is essen-\ntially identical to the update rule for the output layer:\nwi,j ←wi,j + α × ai × Δj .\nThe back-propagation process can be summarized as follows:\n• Compute the Δ values for the output units, using the observed error.\n• Starting with output layer, repeat the following for each layer in the network, until the\nearliest hidden layer is reached:\n– Propagate the Δ values back to the previous layer.\n– Update the weights between the two layers.\nThe detailed algorithm is shown in Figure 18.24.\nFor the mathematically inclined, we will now derive the back-propagation equations\nfrom ﬁrst principles. The derivation is quite similar to the gradient calculation for logistic\nSection 18.7.\nArtiﬁcial Neural Networks\n735\nregression (leading up to Equation (18.8) on page 727), except that we have to use the chain\nrule more than once.\nFollowing Equation (18.10), we compute just the gradient for Lossk = (yk −ak)2 at\nthe kth output. The gradient of this loss with respect to weights connecting the hidden layer\nto the output layer will be zero except for weights wj,k that connect to the kth output unit.\nFor those weights, we have\n∂Lossk\n∂wj,k\n= −2(yk −ak) ∂ak\n∂wj,k\n= −2(yk −ak)∂g(ink)\n∂wj,k\n= −2(yk −ak)g′(ink) ∂ink\n∂wj,k\n= −2(yk −ak)g′(ink)\n∂\n∂wj,k\n⎛\n⎝\n\nj\nwj,kaj\n⎞\n⎠\n= −2(yk −ak)g′(ink)aj = −ajΔk ,\nwith Δk deﬁned as before. To obtain the gradient with respect to the wi,j weights connecting\nthe input layer to the hidden ¡layer, we have to expand out the activations aj and reapply the\nchain rule. We will show the derivation in gory detail because it is interesting to see how the\nderivative operator propagates back through the network:\n∂Lossk\n∂wi,j\n= −2(yk −ak) ∂ak\n∂wi,j\n= −2(yk −ak)∂g(ink)\n∂wi,j\n= −2(yk −ak)g′(ink) ∂ink\n∂wi,j\n= −2Δk\n∂\n∂wi,j\n⎛\n⎝\n\nj\nwj,kaj\n⎞\n⎠\n= −2Δkwj,k\n∂aj\n∂wi,j\n= −2Δkwj,k\n∂g(inj)\n∂wi,j\n= −2Δkwj,kg′(inj) ∂inj\n∂wi,j\n= −2Δkwj,kg′(inj)\n∂\n∂wi,j\n\u001f\n\ni\nwi,jai\n \n= −2Δkwj,kg′(inj)ai = −aiΔj ,\nwhere Δj is deﬁned as before. Thus, we obtain the update rules obtained earlier from intuitive\nconsiderations. It is also clear that the process can be continued for networks with more than\none hidden layer, which justiﬁes the general algorithm given in Figure 18.24.\nHaving made it through (or skipped over) all the mathematics, let’s see how a single-\nhidden-layer network performs on the restaurant problem. First, we need to determine the\nstructure of the network. We have 10 attributes describing each example, so we will need\n10 input units. Should we have one hidden layer or two? How many nodes in each layer?\nShould they be fully connected? There is no good theory that will tell us the answer. (See the\nnext section.) As always, we can use cross-validation: try several different structures and see\nwhich one works best. It turns out that a network with one hidden layer containing four nodes\nis about right for this problem. In Figure 18.25, we show two curves. The ﬁrst is a training\ncurve showing the mean squared error on a given training set of 100 restaurant examples\n736\n18.\nLearning from Examples\n0\n2\n4\n6\n8\n10\n12\n14\n0\n50\n100\n150\n200\n250\n300\n350\n400\nTotal error on training set\nNumber of epochs\n0.4\n0.5\n0.6\n0.7\n0.8\n0.9\n1\n0\n10\n20\n30\n40\n50\n60\n70\n80\n90 100\nProportion correct on test set\nTraining set size\nDecision tree\nMultilayer network\n(a)\n(b)\nFigure 18.25\n(a) Training curve showing the gradual reduction in error as weights are\nmodiﬁed over several epochs, for a given set of examples in the restaurant domain. (b)\nComparative learning curves showing that decision-tree learning does slightly better on the\nrestaurant problem than back-propagation in a multilayer network.\nduring the weight-updating process. This demonstrates that the network does indeed converge\nto a perfect ﬁt to the training data. The second curve is the standard learning curve for the\nrestaurant data. The neural network does learn well, although not quite as fast as decision-\ntree learning; this is perhaps not surprising, because the data were generated from a simple\ndecision tree in the ﬁrst place.\nNeural networks are capable of far more complex learning tasks of course, although it\nmust be said that a certain amount of twiddling is needed to get the network structure right\nand to achieve convergence to something close to the global optimum in weight space. There\nare literally tens of thousands of published applications of neural networks. Section 18.11.1\nlooks at one such application in more depth.\n18.7.5\nLearning neural network structures\nSo far, we have considered the problem of learning weights, given a ﬁxed network structure;\njust as with Bayesian networks, we also need to understand how to ﬁnd the best network\nstructure. If we choose a network that is too big, it will be able to memorize all the examples\nby forming a large lookup table, but will not necessarily generalize well to inputs that have\nnot been seen before.10 In other words, like all statistical models, neural networks are subject\nto overﬁtting when there are too many parameters in the model. We saw this in Figure 18.1\n(page 696), where the high-parameter models in (b) and (c) ﬁt all the data, but might not\ngeneralize as well as the low-parameter models in (a) and (d).\nIf we stick to fully connected networks, the only choices to be made concern the number\n10 It has been observed that very large networks do generalize well as long as the weights are kept small. This\nrestriction keeps the activation values in the linear region of the sigmoid function g(x) where x is close to zero.\nThis, in turn, means that the network behaves like a linear function (Exercise 18.22) with far fewer parameters.",
+  "images": [
+    {
+      "path": "images/18-7-artificial-neural-networks_diagram_1.png",
+      "type": "diagram",
+      "caption": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_fig_18-19.png",
+      "type": "diagram",
+      "caption": "Figure 18.19"
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_fig_18-20.png",
+      "type": "diagram",
+      "caption": "Figure 18.20"
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_fig_18-20.png",
+      "type": "diagram",
+      "caption": "Figure 18.20"
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_fig_18-20.png",
+      "type": "diagram",
+      "caption": "Figure 18.20"
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_fig_18-20.png",
+      "type": "diagram",
+      "caption": "Figure 18.20"
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_fig_18-20.png",
+      "type": "diagram",
+      "caption": "Figure 18.20"
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_diagram_8.png",
+      "type": "diagram",
+      "caption": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_diagram_9.png",
+      "type": "diagram",
+      "caption": null
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_18-8.png",
+      "type": "equation",
+      "label": "18.8"
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_18-9.png",
+      "type": "equation",
+      "label": "18.9"
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_18-10.png",
+      "type": "equation",
+      "label": "18.10"
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_19.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_18-11.png",
+      "type": "equation",
+      "label": "18.11"
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_21.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_22.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_18-12.png",
+      "type": "equation",
+      "label": "18.12"
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_24.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_25.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_26.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_27.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_28.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_29.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_30.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_31.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_32.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_33.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_34.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_35.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_36.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_37.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_38.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_39.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_40.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_41.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_42.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_43.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_44.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_45.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_46.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_47.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_48.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_49.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_50.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_51.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_52.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_53.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_54.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_55.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_56.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_57.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_58.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_59.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_60.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_61.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_62.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_63.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_64.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_65.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_66.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-7-artificial-neural-networks_eq_67.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

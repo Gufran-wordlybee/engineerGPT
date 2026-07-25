@@ -1,0 +1,16 @@
+{
+  "section_id": "attached-array-processor",
+  "title": "Attached Array Processor",
+  "level": 2,
+  "chapter": "Pipeline and Vector Processing",
+  "parent_id": "pipeline-and-vector-processing",
+  "children": [
+    "simd-array-processor",
+    "problems-8"
+  ],
+  "start_page": 334,
+  "end_page": 335,
+  "text": "An attached array processor is designed as a peripheral for a conventional host computer, and its purpose is to enhance the performance of the computer by providing vector processing for complex scientific applications. It achieves\nhigh performance by means of parallel processing with multiple functional units. It includes an arithmetic unit containing one or more pipelined floatingpoint adders and multipliers. The array processor can be programmed by the user to accommodate a variety of complex arithmetic problems.\nFigure 9-14 shows the interconnection of an attached array processor to a host computer. The host computer is a general-purpose commercial computer and the attached processor is a back-end machine driven by the host computer. The array processor is connected through an input-output controller to the computer and the computer treats it like an external interface. The data for the attached processor are transferred from main memory to a local memory through a high-speed bus. The general-purpose computer without the attached processor serves the users that need conventional data processing. The system with the attached processor satisfies the needs for complex arithmetic applications.\nSome manufacturers of attached array processors offer a model that can be connected to a variety of different host computers. For example, when attached to a VAX 11 computer, the FSP-164/MAX from Floating-Point Systems increases the computing power of the VAX to 100 megaflops. The objective of the attached array processor is to provide vector manipulation capabilities to a conventional computer at a fraction of the cost of supercomputers.",
+  "images": [],
+  "equations": []
+}

@@ -1,0 +1,20 @@
+{
+  "section_id": "6-constraint-satisfaction-problems",
+  "title": "6 Constraint Satisfaction Problems",
+  "level": 2,
+  "chapter": "II: Problem-solving",
+  "parent_id": "ii-problem-solving",
+  "children": [
+    "6-1-defining-constraint-satisfaction-problems",
+    "6-2-constraint-propagation-inference-in-csps",
+    "6-3-backtracking-search-for-csps",
+    "6-4-local-search-for-csps",
+    "6-5-the-structure-of-problems",
+    "6-6-summary-bibliographical-and-historical-notes-exercises"
+  ],
+  "start_page": 220,
+  "end_page": 220,
+  "text": "6\nCONSTRAINT\nSATISFACTION PROBLEMS\nIn which we see how treating states as more than just little black boxes leads to the\ninvention of a range of powerful new search methods and a deeper understanding\nof problem structure and complexity.\nChapters 3 and 4 explored the idea that problems can be solved by searching in a space of\nstates. These states can be evaluated by domain-speciﬁc heuristics and tested to see whether\nthey are goal states. From the point of view of the search algorithm, however, each state is\natomic, or indivisible—a black box with no internal structure.\nThis chapter describes a way to solve a wide variety of problems more efﬁciently. We\nuse a factored representation for each state: a set of variables, each of which has a value.\nA problem is solved when each variable has a value that satisﬁes all the constraints on the\nvariable. A problem described this way is called a constraint satisfaction problem, or CSP.\nCONSTRAINT\nSATISFACTION\nPROBLEM\nCSP search algorithms take advantage of the structure of states and use general-purpose\nrather than problem-speciﬁc heuristics to enable the solution of complex problems. The main\nidea is to eliminate large portions of the search space all at once by identifying variable/value\ncombinations that violate the constraints.\n6.1\nDEFINING CONSTRAINT SATISFACTION PROBLEMS\nA constraint satisfaction problem consists of three components, X, D, and C:\nX is a set of variables, {X1, . . . , Xn}.\nD is a set of domains, {D1, . . . , Dn}, one for each variable.\nC is a set of constraints that specify allowable combinations of values.\nEach domain Di consists of a set of allowable values, {v1, . . . , vk} for variable Xi. Each\nconstraint Ci consists of a pair ⟨scope, rel⟩, where scope is a tuple of variables that participate\nin the constraint and rel is a relation that deﬁnes the values that those variables can take on. A\nrelation can be represented as an explicit list of all tuples of values that satisfy the constraint,\nor as an abstract relation that supports two operations: testing if a tuple is a member of the\nrelation and enumerating the members of the relation. For example, if X1 and X2 both have\n202",
+  "images": [],
+  "equations": []
+}

@@ -1,0 +1,15 @@
+{
+  "section_id": "5-7-input-output-and-interrupt",
+  "title": "5-7 Input-Output and Interrupt",
+  "level": 1,
+  "chapter": "5-7 Input-Output and Interrupt",
+  "parent_id": null,
+  "children": [
+    "input-output-configuration"
+  ],
+  "start_page": 160,
+  "end_page": 161,
+  "text": "A computer can serve no useful purpose unless it communicates with the external environment. Instructions and data stored in memory must come from some input device. Computational results must be transmitted to the user through some output device. Commercial computers include many types of\ninput and output devices. To demonstrate the most basic requirements for input and output communication, we will use as an illustration a terminal unit with a keyboard and printer. Input—output organization is discussed further in Chap. 11.",
+  "images": [],
+  "equations": []
+}

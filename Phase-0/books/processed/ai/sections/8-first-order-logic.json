@@ -1,0 +1,19 @@
+{
+  "section_id": "8-first-order-logic",
+  "title": "8 First-Order Logic",
+  "level": 2,
+  "chapter": "III: Knowledge, reasoning, and planning",
+  "parent_id": "iii-knowledge-reasoning-and-planning",
+  "children": [
+    "8-1-representation-revisited",
+    "8-2-syntax-and-semantics-of-first-order-logic",
+    "8-3-using-first-order-logic",
+    "8-4-knowledge-engineering-in-first-order-logic",
+    "8-5-summary-bibliographical-and-historical-notes-exercises"
+  ],
+  "start_page": 303,
+  "end_page": 303,
+  "text": "8\nFIRST-ORDER LOGIC\nIn which we notice that the world is blessed with many objects, some of which are\nrelated to other objects, and in which we endeavor to reason about them.\nIn Chapter 7, we showed how a knowledge-based agent could represent the world in which it\noperates and deduce what actions to take. We used propositional logic as our representation\nlanguage because it sufﬁced to illustrate the basic concepts of logic and knowledge-based\nagents. Unfortunately, propositional logic is too puny a language to represent knowledge\nof complex environments in a concise way. In this chapter, we examine ﬁrst-order logic,1\nFIRST-ORDER LOGIC\nwhich is sufﬁciently expressive to represent a good deal of our commonsense knowledge.\nIt also either subsumes or forms the foundation of many other representation languages and\nhas been studied intensively for many decades. We begin in Section 8.1 with a discussion of\nrepresentation languages in general; Section 8.2 covers the syntax and semantics of ﬁrst-order\nlogic; Sections 8.3 and 8.4 illustrate the use of ﬁrst-order logic for simple representations.\n8.1\nREPRESENTATION REVISITED\nIn this section, we discuss the nature of representation languages. Our discussion motivates\nthe development of ﬁrst-order logic, a much more expressive language than the propositional\nlogic introduced in Chapter 7. We look at propositional logic and at other kinds of languages\nto understand what works and what fails. Our discussion will be cursory, compressing cen-\nturies of thought, trial, and error into a few paragraphs.\nProgramming languages (such as C++ or Java or Lisp) are by far the largest class of\nformal languages in common use. Programs themselves represent, in a direct sense, only\ncomputational processes. Data structures within programs can represent facts; for example,\na program could use a 4 × 4 array to represent the contents of the wumpus world. Thus, the\nprogramming language statement World[2,2] ←Pit is a fairly natural way to assert that there\nis a pit in square [2,2]. (Such representations might be considered ad hoc; database systems\nwere developed precisely to provide a more general, domain-independent way to store and\n1 Also called ﬁrst-order predicate calculus, sometimes abbreviated as FOL or FOPC.\n285",
+  "images": [],
+  "equations": []
+}

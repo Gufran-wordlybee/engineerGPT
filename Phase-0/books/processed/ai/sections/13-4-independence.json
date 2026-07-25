@@ -1,0 +1,54 @@
+{
+  "section_id": "13-4-independence",
+  "title": "13.4 Independence",
+  "level": 3,
+  "chapter": "IV: Uncertain knowledge and reasoning",
+  "parent_id": "13-quantifying-uncertainty",
+  "children": [],
+  "start_page": 512,
+  "end_page": 512,
+  "text": "494\n13.\nQuantifying Uncertainty\ntable. In a realistic problem we could easily have n > 100, making O(2n) impractical. The\nfull joint distribution in tabular form is just not a practical tool for building reasoning systems.\nInstead, it should be viewed as the theoretical foundation on which more effective approaches\nmay be built, just as truth tables formed a theoretical foundation for more practical algorithms\nlike DPLL. The remainder of this chapter introduces some of the basic ideas required in\npreparation for the development of realistic systems in Chapter 14.\n13.4\nINDEPENDENCE\nLet us expand the full joint distribution in Figure 13.3 by adding a fourth variable, Weather.\nThe full joint distribution then becomes P(Toothache, Catch, Cavity, Weather), which has\n2 × 2 × 2 × 4 = 32 entries. It contains four “editions” of the table shown in Figure 13.3,\none for each kind of weather. What relationship do these editions have to each other and to\nthe original three-variable table? For example, how are P(toothache, catch, cavity, cloudy)\nand P(toothache, catch, cavity) related? We can use the product rule:\nP(toothache, catch, cavity, cloudy)\n= P(cloudy | toothache, catch, cavity)P(toothache, catch, cavity) .\nNow, unless one is in the deity business, one should not imagine that one’s dental problems\ninﬂuence the weather. And for indoor dentistry, at least, it seems safe to say that the weather\ndoes not inﬂuence the dental variables. Therefore, the following assertion seems reasonable:\nP(cloudy | toothache, catch, cavity) = P(cloudy) .\n(13.10)\nFrom this, we can deduce\nP(toothache, catch, cavity, cloudy) = P(cloudy)P(toothache, catch, cavity) .\nA similar equation exists for every entry in P(Toothache, Catch, Cavity, Weather). In fact,\nwe can write the general equation\nP(Toothache, Catch, Cavity, Weather) = P(Toothache, Catch, Cavity)P(Weather) .\nThus, the 32-element table for four variables can be constructed from one 8-element table\nand one 4-element table. This decomposition is illustrated schematically in Figure 13.4(a).\nThe property we used in Equation (13.10) is called independence (also marginal in-\nINDEPENDENCE\ndependence and absolute independence). In particular, the weather is independent of one’s\ndental problems. Independence between propositions a and b can be written as\nP(a | b) = P(a)\nor\nP(b | a) = P(b)\nor\nP(a ∧b) = P(a)P(b) .\n(13.11)\nAll these forms are equivalent (Exercise 13.12). Independence between variables X and Y\ncan be written as follows (again, these are all equivalent):\nP(X | Y ) = P(X)\nor\nP(Y | X) = P(Y )\nor\nP(X, Y ) = P(X)P(Y ) .\nIndependence assertions are usually based on knowledge of the domain. As the toothache–\nweather example illustrates, they can dramatically reduce the amount of information nec-\nessary to specify the full joint distribution. If the complete set of variables can be divided",
+  "images": [],
+  "equations": [
+    {
+      "path": "images/13-4-independence_eq_13-10.png",
+      "type": "equation",
+      "label": "13.10"
+    },
+    {
+      "path": "images/13-4-independence_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-4-independence_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-4-independence_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-4-independence_eq_13-11.png",
+      "type": "equation",
+      "label": "13.11"
+    },
+    {
+      "path": "images/13-4-independence_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-4-independence_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-4-independence_eq_8.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

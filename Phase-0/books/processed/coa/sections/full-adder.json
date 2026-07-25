@@ -1,0 +1,24 @@
+{
+  "section_id": "full-adder",
+  "title": "Full-Adder",
+  "level": 4,
+  "chapter": "Contents",
+  "parent_id": "1-5-combinational-circuits",
+  "children": [],
+  "start_page": 35,
+  "end_page": 37,
+  "text": "A full-adder is a combinational circuit that forms the arithmetic sum of three input bits. It consists of three inputs and two outputs. Two of the input variables, denoted by x and y, represent the two significant bits to be added. The third input, z, represents the carry from the previous lower significant position. Two outputs are necessary because the arithmetic sum of three binary digits ranges in value from 0 to 3, and binary 2 or 3 needs two digits. The two outputs are designated by the symbols S (for sum) and C (for carry). The binary variable S gives the value of the least significant bit of the sum. The binary variable C gives the output carry. The truth table of the full-adder is shown in Table 1-2. The eight rows under the input variables designate all possible combinations that the binary variables may have. The value of the output variables are determined from the arithmetic sum of the input bits. When all input bits are 0, the output is 0. The S output is equal to 1 when only one input is equal to 1 or when all three inputs are equal to 1. The C output has a carry of 1 if two or three inputs are equal to 1.\nThe maps of Fig. 1-17 are used to find algebraic expressions for the two output variables. The 1's in the squares for the maps of S and C are determined directly from the minterms in the truth table. The squares with 1's for the S output do not combine in groups of adjacent squares. But since the output is 1 when an odd number of inputs are 1, S is an odd function and represents\n\n[Table]\nIrputsOutputsxуzсs0000000101010010111010001101101101011111\n\nTABLE 1-2 Truth Table for Full-Adder\nthe exclusive-OR relation of the variables (see the discussion at the end of Sec. 1-2). The squares with 1's for the C output may be combined in a variety of ways. One possible expression for C is\nC = xy + (x'y + xy')z\nRealizing that x'y + xy' = x \\oplus y and including the expression for output S, we obtain the two Boolean expressions for the full-adder:\nS = x \\oplus y \\oplus zC = xy + (x \\oplus y)z\nThe logic diagram of the full-adder is drawn in Fig. 1-18. Note that the full-adder circuit consists of two half-adders and an OR gate. When used in subsequent chapters, the full-adder (FA) will be designated by a block diagram as shown in Fig. 1-18(b).\nFigure 1-17 Maps for full-adder.\nFigure 1-18 Full-adder circuit.",
+  "images": [
+    {
+      "path": "images/full-adder_img_1.png",
+      "type": "figure",
+      "caption": null
+    },
+    {
+      "path": "images/full-adder_img_2.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

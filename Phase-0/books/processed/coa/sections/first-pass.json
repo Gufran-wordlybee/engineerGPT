@@ -1,0 +1,19 @@
+{
+  "section_id": "first-pass",
+  "title": "First Pass",
+  "level": 4,
+  "chapter": "Representation of Symbolic Program in Memory",
+  "parent_id": "representation-of-symbolic-program-in-memory",
+  "children": [],
+  "start_page": 194,
+  "end_page": 196,
+  "text": "A two-pass assembler scans the entire symbolic program twice. During the first pass, it generates a table that correlates all user-defined address symbols with their binary equivalent value. The binary translation is done during the second pass. To keep track of the location of instructions, the assembler uses a memory word called a location counter (abbreviated LC). The content of LC stores the value of the memory location assigned to the instruction or operand presently being processed. The ORG pseudoinstruction initializes the location counter to the value of the first location. Since instructions are stored in sequential locations, the content of LC is incremented by 1 after processing each line of code. To avoid ambiguity in case ORG is missing, the assembler sets the location counter to 0 initially.\nThe tasks performed by the assembler during the first pass are described in the flowchart of Fig. 6-1. LC is initially set to 0. A line of symbolic code is analyzed to determine if it has a label (by the presence of a comma). If the line\nlocation counter (LC)\nFigure 6-1 Flowchart for first pass of assembler.\nof code has no label, the assembler checks the symbol in the instruction field. If it contains an ORG pseudoinstruction, the assembler sets LC to the number that follows ORG and goes back to process the next line. If the line has an END pseudoinstruction, the assembler terminates the first pass and goes to the second pass. (Note that a line with ORG or END should not have a label.) If the line of code contains a label, it is stored in the address symbol table together with its binary equivalent number specified by the content of LC. Nothing is stored in the table if no label is encountered. LC is then incremented by 1 and a new line of code is processed.\nFor the program of Table 6-8, the assembler generates the address symbol table listed in Table 6-12. Each label symbol is stored in two memory locations and is terminated by a comma. If the label contains less than three characters, the memory locations are filled with the code for space. The value found in LC while the line was processed is stored in the next sequential memory location. The program has three symbolic addresses: MIN, SUB, and DIF. These symbols represent 12-bit addresses equivalent to hexadecimal 106, 107, and 108,\n\n[Table]\nMemorywordSymbol or (LC)*Hexadecimal codeBinary representation1M I4D 490100 1101 0100 10012Ν,4E 2C0100 1110 0010 11003(LC)01 060000 0001 0000 01104ŚÚ53 550101 0011 0101 01015В,42 2C0100 0010 0010 11006(LC)01 070000 0001 0000 01117ÌΙ44 490100 0100 0100 10018F,46 2C0100 0110 0010 11009(LC)01 080000 0001 0000 1000\n\nTABLE 6-12 Address Symbol Table for Program in Table 6-8\nrespectively. The address symbol table occupies three words for each label symbol encountered and constitutes the output data that the assembler generates during the first pass.",
+  "images": [
+    {
+      "path": "images/first-pass_img_1.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

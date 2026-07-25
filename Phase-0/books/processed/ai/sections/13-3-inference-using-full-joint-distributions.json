@@ -1,0 +1,134 @@
+{
+  "section_id": "13-3-inference-using-full-joint-distributions",
+  "title": "13.3 Inference Using Full Joint Distributions",
+  "level": 3,
+  "chapter": "IV: Uncertain knowledge and reasoning",
+  "parent_id": "13-quantifying-uncertainty",
+  "children": [],
+  "start_page": 508,
+  "end_page": 511,
+  "text": "490\n13.\nQuantifying Uncertainty\n2 chooses to bet $4 on a, $3 on b, and $2 on ¬(a ∨b), then Agent 1 always loses money,\nregardless of the outcomes for a and b. De Finetti’s theorem implies that no rational agent\ncan have beliefs that violate the axioms of probability.\nAgent 1\nAgent 2\nOutcomes and payoffs to Agent 1\nProposition\nBelief\nBet\nStakes\na, b\na, ¬b\n¬a, b\n¬a, ¬b\na\n0.4\na\n4 to 6\n–6\n–6\n4\n4\nb\n0.3\nb\n3 to 7\n–7\n3\n–7\n3\na ∨b\n0.8\n¬(a ∨b)\n2 to 8\n2\n2\n2\n–8\n–11\n–1\n–1\n–1\nFigure 13.2\nBecause Agent 1 has inconsistent beliefs, Agent 2 is able to devise a set of\nbets that guarantees a loss for Agent 1, no matter what the outcome of a and b.\nOne common objection to de Finetti’s theorem is that this betting game is rather con-\ntrived. For example, what if one refuses to bet? Does that end the argument? The answer is\nthat the betting game is an abstract model for the decision-making situation in which every\nagent is unavoidably involved at every moment. Every action (including inaction) is a kind\nof bet, and every outcome can be seen as a payoff of the bet. Refusing to bet is like refusing\nto allow time to pass.\nOther strong philosophical arguments have been put forward for the use of probabilities,\nmost notably those of Cox (1946), Carnap (1950), and Jaynes (2003). They each construct a\nset of axioms for reasoning with degrees of beliefs: no contradictions, correspondence with\nordinary logic (for example, if belief in A goes up, then belief in ¬A must go down), and so\non. The only controversial axiom is that degrees of belief must be numbers, or at least act\nlike numbers in that they must be transitive (if belief in A is greater than belief in B, which is\ngreater than belief in C, then belief in A must be greater than C) and comparable (the belief\nin A must be one of equal to, greater than, or less than belief in B). It can then be proved that\nprobability is the only approach that satisﬁes these axioms.\nThe world being the way it is, however, practical demonstrations sometimes speak\nlouder than proofs. The success of reasoning systems based on probability theory has been\nmuch more effective in making converts. We now look at how the axioms can be deployed to\nmake inferences.\n13.3\nINFERENCE USING FULL JOINT DISTRIBUTIONS\nIn this section we describe a simple method for probabilistic inference—that is, the compu-\nPROBABILISTIC\nINFERENCE\ntation of posterior probabilities for query propositions given observed evidence. We use the\nfull joint distribution as the “knowledge base” from which answers to all questions may be de-\nrived. Along the way we also introduce several useful techniques for manipulating equations\ninvolving probabilities.\nSection 13.3.\nInference Using Full Joint Distributions\n491\nWHERE DO PROBABILITIES COME FROM?\nThere has been endless debate over the source and status of probability numbers.\nThe frequentist position is that the numbers can come only from experiments: if\nwe test 100 people and ﬁnd that 10 of them have a cavity, then we can say that\nthe probability of a cavity is approximately 0.1. In this view, the assertion “the\nprobability of a cavity is 0.1” means that 0.1 is the fraction that would be observed\nin the limit of inﬁnitely many samples. From any ﬁnite sample, we can estimate\nthe true fraction and also calculate how accurate our estimate is likely to be.\nThe objectivist view is that probabilities are real aspects of the universe—\npropensities of objects to behave in certain ways—rather than being just descrip-\ntions of an observer’s degree of belief. For example, the fact that a fair coin comes\nup heads with probability 0.5 is a propensity of the coin itself. In this view, fre-\nquentist measurements are attempts to observe these propensities. Most physicists\nagree that quantum phenomena are objectively probabilistic, but uncertainty at the\nmacroscopic scale—e.g., in coin tossing—usually arises from ignorance of initial\nconditions and does not seem consistent with the propensity view.\nThe subjectivist view describes probabilities as a way of characterizing an\nagent’s beliefs, rather than as having any external physical signiﬁcance. The sub-\njective Bayesian view allows any self-consistent ascription of prior probabilities to\npropositions, but then insists on proper Bayesian updating as evidence arrives.\nIn the end, even a strict frequentist position involves subjective analysis be-\ncause of the reference class problem: in trying to determine the outcome probabil-\nity of a particular experiment, the frequentist has to place it in a reference class of\n“similar” experiments with known outcome frequencies. I. J. Good (1983, p. 27)\nwrote, “every event in life is unique, and every real-life probability that we esti-\nmate in practice is that of an event that has never occurred before.” For example,\ngiven a particular patient, a frequentist who wants to estimate the probability of a\ncavity will consider a reference class of other patients who are similar in important\nways—age, symptoms, diet—and see what proportion of them had a cavity. If the\ndentist considers everything that is known about the patient—weight to the nearest\ngram, hair color, mother’s maiden name—then the reference class becomes empty.\nThis has been a vexing problem in the philosophy of science.\nThe principle of indifference attributed to Laplace (1816) states that propo-\nsitions that are syntactically “symmetric” with respect to the evidence should be\naccorded equal probability. Various reﬁnements have been proposed, culminating\nin the attempt by Carnap and others to develop a rigorous inductive logic, capa-\nble of computing the correct probability for any proposition from any collection of\nobservations. Currently, it is believed that no unique inductive logic exists; rather,\nany such logic rests on a subjective prior probability distribution whose effect is\ndiminished as more observations are collected.\n492\n13.\nQuantifying Uncertainty\ntoothache\n¬toothache\ncatch\n¬catch\ncatch\n¬catch\ncavity\n0.108\n0.012\n0.072\n0.008\n¬cavity\n0.016\n0.064\n0.144\n0.576\nFigure 13.3\nA full joint distribution for the Toothache, Cavity, Catch world.\nWe begin with a simple example: a domain consisting of just the three Boolean variables\nToothache, Cavity, and Catch (the dentist’s nasty steel probe catches in my tooth). The full\njoint distribution is a 2 × 2 × 2 table as shown in Figure 13.3.\nNotice that the probabilities in the joint distribution sum to 1, as required by the axioms\nof probability. Notice also that Equation (13.2) gives us a direct way to calculate the probabil-\nity of any proposition, simple or complex: simply identify those possible worlds in which the\nproposition is true and add up their probabilities. For example, there are six possible worlds\nin which cavity ∨toothache holds:\nP(cavity ∨toothache) = 0.108 + 0.012 + 0.072 + 0.008 + 0.016 + 0.064 = 0.28 .\nOne particularly common task is to extract the distribution over some subset of variables or\na single variable. For example, adding the entries in the ﬁrst row gives the unconditional or\nmarginal probability4 of cavity:\nMARGINAL\nPROBABILITY\nP(cavity) = 0.108 + 0.012 + 0.072 + 0.008 = 0.2 .\nThis process is called marginalization, or summing out—because we sum up the probabil-\nMARGINALIZATION\nities for each possible value of the other variables, thereby taking them out of the equation.\nWe can write the following general marginalization rule for any sets of variables Y and Z:\nP(Y) =\n\n\nz∈Z\nP(Y, z) ,\n(13.6)\nwhere \u0002\nz∈Z means to sum over all the possible combinations of values of the set of variables\nZ. We sometimes abbreviate this as \u0002\nz, leaving Z implicit. We just used the rule as\nP(Cavity) =\n\n\nz∈{Catch,Toothache}\nP(Cavity, z) .\n(13.7)\nA variant of this rule involves conditional probabilities instead of joint probabilities, using\nthe product rule:\nP(Y) =\n\n\nz\nP(Y | z)P(z) .\n(13.8)\nThis rule is called conditioning. Marginalization and conditioning turn out to be useful rules\nCONDITIONING\nfor all kinds of derivations involving probability expressions.\nIn most cases, we are interested in computing conditional probabilities of some vari-\nables, given evidence about others. Conditional probabilities can be found by ﬁrst using\n4 So called because of a common practice among actuaries of writing the sums of observed frequencies in the\nmargins of insurance tables.\nSection 13.3.\nInference Using Full Joint Distributions\n493\nEquation (13.3) to obtain an expression in terms of unconditional probabilities and then eval-\nuating the expression from the full joint distribution.\nFor example, we can compute the\nprobability of a cavity, given evidence of a toothache, as follows:\nP(cavity | toothache) = P(cavity ∧toothache)\nP(toothache)\n=\n0.108 + 0.012\n0.108 + 0.012 + 0.016 + 0.064 = 0.6 .\nJust to check, we can also compute the probability that there is no cavity, given a toothache:\nP(¬cavity | toothache) = P(¬cavity ∧toothache)\nP(toothache)\n=\n0.016 + 0.064\n0.108 + 0.012 + 0.016 + 0.064 = 0.4 .\nThe two values sum to 1.0, as they should. Notice that in these two calculations the term\n1/P(toothache) remains constant, no matter which value of Cavity we calculate. In fact,\nit can be viewed as a normalization constant for the distribution P(Cavity | toothache),\nNORMALIZATION\nensuring that it adds up to 1. Throughout the chapters dealing with probability, we use α to\ndenote such constants. With this notation, we can write the two preceding equations in one:\nP(Cavity | toothache) = α P(Cavity, toothache)\n= α [P(Cavity, toothache, catch) + P(Cavity, toothache, ¬catch)]\n= α [⟨0.108, 0.016⟩+ ⟨0.012, 0.064⟩] = α ⟨0.12, 0.08⟩= ⟨0.6, 0.4⟩.\nIn other words, we can calculate P(Cavity | toothache) even if we don’t know the value of\nP(toothache)! We temporarily forget about the factor 1/P(toothache) and add up the values\nfor cavity and ¬cavity, getting 0.12 and 0.08. Those are the correct relative proportions, but\nthey don’t sum to 1, so we normalize them by dividing each one by 0.12 + 0.08, getting\nthe true probabilities of 0.6 and 0.4. Normalization turns out to be a useful shortcut in many\nprobability calculations, both to make the computation easier and to allow us to proceed when\nsome probability assessment (such as P(toothache)) is not available.\nFrom the example, we can extract a general inference procedure. We begin with the\ncase in which the query involves a single variable, X (Cavity in the example). Let E be the\nlist of evidence variables (just Toothache in the example), let e be the list of observed values\nfor them, and let Y be the remaining unobserved variables (just Catch in the example). The\nquery is P(X | e) and can be evaluated as\nP(X | e) = α P(X, e) = α\n\n\ny\nP(X, e, y) ,\n(13.9)\nwhere the summation is over all possible ys (i.e., all possible combinations of values of the\nunobserved variables Y). Notice that together the variables X, E, and Y constitute the com-\nplete set of variables for the domain, so P(X, e, y) is simply a subset of probabilities from the\nfull joint distribution.\nGiven the full joint distribution to work with, Equation (13.9) can answer probabilistic\nqueries for discrete variables. It does not scale well, however: for a domain described by n\nBoolean variables, it requires an input table of size O(2n) and takes O(2n) time to process the",
+  "images": [],
+  "equations": [
+    {
+      "path": "images/13-3-inference-using-full-joint-distributions_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-3-inference-using-full-joint-distributions_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-3-inference-using-full-joint-distributions_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-3-inference-using-full-joint-distributions_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-3-inference-using-full-joint-distributions_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-3-inference-using-full-joint-distributions_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-3-inference-using-full-joint-distributions_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-3-inference-using-full-joint-distributions_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-3-inference-using-full-joint-distributions_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-3-inference-using-full-joint-distributions_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-3-inference-using-full-joint-distributions_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-3-inference-using-full-joint-distributions_eq_13-6.png",
+      "type": "equation",
+      "label": "13.6"
+    },
+    {
+      "path": "images/13-3-inference-using-full-joint-distributions_eq_13-7.png",
+      "type": "equation",
+      "label": "13.7"
+    },
+    {
+      "path": "images/13-3-inference-using-full-joint-distributions_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-3-inference-using-full-joint-distributions_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-3-inference-using-full-joint-distributions_eq_13-8.png",
+      "type": "equation",
+      "label": "13.8"
+    },
+    {
+      "path": "images/13-3-inference-using-full-joint-distributions_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-3-inference-using-full-joint-distributions_eq_18.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-3-inference-using-full-joint-distributions_eq_19.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-3-inference-using-full-joint-distributions_eq_20.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-3-inference-using-full-joint-distributions_eq_21.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-3-inference-using-full-joint-distributions_eq_22.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-3-inference-using-full-joint-distributions_eq_23.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-3-inference-using-full-joint-distributions_eq_13-9.png",
+      "type": "equation",
+      "label": "13.9"
+    }
+  ]
+}

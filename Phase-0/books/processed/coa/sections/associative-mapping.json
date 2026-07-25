@@ -1,0 +1,13 @@
+{
+  "section_id": "associative-mapping",
+  "title": "Associative Mapping",
+  "level": 4,
+  "chapter": "12-5 Cache Memory",
+  "parent_id": "12-5-cache-memory",
+  "children": [],
+  "start_page": 465,
+  "end_page": 466,
+  "text": "The fastest and most flexible cache organization uses an associative memory. This organization is illustrated in Fig. 12-11. The associative memory stores both the address and content (data) of the memory word. This permits any location in cache to store any word from main memory. The diagram shows three words presently stored in the cache. The address value of 15 bits is shown as a five-digit octal number and its corresponding 12-bit word is shown as a four-digit octal number. A CPU address of 15 bits is placed in the argument register and the associative memory is searched for a matching address. If the\nAddress Data\n\nO 1 0 0 0\nFigure 12-11 Associative mapping cache (all numbers in octal).\naddress is found, the corresponding 12-bit data is read and sent to the CPU. If no match occurs, the main memory is accessed for the word. The address—data pair is then transferred to the associative cache memory. If the cache is full, an address—data pair must be displaced to make room for a pair that is needed and not presently in the cache. The decision as to what pair is replaced is determined from the replacement algorithm that the designer chooses for the cache. A simple procedure is to replace cells of the cache in round-robin order whenever a new word is requested from main memory. This constitutes a first-in first-out (FIFO) replacement policy.",
+  "images": [],
+  "equations": []
+}

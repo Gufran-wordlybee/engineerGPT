@@ -1,0 +1,17 @@
+{
+  "section_id": "b-notes-on-languages-and-algorithms",
+  "title": "B: Notes on Languages and Algorithms",
+  "level": 1,
+  "chapter": "A: Mathematical background",
+  "parent_id": null,
+  "children": [
+    "b-1-defining-languages-with-backusnaur-form-bnf",
+    "b-2-describing-algorithms-with-pseudocode",
+    "b-3-online-help"
+  ],
+  "start_page": 1078,
+  "end_page": 1078,
+  "text": "B\nNOTES ON LANGUAGES\nAND ALGORITHMS\nB.1\nDEFINING LANGUAGES WITH BACKUS–NAUR FORM (BNF)\nIn this book, we deﬁne several languages, including the languages of propositional logic\n(page 243), ﬁrst-order logic (page 293), and a subset of English (page 899). A formal lan-\nguage is deﬁned as a set of strings where each string is a sequence of symbols. The languages\nwe are interested in consist of an inﬁnite set of strings, so we need a concise way to charac-\nterize the set. We do that with a grammar. The particular type of grammar we use is called a\ncontext-free grammar, because each expression has the same form in any context. We write\nCONTEXT-FREE\nGRAMMAR\nour grammars in a formalism called Backus–Naur form (BNF). There are four components\nBACKUS–NAUR\nFORM (BNF)\nto a BNF grammar:\n• A set of terminal symbols. These are the symbols or words that make up the strings of\nTERMINAL SYMBOL\nthe language. They could be letters (A, B, C, . . .) or words (a, aardvark, abacus, . . .),\nor whatever symbols are appropriate for the domain.\n• A set of nonterminal symbols that categorize subphrases of the language. For exam-\nNONTERMINAL\nSYMBOL\nple, the nonterminal symbol NounPhrase in English denotes an inﬁnite set of strings\nincluding “you” and “the big slobbery dog.”\n• A start symbol, which is the nonterminal symbol that denotes the complete set of\nSTART SYMBOL\nstrings of the language. In English, this is Sentence; for arithmetic, it might be Expr,\nand for programming languages it is Program.\n• A set of rewrite rules, of the form LHS\n→\nRHS, where LHS is a nonterminal\nsymbol and RHS is a sequence of zero or more symbols. These can be either terminal\nor nonterminal symbols, or the symbol ϵ, which is used to denote the empty string.\nA rewrite rule of the form\nSentence →NounPhrase VerbPhrase\nmeans that whenever we have two strings categorized as a NounPhrase and a VerbPhrase,\nwe can append them together and categorize the result as a Sentence. As an abbreviation,\nthe two rules (S →A) and (S →B) can be written (S →A | B).\n1060",
+  "images": [],
+  "equations": []
+}

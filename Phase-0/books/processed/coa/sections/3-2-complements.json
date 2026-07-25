@@ -1,0 +1,13 @@
+{
+  "section_id": "3-2-complements",
+  "title": "3-2 Complements",
+  "level": 2,
+  "chapter": "Data Representation",
+  "parent_id": "data-representation",
+  "children": [],
+  "start_page": 86,
+  "end_page": 87,
+  "text": "Complements are used in digital computers for simplifying the subtraction operation and for logical manipulation. There are two types of complements for each base r system: the r's complement and the (r-1)'s complement.\nWhen the value of the base r is substituted in the name, the two types are referred to as the 2's and 1's complement for binary numbers and the 10's and 9's complement for decimal numbers.",
+  "images": [],
+  "equations": []
+}

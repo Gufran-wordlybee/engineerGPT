@@ -1,0 +1,19 @@
+{
+  "section_id": "hardware-algorithm",
+  "title": "Hardware Algorithm",
+  "level": 4,
+  "chapter": "Pipeline and Vector Processing",
+  "parent_id": "hardware-implementation-2",
+  "children": [],
+  "start_page": 344,
+  "end_page": 345,
+  "text": "The flowchart for the hardware algorithm is presented in Fig. 10-2. The two signs A, and B, are compared by an exclusive-OR gate. If the output of the gate is 0, the signs are identical; if it is 1, the signs are different. For an add operation, identical signs dictate that the magnitudes be added. For a subtract operation, different signs dictate that the magnitudes be added. The magnitudes are added with a microoperation EA \\leftarrow A + B, where EA is a register that combines E and A. The carry in E after the addition constitutes an overflow if it is equal to 1. The value of E is transferred into the add-overflow flip-flop AVF.\nThe two magnitudes are subtracted if the signs are different for an add operation or identical for a subtract operation. The magnitudes are subtracted by adding A to the 2's complement of B. No overflow can occur if the numbers are subtracted so AVF is cleared to 0. A 1 in E indicates that A \\ge B and the number in A is the correct result. If this number is zero, the sign A, must be made positive to avoid a negative zero. A 0 in E indicates that A < B. For this case it is necessary to take the 2's complement of the value in A. This operation can be done with one microoperation A \\leftarrow \\overline{A} + 1. However, we assume that the A register has circuits for microoperations complement and increment, so the 2's complement is obtained from these two microoperations. In other paths of the flowchart, the sign of the result is the same as the sign of A, so no change in A, is required. However, when A < B, the sign of the result is the complement of the original sign of A. It is then necessary to complement A, to obtain\ncomplement and increment\nFigure 10-2 Flowchart for add and subtract operations.\nthe correct sign. The final result is found in register A and its sign in A<sub>s</sub>. The value in AVF provides an overflow indication. The final value of E is immaterial.",
+  "images": [
+    {
+      "path": "images/hardware-algorithm_img_1.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

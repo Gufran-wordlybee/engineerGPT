@@ -1,0 +1,15 @@
+{
+  "section_id": "6-3-assembly-language",
+  "title": "6-3 Assembly Language",
+  "level": 1,
+  "chapter": "6-3 Assembly Language",
+  "parent_id": null,
+  "children": [
+    "rules-of-the-language"
+  ],
+  "start_page": 188,
+  "end_page": 188,
+  "text": "A programming language is defined by a set of rules. Users must conform with all format rules of the language if they want their programs to be translated correctly. Almost every commercial computer has its own particular assembly language. The rules for writing assembly language programs are documented and published in manuals which are usually available from the computer manufacturer.\nThe basic unit of an assembly language program is a line of code. The specific language is defined by a set of rules that specify the symbols that can be used and how they may be combined to form a line of code. We will now formulate the rules of an assembly language for writing symbolic programs for the basic computer.",
+  "images": [],
+  "equations": []
+}

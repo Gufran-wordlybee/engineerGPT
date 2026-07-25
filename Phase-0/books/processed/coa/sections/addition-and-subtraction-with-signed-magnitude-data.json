@@ -1,0 +1,13 @@
+{
+  "section_id": "addition-and-subtraction-with-signed-magnitude-data",
+  "title": "Addition and Subtraction with Signed-Magnitude Data",
+  "level": 2,
+  "chapter": "Pipeline and Vector Processing",
+  "parent_id": "pipeline-and-vector-processing",
+  "children": [],
+  "start_page": 342,
+  "end_page": 343,
+  "text": "The representation of numbers in signed-magnitude is familiar because it is used in everyday arithmetic calculations. The procedure for adding or subtracting two signed binary numbers with paper and pencil is simple and straightforward. A review of this procedure will be helpful for deriving the hardware algorithm.\nWe designate the magnitude of the two numbers by A and B. When the signed numbers are added or subtracted, we find that there are eight different conditions to consider, depending on the sign of the numbers and the operation performed. These conditions are listed in the first column of Table 10-1. The other columns in the table show the actual operation to be performed with the magnitude of the numbers. The last column is needed to prevent a negative zero. In other words, when two equal numbers are subtracted, the result should be +0 not -0.\nThe algorithms for addition and subtraction are derived from the table and can be stated as follows (the words inside parentheses should be used for the subtraction algorithm):\nAddition (subtraction) algorithm: when the signs of A and B are identical (different), add the two magnitudes and attach the sign of A to the result. When the signs of A and B are different (identical), compare the magnitudes and\nTABLE 10-1 Addition and Subtraction of Signed-Magnitude Numbers\n\n[Table]\nAddSubtOperationMagnitudesWhen A > BWhen A When A = B(+A) + (+B)+(A + B)(+A) + (-B)` ,+(A-B)-(B-A)+(A-B)(-A) + (+B)-(A - B)+(B-A)+(A - B)(-A) + (-B)-(A + B), ,(+A)-(+B)+(A-B)-(B-A)+(A-B)(+A)-(-B)+(A + B)(-A)-(+B)-(A + B)(-A) - (-B), ,-(A - B)+(B-A)+(A-B)\n\nmagnitude\naddition (subtraction) algorithm\nsubtract the smaller number from the larger. Choose the sign of the result to be the same as A if A > B or the complement of the sign of A if A < B. If the two magnitudes are equal, subtract B from A and make the sign of the result positive.\nThe two algorithms are similar except for the sign comparison. The procedure to be followed for identical signs in the addition algorithm is the same as for different signs in the subtraction algorithm, and vice versa.",
+  "images": [],
+  "equations": []
+}

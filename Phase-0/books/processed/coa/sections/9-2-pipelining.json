@@ -1,0 +1,21 @@
+{
+  "section_id": "9-2-pipelining",
+  "title": "9-2 Pipelining",
+  "level": 2,
+  "chapter": "Pipeline and Vector Processing",
+  "parent_id": "pipeline-and-vector-processing",
+  "children": [
+    "general-considerations"
+  ],
+  "start_page": 310,
+  "end_page": 312,
+  "text": "Pipelining is a technique of decomposing a sequential process into suboperations, with each subprocess being executed in a special dedicated segment that operates concurrently with all other segments. A pipeline can be visualized as a collection of processing segments through which binary information flows. Each segment performs partial processing dictated by the way the task is partitioned. The result obtained from the computation in each segment is transferred to the next segment in the pipeline. The final result is obtained after the data have passed through all segments. The name \"pipeline\" implies a flow of information analogous to an industrial assembly line. It is characteristic of pipelines that several computations can be in progress in distinct segments at the same time. The overlapping of computation is made possible by associating a register with each segment in the pipeline. The registers provide isolation between each segment so that each can operate on distinct data simultaneously.\nPerhaps the simplest way of viewing the pipeline structure is to imagine that each segment consists of an input register followed by a combinational circuit. The register holds the data and the combinational circuit performs the suboperation in the particular segment. The output of the combinational circuit in a given segment is applied to the input register of the next segment. A clock is applied to all registers after enough time has elapsed to perform all segment activity. In this way the information flows through the pipeline one step at a time.\nThe pipeline organization will be demonstrated by means of a simple\nan example\nexample. Suppose that we want to perform the combined multiply and add operations with a stream of numbers.\nA_i * B_i + C_i for i = 1, 2, 3, ..., 7\nEach suboperation is to be implemented in a segment within a pipeline. Each segment has one or two registers and a combinational circuit as shown in Fig. 9-2. R1 through R5 are registers that receive new data with every clock pulse. The multiplier and adder are combinational circuits. The suboperations performed in each segment of the pipeline are as follows:\nR1 \\leftarrow A_i, R2 \\leftarrow B_i Input A_i and B_i\nR3 \\leftarrow R1 * R2, R4 \\leftarrow C_i Multiply and input C_i\nR5 \\leftarrow R3 + R4 Add C_i to product\nThe five registers are loaded with new data every clock pulse. The effect of each clock is shown in Table 9-1. The first clock pulse transfers A_1 and B_2 into R_1 and\nFigure 9-2 Example of pipeline processing.\n\n[Table]\nor regiotero I ipoiClockPulseSegmennt 2Segment 3NumberR1R2R3R4R51A_1B1___2A_2B_2A_1 * B_1C_1_3A_3B_3A_2 * B_2C_2A_1*B_1+C_14A_4B_4A_3 * B_3C_3A_2*B_2+C_25A_5B_5A_4 * B_4C_4A_3 * B_3 + C_36A_6B_6A_5 * B_5C5A_4 * B_4 + C_47A_7B_7A_6 * B_6C_6A_5 * B_5 + C_58_A_7 * B_7C_7A_6 * B_6 + C_69___A_7*B_7+C_7\n\nTABLE 9-1 Content of Registers in Pipeline Example\nR2. The second clock pulse transfers the product of R1 and R2 into R3 and C_1 into R4. The same clock pulse transfers A_2 and B_2 into R1 and R2. The third clock pulse operates on all three segments simultaneously. It places A_3 and B_3 into R1 and R2, transfers the product of R1 and R2 into R3, transfers C_2 into R4, and places the sum of R3 and R4 into R5. It takes three clock pulses to fill up the pipe and retrieve the first output from R5. From there on, each clock produces a new output and moves the data one step down the pipeline. This happens as long as new input data flow into the system. When no more input data are available, the clock must continue until the last output emerges out of the pipeline.",
+  "images": [
+    {
+      "path": "images/9-2-pipelining_img_1.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

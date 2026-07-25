@@ -1,0 +1,13 @@
+{
+  "section_id": "and-to-ac",
+  "title": "AND to AC",
+  "level": 4,
+  "chapter": "5-6 Memory-Reference Instructions",
+  "parent_id": "5-6-memory-reference-instructions",
+  "children": [],
+  "start_page": 155,
+  "end_page": 156,
+  "text": "This is an instruction that performs the AND logic operation on pairs of bits in AC and the memory word specified by the effective address. The result of\nthe operation is transferred to AC. The microoperations that execute this instruction are:\nD_0T_4: DR \\leftarrow M[AR]\nD_0T_5: AC \\leftarrow AC \\land DR, SC \\leftarrow 0\nThe control function for this instruction uses the operation decoder D_0 since this output of the decoder is active when the instruction has an AND operation whose binary code value is 000. Two timing signals are needed to execute the instruction. The clock transition associated with timing signal T_4 transfers the operand from memory into DR. The clock transition associated with the next timing signal T_5 transfers to AC the result of the AND logic operation between the contents of DR and AC. The same clock transition clears SC to 0, transferring control to timing signal T_0 to start a new instruction cycle.",
+  "images": [],
+  "equations": []
+}

@@ -1,0 +1,19 @@
+{
+  "section_id": "match-logic",
+  "title": "Match Logic",
+  "level": 4,
+  "chapter": "12-4 Associative Memory",
+  "parent_id": "12-4-associative-memory",
+  "children": [],
+  "start_page": 460,
+  "end_page": 461,
+  "text": "The match logic for each word can be derived from the comparison algorithm for two binary numbers. First, we neglect the key bits and compare the argument in A with the bits stored in the cells of the words. Word i is equal to the argument in A if A_j = F_{ij} for j = 1, 2, \\ldots, n. Two bits are equal if they are both 1 or both 0. The equality of two bits can be expressed logically by the Boolean function\nx_j = A_j F_{ij} + A_j' F_{ij}'\nwhere x_i = 1 if the pair of bits in position j are equal; otherwise, x_i = 0.\nFor a word i to be equal to the argument in A we must have all x_i variables equal to 1. This is the condition for setting the corresponding match bit M_i to 1. The Boolean function for this condition is\nM_i = x_1 x_2 x_3 \\cdots x_n\nand constitutes the AND operation of all pairs of matched bits in a word.\nFigure 12-8 One cell of associative memory.\nWe now include the key bit K_j in the comparison logic. The requirement is that if K_j = 0, the corresponding bits of A_j and E_j need no comparison. Only when K_j = 1 must they be compared. This requirement is achieved by ORing each term with K_j', thus:\nx_j + K_j' = \\begin{cases} x_j & \\text{if } K_j = 1\\\\ 1 & \\text{if } K_j = 0 \\end{cases}\nWhen K_j = 1, we have K_j' = 0 and x_j + 0 = x_j. When K_j = 0, then K_j' = 1 and x_j + 1 = 1. A term (x_j + K_j') will be in the 1 state if its pair of bits is not compared. This is necessary because each term is ANDed with all other terms so that an output of 1 will have no effect. The comparison of the bits has an effect only when K_j = 1.\nThe match logic for word i in an associative memory can now be expressed by the following Boolean function:\nM_i = (x_1 + K_1')(x_2 + K_2')(x_3 + K_3') \\cdot \\cdot \\cdot (x_n + K_n')\nEach term in the expression will be equal to 1 if its corresponding K_j = 0. If K_j = 1, the term will be either 0 or 1 depending on the value of x_j. A match will occur and M_i will be equal to 1 if all terms are equal to 1.\nIf we substitute the original definition of x_i, the Boolean function above can be expressed as follows:\nM_{i} = \\prod_{j=1}^{n} (A_{j} F_{ij} + A'_{j} F'_{ij} + K'_{j})\nwhere \\Pi is a product symbol designating the AND operation of all n terms. We need m such functions, one for each word i = 1, 2, 3, ..., m.\nThe circuit for matching one word is shown in Fig. 12-9. Each cell requires two AND gates and one OR gate. The inverters for A_i and K_i are needed once for each column and are used for all bits in the column. The output of all OR gates in the cells of the same word go to the input of a common AND gate to generate the match signal for M_i. M_i will be logic 1 if a match occurs and 0 if no match occurs. Note that if the key register contains all 0's, output M_i will be a 1 irrespective of the value of A or the word. This occurrence must be avoided during normal operation.",
+  "images": [
+    {
+      "path": "images/match-logic_img_1.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

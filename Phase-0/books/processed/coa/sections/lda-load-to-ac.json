@@ -1,0 +1,13 @@
+{
+  "section_id": "lda-load-to-ac",
+  "title": "LDA: Load to AC",
+  "level": 4,
+  "chapter": "5-6 Memory-Reference Instructions",
+  "parent_id": "5-6-memory-reference-instructions",
+  "children": [],
+  "start_page": 156,
+  "end_page": 157,
+  "text": "This instruction transfers the memory word specified by the effective address to AC. The microoperations needed to execute this instruction are\nD_2T_4: DR \\leftarrow M[AR]\nD_2T_5: AC \\leftarrow DR, SC \\leftarrow 0\nLooking back at the bus system shown in Fig. 5-4 we note that there is no direct path from the bus into AC. The adder and logic circuit receive information from DR which can be transferred into AC. Therefore, it is necessary to read the\nmemory word into DR first and then transfer the content of DR into AC. The reason for not connecting the bus to the inputs of AC is the delay encountered in the adder and logic circuit. It is assumed that the time it takes to read from memory and transfer the word through the bus as well as the adder and logic circuit is more than the time of one clock cycle. By not connecting the bus to the inputs of AC we can maintain one clock cycle per microoperation.",
+  "images": [],
+  "equations": []
+}

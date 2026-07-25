@@ -1,0 +1,15 @@
+{
+  "section_id": "computer-arithmetic",
+  "title": "Computer Arithmetic",
+  "level": 2,
+  "chapter": "Pipeline and Vector Processing",
+  "parent_id": "pipeline-and-vector-processing",
+  "children": [
+    "in-this-chapter-9"
+  ],
+  "start_page": 340,
+  "end_page": 340,
+  "text": "",
+  "images": [],
+  "equations": []
+}

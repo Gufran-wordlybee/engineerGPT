@@ -1,0 +1,13 @@
+{
+  "section_id": "references-6",
+  "title": "REFERENCES",
+  "level": 3,
+  "chapter": "Microprogram Sequencer",
+  "parent_id": "microprogram-sequencer",
+  "children": [],
+  "start_page": 247,
+  "end_page": 249,
+  "text": "Dasgupta, S., Computer Architecture: A Modern Synthesis. Vol. 1. New York: John Wiley, 1989.\nGorsline, G. W., Computer Organization: Hardware/Software, 2nd ed. Englewood Cliffs, NJ: Prentice Hall, 1986.\nHamacher, V. C., Z. G. Vranesic, and S. G. Zaky, Computer Organization, 3rd ed. New York: McGraw-Hill, 1990.\nHays, J. F., Computer Architecture and Organization, 2nd ed. New York: McGraw-Hill, 1988.\nLangholz, G., J. Francioni, and A. Kandel, Elements of Computer Organization. Englewood Cliffs, NJ: Prentice Hall, 1989.\nLewin, M. H., Logic Design and Computer Organization. Reading, MA: Addison-Wesley, 1983.\nMano, M. M., Computer Engineering: Hardware Design. Englewood Cliffs, NJ: Prentice Hall. 1988.\nRafiquzzaman, M., and R. Chandra, Modern Computer Architecture. St Paul, MN: West Publishing, 1988.\n9. Stallings, W., Computer Organization and Architecture, 2nd ed. New York: Macmillan, 1989.\nTanenbaum, A. S., Structured Computer Organization, 3rd ed. Englewood Cliffs, NJ: Prentice Hall, 1990.\nWard, S. A., and R. H. Halstead, Jr., Computation Structures. Cambridge, MA: MIT Press, 1990.",
+  "images": [],
+  "equations": []
+}

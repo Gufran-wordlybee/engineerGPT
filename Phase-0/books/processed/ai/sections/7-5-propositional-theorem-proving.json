@@ -1,0 +1,350 @@
+{
+  "section_id": "7-5-propositional-theorem-proving",
+  "title": "7.5 Propositional Theorem Proving",
+  "level": 3,
+  "chapter": "III: Knowledge, reasoning, and planning",
+  "parent_id": "7-logical-agents",
+  "children": [],
+  "start_page": 267,
+  "end_page": 276,
+  "text": "Section 7.5.\nPropositional Theorem Proving\n249\n(α ∧β) ≡(β ∧α)\ncommutativity of ∧\n(α ∨β) ≡(β ∨α)\ncommutativity of ∨\n((α ∧β) ∧γ) ≡(α ∧(β ∧γ))\nassociativity of ∧\n((α ∨β) ∨γ) ≡(α ∨(β ∨γ))\nassociativity of ∨\n¬(¬α) ≡α\ndouble-negation elimination\n(α ⇒β) ≡(¬β ⇒¬α)\ncontraposition\n(α ⇒β) ≡(¬α ∨β)\nimplication elimination\n(α ⇔β) ≡((α ⇒β) ∧(β ⇒α))\nbiconditional elimination\n¬(α ∧β) ≡(¬α ∨¬β)\nDe Morgan\n¬(α ∨β) ≡(¬α ∧¬β)\nDe Morgan\n(α ∧(β ∨γ)) ≡((α ∧β) ∨(α ∧γ))\ndistributivity of ∧over ∨\n(α ∨(β ∧γ)) ≡((α ∨β) ∧(α ∨γ))\ndistributivity of ∨over ∧\nFigure 7.11\nStandard logical equivalences. The symbols α, β, and γ stand for arbitrary\nsentences of propositional logic.\n7.5\nPROPOSITIONAL THEOREM PROVING\nSo far, we have shown how to determine entailment by model checking: enumerating models\nand showing that the sentence must hold in all models. In this section, we show how entail-\nment can be done by theorem proving—applying rules of inference directly to the sentences\nTHEOREM PROVING\nin our knowledge base to construct a proof of the desired sentence without consulting models.\nIf the number of models is large but the length of the proof is short, then theorem proving can\nbe more efﬁcient than model checking.\nBefore we plunge into the details of theorem-proving algorithms, we will need some\nadditional concepts related to entailment. The ﬁrst concept is logical equivalence: two sen-\nLOGICAL\nEQUIVALENCE\ntences α and β are logically equivalent if they are true in the same set of models. We write\nthis as α ≡β. For example, we can easily show (using truth tables) that P ∧Q and Q ∧P\nare logically equivalent; other equivalences are shown in Figure 7.11. These equivalences\nplay much the same role in logic as arithmetic identities do in ordinary mathematics. An\nalternative deﬁnition of equivalence is as follows: any two sentences α and β are equivalent\nonly if each of them entails the other:\nα ≡β\nif and only if\nα |= β and β |= α .\nThe second concept we will need is validity. A sentence is valid if it is true in all models. For\nVALIDITY\nexample, the sentence P ∨¬P is valid. Valid sentences are also known as tautologies—they\nTAUTOLOGY\nare necessarily true. Because the sentence True is true in all models, every valid sentence\nis logically equivalent to True. What good are valid sentences? From our deﬁnition of\nentailment, we can derive the deduction theorem, which was known to the ancient Greeks:\nDEDUCTION\nTHEOREM\nFor any sentences α and β, α |= β if and only if the sentence (α ⇒β) is valid.\n(Exercise 7.5 asks for a proof.) Hence, we can decide if α |= β by checking that (α ⇒β) is\ntrue in every model—which is essentially what the inference algorithm in Figure 7.10 does—\n250\n7.\nLogical Agents\nor by proving that (α ⇒β) is equivalent to True. Conversely, the deduction theorem states\nthat every valid implication sentence describes a legitimate inference.\nThe ﬁnal concept we will need is satisﬁability. A sentence is satisﬁable if it is true\nSATISFIABILITY\nin, or satisﬁed by, some model. For example, the knowledge base given earlier, (R1 ∧R2 ∧\nR3 ∧R4 ∧R5), is satisﬁable because there are three models in which it is true, as shown\nin Figure 7.9. Satisﬁability can be checked by enumerating the possible models until one is\nfound that satisﬁes the sentence. The problem of determining the satisﬁability of sentences\nin propositional logic—the SAT problem—was the ﬁrst problem proved to be NP-complete.\nSAT\nMany problems in computer science are really satisﬁability problems. For example, all the\nconstraint satisfaction problems in Chapter 6 ask whether the constraints are satisﬁable by\nsome assignment.\nValidity and satisﬁability are of course connected: α is valid iff ¬α is unsatisﬁable;\ncontrapositively, α is satisﬁable iff ¬α is not valid. We also have the following useful result:\nα |= β if and only if the sentence (α ∧¬β) is unsatisﬁable.\nProving β from α by checking the unsatisﬁability of (α ∧¬β) corresponds exactly to the\nstandard mathematical proof technique of reductio ad absurdum (literally, “reduction to an\nREDUCTIO AD\nABSURDUM\nabsurd thing”). It is also called proof by refutation or proof by contradiction. One assumes a\nREFUTATION\nCONTRADICTION\nsentence β to be false and shows that this leads to a contradiction with known axioms α. This\ncontradiction is exactly what is meant by saying that the sentence (α ∧¬β) is unsatisﬁable.\n7.5.1\nInference and proofs\nThis section covers inference rules that can be applied to derive a proof—a chain of conclu-\nINFERENCE RULES\nPROOF\nsions that leads to the desired goal. The best-known rule is called Modus Ponens (Latin for\nMODUS PONENS\nmode that afﬁrms) and is written\nα ⇒β,\nα\nβ\n.\nThe notation means that, whenever any sentences of the form α ⇒β and α are given, then\nthe sentence β can be inferred. For example, if (WumpusAhead ∧WumpusAlive) ⇒Shoot\nand (WumpusAhead ∧WumpusAlive) are given, then Shoot can be inferred.\nAnother useful inference rule is And-Elimination, which says that, from a conjunction,\nAND-ELIMINATION\nany of the conjuncts can be inferred:\nα ∧β\nα\n.\nFor example, from (WumpusAhead ∧WumpusAlive), WumpusAlive can be inferred.\nBy considering the possible truth values of α and β, one can show easily that Modus\nPonens and And-Elimination are sound once and for all. These rules can then be used in\nany particular instances where they apply, generating sound inferences without the need for\nenumerating models.\nAll of the logical equivalences in Figure 7.11 can be used as inference rules. For exam-\nple, the equivalence for biconditional elimination yields the two inference rules\nα ⇔β\n(α ⇒β) ∧(β ⇒α)\nand\n(α ⇒β) ∧(β ⇒α)\nα ⇔β\n.\nSection 7.5.\nPropositional Theorem Proving\n251\nNot all inference rules work in both directions like this. For example, we cannot run Modus\nPonens in the opposite direction to obtain α ⇒β and α from β.\nLet us see how these inference rules and equivalences can be used in the wumpus world.\nWe start with the knowledge base containing R1 through R5 and show how to prove ¬P1,2,\nthat is, there is no pit in [1,2]. First, we apply biconditional elimination to R2 to obtain\nR6 :\n(B1,1 ⇒(P1,2 ∨P2,1)) ∧((P1,2 ∨P2,1) ⇒B1,1) .\nThen we apply And-Elimination to R6 to obtain\nR7 :\n((P1,2 ∨P2,1) ⇒B1,1) .\nLogical equivalence for contrapositives gives\nR8 :\n(¬B1,1 ⇒¬(P1,2 ∨P2,1)) .\nNow we can apply Modus Ponens with R8 and the percept R4 (i.e., ¬B1,1), to obtain\nR9 :\n¬(P1,2 ∨P2,1) .\nFinally, we apply De Morgan’s rule, giving the conclusion\nR10 :\n¬P1,2 ∧¬P2,1 .\nThat is, neither [1,2] nor [2,1] contains a pit.\nWe found this proof by hand, but we can apply any of the search algorithms in Chapter 3\nto ﬁnd a sequence of steps that constitutes a proof. We just need to deﬁne a proof problem as\nfollows:\n• INITIAL STATE: the initial knowledge base.\n• ACTIONS: the set of actions consists of all the inference rules applied to all the sen-\ntences that match the top half of the inference rule.\n• RESULT: the result of an action is to add the sentence in the bottom half of the inference\nrule.\n• GOAL: the goal is a state that contains the sentence we are trying to prove.\nThus, searching for proofs is an alternative to enumerating models. In many practical cases\nﬁnding a proof can be more efﬁcient because the proof can ignore irrelevant propositions, no\nmatter how many of them there are. For example, the proof given earlier leading to ¬P1,2 ∧\n¬P2,1 does not mention the propositions B2,1, P1,1, P2,2, or P3,1. They can be ignored\nbecause the goal proposition, P1,2, appears only in sentence R2; the other propositions in R2\nappear only in R4 and R2; so R1, R3, and R5 have no bearing on the proof. The same would\nhold even if we added a million more sentences to the knowledge base; the simple truth-table\nalgorithm, on the other hand, would be overwhelmed by the exponential explosion of models.\nOne ﬁnal property of logical systems is monotonicity, which says that the set of en-\nMONOTONICITY\ntailed sentences can only increase as information is added to the knowledge base.8 For any\nsentences α and β,\nif\nKB |= α\nthen\nKB ∧β |= α .\n8 Nonmonotonic logics, which violate the monotonicity property, capture a common property of human rea-\nsoning: changing one’s mind. They are discussed in Section 12.6.\n252\n7.\nLogical Agents\nFor example, suppose the knowledge base contains the additional assertion β stating that there\nare exactly eight pits in the world. This knowledge might help the agent draw additional con-\nclusions, but it cannot invalidate any conclusion α already inferred—such as the conclusion\nthat there is no pit in [1,2]. Monotonicity means that inference rules can be applied whenever\nsuitable premises are found in the knowledge base—the conclusion of the rule must follow\nregardless of what else is in the knowledge base.\n7.5.2\nProof by resolution\nWe have argued that the inference rules covered so far are sound, but we have not discussed\nthe question of completeness for the inference algorithms that use them. Search algorithms\nsuch as iterative deepening search (page 89) are complete in the sense that they will ﬁnd\nany reachable goal, but if the available inference rules are inadequate, then the goal is not\nreachable—no proof exists that uses only those inference rules. For example, if we removed\nthe biconditional elimination rule, the proof in the preceding section would not go through.\nThe current section introduces a single inference rule, resolution, that yields a complete\ninference algorithm when coupled with any complete search algorithm.\nWe begin by using a simple version of the resolution rule in the wumpus world. Let us\nconsider the steps leading up to Figure 7.4(a): the agent returns from [2,1] to [1,1] and then\ngoes to [1,2], where it perceives a stench, but no breeze. We add the following facts to the\nknowledge base:\nR11 :\n¬B1,2 .\nR12 :\nB1,2 ⇔(P1,1 ∨P2,2 ∨P1,3) .\nBy the same process that led to R10 earlier, we can now derive the absence of pits in [2,2]\nand [1,3] (remember that [1,1] is already known to be pitless):\nR13 :\n¬P2,2 .\nR14 :\n¬P1,3 .\nWe can also apply biconditional elimination to R3, followed by Modus Ponens with R5, to\nobtain the fact that there is a pit in [1,1], [2,2], or [3,1]:\nR15 :\nP1,1 ∨P2,2 ∨P3,1 .\nNow comes the ﬁrst application of the resolution rule: the literal ¬P2,2 in R13 resolves with\nthe literal P2,2 in R15 to give the resolvent\nRESOLVENT\nR16 :\nP1,1 ∨P3,1 .\nIn English; if there’s a pit in one of [1,1], [2,2], and [3,1] and it’s not in [2,2], then it’s in [1,1]\nor [3,1]. Similarly, the literal ¬P1,1 in R1 resolves with the literal P1,1 in R16 to give\nR17 :\nP3,1 .\nIn English: if there’s a pit in [1,1] or [3,1] and it’s not in [1,1], then it’s in [3,1]. These last\ntwo inference steps are examples of the unit resolution inference rule,\nUNIT RESOLUTION\nℓ1 ∨· · · ∨ℓk,\nm\nℓ1 ∨· · · ∨ℓi−1 ∨ℓi+1 ∨· · · ∨ℓk\n,\nwhere each ℓis a literal and ℓi and m are complementary literals (i.e., one is the negation\nCOMPLEMENTARY\nLITERALS\nSection 7.5.\nPropositional Theorem Proving\n253\nof the other). Thus, the unit resolution rule takes a clause—a disjunction of literals—and a\nCLAUSE\nliteral and produces a new clause. Note that a single literal can be viewed as a disjunction of\none literal, also known as a unit clause.\nUNIT CLAUSE\nThe unit resolution rule can be generalized to the full resolution rule,\nRESOLUTION\nℓ1 ∨· · · ∨ℓk,\nm1 ∨· · · ∨mn\nℓ1 ∨· · · ∨ℓi−1 ∨ℓi+1 ∨· · · ∨ℓk ∨m1 ∨· · · ∨mj−1 ∨mj+1 ∨· · · ∨mn\n,\nwhere ℓi and mj are complementary literals. This says that resolution takes two clauses and\nproduces a new clause containing all the literals of the two original clauses except the two\ncomplementary literals. For example, we have\nP1,1 ∨P3,1,\n¬P1,1 ∨¬P2,2\nP3,1 ∨¬P2,2\n.\nThere is one more technical aspect of the resolution rule: the resulting clause should contain\nonly one copy of each literal.9 The removal of multiple copies of literals is called factoring.\nFACTORING\nFor example, if we resolve (A ∨B) with (A ∨¬B), we obtain (A ∨A), which is reduced to\njust A.\nThe soundness of the resolution rule can be seen easily by considering the literal ℓi that\nis complementary to literal mj in the other clause. If ℓi is true, then mj is false, and hence\nm1 ∨· · · ∨mj−1 ∨mj+1 ∨· · · ∨mn must be true, because m1 ∨· · · ∨mn is given. If ℓi is\nfalse, then ℓ1 ∨· · · ∨ℓi−1 ∨ℓi+1 ∨· · · ∨ℓk must be true because ℓ1 ∨· · · ∨ℓk is given. Now\nℓi is either true or false, so one or other of these conclusions holds—exactly as the resolution\nrule states.\nWhat is more surprising about the resolution rule is that it forms the basis for a family\nof complete inference procedures. A resolution-based theorem prover can, for any sentences\nα and β in propositional logic, decide whether α |= β. The next two subsections explain\nhow resolution accomplishes this.\nConjunctive normal form\nThe resolution rule applies only to clauses (that is, disjunctions of literals), so it would seem\nto be relevant only to knowledge bases and queries consisting of clauses. How, then, can\nit lead to a complete inference procedure for all of propositional logic? The answer is that\nevery sentence of propositional logic is logically equivalent to a conjunction of clauses. A\nsentence expressed as a conjunction of clauses is said to be in conjunctive normal form or\nCONJUNCTIVE\nNORMAL FORM\nCNF (see Figure 7.14). We now describe a procedure for converting to CNF. We illustrate\nthe procedure by converting the sentence B1,1 ⇔(P1,2 ∨P2,1) into CNF. The steps are as\nfollows:\n1. Eliminate ⇔, replacing α ⇔β with (α ⇒β) ∧(β ⇒α).\n(B1,1 ⇒(P1,2 ∨P2,1)) ∧((P1,2 ∨P2,1) ⇒B1,1) .\n2. Eliminate ⇒, replacing α ⇒β with ¬α ∨β:\n(¬B1,1 ∨P1,2 ∨P2,1) ∧(¬(P1,2 ∨P2,1) ∨B1,1) .\n9 If a clause is viewed as a set of literals, then this restriction is automatically respected. Using set notation for\nclauses makes the resolution rule much cleaner, at the cost of introducing additional notation.\n254\n7.\nLogical Agents\n3. CNF requires ¬ to appear only in literals, so we “move ¬ inwards” by repeated appli-\ncation of the following equivalences from Figure 7.11:\n¬(¬α) ≡α (double-negation elimination)\n¬(α ∧β) ≡(¬α ∨¬β) (De Morgan)\n¬(α ∨β) ≡(¬α ∧¬β) (De Morgan)\nIn the example, we require just one application of the last rule:\n(¬B1,1 ∨P1,2 ∨P2,1) ∧((¬P1,2 ∧¬P2,1) ∨B1,1) .\n4. Now we have a sentence containing nested ∧and ∨operators applied to literals. We\napply the distributivity law from Figure 7.11, distributing ∨over ∧wherever possible.\n(¬B1,1 ∨P1,2 ∨P2,1) ∧(¬P1,2 ∨B1,1) ∧(¬P2,1 ∨B1,1) .\nThe original sentence is now in CNF, as a conjunction of three clauses. It is much harder to\nread, but it can be used as input to a resolution procedure.\nA resolution algorithm\nInference procedures based on resolution work by using the principle of proof by contradic-\ntion introduced on page 250. That is, to show that KB |= α, we show that (KB ∧¬α) is\nunsatisﬁable. We do this by proving a contradiction.\nA resolution algorithm is shown in Figure 7.12. First, (KB ∧¬α) is converted into\nCNF. Then, the resolution rule is applied to the resulting clauses. Each pair that contains\ncomplementary literals is resolved to produce a new clause, which is added to the set if it is\nnot already present. The process continues until one of two things happens:\n• there are no new clauses that can be added, in which case KB does not entail α; or,\n• two clauses resolve to yield the empty clause, in which case KB entails α.\nThe empty clause—a disjunction of no disjuncts—is equivalent to False because a disjunction\nis true only if at least one of its disjuncts is true. Another way to see that an empty clause\nrepresents a contradiction is to observe that it arises only from resolving two complementary\nunit clauses such as P and ¬P.\nWe can apply the resolution procedure to a very simple inference in the wumpus world.\nWhen the agent is in [1,1], there is no breeze, so there can be no pits in neighboring squares.\nThe relevant knowledge base is\nKB = R2 ∧R4 = (B1,1 ⇔(P1,2 ∨P2,1)) ∧¬B1,1\nand we wish to prove α which is, say, ¬P1,2. When we convert (KB ∧¬α) into CNF, we\nobtain the clauses shown at the top of Figure 7.13. The second row of the ﬁgure shows\nclauses obtained by resolving pairs in the ﬁrst row. Then, when P1,2 is resolved with ¬P1,2,\nwe obtain the empty clause, shown as a small square. Inspection of Figure 7.13 reveals that\nmany resolution steps are pointless. For example, the clause B1,1 ∨¬B1,1 ∨P1,2 is equivalent\nto True ∨P1,2 which is equivalent to True. Deducing that True is true is not very helpful.\nTherefore, any clause in which two complementary literals appear can be discarded.\nSection 7.5.\nPropositional Theorem Proving\n255\nfunction PL-RESOLUTION(KB,α) returns true or false\ninputs: KB, the knowledge base, a sentence in propositional logic\nα, the query, a sentence in propositional logic\nclauses ←the set of clauses in the CNF representation of KB ∧¬α\nnew ←{ }\nloop do\nfor each pair of clauses Ci, Cj in clauses do\nresolvents ←PL-RESOLVE(Ci,Cj)\nif resolvents contains the empty clause then return true\nnew ←new ∪resolvents\nif new ⊆clauses then return false\nclauses ←clauses ∪new\nFigure 7.12\nA simple resolution algorithm for propositional logic.\nThe function\nPL-RESOLVE returns the set of all possible clauses obtained by resolving its two inputs.\n¬P2,1     B1,1\n¬B1,1    P1,2     P2,1\n¬P1,2    B1,1\n¬B1,1\nP1,2\n¬P2,1\n¬P1,2\nP1,2    P2,1     ¬P2,1\n¬B1,1     P2,1     B1,1\nP1,2    P2,1    ¬P1,2\n¬B1,1    P1,2     B1,1\n^\n^\n^\n^\n^\n^\n^\n^\n^\n^\n^\n^\nFigure 7.13\nPartial application of PL-RESOLUTION to a simple inference in the wumpus\nworld. ¬P1,2 is shown to follow from the ﬁrst four clauses in the top row.\nCompleteness of resolution\nTo conclude our discussion of resolution, we now show why PL-RESOLUTION is complete.\nTo do this, we introduce the resolution closure RC (S) of a set of clauses S, which is the set\nRESOLUTION\nCLOSURE\nof all clauses derivable by repeated application of the resolution rule to clauses in S or their\nderivatives. The resolution closure is what PL-RESOLUTION computes as the ﬁnal value of\nthe variable clauses. It is easy to see that RC (S) must be ﬁnite, because there are only ﬁnitely\nmany distinct clauses that can be constructed out of the symbols P1, . . . , Pk that appear in S.\n(Notice that this would not be true without the factoring step that removes multiple copies of\nliterals.) Hence, PL-RESOLUTION always terminates.\nThe completeness theorem for resolution in propositional logic is called the ground\nresolution theorem:\nGROUND\nRESOLUTION\nTHEOREM\nIf a set of clauses is unsatisﬁable, then the resolution closure of those clauses\ncontains the empty clause.\nThis theorem is proved by demonstrating its contrapositive: if the closure RC(S) does not\n256\n7.\nLogical Agents\ncontain the empty clause, then S is satisﬁable. In fact, we can construct a model for S with\nsuitable truth values for P1, . . . , Pk. The construction procedure is as follows:\nFor i from 1 to k,\n– If a clause in RC(S) contains the literal ¬Pi and all its other literals are false under\nthe assignment chosen for P1, . . . , Pi−1, then assign false to Pi.\n– Otherwise, assign true to Pi.\nThis assignment to P1, . . . , Pk is a model of S. To see this, assume the opposite—that, at\nsome stage i in the sequence, assigning symbol Pi causes some clause C to become false.\nFor this to happen, it must be the case that all the other literals in C must already have been\nfalsiﬁed by assignments to P1, . . . , Pi−1. Thus, C must now look like either (false ∨false ∨\n· · · false∨Pi) or like (false∨false∨· · · false∨¬Pi). If just one of these two is in RC(S), then\nthe algorithm will assign the appropriate truth value to Pi to make C true, so C can only be\nfalsiﬁed if both of these clauses are in RC(S). Now, since RC(S) is closed under resolution,\nit will contain the resolvent of these two clauses, and that resolvent will have all of its literals\nalready falsiﬁed by the assignments to P1, . . . , Pi−1. This contradicts our assumption that\nthe ﬁrst falsiﬁed clause appears at stage i. Hence, we have proved that the construction never\nfalsiﬁes a clause in RC(S); that is, it produces a model of RC(S) and thus a model of S\nitself (since S is contained in RC(S)).\n7.5.3\nHorn clauses and deﬁnite clauses\nThe completeness of resolution makes it a very important inference method. In many practical\nsituations, however, the full power of resolution is not needed. Some real-world knowledge\nbases satisfy certain restrictions on the form of sentences they contain, which enables them\nto use a more restricted and efﬁcient inference algorithm.\nOne such restricted form is the deﬁnite clause, which is a disjunction of literals of\nDEFINITE CLAUSE\nwhich exactly one is positive. For example, the clause (¬L1,1 ∨¬Breeze ∨B1,1) is a deﬁnite\nclause, whereas (¬B1,1 ∨P1,2 ∨P2,1) is not.\nSlightly more general is the Horn clause, which is a disjunction of literals of which at\nHORN CLAUSE\nmost one is positive. So all deﬁnite clauses are Horn clauses, as are clauses with no positive\nliterals; these are called goal clauses. Horn clauses are closed under resolution: if you resolve\nGOAL CLAUSES\ntwo Horn clauses, you get back a Horn clause.\nKnowledge bases containing only deﬁnite clauses are interesting for three reasons:\n1. Every deﬁnite clause can be written as an implication whose premise is a conjunction\nof positive literals and whose conclusion is a single positive literal. (See Exercise 7.13.)\nFor example, the deﬁnite clause (¬L1,1 ∨¬Breeze ∨B1,1) can be written as the im-\nplication (L1,1 ∧Breeze) ⇒B1,1. In the implication form, the sentence is easier to\nunderstand: it says that if the agent is in [1,1] and there is a breeze, then [1,1] is breezy.\nIn Horn form, the premise is called the body and the conclusion is called the head. A\nBODY\nHEAD\nsentence consisting of a single positive literal, such as L1,1, is called a fact. It too can\nFACT\nbe written in implication form as True ⇒L1,1, but it is simpler to write just L1,1.\nSection 7.5.\nPropositional Theorem Proving\n257\nCNFSentence\n→\nClause1 ∧· · · ∧Clausen\nClause\n→\nLiteral 1 ∨· · · ∨Literal m\nLiteral\n→\nSymbol | ¬Symbol\nSymbol\n→\nP | Q | R | . . .\nHornClauseForm\n→\nDeﬁniteClauseForm | GoalClauseForm\nDeﬁniteClauseForm\n→\n(Symbol1 ∧· · · ∧Symboll) ⇒Symbol\nGoalClauseForm\n→\n(Symbol1 ∧· · · ∧Symboll) ⇒False\nFigure 7.14\nA grammar for conjunctive normal form, Horn clauses, and deﬁnite clauses.\nA clause such as A ∧B ⇒C is still a deﬁnite clause when it is written as ¬A ∨¬B ∨C,\nbut only the former is considered the canonical form for deﬁnite clauses. One more class is\nthe k-CNF sentence, which is a CNF sentence where each clause has at most k literals.\n2. Inference with Horn clauses can be done through the forward-chaining and backward-\nFORWARD-CHAINING\nchaining algorithms, which we explain next. Both of these algorithms are natural,\nBACKWARD-\nCHAINING\nin that the inference steps are obvious and easy for humans to follow. This type of\ninference is the basis for logic programming, which is discussed in Chapter 9.\n3. Deciding entailment with Horn clauses can be done in time that is linear in the size of\nthe knowledge base—a pleasant surprise.\n7.5.4\nForward and backward chaining\nThe forward-chaining algorithm PL-FC-ENTAILS?(KB, q) determines if a single proposi-\ntion symbol q—the query—is entailed by a knowledge base of deﬁnite clauses. It begins\nfrom known facts (positive literals) in the knowledge base. If all the premises of an implica-\ntion are known, then its conclusion is added to the set of known facts. For example, if L1,1\nand Breeze are known and (L1,1 ∧Breeze) ⇒B1,1 is in the knowledge base, then B1,1 can\nbe added. This process continues until the query q is added or until no further inferences can\nbe made. The detailed algorithm is shown in Figure 7.15; the main point to remember is that\nit runs in linear time.\nThe best way to understand the algorithm is through an example and a picture. Fig-\nure 7.16(a) shows a simple knowledge base of Horn clauses with A and B as known facts.\nFigure 7.16(b) shows the same knowledge base drawn as an AND–OR graph (see Chap-\nter 4). In AND–OR graphs, multiple links joined by an arc indicate a conjunction—every\nlink must be proved—while multiple links without an arc indicate a disjunction—any link\ncan be proved. It is easy to see how forward chaining works in the graph. The known leaves\n(here, A and B) are set, and inference propagates up the graph as far as possible. Wher-\never a conjunction appears, the propagation waits until all the conjuncts are known before\nproceeding. The reader is encouraged to work through the example in detail.\n258\n7.\nLogical Agents\nfunction PL-FC-ENTAILS?(KB,q) returns true or false\ninputs: KB, the knowledge base, a set of propositional deﬁnite clauses\nq, the query, a proposition symbol\ncount ←a table, where count[c] is the number of symbols in c’s premise\ninferred ←a table, where inferred[s] is initially false for all symbols\nagenda ←a queue of symbols, initially symbols known to be true in KB\nwhile agenda is not empty do\np ←POP(agenda)\nif p = q then return true\nif inferred[p] = false then\ninferred[p] ←true\nfor each clause c in KB where p is in c.PREMISE do\ndecrement count[c]\nif count[c] = 0 then add c.CONCLUSION to agenda\nreturn false\nFigure 7.15\nThe forward-chaining algorithm for propositional logic. The agenda keeps\ntrack of symbols known to be true but not yet “processed.” The count table keeps track of\nhow many premises of each implication are as yet unknown. Whenever a new symbol p from\nthe agenda is processed, the count is reduced by one for each implication in whose premise\np appears (easily identiﬁed in constant time with appropriate indexing.) If a count reaches\nzero, all the premises of the implication are known, so its conclusion can be added to the\nagenda. Finally, we need to keep track of which symbols have been processed; a symbol that\nis already in the set of inferred symbols need not be added to the agenda again. This avoids\nredundant work and prevents loops caused by implications such as P ⇒Q and Q ⇒P.\nIt is easy to see that forward chaining is sound: every inference is essentially an appli-\ncation of Modus Ponens. Forward chaining is also complete: every entailed atomic sentence\nwill be derived. The easiest way to see this is to consider the ﬁnal state of the inferred table\n(after the algorithm reaches a ﬁxed point where no new inferences are possible). The table\nFIXED POINT\ncontains true for each symbol inferred during the process, and false for all other symbols.\nWe can view the table as a logical model; moreover, every deﬁnite clause in the original KB is\ntrue in this model. To see this, assume the opposite, namely that some clause a1∧. . .∧ak ⇒b\nis false in the model. Then a1 ∧. . . ∧ak must be true in the model and b must be false in\nthe model. But this contradicts our assumption that the algorithm has reached a ﬁxed point!\nWe can conclude, therefore, that the set of atomic sentences inferred at the ﬁxed point deﬁnes\na model of the original KB. Furthermore, any atomic sentence q that is entailed by the KB\nmust be true in all its models and in this model in particular. Hence, every entailed atomic\nsentence q must be inferred by the algorithm.\nForward chaining is an example of the general concept of data-driven reasoning—that\nDATA-DRIVEN\nis, reasoning in which the focus of attention starts with the known data. It can be used within\nan agent to derive conclusions from incoming percepts, often without a speciﬁc query in\nmind. For example, the wumpus agent might TELL its percepts to the knowledge base using",
+  "images": [
+    {
+      "path": "images/7-5-propositional-theorem-proving_fig_7-12.png",
+      "type": "diagram",
+      "caption": "Figure 7.12"
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_18.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_19.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_20.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_21.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_22.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_23.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_24.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_25.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_26.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_27.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_28.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_29.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_30.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_31.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_32.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_33.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_34.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_35.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_36.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_37.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_38.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_39.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_40.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_41.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_42.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_43.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_44.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_45.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_46.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_47.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_48.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_49.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_50.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_51.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_52.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_53.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_54.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_55.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_56.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_57.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_58.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_59.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_60.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_61.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_62.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_63.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_64.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_65.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/7-5-propositional-theorem-proving_eq_66.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

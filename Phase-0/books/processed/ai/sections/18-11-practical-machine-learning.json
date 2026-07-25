@@ -1,0 +1,119 @@
+{
+  "section_id": "18-11-practical-machine-learning",
+  "title": "18.11 Practical Machine Learning",
+  "level": 3,
+  "chapter": "V: Learning",
+  "parent_id": "18-learning-from-examples",
+  "children": [],
+  "start_page": 771,
+  "end_page": 774,
+  "text": "Section 18.11.\nPractical Machine Learning\n753\nThis bound holds for any sequence of examples, even ones chosen by adversaries trying to\ndo their worst. To be speciﬁc, when there are K = 10 experts, if we choose β = 1/2 then\nour number of mistakes is bounded by 1.39M∗+ 4.6, and if β = 3/4 by 1.15M∗+ 9.2. In\ngeneral, if β is close to 1 then we are responsive to change over the long run; if the best expert\nchanges, we will pick up on it before too long. However, we pay a penalty at the beginning,\nwhen we start with all experts trusted equally; we may accept the advice of the bad experts\nfor too long. When β is closer to 0, these two factors are reversed. Note that we can choose β\nto get asymptotically close to M∗in the long run; this is called no-regret learning (because\nNO-REGRET\nLEARNING\nthe average amount of regret per trial tends to 0 as the number of trials increases).\nOnline learning is helpful when the data may be changing rapidly over time. It is also\nuseful for applications that involve a large collection of data that is constantly growing, even\nif changes are gradual. For example, with a database of millions of Web images, you wouldn’t\nwant to train, say, a linear regression model on all the data, and then retrain from scratch every\ntime a new image is added. It would be more practical to have an online algorithm that allows\nimages to be added incrementally. For most learning algorithms based on minimizing loss,\nthere is an online version based on minimizing regret. It is a bonus that many of these online\nalgorithms come with guaranteed bounds on regret.\nTo some observers, it is surprising that there are such tight bounds on how well we can\ndo compared to a panel of experts. To others, the really surprising thing is that when panels\nof human experts congregate—predicting stock market prices, sports outcomes, or political\ncontests—the viewing public is so willing to listen to them pontiﬁcate and so unwilling to\nquantify their error rates.\n18.11\nPRACTICAL MACHINE LEARNING\nWe have introduced a wide range of machine learning techniques, each illustrated with simple\nlearning tasks. In this section, we consider two aspects of practical machine learning. The ﬁrst\ninvolves ﬁnding algorithms capable of learning to recognize handwritten digits and squeezing\nevery last drop of predictive performance out of them. The second involves anything but—\npointing out that obtaining, cleaning, and representing the data can be at least as important as\nalgorithm engineering.\n18.11.1\nCase study: Handwritten digit recognition\nRecognizing handwritten digits is an important problem with many applications, including\nautomated sorting of mail by postal code, automated reading of checks and tax returns, and\ndata entry for hand-held computers. It is an area where rapid progress has been made, in part\nbecause of better learning algorithms and in part because of the availability of better training\nsets. The United States National Institute of Science and Technology (NIST) has archived a\ndatabase of 60,000 labeled digits, each 20 × 20 = 400 pixels with 8-bit grayscale values. It\nhas become one of the standard benchmark problems for comparing new learning algorithms.\nSome example digits are shown in Figure 18.36.\n754\n18.\nLearning from Examples\nFigure 18.36\nExamples from the NIST database of handwritten digits. Top row: examples\nof digits 0–9 that are easy to identify. Bottom row: more difﬁcult examples of the same digits.\nMany different learning approaches have been tried. One of the ﬁrst, and probably the\nsimplest, is the 3-nearest-neighbor classiﬁer, which also has the advantage of requiring no\ntraining time. As a memory-based algorithm, however, it must store all 60,000 images, and\nits run time performance is slow. It achieved a test error rate of 2.4%.\nA single-hidden-layer neural network was designed for this problem with 400 input\nunits (one per pixel) and 10 output units (one per class). Using cross-validation, it was found\nthat roughly 300 hidden units gave the best performance. With full interconnections between\nlayers, there were a total of 123,300 weights. This network achieved a 1.6% error rate.\nA series of specialized neural networks called LeNet were devised to take advantage\nof the structure of the problem—that the input consists of pixels in a two–dimensional array,\nand that small changes in the position or slant of an image are unimportant. Each network\nhad an input layer of 32 × 32 units, onto which the 20 × 20 pixels were centered so that each\ninput unit is presented with a local neighborhood of pixels. This was followed by three layers\nof hidden units. Each layer consisted of several planes of n × n arrays, where n is smaller\nthan the previous layer so that the network is down-sampling the input, and where the weights\nof every unit in a plane are constrained to be identical, so that the plane is acting as a feature\ndetector: it can pick out a feature such as a long vertical line or a short semi-circular arc. The\noutput layer had 10 units. Many versions of this architecture were tried; a representative one\nhad hidden layers with 768, 192, and 30 units, respectively. The training set was augmented\nby applying afﬁne transformations to the actual inputs: shifting, slightly rotating, and scaling\nthe images. (Of course, the transformations have to be small, or else a 6 will be transformed\ninto a 9!) The best error rate achieved by LeNet was 0.9%.\nA boosted neural network combined three copies of the LeNet architecture, with the\nsecond one trained on a mix of patterns that the ﬁrst one got 50% wrong, and the third one\ntrained on patterns for which the ﬁrst two disagreed. During testing, the three nets voted with\nthe majority ruling. The test error rate was 0.7%.\nA support vector machine (see Section 18.9) with 25,000 support vectors achieved an\nerror rate of 1.1%. This is remarkable because the SVM technique, like the simple nearest-\nneighbor approach, required almost no thought or iterated experimentation on the part of the\ndeveloper, yet it still came close to the performance of LeNet, which had had years of devel-\nopment. Indeed, the support vector machine makes no use of the structure of the problem,\nand would perform just as well if the pixels were presented in a permuted order.\nSection 18.11.\nPractical Machine Learning\n755\nA virtual support vector machine starts with a regular SVM and then improves it\nVIRTUAL SUPPORT\nVECTOR MACHINE\nwith a technique that is designed to take advantage of the structure of the problem. Instead of\nallowing products of all pixel pairs, this approach concentrates on kernels formed from pairs\nof nearby pixels. It also augments the training set with transformations of the examples, just\nas LeNet did. A virtual SVM achieved the best error rate recorded to date, 0.56%.\nShape matching is a technique from computer vision used to align corresponding parts\nof two different images of objects (Belongie et al., 2002). The idea is to pick out a set\nof points in each of the two images, and then compute, for each point in the ﬁrst image,\nwhich point in the second image it corresponds to. From this alignment, we then compute a\ntransformation between the images. The transformation gives us a measure of the distance\nbetween the images. This distance measure is better motivated than just counting the number\nof differing pixels, and it turns out that a 3–nearest neighbor algorithm using this distance\nmeasure performs very well. Training on only 20,000 of the 60,000 digits, and using 100\nsample points per image extracted from a Canny edge detector, a shape matching classiﬁer\nachieved 0.63% test error.\nHumans are estimated to have an error rate of about 0.2% on this problem. This ﬁgure\nis somewhat suspect because humans have not been tested as extensively as have machine\nlearning algorithms. On a similar data set of digits from the United States Postal Service,\nhuman errors were at 2.5%.\nThe following ﬁgure summarizes the error rates, run time performance, memory re-\nquirements, and amount of training time for the seven algorithms we have discussed. It also\nadds another measure, the percentage of digits that must be rejected to achieve 0.5% error.\nFor example, if the SVM is allowed to reject 1.8% of the inputs—that is, pass them on for\nsomeone else to make the ﬁnal judgment—then its error rate on the remaining 98.2% of the\ninputs is reduced from 1.1% to 0.5%.\nThe following table summarizes the error rate and some of the other characteristics of\nthe seven techniques we have discussed.\n3\n300\nBoosted\nVirtual Shape\nNN\nHidden LeNet\nLeNet\nSVM\nSVM\nMatch\nError rate (pct.)\n2.4\n1.6\n0.9\n0.7\n1.1\n0.56\n0.63\nRun time (millisec/digit)\n1000\n10\n30\n50\n2000\n200\nMemory requirements (Mbyte)\n12\n.49\n.012\n.21\n11\nTraining time (days)\n0\n7\n14\n30\n10\n% rejected to reach 0.5% error\n8.1\n3.2\n1.8\n0.5\n1.8\n18.11.2\nCase study: Word senses and house prices\nIn a textbook we need to deal with simple, toy data to get the ideas across: a small data set,\nusually in two dimensions. But in practical applications of machine learning, the data set\nis usually large, multidimensional, and messy. The data are not handed to the analyst in a\nprepackaged set of (x, y) values; rather the analyst needs to go out and acquire the right data.\nThere is a task to be accomplished, and most of the engineering problem is deciding what\ndata are necessary to accomplish the task; a smaller part is choosing and implementing an\n756\n18.\nLearning from Examples\n 0.75\n 0.8\n 0.85\n 0.9\n 0.95\n 1\n 1\n 10\n 100\n 1000\nProportion correct on test set\nTraining set size (millions of words)\nFigure 18.37\nLearning curves for ﬁve learning algorithms on a common task. Note that\nthere appears to be more room for improvement in the horizontal direction (more training\ndata) than in the vertical direction (different machine learning algorithm). Adapted from\nBanko and Brill (2001).\nappropriate machine learning method to process the data. Figure 18.37 shows a typical real-\nworld example, comparing ﬁve learning algorithms on the task of word-sense classiﬁcation\n(given a sentence such as “The bank folded,” classify the word “bank” as “money-bank” or\n“river-bank”). The point is that machine learning researchers have focused mainly on the\nvertical direction: Can I invent a new learning algorithm that performs better than previously\npublished algorithms on a standard training set of 1 million words? But the graph shows\nthere is more room for improvement in the horizontal direction: instead of inventing a new\nalgorithm, all I need to do is gather 10 million words of training data; even the worst algorithm\nat 10 million words is performing better than the best algorithm at 1 million. As we gather\neven more data, the curves continue to rise, dwarﬁng the differences between algorithms.\nConsider another problem: the task of estimating the true value of houses that are for\nsale. In Figure 18.13 we showed a toy version of this problem, doing linear regression of\nhouse size to asking price. You probably noticed many limitations of this model. First, it is\nmeasuring the wrong thing: we want to estimate the selling price of a house, not the asking\nprice. To solve this task we’ll need data on actual sales. But that doesn’t mean we should\nthrow away the data about asking price—we can use it as one of the input features. Besides\nthe size of the house, we’ll need more information: the number of rooms, bedrooms and\nbathrooms; whether the kitchen and bathrooms have been recently remodeled; the age of\nthe house; we’ll also need information about the lot, and the neighborhood. But how do\nwe deﬁne neighborhood? By zip code? What if part of one zip code is on the “wrong”\nside of the highway or train tracks, and the other part is desirable? What about the school\ndistrict? Should the name of the school district be a feature, or the average test scores? In\naddition to deciding what features to include, we will have to deal with missing data; different\nareas have different customs on what data are reported, and individual cases will always be\nmissing some data. If the data you want are not available, perhaps you can set up a social\nnetworking site to encourage people to share and correct data. In the end, this process of",
+  "images": [
+    {
+      "path": "images/18-11-practical-machine-learning_img_1.png",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/18-11-practical-machine-learning_img_2.png",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/18-11-practical-machine-learning_img_3.png",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/18-11-practical-machine-learning_img_4.png",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/18-11-practical-machine-learning_img_5.png",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/18-11-practical-machine-learning_img_6.png",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/18-11-practical-machine-learning_img_7.png",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/18-11-practical-machine-learning_img_8.png",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/18-11-practical-machine-learning_img_9.png",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/18-11-practical-machine-learning_img_10.png",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/18-11-practical-machine-learning_img_11.png",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/18-11-practical-machine-learning_img_12.png",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/18-11-practical-machine-learning_img_13.png",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/18-11-practical-machine-learning_img_14.png",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/18-11-practical-machine-learning_img_15.png",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/18-11-practical-machine-learning_img_16.png",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/18-11-practical-machine-learning_img_17.png",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/18-11-practical-machine-learning_img_18.png",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/18-11-practical-machine-learning_img_19.png",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/18-11-practical-machine-learning_img_20.png",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/18-11-practical-machine-learning_fig_18-37.png",
+      "type": "diagram",
+      "caption": "Figure 18.37"
+    }
+  ],
+  "equations": []
+}

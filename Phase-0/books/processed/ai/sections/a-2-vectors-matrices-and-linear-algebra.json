@@ -1,0 +1,59 @@
+{
+  "section_id": "a-2-vectors-matrices-and-linear-algebra",
+  "title": "A.2 Vectors, Matrices, and Linear Algebra",
+  "level": 2,
+  "chapter": "A: Mathematical background",
+  "parent_id": "a-mathematical-background",
+  "children": [],
+  "start_page": 1073,
+  "end_page": 1074,
+  "text": "Section A.2.\nVectors, Matrices, and Linear Algebra\n1055\nto the class P when one does not have the luxury of an inﬁnite number of processors or\nomniscient guessing. Most computer scientists are convinced that P̸ = NP; that NP problems\nare inherently hard and have no polynomial-time algorithms. But this has never been proven.\nThose who are interested in deciding whether P = NP look at a subclass of NP called the\nNP-complete problems. The word “complete” is used here in the sense of “most extreme”\nNP-COMPLETE\nand thus refers to the hardest problems in the class NP. It has been proven that either all\nthe NP-complete problems are in P or none of them is. This makes the class theoretically\ninteresting, but the class is also of practical interest because many important problems are\nknown to be NP-complete. An example is the satisﬁability problem: given a sentence of\npropositional logic, is there an assignment of truth values to the proposition symbols of the\nsentence that makes it true? Unless a miracle occurs and P = NP, there can be no algorithm\nthat solves all satisﬁability problems in polynomial time. However, AI is more interested in\nwhether there are algorithms that perform efﬁciently on typical problems drawn from a pre-\ndetermined distribution; as we saw in Chapter 7, there are algorithms such as WALKSAT that\ndo quite well on many problems.\nThe class co-NP is the complement of NP, in the sense that, for every decision problem\nCO-NP\nin NP, there is a corresponding problem in co-NP with the “yes” and “no” answers reversed.\nWe know that P is a subset of both NP and co-NP, and it is believed that there are problems\nin co-NP that are not in P. The co-NP-complete problems are the hardest problems in co-NP.\nCO-NP-COMPLETE\nThe class #P (pronounced “sharp P”) is the set of counting problems corresponding to\nthe decision problems in NP. Decision problems have a yes-or-no answer: is there a solution\nto this 3-SAT formula? Counting problems have an integer answer: how many solutions are\nthere to this 3-SAT formula? In some cases, the counting problem is much harder than the\ndecision problem. For example, deciding whether a bipartite graph has a perfect matching\ncan be done in time O(V E) (where the graph has V vertices and E edges), but the counting\nproblem “how many perfect matches does this bipartite graph have” is #P-complete, meaning\nthat it is hard as any problem in #P and thus at least as hard as any NP problem.\nAnother class is the class of PSPACE problems—those that require a polynomial amount\nof space, even on a nondeterministic machine. It is believed that PSPACE-hard problems are\nworse than NP-complete problems, although it could turn out that NP = PSPACE, just as it\ncould turn out that P = NP.\nA.2\nVECTORS, MATRICES, AND LINEAR ALGEBRA\nMathematicians deﬁne a vector as a member of a vector space, but we will use a more con-\nVECTOR\ncrete deﬁnition: a vector is an ordered sequence of values. For example, in two-dimensional\nspace, we have vectors such as x = ⟨3, 4⟩and y = ⟨0, 2⟩. We follow the convention of bold-\nface characters for vector names, although some authors use arrows or bars over the names:⃗\nx or ¯y. The elements of a vector can be accessed using subscripts: z = ⟨z1, z2, . . . , zn⟩. One\nconfusing point: this book is synthesizing work from many subﬁelds, which variously call\ntheir sequences vectors, lists, or tuples, and variously use the notations ⟨1, 2⟩, [1, 2], or (1, 2).\n1056\nAppendix\nA.\nMathematical background\nThe two fundamental operations on vectors are vector addition and scalar multiplica-\ntion. The vector addition x+y is the elementwise sum: x+y = ⟨3+0, 4+2⟩= ⟨3, 6⟩. Scalar\nmultiplication multiplies each element by a constant: 5x = ⟨5 × 3, 5 × 4⟩= ⟨15, 20⟩.\nThe length of a vector is denoted |x| and is computed by taking the square root of the\nsum of the squares of the elements: |x| =\n\n(32 + 42) = 5. The dot product x · y (also called\nscalar product) of two vectors is the sum of the products of corresponding elements, that is,\nx · y = \u0002\ni xiyi, or in our particular case, x · y = 3 × 0 + 4 × 2 = 8.\nVectors are often interpreted as directed line segments (arrows) in an n-dimensional\nEuclidean space. Vector addition is then equivalent to placing the tail of one vector at the\nhead of the other, and the dot product x · y is equal to |x| |y| cos θ, where θ is the angle\nbetween x and y.\nA matrix is a rectangular array of values arranged into rows and columns. Here is a\nMATRIX\nmatrix A of size 3 × 4:\n⎛\n⎝\nA1,1 A1,2 A1,3 A1,4\nA2,1 A2,2 A2,3 A2,4\nA3,1 A3,2 A3,3 A3,4\n⎞\n⎠\nThe ﬁrst index of Ai,j speciﬁes the row and the second the column. In programming lan-\nguages, Ai,j is often written A[i,j] or A[i][j].\nThe sum of two matrices is deﬁned by adding their corresponding elements; for example\n(A + B)i,j = Ai,j + Bi,j. (The sum is undeﬁned if A and B have different sizes.) We can also\ndeﬁne the multiplication of a matrix by a scalar: (cA)i,j = cAi,j. Matrix multiplication (the\nproduct of two matrices) is more complicated. The product AB is deﬁned only if A is of size\na × b and B is of size b × c (i.e., the second matrix has the same number of rows as the ﬁrst\nhas columns); the result is a matrix of size a × c. If the matrices are of appropriate size, then\nthe result is\n(AB)i,k =\n\n\nj\nAi,jBj,k .\nMatrix multiplication is not commutative, even for square matrices: AB̸ = BA in general.\nIt is, however, associative: (AB)C = A(BC). Note that the dot product can be expressed in\nterms of a transpose and a matrix multiplication:x · y = x⊤y.\nThe identity matrix I has elements Ii,j equal to 1 when i = j and equal to 0 otherwise.\nIDENTITY MATRIX\nIt has the property that AI = A for all A. The transpose of A, written A⊤is formed by\nTRANSPOSE\nturning rows into columns and vice versa, or, more formally, by A⊤i,j = Aj,i. The inverse of\nINVERSE\na square matrix A is another square matrix A−1 such that A−1A = I. For a singular matrix,\nSINGULAR\nthe inverse does not exist. For a nonsingular matrix, it can be computed in O(n3) time.\nMatrices are used to solve systems of linear equations in O(n3) time; the time is domi-\nnated by inverting a matrix of coefﬁcients. Consider the following set of equations, for which\nwe want a solution in x, y, and z:\n+2x + y −z = 8\n−3x −y + 2z = −11\n−2x + y + 2z = −3 .",
+  "images": [],
+  "equations": [
+    {
+      "path": "images/a-2-vectors-matrices-and-linear-algebra_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-2-vectors-matrices-and-linear-algebra_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-2-vectors-matrices-and-linear-algebra_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-2-vectors-matrices-and-linear-algebra_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-2-vectors-matrices-and-linear-algebra_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-2-vectors-matrices-and-linear-algebra_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-2-vectors-matrices-and-linear-algebra_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-2-vectors-matrices-and-linear-algebra_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-2-vectors-matrices-and-linear-algebra_eq_9.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

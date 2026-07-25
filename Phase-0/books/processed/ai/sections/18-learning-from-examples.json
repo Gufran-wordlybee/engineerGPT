@@ -1,0 +1,26 @@
+{
+  "section_id": "18-learning-from-examples",
+  "title": "18 Learning from Examples",
+  "level": 2,
+  "chapter": "V: Learning",
+  "parent_id": "v-learning",
+  "children": [
+    "18-1-forms-of-learning",
+    "18-2-supervised-learning",
+    "18-3-learning-decision-trees",
+    "18-4-evaluating-and-choosing-the-best-hypothesis",
+    "18-5-the-theory-of-learning",
+    "18-6-regression-and-classification-with-linear-models",
+    "18-7-artificial-neural-networks",
+    "18-8-nonparametric-models",
+    "18-9-support-vector-machines",
+    "18-10-ensemble-learning",
+    "18-11-practical-machine-learning",
+    "18-12-summary-bibliographical-and-historical-notes-exercises"
+  ],
+  "start_page": 711,
+  "end_page": 711,
+  "text": "18\nLEARNING FROM\nEXAMPLES\nIn which we describe agents that can improve their behavior through diligent\nstudy of their own experiences.\nAn agent is learning if it improves its performance on future tasks after making observations\nLEARNING\nabout the world. Learning can range from the trivial, as exhibited by jotting down a phone\nnumber, to the profound, as exhibited by Albert Einstein, who inferred a new theory of the\nuniverse. In this chapter we will concentrate on one class of learning problem, which seems\nrestricted but actually has vast applicability: from a collection of input–output pairs, learn a\nfunction that predicts the output for new inputs.\nWhy would we want an agent to learn? If the design of the agent can be improved,\nwhy wouldn’t the designers just program in that improvement to begin with? There are three\nmain reasons. First, the designers cannot anticipate all possible situations that the agent\nmight ﬁnd itself in. For example, a robot designed to navigate mazes must learn the layout\nof each new maze it encounters. Second, the designers cannot anticipate all changes over\ntime; a program designed to predict tomorrow’s stock market prices must learn to adapt when\nconditions change from boom to bust. Third, sometimes human programmers have no idea\nhow to program a solution themselves. For example, most people are good at recognizing the\nfaces of family members, but even the best programmers are unable to program a computer\nto accomplish that task, except by using learning algorithms. This chapter ﬁrst gives an\noverview of the various forms of learning, then describes one popular approach, decision-\ntree learning, in Section 18.3, followed by a theoretical analysis of learning in Sections 18.4\nand 18.5. We look at various learning systems used in practice: linear models, nonlinear\nmodels (in particular, neural networks), nonparametric models, and support vector machines.\nFinally we show how ensembles of models can outperform a single model.\n18.1\nFORMS OF LEARNING\nAny component of an agent can be improved by learning from data. The improvements, and\nthe techniques used to make them, depend on four major factors:\n• Which component is to be improved.\n693",
+  "images": [],
+  "equations": []
+}

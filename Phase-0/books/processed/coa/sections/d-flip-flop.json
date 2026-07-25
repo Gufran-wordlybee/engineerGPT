@@ -1,0 +1,19 @@
+{
+  "section_id": "d-flip-flop",
+  "title": "D Flip-Flop",
+  "level": 2,
+  "chapter": "Contents",
+  "parent_id": "contents",
+  "children": [],
+  "start_page": 38,
+  "end_page": 39,
+  "text": "The D (data) flip-flop is a slight modification of the SR flip-flop. An SR flip-flop is converted to a D flip-flop by inserting an inverter between S and R and assigning the symbol D to the single input. The D input is sampled during the occurrence of a clock transition from 0 to 1. If D=1, the output of the flip-flop goes to the 1 state, but if D=0, the output of the flip-flop goes to the 0 state.\nThe graphic symbol and characteristic table of the \\hat{D} flip-flop are shown in Fig. 1-20. From the characteristic table we note that the next state Q(t + 1)\nFigure 1-20 D flip-flop.\nis determined from the {\\cal D} input. The relationship can be expressed by a characteristic equation:\nQ(t+1) = D\nThis means that the Q output of the flip-flop receives its value from the D input every time that the clock signal goes through a transition from 0 to 1.\nNote that no input condition exists that will leave the state of the D flip-flop unchanged. Although a D flip-flop has the advantage of having only one input (excluding C), it has the disadvantage that its characteristic table does not have a \"no change\" condition Q(t+1)=Q(t). The \"no change\" condition can be accomplished either by disabling the clock signal or by feeding the output back into the input, so that clock pulses keep the state of the flip-flop unchanged.",
+  "images": [
+    {
+      "path": "images/d-flip-flop_img_1.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

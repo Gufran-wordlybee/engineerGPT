@@ -1,0 +1,13 @@
+{
+  "section_id": "risc-instructions",
+  "title": "RISC Instructions",
+  "level": 3,
+  "chapter": "8-4 Instruction Formats",
+  "parent_id": "8-4-instruction-formats",
+  "children": [],
+  "start_page": 267,
+  "end_page": 268,
+  "text": "The advantages of a reduced instruction set computer (RISC) architecture are explained in Sec. 8-8. The instruction set of a typical RISC processor is restricted\nto the use of load and store instructions when communicating between memory and CPU. All other instructions are executed within the registers of the CPU without referring to memory. A program for a RISC-type CPU consists of LOAD and STORE instructions that have one memory and one register address, and computational-type instructions that have three addresses with all three specifying processor registers. The following is a program to evaluate X = (A + B)*(C + D).\nLOAD\n R1. A\n R1 \\leftarrow M[A]\nLOAD\n R2, B\n R2 \\leftarrow M[B]\nLOAD\n R3,C\n [3]M→ER\nLOAD\n R4. D\n R4 \\leftarrow M[D]\nADD\n R1, R1, R2\n R1 \\leftarrow R1 + R2\nADD\n R3, R3, R2\n R3 \\leftarrow R3 + R4\nMUL\n R1, R1, R3\n R1 \\leftarrow R1 * R3\nSTORE\n X. R1\n M[X] \\leftarrow R1\nThe load instructions transfer the operands from memory to CPU registers. The add and multiply operations are executed with data in the registers without accessing memory. The result of the computations is then stored in memory with a store instruction.",
+  "images": [],
+  "equations": []
+}

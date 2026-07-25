@@ -1,0 +1,13 @@
+{
+  "section_id": "references-9",
+  "title": "REFERENCES",
+  "level": 2,
+  "chapter": "Pipeline and Vector Processing",
+  "parent_id": "pipeline-and-vector-processing",
+  "children": [],
+  "start_page": 387,
+  "end_page": 388,
+  "text": "Blaauw, G., Digital Systems Implementation. Englewood Cliffs, NJ: Prentice Hall, 1976.\n2. Cavanagh, J. J. F., Digital Computer Arithmetic. New York: McGraw-Hill, 1984.\nHamacher, V. C., Z. G. Vranesic, and S. G. Zaky, Computer Organization, 3rd ed. New York: McGraw-Hill, 1990.\nHays, J. F., Computer Architecture and Organization, 2nd ed. New York: McGraw-Hill, 1988.\nHill, F. J., and G. R. Peterson, Digital Systems: Hardware Organization and Design, 3rd ed. New York: John Wiley, 1987.\n6. Hwang, K., Computer Arithmetic. New York: John Wiley, 1979.\nKulisch, V. W., and W. L. Miranker, Computer Arithmetic in Theory and Practice. New York: Academic Press, 1980.\n8. Schmid, H., Decimal Arithmetic. New York: John Wiley, 1979.",
+  "images": [],
+  "equations": []
+}

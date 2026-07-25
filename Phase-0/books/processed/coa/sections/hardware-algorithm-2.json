@@ -1,0 +1,19 @@
+{
+  "section_id": "hardware-algorithm-2",
+  "title": "Hardware Algorithm",
+  "level": 2,
+  "chapter": "Pipeline and Vector Processing",
+  "parent_id": "pipeline-and-vector-processing",
+  "children": [],
+  "start_page": 359,
+  "end_page": 360,
+  "text": "The hardware divide algorithm is shown in the flowchart of Fig. 10-13. The dividend is in A and Q and the divisor in B. The sign of the result is transferred into Q_s to be part of the quotient. A constant is set into the sequence counter SC to specify the number of bits in the quotient. As in multiplication, we assume that operands are transferred to registers from a memory unit that has\nFigure 10-13 Flowchart for divide operation.\nwords of n bits. Since an operand must be stored with its sign, one bit of the word will be occupied by the sign and the magnitude will consist of n-1 bits.\nA divide-overflow condition is tested by subtracting the divisor in B from half of the bits of the dividend stored in A. If A \\ge B, the divide-overflow flip-flop DVF is set and the operation is terminated prematurely. If A < B, no divide overflow occurs so the value of the dividend is restored by adding B to A.\nThe division of the magnitudes starts by shifting the dividend in AQ to the left with the high-order bit shifted into E. If the bit shifted into E is 1, we know that EA > B because EA consists of a 1 followed by n-1 bits while B consists of only n-1 bits. In this case, B must be subtracted from EA and 1 inserted into Q_n for the quotient bit. Since register A is missing the high-order bit of the dividend (which is in E), its value is EA - 2^{n-1}. Adding to this value the 2's complement of B results in\n(EA - 2^{n-1}) + (2^{n-1} - B) = EA - B\nThe carry from this addition is not transferred to E if we want E to remain a 1.\nIf the shift-left operation inserts a 0 into E, the divisor is subtracted by adding its 2's complement value and the carry is transferred into E. If E=1, it signifies that A \\ge B; therefore, Q_n is set to 1. If E=0, it signifies that A < B and the original number is restored by adding B to A. In the latter case we leave a 0 in Q_n (0 was inserted during the shift).\nThis process is repeated again with register A holding the partial remainder. After n-1 times, the quotient magnitude is formed in register Q and the remainder is found in register A. The quotient sign is in Q, and the sign of the remainder in A, is the same as the original sign of the dividend.",
+  "images": [
+    {
+      "path": "images/hardware-algorithm_img_1.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

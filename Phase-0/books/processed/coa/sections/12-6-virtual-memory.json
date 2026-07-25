@@ -1,0 +1,13 @@
+{
+  "section_id": "12-6-virtual-memory",
+  "title": "12-6 Virtual Memory",
+  "level": 2,
+  "chapter": "12-5 Cache Memory",
+  "parent_id": "12-5-cache-memory",
+  "children": [],
+  "start_page": 470,
+  "end_page": 471,
+  "text": "In a memory hierarchy system, programs and data are first stored in auxiliary memory. Portions of a program or data are brought into main memory as they are needed by the CPU. Virtual memory is a concept used in some large computer systems that permit the user to construct programs as though a large\nvalid bit\nmemory space were available, equal to the totality of auxiliary memory. Each address that is referenced by the CPU goes through an address mapping from the so-called virtual address to a physical address in main memory. Virtual memory is used to give programmers the illusion that they have a very large memory at their disposal, even though the computer actually has a relatively small main memory. A virtual memory system provides a mechanism for translating program-generated addresses into correct main memory locations. This is done dynamically, while programs are being executed in the CPU. The translation or mapping is handled automatically by the hardware by means of a mapping table.",
+  "images": [],
+  "equations": []
+}

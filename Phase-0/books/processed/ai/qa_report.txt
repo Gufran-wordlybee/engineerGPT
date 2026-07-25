@@ -1,0 +1,19 @@
+Section Length QA Report
+========================================
+Median section length: 11940 chars
+Total sections: 251
+
+TOO LONG (> 3.0x median):
+  [1-2-the-foundations-of-artificial-intelligence] 37194 chars (3.1x median) — pages 23-33
+  [1-3-the-history-of-artificial-intelligence] 40841 chars (3.4x median) — pages 34-45
+  [2-4-the-structure-of-agents] 37206 chars (3.1x median) — pages 64-76
+  [5-9-summary-bibliographical-and-historical-notes-exercises] 36780 chars (3.1x median) — pages 207-219
+  [12-8-summary-bibliographical-and-historical-notes-exercises] 39895 chars (3.3x median) — pages 485-497
+  [14-8-summary-bibliographical-and-historical-notes-exercises] 43899 chars (3.7x median) — pages 569-583
+  [17-5-decisions-with-multiple-agents-game-theory] 42104 chars (3.5x median) — pages 684-696
+  [bibliography] 254593 chars (21.3x median) — pages 1081-1112
+
+TOO SHORT (< 0.15x median):
+  [cover] 383 chars (0.03x median) — pages 0-2
+  [title-page] 420 chars (0.04x median) — pages 3-3
+  [b-3-online-help] 1235 chars (0.10x median) — pages 1080-1080

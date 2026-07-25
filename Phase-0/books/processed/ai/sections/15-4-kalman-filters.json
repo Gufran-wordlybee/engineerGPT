@@ -1,0 +1,365 @@
+{
+  "section_id": "15-4-kalman-filters",
+  "title": "15.4 Kalman Filters",
+  "level": 3,
+  "chapter": "IV: Uncertain knowledge and reasoning",
+  "parent_id": "15-probabilistic-reasoning-over-time",
+  "children": [],
+  "start_page": 602,
+  "end_page": 607,
+  "text": "584\n15.\nProbabilistic Reasoning over Time\n15.4\nKALMAN FILTERS\nImagine watching a small bird ﬂying through dense jungle foliage at dusk: you glimpse\nbrief, intermittent ﬂashes of motion; you try hard to guess where the bird is and where it will\nappear next so that you don’t lose it. Or imagine that you are a World War II radar operator\npeering at a faint, wandering blip that appears once every 10 seconds on the screen. Or, going\nback further still, imagine you are Kepler trying to reconstruct the motions of the planets\nfrom a collection of highly inaccurate angular observations taken at irregular and imprecisely\nmeasured intervals. In all these cases, you are doing ﬁltering: estimating state variables (here,\nposition and velocity) from noisy observations over time. If the variables were discrete, we\ncould model the system with a hidden Markov model. This section examines methods for\nhandling continuous variables, using an algorithm called Kalman ﬁltering, after one of its\nKALMAN FILTERING\ninventors, Rudolf E. Kalman.\nThe bird’s ﬂight might be speciﬁed by six continuous variables at each time point; three\nfor position (Xt, Yt, Zt) and three for velocity ( ˙Xt, ˙Yt, ˙Zt). We will need suitable conditional\ndensities to represent the transition and sensor models; as in Chapter 14, we will use linear\nGaussian distributions. This means that the next state Xt+1 must be a linear function of the\ncurrent state Xt, plus some Gaussian noise, a condition that turns out to be quite reasonable in\npractice. Consider, for example, the X-coordinate of the bird, ignoring the other coordinates\nfor now. Let the time interval between observations be Δ, and assume constant velocity\nduring the interval; then the position update is given by Xt+Δ = Xt+ ˙X Δ. Adding Gaussian\nnoise (to account for wind variation, etc.), we obtain a linear Gaussian transition model:\nP(Xt+Δ = xt+Δ | Xt = xt, ˙Xt = ˙xt) = N(xt + ˙xt Δ, σ2)(xt+Δ) .\nThe Bayesian network structure for a system with position vector Xt and velocity ˙Xt is shown\nin Figure 15.9. Note that this is a very speciﬁc form of linear Gaussian model; the general\nform will be described later in this section and covers a vast array of applications beyond the\nsimple motion examples of the ﬁrst paragraph. The reader might wish to consult Appendix A\nfor some of the mathematical properties of Gaussian distributions; for our immediate pur-\nposes, the most important is that a multivariate Gaussian distribution for d variables is\nMULTIVARIATE\nGAUSSIAN\nspeciﬁed by a d-element mean μ and a d × d covariance matrix Σ.\n15.4.1\nUpdating Gaussian distributions\nIn Chapter 14 on page 521, we alluded to a key property of the linear Gaussian family of dis-\ntributions: it remains closed under the standard Bayesian network operations. Here, we make\nthis claim precise in the context of ﬁltering in a temporal probability model. The required\nproperties correspond to the two-step ﬁltering calculation in Equation (15.5):\n1. If the current distribution P(Xt | e1:t) is Gaussian and the transition model P(Xt+1 | xt)\nis linear Gaussian, then the one-step predicted distribution given by\nP(Xt+1 | e1:t) =\n\u001a\nxt\nP(Xt+1 | xt)P(xt | e1:t) dxt\n(15.17)\nis also a Gaussian distribution.\nSection 15.4.\nKalman Filters\n585\nt\nZ\nt+1\nZ\nt\nX\nt+1\nX\nt\nX\nt+1\nX\nFigure 15.9\nBayesian network structure for a linear dynamical system with position Xt,\nvelocity ˙Xt, and position measurement Zt.\n2. If the prediction P(Xt+1 | e1:t) is Gaussian and the sensor model P(et+1 | Xt+1) is linear\nGaussian, then, after conditioning on the new evidence, the updated distribution\nP(Xt+1 | e1:t+1) = α P(et+1 | Xt+1)P(Xt+1 | e1:t)\n(15.18)\nis also a Gaussian distribution.\nThus, the FORWARD operator for Kalman ﬁltering takes a Gaussian forward message f1:t,\nspeciﬁed by a mean μt and covariance matrix Σt, and produces a new multivariate Gaussian\nforward message f1:t+1, speciﬁed by a mean μt+1 and covariance matrix Σt+1. So, if we\nstart with a Gaussian prior f1:0 = P(X0) = N(μ0, Σ0), ﬁltering with a linear Gaussian model\nproduces a Gaussian state distribution for all time.\nThis seems to be a nice, elegant result, but why is it so important? The reason is that,\nexcept for a few special cases such as this, ﬁltering with continuous or hybrid (discrete and\ncontinuous) networks generates state distributions whose representation grows without bound\nover time. This statement is not easy to prove in general, but Exercise 15.10 shows what\nhappens for a simple example.\n15.4.2\nA simple one-dimensional example\nWe have said that the FORWARD operator for the Kalman ﬁlter maps a Gaussian into a new\nGaussian. This translates into computing a new mean and covariance matrix from the previ-\nous mean and covariance matrix. Deriving the update rule in the general (multivariate) case\nrequires rather a lot of linear algebra, so we will stick to a very simple univariate case for now;\nand later give the results for the general case. Even for the univariate case, the calculations\nare somewhat tedious, but we feel that they are worth seeing because the usefulness of the\nKalman ﬁlter is tied so intimately to the mathematical properties of Gaussian distributions.\nThe temporal model we consider describes a random walk of a single continuous state\nvariable Xt with a noisy observation Zt. An example might be the “consumer conﬁdence” in-\ndex, which can be modeled as undergoing a random Gaussian-distributed change each month\nand is measured by a random consumer survey that also introduces Gaussian sampling noise.\n586\n15.\nProbabilistic Reasoning over Time\nThe prior distribution is assumed to be Gaussian with variance σ2\n0:\nP(x0) = α e\n−1\n2\n„\n(x0−μ0)2\nσ2\n0\n«\n.\n(For simplicity, we use the same symbol α for all normalizing constants in this section.) The\ntransition model adds a Gaussian perturbation of constant variance σ2\nx to the current state:\nP(xt+1 | xt) = α e\n−1\n2\n„\n(xt+1−xt)2\nσ2x\n«\n.\nThe sensor model assumes Gaussian noise with variance σ2\nz:\nP(zt | xt) = α e\n−1\n2\n„\n(zt−xt)2\nσ2z\n«\n.\nNow, given the prior P(X0), the one-step predicted distribution comes from Equation (15.17):\nP(x1) =\n\u001a ∞\n−∞\nP(x1 | x0)P(x0) dx0 = α\n\u001a ∞\n−∞\ne\n−1\n2\n„\n(x1−x0)2\nσ2x\n«\ne\n−1\n2\n„\n(x0−μ0)2\nσ2\n0\n«\ndx0\n= α\n\u001a ∞\n−∞\ne\n−1\n2\n„\nσ2\n0(x1−x0)2+σ2x(x0−μ0)2\nσ2\n0σ2x\n«\ndx0 .\nThis integral looks rather complicated. The key to progress is to notice that the exponent is the\nsum of two expressions that are quadratic in x0 and hence is itself a quadratic in x0. A simple\ntrick known as completing the square allows the rewriting of any quadratic ax2\n0 + bx0 + c\nCOMPLETING THE\nSQUARE\nas the sum of a squared term a(x0 −−b\n2a )2 and a residual term c −b2\n4a that is independent of\nx0. The residual term can be taken outside the integral, giving us\nP(x1) = α e−1\n2\n“\nc−b2\n4a\n” \u001a ∞\n−∞\ne−1\n2(a(x0−−b\n2a )2) dx0 .\nNow the integral is just the integral of a Gaussian over its full range, which is simply 1. Thus,\nwe are left with only the residual term from the quadratic. Then, we notice that the residual\nterm is a quadratic in x1; in fact, after simpliﬁcation, we obtain\nP(x1) = α e\n−1\n2\n„\n(x1−μ0)2\nσ2\n0+σ2x\n«\n.\nThat is, the one-step predicted distribution is a Gaussian with the same mean μ0 and a variance\nequal to the sum of the original variance σ2\n0 and the transition variance σ2\nx.\nTo complete the update step, we need to condition on the observation at the ﬁrst time\nstep, namely, z1. From Equation (15.18), this is given by\nP(x1 | z1) = α P(z1 | x1)P(x1)\n= α e\n−1\n2\n„\n(z1−x1)2\nσ2z\n«\ne\n−1\n2\n„\n(x1−μ0)2\nσ2\n0+σ2x\n«\n.\nOnce again, we combine the exponents and complete the square (Exercise 15.11), obtaining\nP(x1 | z1) = α e\n−1\n2\n0\nB\nB\n@\n(x1−(σ2\n0+σ2x)z1+σ2zμ0\nσ2\n0+σ2x+σ2z\n)2\n(σ2\n0+σ2x)σ2z/(σ2\n0+σ2x+σ2z)\n1\nC\nC\nA\n.\n(15.19)\nSection 15.4.\nKalman Filters\n587\n 0\n 0.05\n 0.1\n 0.15\n 0.2\n 0.25\n 0.3\n 0.35\n 0.4\n 0.45\n-10\n-5\n 0\n 5\n 10\nP(x)\nx position\nP(x0)\nP(x1)\nP(x1 | z1 = 2.5)\n*z1\nFigure 15.10\nStages in the Kalman ﬁlter update cycle for a random walk with a prior\ngiven by μ0 = 0.0 and σ0 = 1.0, transition noise given by σx = 2.0, sensor noise given by\nσz = 1.0, and a ﬁrst observation z1 = 2.5 (marked on the x-axis). Notice how the prediction\nP(x1) is ﬂattened out, relative to P(x0), by the transition noise. Notice also that the mean\nof the posterior distribution P(x1 | z1) is slightly to the left of the observation z1 because the\nmean is a weighted average of the prediction and the observation.\nThus, after one update cycle, we have a new Gaussian distribution for the state variable.\nFrom the Gaussian formula in Equation (15.19), we see that the new mean and standard\ndeviation can be calculated from the old mean and standard deviation as follows:\nμt+1 = (σ2\nt + σ2\nx)zt+1 + σ2\nzμt\nσ2\nt + σ2x + σ2z\nand\nσ2\nt+1 = (σ2\nt + σ2\nx)σ2\nz\nσ2\nt + σ2x + σ2z\n.\n(15.20)\nFigure 15.10 shows one update cycle for particular values of the transition and sensor models.\nEquation (15.20) plays exactly the same role as the general ﬁltering equation (15.5) or\nthe HMM ﬁltering equation (15.12). Because of the special nature of Gaussian distributions,\nhowever, the equations have some interesting additional properties. First, we can interpret\nthe calculation for the new mean μt+1 as simply a weighted mean of the new observation\nzt+1 and the old mean μt. If the observation is unreliable, then σ2\nz is large and we pay more\nattention to the old mean; if the old mean is unreliable (σ2\nt is large) or the process is highly\nunpredictable (σ2\nx is large), then we pay more attention to the observation. Second, notice\nthat the update for the variance σ2\nt+1 is independent of the observation. We can therefore\ncompute in advance what the sequence of variance values will be. Third, the sequence of\nvariance values converges quickly to a ﬁxed value that depends only on σ2\nx and σ2\nz, thereby\nsubstantially simplifying the subsequent calculations. (See Exercise 15.12.)\n15.4.3\nThe general case\nThe preceding derivation illustrates the key property of Gaussian distributions that allows\nKalman ﬁltering to work: the fact that the exponent is a quadratic form. This is true not just\nfor the univariate case; the full multivariate Gaussian distribution has the form\nN(μ, Σ)(x) = α e−1\n2\n“\n(x−μ)⊤Σ\n−1(x−μ)\n”\n.\n588\n15.\nProbabilistic Reasoning over Time\nMultiplying out the terms in the exponent makes it clear that the exponent is also a quadratic\nfunction of the values xi in x. As in the univariate case, the ﬁltering update preserves the\nGaussian nature of the state distribution.\nLet us ﬁrst deﬁne the general temporal model used with Kalman ﬁltering. Both the tran-\nsition model and the sensor model allow for a linear transformation with additive Gaussian\nnoise. Thus, we have\nP(xt+1 | xt) = N(Fxt, Σx)(xt+1)\nP(zt | xt) = N(Hxt, Σz)(zt) ,\n(15.21)\nwhere F and Σx are matrices describing the linear transition model and transition noise co-\nvariance, and H and Σz are the corresponding matrices for the sensor model. Now the update\nequations for the mean and covariance, in their full, hairy horribleness, are\nμt+1 = Fμt + Kt+1(zt+1 −HFμt)\nΣt+1 = (I −Kt+1H)(FΣtF⊤+ Σx) ,\n(15.22)\nwhere Kt+1 = (FΣtF⊤+ Σx)H⊤(H(FΣtF⊤+ Σx)H⊤+ Σz)−1 is called the Kalman gain\nmatrix. Believe it or not, these equations make some intuitive sense. For example, consider\nKALMAN GAIN\nMATRIX\nthe update for the mean state estimate μ. The term Fμt is the predicted state at t + 1, so\nHFμt is the predicted observation. Therefore, the term zt+1 −HFμt represents the error in\nthe predicted observation. This is multiplied by Kt+1 to correct the predicted state; hence,\nKt+1 is a measure of how seriously to take the new observation relative to the prediction. As\nin Equation (15.20), we also have the property that the variance update is independent of the\nobservations. The sequence of values for Σt and Kt can therefore be computed ofﬂine, and\nthe actual calculations required during online tracking are quite modest.\nTo illustrate these equations at work, we have applied them to the problem of tracking\nan object moving on the X–Y plane. The state variables are X = (X, Y, ˙X, ˙Y )⊤, so F, Σx,\nH, and Σz are 4 × 4 matrices. Figure 15.11(a) shows the true trajectory, a series of noisy\nobservations, and the trajectory estimated by Kalman ﬁltering, along with the covariances\nindicated by the one-standard-deviation contours. The ﬁltering process does a good job of\ntracking the actual motion, and, as expected, the variance quickly reaches a ﬁxed point.\nWe can also derive equations for smoothing as well as ﬁltering with linear Gaussian\nmodels. The smoothing results are shown in Figure 15.11(b). Notice how the variance in the\nposition estimate is sharply reduced, except at the ends of the trajectory (why?), and that the\nestimated trajectory is much smoother.\n15.4.4\nApplicability of Kalman ﬁltering\nThe Kalman ﬁlter and its elaborations are used in a vast array of applications. The “classical”\napplication is in radar tracking of aircraft and missiles. Related applications include acoustic\ntracking of submarines and ground vehicles and visual tracking of vehicles and people. In a\nslightly more esoteric vein, Kalman ﬁlters are used to reconstruct particle trajectories from\nbubble-chamber photographs and ocean currents from satellite surface measurements. The\nrange of application is much larger than just the tracking of motion: any system characterized\nby continuous state variables and noisy measurements will do. Such systems include pulp\nmills, chemical plants, nuclear reactors, plant ecosystems, and national economies.\nSection 15.4.\nKalman Filters\n589\n8\n10\n12\n14\n16\n18\n20\n22\n24\n26\n6\n7\n8\n9\n10\n11\n12\nX\nY\n8\n10\n12\n14\n16\n18\n20\n22\n24\n26\n6\n7\n8\n9\n10\n11\n12\nX\nY\ntrue\nobserved\nsmoothed\ntrue\nobserved\nsmoothed\n(a)\n(b)\n2D filtering\n2D smoothing\nFigure 15.11\n(a) Results of Kalman ﬁltering for an object moving on the X–Y plane,\nshowing the true trajectory (left to right), a series of noisy observations, and the trajectory\nestimated by Kalman ﬁltering. Variance in the position estimate is indicated by the ovals. (b)\nThe results of Kalman smoothing for the same observation sequence.\nThe fact that Kalman ﬁltering can be applied to a system does not mean that the re-\nsults will be valid or useful. The assumptions made—a linear Gaussian transition and sensor\nmodels—are very strong. The extended Kalman ﬁlter (EKF) attempts to overcome nonlin-\nEXTENDED KALMAN\nFILTER (EKF)\nearities in the system being modeled. A system is nonlinear if the transition model cannot\nNONLINEAR\nbe described as a matrix multiplication of the state vector, as in Equation (15.21). The EKF\nworks by modeling the system as locally linear in xt in the region of xt = μt, the mean of the\ncurrent state distribution. This works well for smooth, well-behaved systems and allows the\ntracker to maintain and update a Gaussian state distribution that is a reasonable approximation\nto the true posterior. A detailed example is given in Chapter 25.\nWhat does it mean for a system to be “unsmooth” or “poorly behaved”? Technically,\nit means that there is signiﬁcant nonlinearity in system response within the region that is\n“close” (according to the covariance Σt) to the current mean μt. To understand this idea\nin nontechnical terms, consider the example of trying to track a bird as it ﬂies through the\njungle. The bird appears to be heading at high speed straight for a tree trunk. The Kalman\nﬁlter, whether regular or extended, can make only a Gaussian prediction of the location of the\nbird, and the mean of this Gaussian will be centered on the trunk, as shown in Figure 15.12(a).\nA reasonable model of the bird, on the other hand, would predict evasive action to one side or\nthe other, as shown in Figure 15.12(b). Such a model is highly nonlinear, because the bird’s\ndecision varies sharply depending on its precise location relative to the trunk.\nTo handle examples like these, we clearly need a more expressive language for repre-\nsenting the behavior of the system being modeled. Within the control theory community, for\nwhich problems such as evasive maneuvering by aircraft raise the same kinds of difﬁculties,\nthe standard solution is the switching Kalman ﬁlter. In this approach, multiple Kalman ﬁl-\nSWITCHING KALMAN\nFILTER",
+  "images": [
+    {
+      "path": "images/15-4-kalman-filters_fig_15-9.png",
+      "type": "diagram",
+      "caption": "Figure 15.9"
+    },
+    {
+      "path": "images/15-4-kalman-filters_fig_15-10.png",
+      "type": "diagram",
+      "caption": "Figure 15.10"
+    },
+    {
+      "path": "images/15-4-kalman-filters_fig_15-11.png",
+      "type": "diagram",
+      "caption": "Figure 15.11"
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/15-4-kalman-filters_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_15-17.png",
+      "type": "equation",
+      "label": "15.17"
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_15-18.png",
+      "type": "equation",
+      "label": "15.18"
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_18.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_19.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_20.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_21.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_22.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_23.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_24.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_25.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_26.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_27.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_28.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_29.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_30.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_31.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_32.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_33.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_34.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_35.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_36.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_37.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_38.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_39.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_40.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_41.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_42.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_43.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_44.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_45.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_46.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_15-19.png",
+      "type": "equation",
+      "label": "15.19"
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_48.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_49.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_50.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_51.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_52.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_53.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_54.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_55.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_56.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_15-20.png",
+      "type": "equation",
+      "label": "15.20"
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_58.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_59.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_60.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_61.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_62.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_63.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_15-21.png",
+      "type": "equation",
+      "label": "15.21"
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_65.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_66.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/15-4-kalman-filters_eq_15-22.png",
+      "type": "equation",
+      "label": "15.22"
+    }
+  ]
+}

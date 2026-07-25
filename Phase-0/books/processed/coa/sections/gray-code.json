@@ -1,0 +1,13 @@
+{
+  "section_id": "gray-code",
+  "title": "Gray Code",
+  "level": 2,
+  "chapter": "Data Representation",
+  "parent_id": "data-representation",
+  "children": [],
+  "start_page": 96,
+  "end_page": 97,
+  "text": "Digital systems can process data in discrete form only. Many physical systems supply continuous output data. The data must be converted into digital form before they can be used by a digital computer. Continuous, or analog, information is converted into digital form by means of an analog-to-digital converter. The reflected binary or Gray code, shown in Table 3-5, is sometimes used for the converted digital data. The advantage of the Gray code over straight binary numbers is that the Gray code changes by only one bit as it sequences from one number to the next. In other words, the change from any number to the next in sequence is recognized by a change of only one bit from 0 to 1 or from 1 to 0. A typical application of the Gray code occurs when the analog data are represented by the continuous change of a shaft position. The shaft is partitioned into segments with each segment assigned a number. If adjacent segments are made to correspond to adjacent Gray code numbers, ambiguity is reduced when the shaft position is in the line that separates any two segments.\nGray code counters are sometimes used to provide the timing sequences\nGray code\nTABLE 3-5 4-Bit Gray Code\n\n[Table]\nBinarycodeDecimal equivalentBinary codeDecimal equivalent00000110080001111019001121111100010311101101104101012011151011130101610011401007 ·100015\n\nthat control the operations in a digital system. A Gray code counter is a counter whose flip-flops go through a sequence of states as specified in Table 3-5. Gray code counters remove the ambiguity during the change from one state of the counter to the next because only one bit can change during the state transition.",
+  "images": [],
+  "equations": []
+}

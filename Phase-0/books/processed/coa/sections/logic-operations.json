@@ -1,0 +1,13 @@
+{
+  "section_id": "logic-operations",
+  "title": "Logic Operations",
+  "level": 1,
+  "chapter": "Logic Operations",
+  "parent_id": null,
+  "children": [],
+  "start_page": 206,
+  "end_page": 206,
+  "text": "The basic computer has three machine instructions that perform logic operations: AND, CMA, and CLA. The LDA instruction may be considered as a logic operation that transfers a logic operand into the AC. In Sec. 4-5 we listed 16 different logic operations. All 16 logic operations can be implemented by software means because any logic function can be implemented using the AND and complement operations. For example, the OR operation is not available as a machine instruction in the basic computer. From DeMorgan's theorem we recognize the relation x + y = (x'y')'. The second expression contains only AND and complement operations. A program that forms the OR operation of two logic operands A and B is as follows:\nLDA A Load first operand A CMA Complement to get \\overline{A} STA TMP Store in a temporary location LDA B Load second operand B CMA Complement to get \\overline{B} AND TMP AND with \\overline{A} to get \\overline{A} \\wedge \\overline{B} CMA Complement again to get A \\vee B\nThe other logic operations can be implemented by software in a similar fashion.",
+  "images": [],
+  "equations": []
+}

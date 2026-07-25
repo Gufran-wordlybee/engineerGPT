@@ -1,0 +1,180 @@
+{
+  "section_id": "8-3-using-first-order-logic",
+  "title": "8.3 Using First-Order Logic",
+  "level": 3,
+  "chapter": "III: Knowledge, reasoning, and planning",
+  "parent_id": "8-first-order-logic",
+  "children": [],
+  "start_page": 318,
+  "end_page": 324,
+  "text": "300\n8.\nFirst-Order Logic\n. . .\nR\nJ\nR\nJ\nR\nJ\nR\nJ\nR\nJ\nR\nJ\nR\nJ\nR\nJ\nR\nJ\nR\nJ\nFigure 8.5\nSome members of the set of all models for a language with two constant sym-\nbols, R and J, and one binary relation symbol, under database semantics. The interpretation\nof the constant symbols is ﬁxed, and there is a distinct object for each constant symbol.\ncontains no more domain elements than those named by the constant symbols. Under the\nresulting semantics, which we call database semantics to distinguish it from the standard\nDATABASE\nSEMANTICS\nsemantics of ﬁrst-order logic, the sentence Equation (8.3) does indeed state that Richard’s\ntwo brothers are John and Geoffrey. Database semantics is also used in logic programming\nsystems, as explained in Section 9.4.5.\nIt is instructive to consider the set of all possible models under database semantics for\nthe same case as shown in Figure 8.4. Figure 8.5 shows some of the models, ranging from\nthe model with no tuples satisfying the relation to the model with all tuples satisfying the\nrelation. With two objects, there are four possible two-element tuples, so there are 24 = 16\ndifferent subsets of tuples that can satisfy the relation. Thus, there are 16 possible models in\nall—a lot fewer than the inﬁnitely many models for the standard ﬁrst-order semantics. On the\nother hand, the database semantics requires deﬁnite knowledge of what the world contains.\nThis example brings up an important point: there is no one “correct” semantics for\nlogic. The usefulness of any proposed semantics depends on how concise and intuitive it\nmakes the expression of the kinds of knowledge we want to write down, and on how easy\nand natural it is to develop the corresponding rules of inference. Database semantics is most\nuseful when we are certain about the identity of all the objects described in the knowledge\nbase and when we have all the facts at hand; in other cases, it is quite awkward. For the rest\nof this chapter, we assume the standard semantics while noting instances in which this choice\nleads to cumbersome expressions.\n8.3\nUSING FIRST-ORDER LOGIC\nNow that we have deﬁned an expressive logical language, it is time to learn how to use it. The\nbest way to do this is through examples. We have seen some simple sentences illustrating the\nvarious aspects of logical syntax; in this section, we provide more systematic representations\nof some simple domains. In knowledge representation, a domain is just some part of the\nDOMAIN\nworld about which we wish to express some knowledge.\nWe begin with a brief description of the TELL/ASK interface for ﬁrst-order knowledge\nbases. Then we look at the domains of family relationships, numbers, sets, and lists, and at\nSection 8.3.\nUsing First-Order Logic\n301\nthe wumpus world. The next section contains a more substantial example (electronic circuits)\nand Chapter 12 covers everything in the universe.\n8.3.1\nAssertions and queries in ﬁrst-order logic\nSentences are added to a knowledge base using TELL, exactly as in propositional logic. Such\nsentences are called assertions. For example, we can assert that John is a king, Richard is a\nASSERTION\nperson, and all kings are persons:\nTELL(KB, King(John)) .\nTELL(KB, Person(Richard)) .\nTELL(KB, ∀x King(x) ⇒Person(x)) .\nWe can ask questions of the knowledge base using ASK. For example,\nASK(KB, King(John))\nreturns true. Questions asked with ASK are called queries or goals. Generally speaking, any\nQUERY\nGOAL\nquery that is logically entailed by the knowledge base should be answered afﬁrmatively. For\nexample, given the two preceding assertions, the query\nASK(KB, Person(John))\nshould also return true. We can ask quantiﬁed queries, such as\nASK(KB, ∃x Person(x)) .\nThe answer is true, but this is perhaps not as helpful as we would like. It is rather like\nanswering “Can you tell me the time?” with “Yes.” If we want to know what value of x\nmakes the sentence true, we will need a different function, ASKVARS, which we call with\nASKVARS(KB, Person(x))\nand which yields a stream of answers. In this case there will be two answers: {x/John} and\n{x/Richard}. Such an answer is called a substitution or binding list. ASKVARS is usually\nSUBSTITUTION\nBINDING LIST\nreserved for knowledge bases consisting solely of Horn clauses, because in such knowledge\nbases every way of making the query true will bind the variables to speciﬁc values. That is\nnot the case with ﬁrst-order logic; if KB has been told King(John) ∨King(Richard), then\nthere is no binding to x for the query ∃x King(x), even though the query is true.\n8.3.2\nThe kinship domain\nThe ﬁrst example we consider is the domain of family relationships, or kinship. This domain\nincludes facts such as “Elizabeth is the mother of Charles” and “Charles is the father of\nWilliam” and rules such as “One’s grandmother is the mother of one’s parent.”\nClearly, the objects in our domain are people. We have two unary predicates, Male and\nFemale. Kinship relations—parenthood, brotherhood, marriage, and so on—are represented\nby binary predicates: Parent, Sibling, Brother, Sister, Child, Daughter, Son, Spouse,\nWife, Husband, Grandparent, Grandchild, Cousin, Aunt, and Uncle. We use functions\nfor Mother and Father, because every person has exactly one of each of these (at least\naccording to nature’s design).\n302\n8.\nFirst-Order Logic\nWe can go through each function and predicate, writing down what we know in terms\nof the other symbols. For example, one’s mother is one’s female parent:\n∀m, c Mother(c) = m ⇔Female(m) ∧Parent(m, c) .\nOne’s husband is one’s male spouse:\n∀w, h Husband(h, w) ⇔Male(h) ∧Spouse(h, w) .\nMale and female are disjoint categories:\n∀x Male(x) ⇔¬Female(x) .\nParent and child are inverse relations:\n∀p, c Parent(p, c) ⇔Child(c, p) .\nA grandparent is a parent of one’s parent:\n∀g, c Grandparent(g, c) ⇔∃p Parent(g, p) ∧Parent(p, c) .\nA sibling is another child of one’s parents:\n∀x, y Sibling(x, y) ⇔x̸ = y ∧∃p Parent(p, x) ∧Parent(p, y) .\nWe could go on for several more pages like this, and Exercise 8.14 asks you to do just that.\nEach of these sentences can be viewed as an axiom of the kinship domain, as explained\nin Section 7.1. Axioms are commonly associated with purely mathematical domains—we\nwill see some axioms for numbers shortly—but they are needed in all domains. They provide\nthe basic factual information from which useful conclusions can be derived. Our kinship\naxioms are also deﬁnitions; they have the form ∀x, y P(x, y) ⇔\n. . .. The axioms deﬁne\nDEFINITION\nthe Mother function and the Husband, Male, Parent, Grandparent, and Sibling predicates\nin terms of other predicates. Our deﬁnitions “bottom out” at a basic set of predicates (Child,\nSpouse, and Female) in terms of which the others are ultimately deﬁned. This is a natural\nway in which to build up the representation of a domain, and it is analogous to the way in\nwhich software packages are built up by successive deﬁnitions of subroutines from primitive\nlibrary functions. Notice that there is not necessarily a unique set of primitive predicates;\nwe could equally well have used Parent, Spouse, and Male. In some domains, as we show,\nthere is no clearly identiﬁable basic set.\nNot all logical sentences about a domain are axioms. Some are theorems—that is, they\nTHEOREM\nare entailed by the axioms. For example, consider the assertion that siblinghood is symmetric:\n∀x, y Sibling(x, y) ⇔Sibling(y, x) .\nIs this an axiom or a theorem? In fact, it is a theorem that follows logically from the axiom\nthat deﬁnes siblinghood. If we ASK the knowledge base this sentence, it should return true.\nFrom a purely logical point of view, a knowledge base need contain only axioms and\nno theorems, because the theorems do not increase the set of conclusions that follow from\nthe knowledge base. From a practical point of view, theorems are essential to reduce the\ncomputational cost of deriving new sentences. Without them, a reasoning system has to start\nfrom ﬁrst principles every time, rather like a physicist having to rederive the rules of calculus\nfor every new problem.\nSection 8.3.\nUsing First-Order Logic\n303\nNot all axioms are deﬁnitions. Some provide more general information about certain\npredicates without constituting a deﬁnition. Indeed, some predicates have no complete deﬁ-\nnition because we do not know enough to characterize them fully. For example, there is no\nobvious deﬁnitive way to complete the sentence\n∀x Person(x) ⇔. . .\nFortunately, ﬁrst-order logic allows us to make use of the Person predicate without com-\npletely deﬁning it. Instead, we can write partial speciﬁcations of properties that every person\nhas and properties that make something a person:\n∀x Person(x) ⇒. . .\n∀x . . . ⇒Person(x) .\nAxioms can also be “just plain facts,” such as Male(Jim) and Spouse(Jim, Laura).\nSuch facts form the descriptions of speciﬁc problem instances, enabling speciﬁc questions\nto be answered. The answers to these questions will then be theorems that follow from\nthe axioms. Often, one ﬁnds that the expected answers are not forthcoming—for example,\nfrom Spouse(Jim, Laura) one expects (under the laws of many countries) to be able to infer\n¬Spouse(George, Laura); but this does not follow from the axioms given earlier—even after\nwe add Jim̸ = George as suggested in Section 8.2.8. This is a sign that an axiom is missing.\nExercise 8.8 asks the reader to supply it.\n8.3.3\nNumbers, sets, and lists\nNumbers are perhaps the most vivid example of how a large theory can be built up from\na tiny kernel of axioms. We describe here the theory of natural numbers or non-negative\nNATURAL NUMBERS\nintegers. We need a predicate NatNum that will be true of natural numbers; we need one\nconstant symbol, 0; and we need one function symbol, S (successor). The Peano axioms\nPEANO AXIOMS\ndeﬁne natural numbers and addition.9 Natural numbers are deﬁned recursively:\nNatNum(0) .\n∀n NatNum(n) ⇒NatNum(S(n)) .\nThat is, 0 is a natural number, and for every object n, if n is a natural number, then S(n) is\na natural number. So the natural numbers are 0, S(0), S(S(0)), and so on. (After reading\nSection 8.2.8, you will notice that these axioms allow for other natural numbers besides the\nusual ones; see Exercise 8.12.) We also need axioms to constrain the successor function:\n∀n 0̸ = S(n) .\n∀m, n m̸ = n ⇒S(m)̸ = S(n) .\nNow we can deﬁne addition in terms of the successor function:\n∀m NatNum(m) ⇒+ (0, m) = m .\n∀m, n NatNum(m) ∧NatNum(n) ⇒+ (S(m), n) = S(+(m, n)) .\nThe ﬁrst of these axioms says that adding 0 to any natural number m gives m itself. Notice\nthe use of the binary function symbol “+” in the term +(m, 0); in ordinary mathematics, the\nterm would be written m + 0 using inﬁx notation. (The notation we have used for ﬁrst-order\nINFIX\n9 The Peano axioms also include the principle of induction, which is a sentence of second-order logic rather\nthan of ﬁrst-order logic. The importance of this distinction is explained in Chapter 9.\n304\n8.\nFirst-Order Logic\nlogic is called preﬁx.) To make our sentences about numbers easier to read, we allow the use\nPREFIX\nof inﬁx notation. We can also write S(n) as n + 1, so the second axiom becomes\n∀m, n NatNum(m) ∧NatNum(n) ⇒(m + 1) + n = (m + n) + 1 .\nThis axiom reduces addition to repeated application of the successor function.\nThe use of inﬁx notation is an example of syntactic sugar, that is, an extension to or\nSYNTACTIC SUGAR\nabbreviation of the standard syntax that does not change the semantics. Any sentence that\nuses sugar can be “desugared” to produce an equivalent sentence in ordinary ﬁrst-order logic.\nOnce we have addition, it is straightforward to deﬁne multiplication as repeated addi-\ntion, exponentiation as repeated multiplication, integer division and remainders, prime num-\nbers, and so on. Thus, the whole of number theory (including cryptography) can be built up\nfrom one constant, one function, one predicate and four axioms.\nThe domain of sets is also fundamental to mathematics as well as to commonsense\nSET\nreasoning. (In fact, it is possible to deﬁne number theory in terms of set theory.) We want to\nbe able to represent individual sets, including the empty set. We need a way to build up sets\nby adding an element to a set or taking the union or intersection of two sets. We will want\nto know whether an element is a member of a set and we will want to distinguish sets from\nobjects that are not sets.\nWe will use the normal vocabulary of set theory as syntactic sugar. The empty set is a\nconstant written as { }. There is one unary predicate, Set, which is true of sets. The binary\npredicates are x ∈s (x is a member of set s) and s1 ⊆s2 (set s1 is a subset, not necessarily\nproper, of set s2). The binary functions are s1 ∩s2 (the intersection of two sets), s1 ∪s2\n(the union of two sets), and {x|s} (the set resulting from adjoining element x to set s). One\npossible set of axioms is as follows:\n1. The only sets are the empty set and those made by adjoining something to a set:\n∀s Set(s) ⇔(s = { }) ∨(∃x, s2 Set(s2) ∧s = {x|s2}) .\n2. The empty set has no elements adjoined into it. In other words, there is no way to\ndecompose { } into a smaller set and an element:\n¬∃x, s {x|s} = { } .\n3. Adjoining an element already in the set has no effect:\n∀x, s x ∈s ⇔s = {x|s} .\n4. The only members of a set are the elements that were adjoined into it. We express\nthis recursively, saying that x is a member of s if and only if s is equal to some set s2\nadjoined with some element y, where either y is the same as x or x is a member of s2:\n∀x, s x ∈s ⇔∃y, s2 (s = {y|s2} ∧(x = y ∨x ∈s2)) .\n5. A set is a subset of another set if and only if all of the ﬁrst set’s members are members\nof the second set:\n∀s1, s2 s1 ⊆s2 ⇔(∀x x ∈s1 ⇒x ∈s2) .\n6. Two sets are equal if and only if each is a subset of the other:\n∀s1, s2 (s1 = s2) ⇔(s1 ⊆s2 ∧s2 ⊆s1) .\nSection 8.3.\nUsing First-Order Logic\n305\n7. An object is in the intersection of two sets if and only if it is a member of both sets:\n∀x, s1, s2 x ∈(s1 ∩s2) ⇔(x ∈s1 ∧x ∈s2) .\n8. An object is in the union of two sets if and only if it is a member of either set:\n∀x, s1, s2 x ∈(s1 ∪s2) ⇔(x ∈s1 ∨x ∈s2) .\nLists are similar to sets. The differences are that lists are ordered and the same element can\nLIST\nappear more than once in a list. We can use the vocabulary of Lisp for lists: Nil is the constant\nlist with no elements; Cons, Append, First, and Rest are functions; and Find is the pred-\nicate that does for lists what Member does for sets. List? is a predicate that is true only of\nlists. As with sets, it is common to use syntactic sugar in logical sentences involving lists. The\nempty list is [ ]. The term Cons(x, y), where y is a nonempty list, is written [x|y]. The term\nCons(x, Nil) (i.e., the list containing the element x) is written as [x]. A list of several ele-\nments, such as [A, B, C], corresponds to the nested term Cons(A, Cons(B, Cons(C, Nil))).\nExercise 8.16 asks you to write out the axioms for lists.\n8.3.4\nThe wumpus world\nSome propositional logic axioms for the wumpus world were given in Chapter 7. The ﬁrst-\norder axioms in this section are much more concise, capturing in a natural way exactly what\nwe want to say.\nRecall that the wumpus agent receives a percept vector with ﬁve elements. The corre-\nsponding ﬁrst-order sentence stored in the knowledge base must include both the percept and\nthe time at which it occurred; otherwise, the agent will get confused about when it saw what.\nWe use integers for time steps. A typical percept sentence would be\nPercept([Stench, Breeze, Glitter, None, None], 5) .\nHere, Percept is a binary predicate, and Stench and so on are constants placed in a list. The\nactions in the wumpus world can be represented by logical terms:\nTurn(Right), Turn(Left), Forward, Shoot, Grab, Climb .\nTo determine which is best, the agent program executes the query\nASKVARS(∃a BestAction(a, 5)) ,\nwhich returns a binding list such as {a/Grab}. The agent program can then return Grab as\nthe action to take. The raw percept data implies certain facts about the current state. For\nexample:\n∀t, s, g, m, c Percept([s, Breeze, g, m, c], t) ⇒Breeze(t) ,\n∀t, s, b, m, c Percept([s, b, Glitter, m, c], t) ⇒Glitter(t) ,\nand so on. These rules exhibit a trivial form of the reasoning process called perception, which\nwe study in depth in Chapter 24. Notice the quantiﬁcation over time t. In propositional logic,\nwe would need copies of each sentence for each time step.\nSimple “reﬂex” behavior can also be implemented by quantiﬁed implication sentences.\nFor example, we have\n∀t Glitter(t) ⇒BestAction(Grab, t) .\n306\n8.\nFirst-Order Logic\nGiven the percept and rules from the preceding paragraphs, this would yield the desired con-\nclusion BestAction(Grab, 5)—that is, Grab is the right thing to do.\nWe have represented the agent’s inputs and outputs; now it is time to represent the\nenvironment itself. Let us begin with objects. Obvious candidates are squares, pits, and the\nwumpus. We could name each square—Square1,2 and so on—but then the fact that Square1,2\nand Square1,3 are adjacent would have to be an “extra” fact, and we would need one such\nfact for each pair of squares. It is better to use a complex term in which the row and column\nappear as integers; for example, we can simply use the list term [1, 2]. Adjacency of any two\nsquares can be deﬁned as\n∀x, y, a, b Adjacent([x, y], [a, b]) ⇔\n(x = a ∧(y = b −1 ∨y = b + 1)) ∨(y = b ∧(x = a −1 ∨x = a + 1)) .\nWe could name each pit, but this would be inappropriate for a different reason: there is no\nreason to distinguish among pits.10 It is simpler to use a unary predicate Pit that is true of\nsquares containing pits. Finally, since there is exactly one wumpus, a constant Wumpus is\njust as good as a unary predicate (and perhaps more digniﬁed from the wumpus’s viewpoint).\nThe agent’s location changes over time, so we write At(Agent, s, t) to mean that the\nagent is at square s at time t. We can ﬁx the wumpus’s location with ∀t At(Wumpus, [2, 2], t).\nWe can then say that objects can only be at one location at a time:\n∀x, s1, s2, t At(x, s1, t) ∧At(x, s2, t) ⇒s1 = s2 .\nGiven its current location, the agent can infer properties of the square from properties of its\ncurrent percept. For example, if the agent is at a square and perceives a breeze, then that\nsquare is breezy:\n∀s, t At(Agent, s, t) ∧Breeze(t) ⇒Breezy(s) .\nIt is useful to know that a square is breezy because we know that the pits cannot move about.\nNotice that Breezy has no time argument.\nHaving discovered which places are breezy (or smelly) and, very important, not breezy\n(or not smelly), the agent can deduce where the pits are (and where the wumpus is). Whereas\npropositional logic necessitates a separate axiom for each square (see R2 and R3 on page 247)\nand would need a different set of axioms for each geographical layout of the world, ﬁrst-order\nlogic just needs one axiom:\n∀s Breezy(s) ⇔∃r Adjacent(r, s) ∧Pit(r) .\n(8.4)\nSimilarly, in ﬁrst-order logic we can quantify over time, so we need just one successor-state\naxiom for each predicate, rather than a different copy for each time step. For example, the\naxiom for the arrow (Equation (7.2) on page 267) becomes\n∀t HaveArrow(t + 1) ⇔(HaveArrow(t) ∧¬Action(Shoot, t)) .\nFrom these two example sentences, we can see that the ﬁrst-order logic formulation is no\nless concise than the original English-language description given in Chapter 7. The reader\n10 Similarly, most of us do not name each bird that ﬂies overhead as it migrates to warmer regions in winter. An\nornithologist wishing to study migration patterns, survival rates, and so on does name each bird, by means of a\nring on its leg, because individual birds must be tracked.",
+  "images": [
+    {
+      "path": "images/8-3-using-first-order-logic_fig_8-5.png",
+      "type": "diagram",
+      "caption": "Figure 8.5"
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/8-3-using-first-order-logic_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-3-using-first-order-logic_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-3-using-first-order-logic_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-3-using-first-order-logic_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-3-using-first-order-logic_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-3-using-first-order-logic_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-3-using-first-order-logic_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-3-using-first-order-logic_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-3-using-first-order-logic_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-3-using-first-order-logic_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-3-using-first-order-logic_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-3-using-first-order-logic_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-3-using-first-order-logic_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-3-using-first-order-logic_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-3-using-first-order-logic_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-3-using-first-order-logic_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-3-using-first-order-logic_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-3-using-first-order-logic_eq_18.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-3-using-first-order-logic_eq_19.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-3-using-first-order-logic_eq_20.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-3-using-first-order-logic_eq_21.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-3-using-first-order-logic_eq_22.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-3-using-first-order-logic_eq_23.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-3-using-first-order-logic_eq_24.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-3-using-first-order-logic_eq_25.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-3-using-first-order-logic_eq_26.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-3-using-first-order-logic_eq_27.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-3-using-first-order-logic_eq_28.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-3-using-first-order-logic_eq_29.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-3-using-first-order-logic_eq_30.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-3-using-first-order-logic_eq_31.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/8-3-using-first-order-logic_eq_8-4.png",
+      "type": "equation",
+      "label": "8.4"
+    }
+  ]
+}

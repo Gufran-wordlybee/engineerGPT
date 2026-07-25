@@ -1,0 +1,13 @@
+{
+  "section_id": "subroutines",
+  "title": "Subroutines",
+  "level": 3,
+  "chapter": "Mapping of Instruction",
+  "parent_id": "mapping-of-instruction",
+  "children": [],
+  "start_page": 229,
+  "end_page": 229,
+  "text": "Subroutines are programs that are used by other routines to accomplish a particular task. A subroutine can be called from any point within the main body of the microprogram. Frequently, many microprograms contain identical sections of code. Microinstructions can be saved by employing subroutines that use common sections of microcode. For example, the sequence of microoperations needed to generate the effective address of the operand for an instruction is common to all memory reference instructions. This sequence could be a subroutine that is called from within many other routines to execute the effective address computation.\nMicroprograms that use subroutines must have a provision for storing the return address during a subroutine call and restoring the address during a subroutine return. This may be accomplished by placing the incremented output from the control address register into a subroutine register and branching to the beginning of the subroutine. The subroutine register can then become the source for transferring the address for the return to the main routine. The best way to structure a register file that stores addresses for subroutines is to organize the registers in a last-in, first-out (LIFO) stack. The use of a stack in subroutine calls and returns is explained in more detail in Sec. 8-7.\nsubroutine register",
+  "images": [],
+  "equations": []
+}

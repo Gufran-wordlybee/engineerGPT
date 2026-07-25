@@ -1,0 +1,15 @@
+{
+  "section_id": "13-2-interconnection-structures",
+  "title": "13-2 Interconnection Structures",
+  "level": 2,
+  "chapter": "13-1 Characteristics of Multiprocessors",
+  "parent_id": "13-1-characteristics-of-multiprocessors",
+  "children": [
+    "time-shared-common-bus"
+  ],
+  "start_page": 490,
+  "end_page": 490,
+  "text": "The components that form a multiprocessor system are CPUs, IOPs connected to input-output devices, and a memory unit that may be partitioned into a number of separate modules. The interconnection between the components can have different physical configurations, depending on the number of transfer paths that are available between the processors and memory in a shared memory system or among the processing elements in a loosely coupled system. There are several physical forms available for establishing an interconnection network. Some of these schemes are presented in this section:\nTime-shared common bus\n2. Multiport memory\n3. Crossbar switch\n4. Multistage switching network\n5. Hypercube system",
+  "images": [],
+  "equations": []
+}

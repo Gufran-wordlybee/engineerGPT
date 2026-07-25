@@ -1,0 +1,225 @@
+{
+  "section_id": "25-3-robotic-perception",
+  "title": "25.3 Robotic Perception",
+  "level": 3,
+  "chapter": "VI: Communicating, perceiving, and acting",
+  "parent_id": "25-robotics",
+  "children": [],
+  "start_page": 996,
+  "end_page": 1003,
+  "text": "978\n25.\nRobotics\n(a)\n(b)\nFigure 25.6\n(a) Four-legged dynamically-stable robot “Big Dog.” Image courtesy Boston\nDynamics, c⃝2009. (b) 2009 RoboCup Standard Platform League competition, showing the\nwinning team, B-Human, from the DFKI center at the University of Bremen. Throughout the\nmatch, B-Human outscored their opponents 64:1. Their success was built on probabilistic\nstate estimation using particle ﬁlters and Kalman ﬁlters; on machine-learning models for gait\noptimization; and on dynamic kicking moves. Image courtesy DFKI, c⃝2009.\n25.3\nROBOTIC PERCEPTION\nPerception is the process by which robots map sensor measurements into internal representa-\ntions of the environment. Perception is difﬁcult because sensors are noisy, and the environ-\nment is partially observable, unpredictable, and often dynamic. In other words, robots have\nall the problems of state estimation (or ﬁltering) that we discussed in Section 15.2. As a\nrule of thumb, good internal representations for robots have three properties: they contain\nenough information for the robot to make good decisions, they are structured so that they can\nbe updated efﬁciently, and they are natural in the sense that internal variables correspond to\nnatural state variables in the physical world.\nIn Chapter 15, we saw that Kalman ﬁlters, HMMs, and dynamic Bayes nets can repre-\nsent the transition and sensor models of a partially observable environment, and we described\nboth exact and approximate algorithms for updating the belief state—the posterior probabil-\nity distribution over the environment state variables. Several dynamic Bayes net models for\nthis process were shown in Chapter 15. For robotics problems, we include the robot’s own\npast actions as observed variables in the model. Figure 25.7 shows the notation used in this\nchapter: Xt is the state of the environment (including the robot) at time t, Zt is the observation\nreceived at time t, and At is the action taken after the observation is received.\nSection 25.3.\nRobotic Perception\n979\nXt+1\nXt\nAt−2\nAt−1\nAt\nZt−1\nXt−1\nZt\nZt+1\nFigure 25.7\nRobot perception can be viewed as temporal inference from sequences of\nactions and measurements, as illustrated by this dynamic Bayes network.\nWe would like to compute the new belief state, P(Xt+1 | z1:t+1, a1:t), from the current\nbelief state P(Xt | z1:t, a1:t−1) and the new observation zt+1. We did this in Section 15.2,\nbut here there are two differences: we condition explicitly on the actions as well as the ob-\nservations, and we deal with continuous rather than discrete variables. Thus, we modify the\nrecursive ﬁltering equation (15.5 on page 572) to use integration rather than summation:\nP(Xt+1 | z1:t+1, a1:t)\n= αP(zt+1 | Xt+1)\n\u001a\nP(Xt+1 | xt, at) P(xt | z1:t, a1:t−1) dxt .\n(25.1)\nThis equation states that the posterior over the state variables X at time t + 1 is calculated\nrecursively from the corresponding estimate one time step earlier. This calculation involves\nthe previous action at and the current sensor measurement zt+1. For example, if our goal\nis to develop a soccer-playing robot, Xt+1 might be the location of the soccer ball relative\nto the robot. The posterior P(Xt | z1:t, a1:t−1) is a probability distribution over all states that\ncaptures what we know from past sensor measurements and controls. Equation (25.1) tells us\nhow to recursively estimate this location, by incrementally folding in sensor measurements\n(e.g., camera images) and robot motion commands. The probability P(Xt+1 | xt, at) is called\nthe transition model or motion model, and P(zt+1 | Xt+1) is the sensor model.\nMOTION MODEL\n25.3.1\nLocalization and mapping\nLocalization is the problem of ﬁnding out where things are—including the robot itself.\nLOCALIZATION\nKnowledge about where things are is at the core of any successful physical interaction with\nthe environment. For example, robot manipulators must know the location of objects they\nseek to manipulate; navigating robots must know where they are to ﬁnd their way around.\nTo keep things simple, let us consider a mobile robot that moves slowly in a ﬂat 2D\nworld. Let us also assume the robot is given an exact map of the environment. (An example\nof such a map appears in Figure 25.10.) The pose of such a mobile robot is deﬁned by its\ntwo Cartesian coordinates with values x and y and its heading with value θ, as illustrated in\nFigure 25.8(a). If we arrange those three values in a vector, then any particular state is given\nby Xt = (xt, yt, θt)⊤. So far so good.\n980\n25.\nRobotics\nxi, yi\nvt Δt\nxt+1\nh(xt)\nxt\nθt\nt+1\nθ\nt Δt\nω\nZ1\nZ2\nZ3\nZ4\n(a)\n(b)\nFigure 25.8\n(a) A simpliﬁed kinematic model of a mobile robot. The robot is shown as a\ncircle with an interior line marking the forward direction. The state xt consists of the (xt, yt)\nposition (shown implicitly) and the orientation θt. The new state xt+1 is obtained by an\nupdate in position of vtΔt and in orientation of ωtΔt. Also shown is a landmark at (xi, yi)\nobserved at time t. (b) The range-scan sensor model. Two possible robot poses are shown for\na given range scan (z1, z2, z3, z4). It is much more likely that the pose on the left generated\nthe range scan than the pose on the right.\nIn the kinematic approximation, each action consists of the “instantaneous” speciﬁca-\ntion of two velocities—a translational velocity vt and a rotational velocity ωt. For small time\nintervals Δt, a crude deterministic model of the motion of such robots is given by\nˆXt+1 = f(Xt, vt, ωt\n\u001b \n\n \n\nat\n) = Xt +\n⎛\n⎝\nvtΔt cos θt\nvtΔt sin θt\nωtΔt\n⎞\n⎠.\nThe notation ˆX refers to a deterministic state prediction.\nOf course, physical robots are\nsomewhat unpredictable. This is commonly modeled by a Gaussian distribution with mean\nf(Xt, vt, ωt) and covariance Σx. (See Appendix A for a mathematical deﬁnition.)\nP(Xt+1 | Xt, vt, ωt) = N(ˆXt+1, Σx) .\nThis probability distribution is the robot’s motion model. It models the effects of the motion\nat on the location of the robot.\nNext, we need a sensor model. We will consider two kinds of sensor model. The\nﬁrst assumes that the sensors detect stable, recognizable features of the environment called\nlandmarks. For each landmark, the range and bearing are reported. Suppose the robot’s state\nLANDMARK\nis xt = (xt, yt, θt)⊤and it senses a landmark whose location is known to be (xi, yi)⊤. Without\nnoise, the range and bearing can be calculated by simple geometry. (See Figure 25.8(a).) The\nexact prediction of the observed range and bearing would be\nˆzt = h(xt) =\n\n \n(xt −xi)2 + (yt −yi)2\narctan yi−yt\nxi−xt −θt\n\u000e\n.\nSection 25.3.\nRobotic Perception\n981\nAgain, noise distorts our measurements. To keep things simple, one might assume Gaussian\nnoise with covariance Σz, giving us the sensor model\nP(zt | xt) = N(ˆzt, Σz) .\nA somewhat different sensor model is used for an array of range sensors, each of which\nhas a ﬁxed bearing relative to the robot. Such sensors produce a vector of range values\nzt = (z1, . . . , zM)⊤. Given a pose xt, let ˆzj be the exact range along the jth beam direction\nfrom xt to the nearest obstacle. As before, this will be corrupted by Gaussian noise. Typically,\nwe assume that the errors for the different beam directions are independent and identically\ndistributed, so we have\nP(zt | xt) = α\nM\n\u0019\nj = 1\ne−(zj−ˆzj)/2σ2.\nFigure 25.8(b) shows an example of a four-beam range scan and two possible robot poses,\none of which is reasonably likely to have produced the observed scan and one of which is not.\nComparing the range-scan model to the landmark model, we see that the range-scan model\nhas the advantage that there is no need to identify a landmark before the range scan can be\ninterpreted; indeed, in Figure 25.8(b), the robot faces a featureless wall. On the other hand,\nif there are visible, identiﬁable landmarks, they may provide instant localization.\nChapter 15 described the Kalman ﬁlter, which represents the belief state as a single\nmultivariate Gaussian, and the particle ﬁlter, which represents the belief state by a collection\nof particles that correspond to states. Most modern localization algorithms use one of two\nrepresentations of the robot’s belief P(Xt | z1:t, a1:t−1).\nLocalization using particle ﬁltering is called Monte Carlo localization, or MCL. The\nMONTE CARLO\nLOCALIZATION\nMCL alfgorithm is an instance of the particle-ﬁltering algorithm of Figure 15.17 (page 598).\nAll we need to do is supply the appropriate motion model and sensor model. Figure 25.9\nshows one version using the range-scan model. The operation of the algorithm is illustrated in\nFigure 25.10 as the robot ﬁnds out where it is inside an ofﬁce building. In the ﬁrst image, the\nparticles are uniformly distributed based on the prior, indicating global uncertainty about the\nrobot’s position. In the second image, the ﬁrst set of measurements arrives and the particles\nform clusters in the areas of high posterior belief. In the third, enough measurements are\navailable to push all the particles to a single location.\nThe Kalman ﬁlter is the other major way to localize. A Kalman ﬁlter represents the\nposterior P(Xt | z1:t, a1:t−1) by a Gaussian. The mean of this Gaussian will be denoted μt and\nits covariance Σt. The main problem with Gaussian beliefs is that they are only closed under\nlinear motion models f and linear measurement models h. For nonlinear f or h, the result of\nupdating a ﬁlter is in general not Gaussian. Thus, localization algorithms using the Kalman\nﬁlter linearize the motion and sensor models. Linearization is a local approximation of a\nLINEARIZATION\nnonlinear function by a linear function. Figure 25.11 illustrates the concept of linearization\nfor a (one-dimensional) robot motion model. On the left, it depicts a nonlinear motion model\nf(xt, at) (the control at is omitted in this graph since it plays no role in the linearization).\nOn the right, this function is approximated by a linear function ˜f(xt, at). This linear function\nis tangent to f at the point μt, the mean of our state estimate at time t. Such a linearization\n982\n25.\nRobotics\nfunction MONTE-CARLO-LOCALIZATION(a, z, N , P(X′|X, v, ω), P(z|z∗), m) returns\na set of samples for the next time step\ninputs: a, robot velocities v and ω\nz, range scan z1, . . . , zM\nP(X′|X, v, ω), motion model\nP(z|z∗), range sensor noise model\nm, 2D map of the environment\npersistent: S, a vector of samples of size N\nlocal variables: W, a vector of weights of size N\nS′, a temporary vector of particles of size N\nW ′, a vector of weights of size N\nif S is empty then\n/* initialization phase */\nfor i = 1 to N do\nS[i] ←sample from P(X0)\nfor i = 1 to N do\n/* update cycle */\nS′[i] ←sample from P(X′|X = S[i], v, ω)\nW ′[i] ←1\nfor j = 1 to M do\nz∗←RAYCAST(j, X = S′[i], m)\nW ′[i] ←W ′[i] · P(zj| z∗)\nS ←WEIGHTED-SAMPLE-WITH-REPLACEMENT(N ,S ′,W ′)\nreturn S\nFigure 25.9\nA Monte Carlo localization algorithm using a range-scan sensor model with\nindependent noise.\nis called (ﬁrst degree) Taylor expansion. A Kalman ﬁlter that linearizes f and h via Taylor\nTAYLOR EXPANSION\nexpansion is called an extended Kalman ﬁlter (or EKF). Figure 25.12 shows a sequence\nof estimates of a robot running an extended Kalman ﬁlter localization algorithm. As the\nrobot moves, the uncertainty in its location estimate increases, as shown by the error ellipses.\nIts error decreases as it senses the range and bearing to a landmark with known location\nand increases again as the robot loses sight of the landmark. EKF algorithms work well if\nlandmarks are easily identiﬁed. Otherwise, the posterior distribution may be multimodal, as\nin Figure 25.10(b). The problem of needing to know the identity of landmarks is an instance\nof the data association problem discussed in Figure 15.6.\nIn some situations, no map of the environment is available. Then the robot will have to\nacquire a map. This is a bit of a chicken-and-egg problem: the navigating robot will have to\ndetermine its location relative to a map it doesn’t quite know, at the same time building this\nmap while it doesn’t quite know its actual location. This problem is important for many robot\napplications, and it has been studied extensively under the name simultaneous localization\nand mapping, abbreviated as SLAM.\nSIMULTANEOUS\nLOCALIZATION AND\nMAPPING\nSLAM problems are solved using many different probabilistic techniques, including\nthe extended Kalman ﬁlter discussed above. Using the EKF is straightforward: just augment\nSection 25.3.\nRobotic Perception\n983\nRobot position\n(a)\nRobot position\n(b)\nRobot position\n(c)\nFigure 25.10\nMonte Carlo localization, a particle ﬁltering algorithm for mobile robot lo-\ncalization. (a) Initial, global uncertainty. (b) Approximately bimodal uncertainty after navi-\ngating in the (symmetric) corridor. (c) Unimodal uncertainty after entering a room and ﬁnding\nit to be distinctive.\n984\n25.\nRobotics\nXt+1\nXt\nμt\nΣt\nf(Xt, at)\nf(μt, at)\nΣt+1\nXt+1\nXt\nμt\nΣt\nf(Xt, at)\nf(μt, at)\nΣt+1\nΣt+1\n~\nf(Xt, at) = f(μt, at) + Ft(Xt − μt)\n~\n(a)\n(b)\nFigure 25.11\nOne-dimensional illustration of a linearized motion model: (a) The function\nf, and the projection of a mean μt and a covariance interval (based on Σt) into time t + 1.\n(b) The linearized version is the tangent of f at μt. The projection of the mean μt is correct.\nHowever, the projected covariance ˜Σt+1 differs from Σt+1.\nrobot\nlandmark\nFigure 25.12\nExample of localization using the extended Kalman ﬁlter. The robot moves\non a straight line. As it progresses, its uncertainty increases gradually, as illustrated by the\nerror ellipses. When it observes a landmark with known position, the uncertainty is reduced.\nthe state vector to include the locations of the landmarks in the environment. Luckily, the\nEKF update scales quadratically, so for small maps (e.g., a few hundred landmarks) the com-\nputation is quite feasible. Richer maps are often obtained using graph relaxation methods,\nsimilar to the Bayesian network inference techniques discussed in Chapter 14. Expectation–\nmaximization is also used for SLAM.\n25.3.2\nOther types of perception\nNot all of robot perception is about localization or mapping. Robots also perceive the tem-\nperature, odors, acoustic signals, and so on. Many of these quantities can be estimated using\nvariants of dynamic Bayes networks. All that is required for such estimators are conditional\nprobability distributions that characterize the evolution of state variables over time, and sen-\nsor models that describe the relation of measurements to state variables.\nIt is also possible to program a robot as a reactive agent, without explicitly reasoning\nabout probability distributions over states. We cover that approach in Section 25.6.3.\nThe trend in robotics is clearly towards representations with well-deﬁned semantics.\nSection 25.3.\nRobotic Perception\n985\n(a)\n(b)\n(c)\nFigure 25.13\nSequence of “drivable surface” classiﬁer results using adaptive vision. In\n(a) only the road is classiﬁed as drivable (striped area). The V-shaped dark line shows where\nthe vehicle is heading. In (b) the vehicle is commanded to drive off the road, onto a grassy\nsurface, and the classiﬁer is beginning to classify some of the grass as drivable. In (c) the\nvehicle has updated its model of drivable surface to correspond to grass as well as road.\nProbabilistic techniques outperform other approaches in many hard perceptual problems such\nas localization and mapping. However, statistical techniques are sometimes too cumbersome,\nand simpler solutions may be just as effective in practice. To help decide which approach to\ntake, experience working with real physical robots is your best teacher.\n25.3.3\nMachine learning in robot perception\nMachine learning plays an important role in robot perception. This is particularly the case\nwhen the best internal representation is not known. One common approach is to map high-\ndimensional sensor streams into lower-dimensional spaces using unsupervised machine learn-\ning methods (see Chapter 18). Such an approach is called low-dimensional embedding.\nLOW-DIMENSIONAL\nEMBEDDING\nMachine learning makes it possible to learn sensor and motion models from data, while si-\nmultaneously discovering a suitable internal representations.\nAnother machine learning technique enables robots to continuously adapt to broad\nchanges in sensor measurements. Picture yourself walking from a sun-lit space into a dark\nneon-lit room. Clearly things are darker inside. But the change of light source also affects all\nthe colors: Neon light has a stronger component of green light than sunlight. Yet somehow\nwe seem not to notice the change. If we walk together with people into a neon-lit room, we\ndon’t think that suddenly their faces turned green. Our perception quickly adapts to the new\nlighting conditions, and our brain ignores the differences.\nAdaptive perception techniques enable robots to adjust to such changes. One example\nis shown in Figure 25.13, taken from the autonomous driving domain. Here an unmanned\nground vehicle adapts its classiﬁer of the concept “drivable surface.” How does this work?\nThe robot uses a laser to provide classiﬁcation for a small area right in front of the robot.\nWhen this area is found to be ﬂat in the laser range scan, it is used as a positive training\nexample for the concept “drivable surface.” A mixture-of-Gaussians technique similar to the\nEM algorithm discussed in Chapter 20 is then trained to recognize the speciﬁc color and\ntexture coefﬁcients of the small sample patch. The images in Figure 25.13 are the result of\napplying this classiﬁer to the full image.",
+  "images": [
+    {
+      "path": "images/25-3-robotic-perception_img_1.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_img_2.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_fig_25-7.png",
+      "type": "diagram",
+      "caption": "Figure 25.7"
+    },
+    {
+      "path": "images/25-3-robotic-perception_fig_25-8.png",
+      "type": "diagram",
+      "caption": "Figure 25.8"
+    },
+    {
+      "path": "images/25-3-robotic-perception_fig_25-10.png",
+      "type": "diagram",
+      "caption": "Figure 25.10"
+    },
+    {
+      "path": "images/25-3-robotic-perception_fig_25-11.png",
+      "type": "diagram",
+      "caption": "Figure 25.11"
+    },
+    {
+      "path": "images/25-3-robotic-perception_fig_25-11.png",
+      "type": "diagram",
+      "caption": "Figure 25.11"
+    },
+    {
+      "path": "images/25-3-robotic-perception_img_3.png",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_img_4.jpeg",
+      "type": "raster",
+      "caption": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_img_5.jpeg",
+      "type": "raster",
+      "caption": null
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/25-3-robotic-perception_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_eq_25-1.png",
+      "type": "equation",
+      "label": "25.1"
+    },
+    {
+      "path": "images/25-3-robotic-perception_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_eq_18.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_eq_19.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_eq_20.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_eq_21.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_eq_22.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_eq_23.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_eq_24.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_eq_25.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_eq_26.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_eq_27.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_eq_28.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_eq_29.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_eq_30.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_eq_31.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/25-3-robotic-perception_eq_32.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

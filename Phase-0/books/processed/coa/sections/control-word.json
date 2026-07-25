@@ -1,0 +1,15 @@
+{
+  "section_id": "control-word",
+  "title": "Control Word",
+  "level": 1,
+  "chapter": "Control Word",
+  "parent_id": null,
+  "children": [
+    "examples-of-microoperations"
+  ],
+  "start_page": 252,
+  "end_page": 254,
+  "text": "control word\nThere are 14 binary selection inputs in the unit, and their combined value specifies a control word. The 14-bit control word is defined in Fig. 8-2(b). It consists of four fields. Three fields contain three bits each, and one field has five bits. The three bits of SELA select a source register for the A input of the ALU. The three bits of SELB select a register for the B input of the ALU. The three bits of SELD select a destination register using the decoder and its seven load outputs. The five bits of OPR select one of the operations in the ALU. The 14-bit control word when applied to the selection inputs specify a particular microoperation.\nThe encoding of the register selections is specified in Table 8-1. The 3-bit\nTABLE 8-1 Encoding of Register Selection Fields\n\n[Table]\n•BinaryCodeSELASELBSELD000InputInputNone001Ř1Ř1R1010R2R2R2011R3R3R3100R4R4R4101R5R5R5110R6R6R6111R7R7R7\n\nbinary code listed in the first column of the table specifies the binary code for each of the three fields. The register selected by fields SELA, SELB, and SELD is the one whose decimal number is equivalent to the binary number in the code. When SELA or SELB is 000, the corresponding multiplexer selects the external input data. When SELD = 000, no destination register is selected but the contents of the output bus are available in the external output.\nThe ALU provides arithmetic and logic operations. In addition, the CPU must provide shift operations. The shifter may be placed in the input of the ALU to provide a preshift capability, or at the output of the ALU to provide postshifting capability. In some cases, the shift operations are included with the ALU. An arithmetic logic and shift unit was designed in Sec. 4-7. The function table for this ALU is listed in Table 4-8. The encoding of the ALU operations for the CPU is taken from Sec. 4-7 and is specified in Table 8-2. The OPR field has five bits and each operation is designated with a symbolic name.\nTABLE 8-2 Encoding of ALU Operations\n\n[Table]\nOPRSelectOperationSymbol00000Transfer ATSFA00001Increment AINCA00010Add A + BADD00101Subtract A - BSUB00110Decrement ADECA01000AND A and BAND01010OR A and BOR01100XOR A and BXOR01110Complement ACOMA10000Shift right ASHRA11000Shift left ASHLA\n\nALU",
+  "images": [],
+  "equations": []
+}

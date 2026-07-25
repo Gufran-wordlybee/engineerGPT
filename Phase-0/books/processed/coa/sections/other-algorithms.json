@@ -1,0 +1,13 @@
+{
+  "section_id": "other-algorithms",
+  "title": "Other Algorithms",
+  "level": 2,
+  "chapter": "Pipeline and Vector Processing",
+  "parent_id": "pipeline-and-vector-processing",
+  "children": [],
+  "start_page": 360,
+  "end_page": 361,
+  "text": "restoring method\ncomparison and nonrestoring method\nThe hardware method just described is called the restoring method. The reason for this name is that the partial remainder is restored by adding the divisor to the negative difference. Two other methods are available for dividing numbers, the comparison method and the nonrestoring method. In the comparison method A and B are compared prior to the subtraction operation. Then if A \\geq B, B is subtracted from A. If A < B nothing is done. The partial remainder is shifted left and the numbers are compared again. The comparison can be determined prior to the subtraction by inspecting the end-carry out of the parallel-adder prior to its transfer to register E.\nIn the nonrestoring method, B is not added if the difference is negative but instead, the negative difference is shifted left and then B is added. To see why this is possible consider the case when A < B. From the flowchart in Fig. 9-11 we note that the operations performed are A - B + B; that is, B is sub-\ntracted and then added to restore A. The next time around the loop, this number is shifted left (or multiplied by 2) and B subtracted again. This gives 2(A-B+B)-B=2A-B. This result is obtained in the nonrestoring method by leaving A-B as is. The next time around the loop, the number is shifted left and B added to give 2(A-B)+B=2A-B, which is the same as before. Thus, in the nonrestoring method, B is subtracted if the previous value of Q_n was a 1, but B is added if the previous value of Q_n was a 0 and no restoring of the partial remainder is required. This process saves the step of adding the divisor if A is less than B, but it requires special control logic to remember the previous result. The first time the dividend is shifted, B must be subtracted. Also, if the last bit of the quotient is 0, the partial remainder must be restored to obtain the correct final remainder.",
+  "images": [],
+  "equations": []
+}

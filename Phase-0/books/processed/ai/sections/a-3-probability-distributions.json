@@ -1,0 +1,164 @@
+{
+  "section_id": "a-3-probability-distributions",
+  "title": "A.3 Probability Distributions",
+  "level": 2,
+  "chapter": "A: Mathematical background",
+  "parent_id": "a-mathematical-background",
+  "children": [],
+  "start_page": 1075,
+  "end_page": 1077,
+  "text": "Section A.3.\nProbability Distributions\n1057\nWe can represent this system as the matrix equation A x = b, where\nA =\n⎛\n⎝\n2\n1 −1\n−3 −1\n2\n−2\n1\n2\n⎞\n⎠,\nx =\n⎛\n⎝\nx\ny\nz\n⎞\n⎠,\nb =\n⎛\n⎝\n8\n−11\n−3\n⎞\n⎠.\nTo solve A x = b we multiply both sides by A−1, yielding A−1Ax = A−1b, which simpliﬁes\nto x = A−1b. After inverting A and multiplying by b, we get the answer\nx =\n⎛\n⎝\nx\ny\nz\n⎞\n⎠=\n⎛\n⎝\n2\n3\n−1\n⎞\n⎠.\nA.3\nPROBABILITY DISTRIBUTIONS\nA probability is a measure over a set of events that satisﬁes three axioms:\n1. The measure of each event is between 0 and 1. We write this as 0 ≤P(X = xi) ≤1,\nwhere X is a random variable representing an event and xi are the possible values of\nX. In general, random variables are denoted by uppercase letters and their values by\nlowercase letters.\n2. The measure of the whole set is 1; that is, \u0002n\ni = 1 P(X = xi) = 1.\n3. The probability of a union of disjoint events is the sum of the probabilities of the indi-\nvidual events; that is, P(X = x1 ∨X = x2) = P(X = x1) + P(X = x2), where x1 and\nx2 are disjoint.\nA probabilistic model consists of a sample space of mutually exclusive possible outcomes,\ntogether with a probability measure for each outcome. For example, in a model of the weather\ntomorrow, the outcomes might be sunny, cloudy, rainy, and snowy. A subset of these out-\ncomes constitutes an event. For example, the event of precipitation is the subset consisting of\n{rainy, snowy}.\nWe use P(X) to denote the vector of values ⟨P(X = x1), . . . , P(X = xn)⟩. We also\nuse P(xi) as an abbreviation for P(X = xi) and \u0002\nx P(x) for \u0002n\ni = 1 P(X = xi).\nThe conditional probability P(B|A) is deﬁned as P(B∩A)/P(A). A and B are condi-\ntionally independent if P(B|A) = P(B) (or equivalently, P(A|B) = P(A)). For continuous\nvariables, there are an inﬁnite number of values, and unless there are point spikes, the proba-\nbility of any one value is 0. Therefore, we deﬁne a probability density function, which we\nPROBABILITY\nDENSITY FUNCTION\nalso denote as P(·), but which has a slightly different meaning from the discrete probability\nfunction. The density function P(x) for a random variable X, which might be thought of as\nP(X = x), is intuitively deﬁned as the ratio of the probability that X falls into an interval\naround x, divided by the width of the interval, as the interval width goes to zero:\nP(x) = lim\ndx→0 P(x ≤X ≤x + dx)/dx .\n1058\nAppendix\nA.\nMathematical background\nThe density function must be nonnegative for all x and must have\n\u001a ∞\n−∞\nP(x) dx = 1 .\nWe can also deﬁne a cumulative probability density function FX(x), which is the proba-\nCUMULATIVE\nPROBABILITY\nDENSITY FUNCTION\nbility of a random variable being less than x:\nFX(x) = P(X ≤x) =\n\u001a x\n−∞\nP(u) du .\nNote that the probability density function has units, whereas the discrete probability function\nis unitless. For example, if values of X are measured in seconds, then the density is measured\nin Hz (i.e., 1/sec). If values of X are points in three-dimensional space measured in meters,\nthen density is measured in 1/m3.\nOne of the most important probability distributions is the Gaussian distribution, also\nGAUSSIAN\nDISTRIBUTION\nknown as the normal distribution. A Gaussian distribution with mean μ and standard devi-\nation σ (and therefore variance σ2) is deﬁned as\nP(x) =\n1\nσ\n√\n2πe−(x−μ)2/(2σ2) ,\nwhere x is a continuous variable ranging from −∞to +∞. With mean μ = 0 and variance\nσ2 = 1, we get the special case of the standard normal distribution. For a distribution over\nSTANDARD NORMAL\nDISTRIBUTION\na vector x in n dimensions, there is the multivariate Gaussian distribution:\nMULTIVARIATE\nGAUSSIAN\nP(x) =\n1\n\n(2π)n|Σ|\ne−1\n2\n“\n(x−μ)⊤Σ\n−1(x−μ)\n”\n,\nwhere μ is the mean vector and Σ is the covariance matrix (see below).\nIn one dimension, we can deﬁne the cumulative distribution function F(x) as the\nCUMULATIVE\nDISTRIBUTION\nprobability that a random variable will be less than x. For the normal distribution, this is\nF(x) =\nx\n\u001a\n−∞\nP(z)dz = 1\n2(1 + erf(z −μ\nσ\n√\n2 )) ,\nwhere erf(x) is the so-called error function, which has no closed-form representation.\nThe central limit theorem states that the distribution formed by sampling n indepen-\nCENTRAL LIMIT\nTHEOREM\ndent random variables and taking their mean tends to a normal distribution as n tends to\ninﬁnity. This holds for almost any collection of random variables, even if they are not strictly\nindependent, unless the variance of any ﬁnite subset of variables dominates the others.\nThe expectation of a random variable, E(X), is the mean or average value, weighted\nEXPECTATION\nby the probability of each value. For a discrete variable it is:\nE(X) =\n\n\ni\nxi P(X = xi) .\nFor a continuous variable, replace the summation with an integral over the probability density\nfunction, P(x):\nE(X) =\n∞\n\u001a\n−∞\nxP(x) dx ,\nBibliographical and Historical Notes\n1059\nThe root mean square, RMS, of a set of values (often samples of a random variable) is\nROOT MEAN SQUARE\nthe square root of the mean of the squares of the values,\nRMS(x1, . . . , xn) =\n\b\nx2\n1 + . . . + x2n\nn\n.\nThe covariance of two random variables is the expectation of the product of their differences\nCOVARIANCE\nfrom their means:\ncov(X, Y ) = E((X −μX)(Y −μY )) .\nThe covariance matrix, often denoted Σ, is a matrix of covariances between elements of a\nCOVARIANCE MATRIX\nvector of random variables. Given X = ⟨X1, . . . Xn⟩⊤, the entries of the covariance matrix\nare as follows:\nΣi,j = cov(Xi, Xj) = E((Xi −μi)(Xj −μj)) .\nA few more miscellaneous points: we use log(x) for the natural logarithm, loge(x). We use\nargmaxx f(x) for the value of x for which f(x) is maximal.\nBIBLIOGRAPHICAL AND HISTORICAL NOTES\nThe O() notation so widely used in computer science today was ﬁrst introduced in the context\nof number theory by the German mathematician P. G. H. Bachmann (1894). The concept of\nNP-completeness was invented by Cook (1971), and the modern method for establishing a\nreduction from one problem to another is due to Karp (1972). Cook and Karp have both won\nthe Turing award, the highest honor in computer science, for their work.\nClassic works on the analysis and design of algorithms include those by Knuth (1973)\nand Aho, Hopcroft, and Ullman (1974); more recent contributions are by Tarjan (1983) and\nCormen, Leiserson, and Rivest (1990). These books place an emphasis on designing and\nanalyzing algorithms to solve tractable problems. For the theory of NP-completeness and\nother forms of intractability, see Garey and Johnson (1979) or Papadimitriou (1994). Good\ntexts on probability include Chung (1979), Ross (1988), and Bertsekas and Tsitsiklis (2008).",
+  "images": [],
+  "equations": [
+    {
+      "path": "images/a-3-probability-distributions_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-3-probability-distributions_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-3-probability-distributions_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-3-probability-distributions_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-3-probability-distributions_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-3-probability-distributions_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-3-probability-distributions_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-3-probability-distributions_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-3-probability-distributions_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-3-probability-distributions_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-3-probability-distributions_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-3-probability-distributions_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-3-probability-distributions_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-3-probability-distributions_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-3-probability-distributions_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-3-probability-distributions_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-3-probability-distributions_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-3-probability-distributions_eq_18.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-3-probability-distributions_eq_19.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-3-probability-distributions_eq_20.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-3-probability-distributions_eq_21.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-3-probability-distributions_eq_22.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-3-probability-distributions_eq_23.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-3-probability-distributions_eq_24.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-3-probability-distributions_eq_25.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-3-probability-distributions_eq_26.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-3-probability-distributions_eq_27.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-3-probability-distributions_eq_28.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-3-probability-distributions_eq_29.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/a-3-probability-distributions_eq_30.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

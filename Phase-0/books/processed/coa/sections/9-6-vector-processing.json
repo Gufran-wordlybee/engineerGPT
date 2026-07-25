@@ -1,0 +1,18 @@
+{
+  "section_id": "9-6-vector-processing",
+  "title": "9-6 Vector Processing",
+  "level": 2,
+  "chapter": "Pipeline and Vector Processing",
+  "parent_id": "pipeline-and-vector-processing",
+  "children": [
+    "vector-operations",
+    "matrix-multiplication",
+    "memory-interleaving",
+    "supercomputers"
+  ],
+  "start_page": 327,
+  "end_page": 329,
+  "text": "There is a class of computational problems that are beyond the capabilities of a conventional computer. These problems are characterized by the fact that they require a vast number of computations that will take a conventional computer days or even weeks to complete. In many science and engineering\n\n[Table]\nClock cycles:123456789101. LoadIAЕ2. IncrementIΑЕ3. AddIΑЕ4. SubtractIΑЕ5. Branch to XIΑЕ6. No-operationIΑЕ7. No-operationIΑE8. Instruction in XIΑЕ\n\n(a) Using no-operation instructions\n\n[Table]\nClock cycles:i23456781. LoadIΑЕ2. IncrementIАЕ3. Branch to XIΑЕ4. AddIΑЕ5. SubtractIΑЕ6. Instruction in XIΑЕ\n\n(b) Rearranging the instructions\nFigure 9-10 Example of delayed branch.\napplications, the problems can be formulated in terms of vectors and matrice that lend themselves to vector processing.\nComputers with vector processing capabilities are in demand in special ized applications. The following are representative application areas when vector processing is of the utmost importance.\napplications\nLong-range weather forecasting\nPetroleum explorations\nSeismic data analysis\nMedical diagnosis\nAerodynamics and space flight simulations\nArtificial intelligence and expert systems Mapping the human genome Image processing\nWithout sophisticated computers, many of the required computations cannot be completed within a reasonable amount of time. To achieve the required level of high performance it is necessary to utilize the fastest and most reliable hardware and apply innovative procedures from vector and parallel processing techniques.",
+  "images": [],
+  "equations": []
+}

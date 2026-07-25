@@ -1,0 +1,13 @@
+{
+  "section_id": "in-this-chapter-3",
+  "title": "IN THIS CHAPTER",
+  "level": 4,
+  "chapter": "Register Transfer and Microoperations",
+  "parent_id": "register-transfer-and-microoperations",
+  "children": [],
+  "start_page": 104,
+  "end_page": 104,
+  "text": "4-1 Register Transfer Language\n4-2 Register Transfer\n4-3 Bus and Memory Transfers\n4-4 Arithmetic Microoperations\n4-5 Logic Microoperations\n4-6 Shift Microoperations\n4-7 Arithmetic Logic Shift Unit",
+  "images": [],
+  "equations": []
+}

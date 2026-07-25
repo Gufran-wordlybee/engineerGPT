@@ -1,0 +1,22 @@
+{
+  "section_id": "binary-incrementer",
+  "title": "Binary Incrementer",
+  "level": 2,
+  "chapter": "Binary Adder-Subtractor",
+  "parent_id": "binary-adder-subtractor",
+  "children": [
+    "arithmetic-circuit",
+    "4-5-logic-microoperations"
+  ],
+  "start_page": 115,
+  "end_page": 116,
+  "text": "The increment microoperation adds one to a number in a register. For example, if a 4-bit register has a binary value 0110, it will go to 0111 after it is incremented. This microoperation is easily implemented with a binary counter (see Fig. 2-10). Every time the count enable is active, the clock pulse transition increments the content of the register by one. There may be occasions when the increment microoperation must be done with a combinational circuit independent of a particular register. This can be accomplished by means of half-adders (see Fig. 1-16) connected in cascade.\nThe diagram of a 4-bit combinational circuit incrementer is shown in Fig. 4-8. One of the inputs to the least significant half-adder (HA) is connected to logic-1 and the other input is connected to the least significant bit of the number to be incremented. The output carry from one half-adder is connected to one of the inputs of the next-higher-order half-adder. The circuit receives the four bits from A_0 through A_3, adds one to it, and generates the incremented output in S_0 through S_3. The output carry C_4 will be 1 only after incrementing binary 1111. This also causes outputs S_0 through S_3 to go to 0.\nThe circuit of Fig. 4-8 can be extended to an n-bit binary incrementer by extending the diagram to include n half-adders. The least significant bit must have one input connected to logic-1. The other inputs receive the number to be incremented or the carry from the previous stage.\nincrementer\nFigure 4-8 4-bit binary incrementer.",
+  "images": [
+    {
+      "path": "images/binary-incrementer_img_1.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

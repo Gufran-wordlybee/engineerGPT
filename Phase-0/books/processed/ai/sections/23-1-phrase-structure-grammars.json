@@ -1,0 +1,104 @@
+{
+  "section_id": "23-1-phrase-structure-grammars",
+  "title": "23.1 Phrase Structure Grammars",
+  "level": 3,
+  "chapter": "VI: Communicating, perceiving, and acting",
+  "parent_id": "23-natural-language-for-communication",
+  "children": [],
+  "start_page": 906,
+  "end_page": 909,
+  "text": "23\nNATURAL LANGUAGE\nFOR COMMUNICATION\nIn which we see how humans communicate with one another in natural language,\nand how computer agents might join in the conversation.\nCommunication is the intentional exchange of information brought about by the production\nCOMMUNICATION\nand perception of signs drawn from a shared system of conventional signs. Most animals use\nSIGN\nsigns to represent important messages: food here, predator nearby, approach, withdraw, let’s\nmate. In a partially observable world, communication can help agents be successful because\nthey can learn information that is observed or inferred by others. Humans are the most chatty\nof all species, and if computer agents are to be helpful, they’ll need to learn to speak the\nlanguage. In this chapter we look at language models for communication. Models aimed at\ndeep understanding of a conversation necessarily need to be more complex than the simple\nmodels aimed at, say, spam classiﬁcation. We start with grammatical models of the phrase\nstructure of sentences, add semantics to the model, and then apply it to machine translation\nand speech recognition.\n23.1\nPHRASE STRUCTURE GRAMMARS\nThe n-gram language models of Chapter 22 were based on sequences of words. The big\nissue for these models is data sparsity—with a vocabulary of, say, 105 words, there are 1015\ntrigram probabilities to estimate, and so a corpus of even a trillion words will not be able to\nsupply reliable estimates for all of them. We can address the problem of sparsity through\ngeneralization. From the fact that “black dog” is more frequent than “dog black” and similar\nobservations, we can form the generalization that adjectives tend to come before nouns in\nEnglish (whereas they tend to follow nouns in French: “chien noir” is more frequent). Of\ncourse there are always exceptions; “galore” is an adjective that follows the noun it modiﬁes.\nDespite the exceptions, the notion of a lexical category (also known as a part of speech) such\nLEXICAL CATEGORY\nas noun or adjective is a useful generalization—useful in its own right, but more so when we\nstring together lexical categories to form syntactic categories such as noun phrase or verb\nSYNTACTIC\nCATEGORIES\nphrase, and combine these syntactic categories into trees representing the phrase structure\nPHRASE STRUCTURE\nof sentences: nested phrases, each marked with a category.\n888\nSection 23.1.\nPhrase Structure Grammars\n889\nGENERATIVE CAPACITY\nGrammatical formalisms can be classiﬁed by their generative capacity: the set of\nlanguages they can represent. Chomsky (1957) describes four classes of grammat-\nical formalisms that differ only in the form of the rewrite rules. The classes can\nbe arranged in a hierarchy, where each class can be used to describe all the lan-\nguages that can be described by a less powerful class, as well as some additional\nlanguages. Here we list the hierarchy, most powerful class ﬁrst:\nRecursively enumerable grammars use unrestricted rules: both sides of the\nrewrite rules can have any number of terminal and nonterminal symbols, as in the\nrule A B C →D E. These grammars are equivalent to Turing machines in their\nexpressive power.\nContext-sensitive grammars are restricted only in that the right-hand side\nmust contain at least as many symbols as the left-hand side. The name “context-\nsensitive” comes from the fact that a rule such as A X B\n→A Y B says that\nan X can be rewritten as a Y in the context of a preceding A and a following B.\nContext-sensitive grammars can represent languages such as anbncn (a sequence\nof n copies of a followed by the same number of bs and then cs).\nIn context-free grammars (or CFGs), the left-hand side consists of a sin-\ngle nonterminal symbol. Thus, each rule licenses rewriting the nonterminal as\nthe right-hand side in any context. CFGs are popular for natural-language and\nprogramming-language grammars, although it is now widely accepted that at least\nsome natural languages have constructions that are not context-free (Pullum, 1991).\nContext-free grammars can represent anbn, but not anbncn.\nRegular grammars are the most restricted class. Every rule has a single non-\nterminal on the left-hand side and a terminal symbol optionally followed by a non-\nterminal on the right-hand side. Regular grammars are equivalent in power to ﬁnite-\nstate machines. They are poorly suited for programming languages, because they\ncannot represent constructs such as balanced opening and closing parentheses (a\nvariation of the anbn language). The closest they can come is representing a∗b∗, a\nsequence of any number of as followed by any number of bs.\nThe grammars higher up in the hierarchy have more expressive power, but\nthe algorithms for dealing with them are less efﬁcient. Up to the 1980s, linguists\nfocused on context-free and context-sensitive languages. Since then, there has been\nrenewed interest in regular grammars, brought about by the need to process and\nlearn from gigabytes or terabytes of online text very quickly, even at the cost of\na less complete analysis. As Fernando Pereira put it, “The older I get, the further\ndown the Chomsky hierarchy I go.” To see what he means, compare Pereira and\nWarren (1980) with Mohri, Pereira, and Riley (2002) (and note that these three\nauthors all now work on large text corpora at Google).\n890\n23.\nNatural Language for Communication\nThere have been many competing language models based on the idea of phrase struc-\nture; we will describe a popular model called the probabilistic context-free grammar, or\nPROBABILISTIC\nCONTEXT-FREE\nGRAMMAR\nPCFG.1 A grammar is a collection of rules that deﬁnes a language as a set of allowable\nGRAMMAR\nLANGUAGE\nstrings of words. “Context-free” is described in the sidebar on page 889, and “probabilistic”\nmeans that the grammar assigns a probability to every string. Here is a PCFG rule:\nVP\n→\nVerb [0.70]\n|\nVP NP [0.30] .\nHere VP (verb phrase) and NP (noun phrase) are non-terminal symbols. The grammar\nNON-TERMINAL\nSYMBOLS\nalso refers to actual words, which are called terminal symbols. This rule is saying that with\nTERMINAL SYMBOL\nprobability 0.70 a verb phrase consists solely of a verb, and with probability 0.30 it is a VP\nfollowed by an NP. Appendix B describes non-probabilistic context-free grammars.\nWe now deﬁne a grammar for a tiny fragment of English that is suitable for communi-\ncation between agents exploring the wumpus world. We call this language E0. Later sections\nimprove on E0 to make it slightly closer to real English. We are unlikely ever to devise a\ncomplete grammar for English, if only because no two persons would agree entirely on what\nconstitutes valid English.\n23.1.1\nThe lexicon of E0\nFirst we deﬁne the lexicon, or list of allowable words. The words are grouped into the lexical\nLEXICON\ncategories familiar to dictionary users: nouns, pronouns, and names to denote things; verbs\nto denote events; adjectives to modify nouns; adverbs to modify verbs; and function words:\narticles (such as the), prepositions (in), and conjunctions (and). Figure 23.1 shows a small\nlexicon for the language E0.\nEach of the categories ends in . . . to indicate that there are other words in the category.\nFor nouns, names, verbs, adjectives, and adverbs, it is infeasible even in principle to list all\nthe words. Not only are there tens of thousands of members in each class, but new ones–\nlike iPod or biodiesel—are being added constantly. These ﬁve categories are called open\nclasses. For the categories of pronoun, relative pronoun, article, preposition, and conjunction\nOPEN CLASS\nwe could have listed all the words with a little more work. These are called closed classes;\nCLOSED CLASS\nthey have a small number of words (a dozen or so). Closed classes change over the course\nof centuries, not months. For example, “thee” and “thou” were commonly used pronouns in\nthe 17th century, were on the decline in the 19th, and are seen today only in poetry and some\nregional dialects.\n23.1.2\nThe Grammar of E0\nThe next step is to combine the words into phrases. Figure 23.2 shows a grammar for E0,\nwith rules for each of the six syntactic categories and an example for each rewrite rule.2\nFigure 23.3 shows a parse tree for the sentence “Every wumpus smells.” The parse tree\nPARSE TREE\n1 PCFGs are also known as stochastic context-free grammars, or SCFGs.\n2 A relative clause follows and modiﬁes a noun phrase. It consists of a relative pronoun (such as “who” or\n“that”) followed by a verb phrase. An example of a relative clause is that stinks in “The wumpus that stinks is in\n2 2.” Another kind of relative clause has no relative pronoun, e.g., I know in “the man I know.”\nSection 23.1.\nPhrase Structure Grammars\n891\nNoun\n→\nstench [0.05] | breeze [0.10] | wumpus [0.15] | pits [0.05] | . . .\nVerb\n→\nis [0.10] | feel [0.10] | smells [0.10] | stinks [0.05] | . . .\nAdjective\n→\nright [0.10] | dead [0.05] | smelly [0.02] | breezy [0.02] . . .\nAdverb\n→\nhere [0.05] | ahead [0.05] | nearby [0.02] | . . .\nPronoun\n→\nme [0.10] | you [0.03] | I [0.10] | it [0.10] | . . .\nRelPro\n→\nthat [0.40] | which [0.15] | who [0.20] | whom [0.02] ∨. . .\nName\n→\nJohn [0.01] | Mary [0.01] | Boston [0.01] | . . .\nArticle\n→\nthe [0.40] | a [0.30] | an [0.10] | every [0.05] | . . .\nPrep\n→\nto [0.20] | in [0.10] | on [0.05] | near [0.10] | . . .\nConj\n→\nand [0.50] | or [0.10] | but [0.20] | yet [0.02] ∨. . .\nDigit\n→\n0 [0.20] | 1 [0.20] | 2 [0.20] | 3 [0.20] | 4 [0.20] | . . .\nFigure 23.1\nThe lexicon for E0. RelPro is short for relative pronoun, Prep for preposition,\nand Conj for conjunction. The sum of the probabilities for each category is 1.\nE0 :\nS\n→\nNP VP\n[0.90] I + feel a breeze\n|\nS Conj S\n[0.10] I feel a breeze + and + It stinks\nNP\n→\nPronoun\n[0.30] I\n|\nName\n[0.10] John\n|\nNoun\n[0.10] pits\n|\nArticle Noun\n[0.25] the + wumpus\n|\nArticle Adjs Noun [0.05] the + smelly dead + wumpus\n|\nDigit Digit\n[0.05] 3 4\n|\nNP PP\n[0.10] the wumpus + in 1 3\n|\nNP RelClause\n[0.05] the wumpus + that is smelly\nVP\n→\nVerb\n[0.40] stinks\n|\nVP NP\n[0.35] feel + a breeze\n|\nVP Adjective\n[0.05] smells + dead\n|\nVP PP\n[0.10] is + in 1 3\n|\nVP Adverb\n[0.10] go + ahead\nAdjs\n→\nAdjective\n[0.80] smelly\n|\nAdjective Adjs\n[0.20] smelly + dead\nPP\n→\nPrep NP\n[1.00] to + the east\nRelClause\n→\nRelPro VP\n[1.00] that + is smelly\nFigure 23.2\nThe grammar for E0, with example phrases for each rule. The syntactic cat-\negories are sentence (S), noun phrase (NP), verb phrase (VP), list of adjectives (Adjs),\nprepositional phrase (PP), and relative clause (RelClause).",
+  "images": [],
+  "equations": [
+    {
+      "path": "images/23-1-phrase-structure-grammars_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/23-1-phrase-structure-grammars_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/23-1-phrase-structure-grammars_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/23-1-phrase-structure-grammars_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/23-1-phrase-structure-grammars_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/23-1-phrase-structure-grammars_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/23-1-phrase-structure-grammars_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/23-1-phrase-structure-grammars_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/23-1-phrase-structure-grammars_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/23-1-phrase-structure-grammars_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/23-1-phrase-structure-grammars_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/23-1-phrase-structure-grammars_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/23-1-phrase-structure-grammars_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/23-1-phrase-structure-grammars_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/23-1-phrase-structure-grammars_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/23-1-phrase-structure-grammars_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/23-1-phrase-structure-grammars_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/23-1-phrase-structure-grammars_eq_18.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

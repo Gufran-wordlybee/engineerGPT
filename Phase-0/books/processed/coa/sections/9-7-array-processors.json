@@ -1,0 +1,13 @@
+{
+  "section_id": "9-7-array-processors",
+  "title": "9-7 Array Processors",
+  "level": 2,
+  "chapter": "Pipeline and Vector Processing",
+  "parent_id": "pipeline-and-vector-processing",
+  "children": [],
+  "start_page": 334,
+  "end_page": 334,
+  "text": "An array processor is a processor that performs computations on large arrays of data. The term is used to refer to two different types of processors. An attached array processor is an auxiliary processor attached to a general-purpose computer. It is intended to improve the performance of the host computer in specific numerical computation tasks. An SIMD array processor is a processor that has a single-instruction multiple-data organization. It manipulates vector instructions by means of multiple functional units responding to a common instruction. Although both types of array processors manipulate vectors, their internal organization is different.",
+  "images": [],
+  "equations": []
+}

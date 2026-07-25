@@ -1,0 +1,104 @@
+{
+  "section_id": "21-4-generalization-in-reinforcement-learning",
+  "title": "21.4 Generalization in Reinforcement Learning",
+  "level": 3,
+  "chapter": "V: Learning",
+  "parent_id": "21-reinforcement-learning",
+  "children": [],
+  "start_page": 863,
+  "end_page": 865,
+  "text": "Section 21.4.\nGeneralization in Reinforcement Learning\n845\nBoth Q-learning and SARSA learn the optimal policy for the 4 × 3 world, but do so\nat a much slower rate than the ADP agent. This is because the local updates do not enforce\nconsistency among all the Q-values via the model. The comparison raises a general question:\nis it better to learn a model and a utility function or to learn an action-utility function with\nno model? In other words, what is the best way to represent the agent function? This is\nan issue at the foundations of artiﬁcial intelligence. As we stated in Chapter 1, one of the\nkey historical characteristics of much of AI research is its (often unstated) adherence to the\nknowledge-based approach. This amounts to an assumption that the best way to represent\nthe agent function is to build a representation of some aspects of the environment in which\nthe agent is situated.\nSome researchers, both inside and outside AI, have claimed that the availability of\nmodel-free methods such as Q-learning means that the knowledge-based approach is unnec-\nessary. There is, however, little to go on but intuition. Our intuition, for what it’s worth, is that\nas the environment becomes more complex, the advantages of a knowledge-based approach\nbecome more apparent. This is borne out even in games such as chess, checkers (draughts),\nand backgammon (see next section), where efforts to learn an evaluation function by means\nof a model have met with more success than Q-learning methods.\n21.4\nGENERALIZATION IN REINFORCEMENT LEARNING\nSo far, we have assumed that the utility functions and Q-functions learned by the agents are\nrepresented in tabular form with one output value for each input tuple. Such an approach\nworks reasonably well for small state spaces, but the time to convergence and (for ADP) the\ntime per iteration increase rapidly as the space gets larger. With carefully controlled, approx-\nimate ADP methods, it might be possible to handle 10,000 states or more. This sufﬁces for\ntwo-dimensional maze-like environments, but more realistic worlds are out of the question.\nBackgammon and chess are tiny subsets of the real world, yet their state spaces contain on\nthe order of 1020 and 1040 states, respectively. It would be absurd to suppose that one must\nvisit all these states many times in order to learn how to play the game!\nOne way to handle such problems is to use function approximation, which simply\nFUNCTION\nAPPROXIMATION\nmeans using any sort of representation for the Q-function other than a lookup table. The\nrepresentation is viewed as approximate because it might not be the case that the true utility\nfunction or Q-function can be represented in the chosen form. For example, in Chapter 5 we\ndescribed an evaluation function for chess that is represented as a weighted linear function\nof a set of features (or basis functions) f1, . . . , fn:\nBASIS FUNCTION\nˆUθ(s) = θ1 f1(s) + θ2 f2(s) + · · · + θn fn(s) .\nA reinforcement learning algorithm can learn values for the parameters θ = θ1, . . . , θn such\nthat the evaluation function ˆUθ approximates the true utility function. Instead of, say, 1040\nvalues in a table, this function approximator is characterized by, say, n = 20 parameters—\nan enormous compression. Although no one knows the true utility function for chess, no\none believes that it can be represented exactly in 20 numbers. If the approximation is good\n846\n21.\nReinforcement Learning\nenough, however, the agent might still play excellent chess.3 Function approximation makes\nit practical to represent utility functions for very large state spaces, but that is not its principal\nbeneﬁt. The compression achieved by a function approximator allows the learning agent to\ngeneralize from states it has visited to states it has not visited. That is, the most important\naspect of function approximation is not that it requires less space, but that it allows for induc-\ntive generalization over input states. To give you some idea of the power of this effect: by\nexamining only one in every 1012 of the possible backgammon states, it is possible to learn a\nutility function that allows a program to play as well as any human (Tesauro, 1992).\nOn the ﬂip side, of course, there is the problem that there could fail to be any function\nin the chosen hypothesis space that approximates the true utility function sufﬁciently well.\nAs in all inductive learning, there is a tradeoff between the size of the hypothesis space and\nthe time it takes to learn the function. A larger hypothesis space increases the likelihood that\na good approximation can be found, but also means that convergence is likely to be delayed.\nLet us begin with the simplest case, which is direct utility estimation. (See Section 21.2.)\nWith function approximation, this is an instance of supervised learning. For example, sup-\npose we represent the utilities for the 4 × 3 world using a simple linear function. The features\nof the squares are just their x and y coordinates, so we have\nˆUθ(x, y) = θ0 + θ1x + θ2y .\n(21.10)\nThus, if (θ0, θ1, θ2) = (0.5, 0.2, 0.1), then ˆUθ(1, 1) = 0.8. Given a collection of trials, we ob-\ntain a set of sample values of ˆUθ(x, y), and we can ﬁnd the best ﬁt, in the sense of minimizing\nthe squared error, using standard linear regression. (See Chapter 18.)\nFor reinforcement learning, it makes more sense to use an online learning algorithm\nthat updates the parameters after each trial. Suppose we run a trial and the total reward\nobtained starting at (1,1) is 0.4. This suggests that ˆUθ(1, 1), currently 0.8, is too large and\nmust be reduced. How should the parameters be adjusted to achieve this? As with neural-\nnetwork learning, we write an error function and compute its gradient with respect to the\nparameters. If uj(s) is the observed total reward from state s onward in the jth trial, then\nthe error is deﬁned as (half) the squared difference of the predicted total and the actual total:\nEj(s) = ( ˆUθ(s) −uj(s))2/2. The rate of change of the error with respect to each parameter\nθi is ∂Ej/∂θi, so to move the parameter in the direction of decreasing the error, we want\nθi ←θi −α ∂Ej(s)\n∂θi\n= θi + α (uj(s) −ˆUθ(s))∂ˆUθ(s)\n∂θi\n.\n(21.11)\nThis is called the Widrow–Hoff rule, or the delta rule, for online least-squares. For the\nWIDROW–HOFF RULE\nDELTA RULE\nlinear function approximator ˆUθ(s) in Equation (21.10), we get three simple update rules:\nθ0 ←θ0 + α (uj(s) −ˆUθ(s)) ,\nθ1 ←θ1 + α (uj(s) −ˆUθ(s))x ,\nθ2 ←θ2 + α (uj(s) −ˆUθ(s))y .\n3 We do know that the exact utility function can be represented in a page or two of Lisp, Java, or C++. That is,\nit can be represented by a program that solves the game exactly every time it is called. We are interested only in\nfunction approximators that use a reasonable amount of computation. It might in fact be better to learn a very\nsimple function approximator and combine it with a certain amount of look-ahead search. The tradeoffs involved\nare currently not well understood.\nSection 21.4.\nGeneralization in Reinforcement Learning\n847\nWe can apply these rules to the example where ˆUθ(1, 1) is 0.8 and uj(1, 1) is 0.4. θ0, θ1,\nand θ2 are all decreased by 0.4α, which reduces the error for (1,1). Notice that changing the\nparameters θ in response to an observed transition between two states also changes the values\nof ˆUθ for every other state! This is what we mean by saying that function approximation\nallows a reinforcement learner to generalize from its experiences.\nWe expect that the agent will learn faster if it uses a function approximator, provided\nthat the hypothesis space is not too large, but includes some functions that are a reasonably\ngood ﬁt to the true utility function. Exercise 21.5 asks you to evaluate the performance of\ndirect utility estimation, both with and without function approximation. The improvement in\nthe 4 × 3 world is noticeable but not dramatic, because this is a very small state space to begin\nwith. The improvement is much greater in a 10 × 10 world with a +1 reward at (10,10). This\nworld is well suited for a linear utility function because the true utility function is smooth\nand nearly linear. (See Exercise 21.8.) If we put the +1 reward at (5,5), the true utility is\nmore like a pyramid and the function approximator in Equation (21.10) will fail miserably.\nAll is not lost, however! Remember that what matters for linear function approximation\nis that the function be linear in the parameters—the features themselves can be arbitrary\nnonlinear functions of the state variables. Hence, we can include a term such as θ3f3(x, y) =\nθ3\n\n(x −xg)2 + (y −yg)2 that measures the distance to the goal.\nWe can apply these ideas equally well to temporal-difference learners. All we need do is\nadjust the parameters to try to reduce the temporal difference between successive states. The\nnew versions of the TD and Q-learning equations (21.3 on page 836 and 21.8 on page 844)\nare given by\nθi ←θi + α [R(s) + γ ˆUθ(s′) −ˆUθ(s)]∂ˆUθ(s)\n∂θi\n(21.12)\nfor utilities and\nθi ←θi + α [R(s) + γ max\na′\nˆQθ(s′, a′) −ˆQθ(s, a)]∂ˆQθ(s, a)\n∂θi\n(21.13)\nfor Q-values. For passive TD learning, the update rule can be shown to converge to the closest\npossible4 approximation to the true function when the function approximator is linear in the\nparameters. With active learning and nonlinear functions such as neural networks, all bets\nare off: There are some very simple cases in which the parameters can go off to inﬁnity\neven though there are good solutions in the hypothesis space. There are more sophisticated\nalgorithms that can avoid these problems, but at present reinforcement learning with general\nfunction approximators remains a delicate art.\nFunction approximation can also be very helpful for learning a model of the environ-\nment. Remember that learning a model for an observable environment is a supervised learn-\ning problem, because the next percept gives the outcome state. Any of the supervised learning\nmethods in Chapter 18 can be used, with suitable adjustments for the fact that we need to pre-\ndict a complete state description rather than just a Boolean classiﬁcation or a single real value.\nFor a partially observable environment, the learning problem is much more difﬁcult. If we\nknow what the hidden variables are and how they are causally related to each other and to the\n4 The deﬁnition of distance between utility functions is rather technical; see Tsitsiklis and Van Roy (1997).",
+  "images": [],
+  "equations": [
+    {
+      "path": "images/21-4-generalization-in-reinforcement-learning_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-4-generalization-in-reinforcement-learning_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-4-generalization-in-reinforcement-learning_eq_21-10.png",
+      "type": "equation",
+      "label": "21.10"
+    },
+    {
+      "path": "images/21-4-generalization-in-reinforcement-learning_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-4-generalization-in-reinforcement-learning_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-4-generalization-in-reinforcement-learning_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-4-generalization-in-reinforcement-learning_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-4-generalization-in-reinforcement-learning_eq_21-11.png",
+      "type": "equation",
+      "label": "21.11"
+    },
+    {
+      "path": "images/21-4-generalization-in-reinforcement-learning_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-4-generalization-in-reinforcement-learning_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-4-generalization-in-reinforcement-learning_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-4-generalization-in-reinforcement-learning_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-4-generalization-in-reinforcement-learning_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-4-generalization-in-reinforcement-learning_eq_21-12.png",
+      "type": "equation",
+      "label": "21.12"
+    },
+    {
+      "path": "images/21-4-generalization-in-reinforcement-learning_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-4-generalization-in-reinforcement-learning_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-4-generalization-in-reinforcement-learning_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/21-4-generalization-in-reinforcement-learning_eq_21-13.png",
+      "type": "equation",
+      "label": "21.13"
+    }
+  ]
+}

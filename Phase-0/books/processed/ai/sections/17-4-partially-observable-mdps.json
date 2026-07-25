@@ -1,0 +1,225 @@
+{
+  "section_id": "17-4-partially-observable-mdps",
+  "title": "17.4 Partially Observable MDPs",
+  "level": 3,
+  "chapter": "IV: Uncertain knowledge and reasoning",
+  "parent_id": "17-making-complex-decisions",
+  "children": [],
+  "start_page": 676,
+  "end_page": 683,
+  "text": "658\n17.\nMaking Complex Decisions\nThe algorithms we have described so far require updating the utility or policy for all\nstates at once. It turns out that this is not strictly necessary. In fact, on each iteration, we\ncan pick any subset of states and apply either kind of updating (policy improvement or sim-\npliﬁed value iteration) to that subset. This very general algorithm is called asynchronous\npolicy iteration. Given certain conditions on the initial policy and initial utility function,\nASYNCHRONOUS\nPOLICY ITERATION\nasynchronous policy iteration is guaranteed to converge to an optimal policy. The freedom\nto choose any states to work on means that we can design much more efﬁcient heuristic\nalgorithms—for example, algorithms that concentrate on updating the values of states that\nare likely to be reached by a good policy. This makes a lot of sense in real life: if one has no\nintention of throwing oneself off a cliff, one should not spend time worrying about the exact\nvalue of the resulting states.\n17.4\nPARTIALLY OBSERVABLE MDPS\nThe description of Markov decision processes in Section 17.1 assumed that the environment\nwas fully observable. With this assumption, the agent always knows which state it is in.\nThis, combined with the Markov assumption for the transition model, means that the optimal\npolicy depends only on the current state. When the environment is only partially observable,\nthe situation is, one might say, much less clear. The agent does not necessarily know which\nstate it is in, so it cannot execute the action π(s) recommended for that state. Furthermore, the\nutility of a state s and the optimal action in s depend not just on s, but also on how much the\nagent knows when it is in s. For these reasons, partially observable MDPs (or POMDPs—\nPARTIALLY\nOBSERVABLE MDP\npronounced “pom-dee-pees”) are usually viewed as much more difﬁcult than ordinary MDPs.\nWe cannot avoid POMDPs, however, because the real world is one.\n17.4.1\nDeﬁnition of POMDPs\nTo get a handle on POMDPs, we must ﬁrst deﬁne them properly. A POMDP has the same\nelements as an MDP—the transition model P(s′ | s, a), actions A(s), and reward function\nR(s)—but, like the partially observable search problems of Section 4.4, it also has a sensor\nmodel P(e | s). Here, as in Chapter 15, the sensor model speciﬁes the probability of perceiv-\ning evidence e in state s.3 For example, we can convert the 4 × 3 world of Figure 17.1 into\na POMDP by adding a noisy or partial sensor instead of assuming that the agent knows its\nlocation exactly. Such a sensor might measure the number of adjacent walls, which happens\nto be 2 in all the nonterminal squares except for those in the third column, where the value\nis 1; a noisy version might give the wrong value with probability 0.1.\nIn Chapters 4 and 11, we studied nondeterministic and partially observable planning\nproblems and identiﬁed the belief state—the set of actual states the agent might be in—as a\nkey concept for describing and calculating solutions. In POMDPs, the belief state b becomes a\nprobability distribution over all possible states, just as in Chapter 15. For example, the initial\n3 As with the reward function for MDPs, the sensor model can also depend on the action and outcome state, but\nagain this change is not fundamental.\nSection 17.4.\nPartially Observable MDPs\n659\nbelief state for the 4 × 3 POMDP could be the uniform distribution over the nine nonterminal\nstates, i.e., ⟨1\n9, 1\n9, 1\n9, 1\n9, 1\n9, 1\n9, 1\n9, 1\n9, 1\n9, 0, 0⟩. We write b(s) for the probability assigned to the\nactual state s by belief state b. The agent can calculate its current belief state as the conditional\nprobability distribution over the actual states given the sequence of percepts and actions so\nfar. This is essentially the ﬁltering task described in Chapter 15. The basic recursive ﬁltering\nequation (15.5 on page 572) shows how to calculate the new belief state from the previous\nbelief state and the new evidence. For POMDPs, we also have an action to consider, but the\nresult is essentially the same. If b(s) was the previous belief state, and the agent does action\na and then perceives evidence e, then the new belief state is given by\nb′(s′) = α P(e | s′)\n\n\ns\nP(s′ | s, a)b(s) ,\nwhere α is a normalizing constant that makes the belief state sum to 1. By analogy with the\nupdate operator for ﬁltering (page 572), we can write this as\nb′ = FORWARD(b, a, e) .\n(17.11)\nIn the 4 × 3 POMDP, suppose the agent moves Left and its sensor reports 1 adjacent wall; then\nit’s quite likely (although not guaranteed, because both the motion and the sensor are noisy)\nthat the agent is now in (3,1). Exercise 17.13 asks you to calculate the exact probability values\nfor the new belief state.\nThe fundamental insight required to understand POMDPs is this: the optimal action\ndepends only on the agent’s current belief state. That is, the optimal policy can be described\nby a mapping π∗(b) from belief states to actions. It does not depend on the actual state the\nagent is in. This is a good thing, because the agent does not know its actual state; all it knows\nis the belief state. Hence, the decision cycle of a POMDP agent can be broken down into the\nfollowing three steps:\n1. Given the current belief state b, execute the action a = π∗(b).\n2. Receive percept e.\n3. Set the current belief state to FORWARD(b, a, e) and repeat.\nNow we can think of POMDPs as requiring a search in belief-state space, just like the meth-\nods for sensorless and contingency problems in Chapter 4. The main difference is that the\nPOMDP belief-state space is continuous, because a POMDP belief state is a probability dis-\ntribution. For example, a belief state for the 4 × 3 world is a point in an 11-dimensional\ncontinuous space. An action changes the belief state, not just the physical state. Hence, the\naction is evaluated at least in part according to the information the agent acquires as a result.\nPOMDPs therefore include the value of information (Section 16.6) as one component of the\ndecision problem.\nLet’s look more carefully at the outcome of actions. In particular, let’s calculate the\nprobability that an agent in belief state b reaches belief state b′ after executing action a. Now,\nif we knew the action and the subsequent percept, then Equation (17.11) would provide a\ndeterministic update to the belief state: b′ = FORWARD(b, a, e). Of course, the subsequent\npercept is not yet known, so the agent might arrive in one of several possible belief states b′,\ndepending on the percept that is received. The probability of perceiving e, given that a was\n660\n17.\nMaking Complex Decisions\nperformed starting in belief state b, is given by summing over all the actual states s′ that the\nagent might reach:\nP(e|a, b) =\n\n\ns′\nP(e|a, s′, b)P(s′|a, b)\n=\n\n\ns′\nP(e | s′)P(s′|a, b)\n=\n\n\ns′\nP(e | s′)\n\n\ns\nP(s′ | s, a)b(s) .\nLet us write the probability of reaching b′ from b, given action a, as P(b′ | b, a)). Then that\ngives us\nP(b′ | b, a) = P(b′|a, b) =\n\n\ne\nP(b′|e, a, b)P(e|a, b)\n=\n\n\ne\nP(b′|e, a, b)\n\n\ns′\nP(e | s′)\n\n\ns\nP(s′ | s, a)b(s) ,\n(17.12)\nwhere P(b′|e, a, b) is 1 if b′ = FORWARD(b, a, e) and 0 otherwise.\nEquation (17.12) can be viewed as deﬁning a transition model for the belief-state space.\nWe can also deﬁne a reward function for belief states (i.e., the expected reward for the actual\nstates the agent might be in):\nρ(b) =\n\n\ns\nb(s)R(s) .\nTogether, P(b′ | b, a) and ρ(b) deﬁne an observable MDP on the space of belief states. Fur-\nthermore, it can be shown that an optimal policy for this MDP, π∗(b), is also an optimal policy\nfor the original POMDP. In other words, solving a POMDP on a physical state space can be\nreduced to solving an MDP on the corresponding belief-state space. This fact is perhaps less\nsurprising if we remember that the belief state is always observable to the agent, by deﬁnition.\nNotice that, although we have reduced POMDPs to MDPs, the MDP we obtain has a\ncontinuous (and usually high-dimensional) state space. None of the MDP algorithms de-\nscribed in Sections 17.2 and 17.3 applies directly to such MDPs. The next two subsec-\ntions describe a value iteration algorithm designed speciﬁcally for POMDPs and an online\ndecision-making algorithm, similar to those developed for games in Chapter 5.\n17.4.2\nValue iteration for POMDPs\nSection 17.2 described a value iteration algorithm that computed one utility value for each\nstate. With inﬁnitely many belief states, we need to be more creative. Consider an optimal\npolicy π∗and its application in a speciﬁc belief state b: the policy generates an action, then,\nfor each subsequent percept, the belief state is updated and a new action is generated, and so\non. For this speciﬁc b, therefore, the policy is exactly equivalent to a conditional plan, as de-\nﬁned in Chapter 4 for nondeterministic and partially observable problems. Instead of thinking\nabout policies, let us think about conditional plans and how the expected utility of executing\na ﬁxed conditional plan varies with the initial belief state. We make two observations:\nSection 17.4.\nPartially Observable MDPs\n661\n1. Let the utility of executing a ﬁxed conditional plan p starting in physical state s be αp(s).\nThen the expected utility of executing p in belief state b is just \u0002\ns b(s)αp(s), or b · αp\nif we think of them both as vectors. Hence, the expected utility of a ﬁxed conditional\nplan varies linearly with b; that is, it corresponds to a hyperplane in belief space.\n2. At any given belief state b, the optimal policy will choose to execute the conditional\nplan with highest expected utility; and the expected utility of b under the optimal policy\nis just the utility of that conditional plan:\nU(b) = Uπ∗(b) = max\np\nb · αp .\nIf the optimal policy π∗chooses to execute p starting at b, then it is reasonable to expect\nthat it might choose to execute p in belief states that are very close to b; in fact, if we\nbound the depth of the conditional plans, then there are only ﬁnitely many such plans\nand the continuous space of belief states will generally be divided into regions, each\ncorresponding to a particular conditional plan that is optimal in that region.\nFrom these two observations, we see that the utility function U(b) on belief states, being the\nmaximum of a collection of hyperplanes, will be piecewise linear and convex.\nTo illustrate this, we use a simple two-state world. The states are labeled 0 and 1, with\nR(0) = 0 and R(1) = 1. There are two actions: Stay stays put with probability 0.9 and Go\nswitches to the other state with probability 0.9. For now we will assume the discount factor\nγ = 1. The sensor reports the correct state with probability 0.6. Obviously, the agent should\nStay when it thinks it’s in state 1 and Go when it thinks it’s in state 0.\nThe advantage of a two-state world is that the belief space can be viewed as one-\ndimensional, because the two probabilities must sum to 1. In Figure 17.8(a), the x-axis\nrepresents the belief state, deﬁned by b(1), the probability of being in state 1. Now let us con-\nsider the one-step plans [Stay] and [Go], each of which receives the reward for the current\nstate followed by the (discounted) reward for the state reached after the action:\nα[Stay](0) = R(0) + γ(0.9R(0) + 0.1R(1)) = 0.1\nα[Stay](1) = R(1) + γ(0.9R(1) + 0.1R(0)) = 1.9\nα[Go](0) = R(0) + γ(0.9R(1) + 0.1R(0)) = 0.9\nα[Go](1) = R(1) + γ(0.9R(0) + 0.1R(1)) = 1.1\nThe hyperplanes (lines, in this case) for b·α[Stay] and b·α[Go] are shown in Figure 17.8(a) and\ntheir maximum is shown in bold. The bold line therefore represents the utility function for\nthe ﬁnite-horizon problem that allows just one action, and in each “piece” of the piecewise\nlinear utility function the optimal action is the ﬁrst action of the corresponding conditional\nplan. In this case, the optimal one-step policy is to Stay when b(1) > 0.5 and Go otherwise.\nOnce we have utilities αp(s) for all the conditional plans p of depth 1 in each physical\nstate s, we can compute the utilities for conditional plans of depth 2 by considering each\npossible ﬁrst action, each possible subsequent percept, and then each way of choosing a\ndepth-1 plan to execute for each percept:\n[Stay; if Percept = 0 then Stay else Stay]\n[Stay; if Percept = 0 then Stay else Go] . . .\n662\n17.\nMaking Complex Decisions\n 0\n 0.5\n 1\n 1.5\n 2\n 2.5\n 3\n 0\n 0.2\n 0.4\n 0.6\n 0.8\n 1\nUtility\nProbability of state 1\n[Stay]\n[Go]\n 0\n 0.5\n 1\n 1.5\n 2\n 2.5\n 3\n 0\n 0.2\n 0.4\n 0.6\n 0.8\n 1\nUtility\nProbability of state 1\n(a)\n(b)\n 0\n 0.5\n 1\n 1.5\n 2\n 2.5\n 3\n 0\n 0.2\n 0.4\n 0.6\n 0.8\n 1\nUtility\nProbability of state 1\n 4.5\n 5\n 5.5\n 6\n 6.5\n 7\n 7.5\n 0\n 0.2\n 0.4\n 0.6\n 0.8\n 1\nUtility\nProbability of state 1\n(c)\n(d)\nFigure 17.8\n(a) Utility of two one-step plans as a function of the initial belief state b(1)\nfor the two-state world, with the corresponding utility function shown in bold. (b) Utilities\nfor 8 distinct two-step plans. (c) Utilities for four undominated two-step plans. (d) Utility\nfunction for optimal eight-step plans.\nThere are eight distinct depth-2 plans in all, and their utilities are shown in Figure 17.8(b).\nNotice that four of the plans, shown as dashed lines, are suboptimal across the entire belief\nspace—we say these plans are dominated, and they need not be considered further. There\nDOMINATED PLAN\nare four undominated plans, each of which is optimal in a speciﬁc region, as shown in Fig-\nure 17.8(c). The regions partition the belief-state space.\nWe repeat the process for depth 3, and so on. In general, let p be a depth-d conditional\nplan whose initial action is a and whose depth-d −1 subplan for percept e is p.e; then\nαp(s) = R(s) + γ\n\u001f\n\ns′\nP(s′ | s, a)\n\n\ne\nP(e | s′)αp.e(s′)\n \n.\n(17.13)\nThis recursion naturally gives us a value iteration algorithm, which is sketched in Figure 17.9.\nThe structure of the algorithm and its error analysis are similar to those of the basic value iter-\nation algorithm in Figure 17.4 on page 653; the main difference is that instead of computing\none utility number for each state, POMDP-VALUE-ITERATION maintains a collection of\nSection 17.4.\nPartially Observable MDPs\n663\nfunction POMDP-VALUE-ITERATION(pomdp,ϵ) returns a utility function\ninputs: pomdp, a POMDP with states S, actions A(s), transition model P(s′ | s, a),\nsensor model P(e | s), rewards R(s), discount γ\nϵ, the maximum error allowed in the utility of any state\nlocal variables: U , U ′, sets of plans p with associated utility vectors αp\nU ′ ←a set containing just the empty plan [ ], with α[ ](s) = R(s)\nrepeat\nU ←U ′\nU ′ ←the set of all plans consisting of an action and, for each possible next percept,\na plan in U with utility vectors computed according to Equation (17.13)\nU ′ ←REMOVE-DOMINATED-PLANS(U ′)\nuntil MAX-DIFFERENCE(U , U ′) < ϵ(1 −γ)/γ\nreturn U\nFigure 17.9\nA high-level sketch of the value iteration algorithm for POMDPs.\nThe\nREMOVE-DOMINATED-PLANS step and MAX-DIFFERENCE test are typically implemented\nas linear programs.\nundominated plans with their utility hyperplanes. The algorithm’s complexity depends pri-\nmarily on how many plans get generated. Given |A| actions and |E| possible observations, it\nis easy to show that there are |A|O(|E|d−1) distinct depth-d plans. Even for the lowly two-state\nworld with d = 8, the exact number is 2255. The elimination of dominated plans is essential\nfor reducing this doubly exponential growth: the number of undominated plans with d = 8 is\njust 144. The utility function for these 144 plans is shown in Figure 17.8(d).\nNotice that even though state 0 has lower utility than state 1, the intermediate belief\nstates have even lower utility because the agent lacks the information needed to choose a\ngood action. This is why information has value in the sense deﬁned in Section 16.6 and\noptimal policies in POMDPs often include information-gathering actions.\nGiven such a utility function, an executable policy can be extracted by looking at which\nhyperplane is optimal at any given belief state b and executing the ﬁrst action of the corre-\nsponding plan. In Figure 17.8(d), the corresponding optimal policy is still the same as for\ndepth-1 plans: Stay when b(1) > 0.5 and Go otherwise.\nIn practice, the value iteration algorithm in Figure 17.9 is hopelessly inefﬁcient for\nlarger problems—even the 4 × 3 POMDP is too hard. The main reason is that, given n con-\nditional plans at level d, the algorithm constructs |A| · n|E| conditional plans at level d + 1\nbefore eliminating the dominated ones. Since the 1970s, when this algorithm was developed,\nthere have been several advances including more efﬁcient forms of value iteration and various\nkinds of policy iteration algorithms. Some of these are discussed in the notes at the end of the\nchapter. For general POMDPs, however, ﬁnding optimal policies is very difﬁcult (PSPACE-\nhard, in fact—i.e., very hard indeed). Problems with a few dozen states are often infeasible.\nThe next section describes a different, approximate method for solving POMDPs, one based\non look-ahead search.\n664\n17.\nMaking Complex Decisions\nXt–1\nAt–1\nRt–1\nAt\nRt\nAt+2\nRt+2\nAt+1\nRt+1\nAt–2\nEt–1\nXt+1\nEt+1\nXt+2\nEt+2\nXt+3\nEt+3\nUt+3\nXt\nEt\nFigure 17.10\nThe generic structure of a dynamic decision network. Variables with known\nvalues are shaded. The current time is t and the agent must decide what to do—that is, choose\na value for At. The network has been unrolled into the future for three steps and represents\nfuture rewards, as well as the utility of the state at the look-ahead horizon.\n17.4.3\nOnline agents for POMDPs\nIn this section, we outline a simple approach to agent design for partially observable, stochas-\ntic environments. The basic elements of the design are already familiar:\n• The transition and sensor models are represented by a dynamic Bayesian network\n(DBN), as described in Chapter 15.\n• The dynamic Bayesian network is extended with decision and utility nodes, as used in\ndecision networks in Chapter 16. The resulting model is called a dynamic decision\nnetwork, or DDN.\nDYNAMIC DECISION\nNETWORK\n• A ﬁltering algorithm is used to incorporate each new percept and action and to update\nthe belief state representation.\n• Decisions are made by projecting forward possible action sequences and choosing the\nbest one.\nDBNs are factored representations in the terminology of Chapter 2; they typically have\nan exponential complexity advantage over atomic representations and can model quite sub-\nstantial real-world problems. The agent design is therefore a practical implementation of the\nutility-based agent sketched in Chapter 2.\nIn the DBN, the single state St becomes a set of state variables Xt, and there may be\nmultiple evidence variables Et. We will use At to refer to the action at time t, so the transition\nmodel becomes P(Xt+1|Xt, At) and the sensor model becomes P(Et|Xt). We will use Rt to\nrefer to the reward received at time t and Ut to refer to the utility of the state at time t. (Both\nof these are random variables.) With this notation, a dynamic decision network looks like the\none shown in Figure 17.10.\nDynamic decision networks can be used as inputs for any POMDP algorithm, including\nthose for value and policy iteration methods. In this section, we focus on look-ahead methods\nthat project action sequences forward from the current belief state in much the same way as do\nthe game-playing algorithms of Chapter 5. The network in Figure 17.10 has been projected\nthree steps into the future; the current and future decisions A and the future observations\nSection 17.4.\nPartially Observable MDPs\n665\n. . .\n...\n...\n...\n...\n...\n...\n. . .\n...\n...\n...\n...\n...\n...\n. . .\n...\n. . .\n...\n...\n. . .\n...\n. . .\nAt in P(Xt | E1:t)\nAt+1 in P(Xt+1 | E1:t+1)\nAt+2 in P(Xt+2 | E1:t+2)\nU(Xt+3)\nEt+1\nEt+2\nEt+3\n10\n4\n6\n3\nFigure 17.11\nPart of the look-ahead solution of the DDN in Figure 17.10. Each decision\nwill be taken in the belief state indicated.\nE and rewards R are all unknown. Notice that the network includes nodes for the rewards\nfor Xt+1 and Xt+2, but the utility for Xt+3. This is because the agent must maximize the\n(discounted) sum of all future rewards, and U(Xt+3) represents the reward for Xt+3 and all\nsubsequent rewards. As in Chapter 5, we assume that U is available only in some approximate\nform: if exact utility values were available, look-ahead beyond depth 1 would be unnecessary.\nFigure 17.11 shows part of the search tree corresponding to the three-step look-ahead\nDDN in Figure 17.10. Each of the triangular nodes is a belief state in which the agent makes\na decision At+i for i = 0, 1, 2, . . .. The round (chance) nodes correspond to choices by the\nenvironment, namely, what evidence Et+i arrives. Notice that there are no chance nodes\ncorresponding to the action outcomes; this is because the belief-state update for an action is\ndeterministic regardless of the actual outcome.\nThe belief state at each triangular node can be computed by applying a ﬁltering al-\ngorithm to the sequence of percepts and actions leading to it. In this way, the algorithm\ntakes into account the fact that, for decision At+i, the agent will have available percepts\nEt+1, . . . , Et+i, even though at time t it does not know what those percepts will be. In this\nway, a decision-theoretic agent automatically takes into account the value of information and\nwill execute information-gathering actions where appropriate.\nA decision can be extracted from the search tree by backing up the utility values from\nthe leaves, taking an average at the chance nodes and taking the maximum at the decision\nnodes. This is similar to the EXPECTIMINIMAX algorithm for game trees with chance nodes,\nexcept that (1) there can also be rewards at non-leaf states and (2) the decision nodes corre-\nspond to belief states rather than actual states. The time complexity of an exhaustive search\nto depth d is O(|A|d · |E|d), where |A| is the number of available actions and |E| is the num-\nber of possible percepts. (Notice that this is far less than the number of depth-d conditional",
+  "images": [
+    {
+      "path": "images/17-4-partially-observable-mdps_diagram_1.png",
+      "type": "diagram",
+      "caption": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_diagram_2.png",
+      "type": "diagram",
+      "caption": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_fig_17-10.png",
+      "type": "diagram",
+      "caption": "Figure 17.10"
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_fig_17-11.png",
+      "type": "diagram",
+      "caption": "Figure 17.11"
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_17-11.png",
+      "type": "equation",
+      "label": "17.11"
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_15.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_16.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_17.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_18.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_19.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_20.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_21.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_22.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_17-12.png",
+      "type": "equation",
+      "label": "17.12"
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_24.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_25.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_26.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_27.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_28.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_29.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_30.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_31.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_32.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_33.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_34.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_35.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_17-13.png",
+      "type": "equation",
+      "label": "17.13"
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_37.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/17-4-partially-observable-mdps_eq_17-13.png",
+      "type": "equation",
+      "label": "17.13"
+    }
+  ]
+}

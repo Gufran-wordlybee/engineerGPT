@@ -1,0 +1,20 @@
+{
+  "section_id": "5-6-memory-reference-instructions",
+  "title": "5-6 Memory-Reference Instructions",
+  "level": 1,
+  "chapter": "5-6 Memory-Reference Instructions",
+  "parent_id": null,
+  "children": [
+    "and-to-ac",
+    "add-to-ac",
+    "lda-load-to-ac",
+    "sta-store-ac",
+    "bun-branch-unconditionally",
+    "isz-increment-and-skip-if-zero"
+  ],
+  "start_page": 155,
+  "end_page": 155,
+  "text": "In order to specify the microoperations needed for the execution of each instruction, it is necessary that the function that they are intended to perform be defined precisely. Looking back to Table 5-2, where the instructions are listed, we find that some instructions have an ambiguous description. This is because the explanation of an instruction in words is usually lengthy, and not enough space is available in the table for such a lengthy explanation. We will now show that the function of the memory-reference instructions can be defined precisely by means of register transfer notation.\neffective address\nTable 5-4 lists the seven memory-reference instructions. The decoded output D_i for i=0,1,2,3,4,5, and 6 from the operation decoder that belongs to each instruction is included in the table. The effective address of the instruction is in the address register AR and was placed there during timing signal T_2 when I=0, or during timing signal T_3 when I=1. The execution of the memory-reference instructions starts with timing signal T_4. The symbolic description of each instruction is specified in the table in terms of register transfer notation. The actual execution of the instruction in the bus system will require a sequence of microoperations. This is because data stored in memory cannot be processed directly. The data must be read from memory to a register where they can be operated on with logic circuits. We now explain the operation of each instruction and list the control functions and microoperations needed for their execution. A flowchart that summarizes all the microoperations is presented at the end of this section\nOperation Symbol decoder Symbolic description AND D_{\\alpha} AC \\leftarrow AC \\land M[AR] AC \\leftarrow AC + M[AR], E \\leftarrow C_{out} ADD D_1 LDA D_2 AC \\leftarrow M[AR] STA D_3 M[AR] \\leftarrow AC BUN D_4 PC \\leftarrow AR BSA D_5 M[AR] \\leftarrow PC, PC \\leftarrow AR + 1 ISZ D_6 M[AR] \\leftarrow M[AR] + 1, If M[AR] + 1 = 0 then PC \\leftarrow PC + 1\nTABLE 5-4 Memory-Reference Instructions",
+  "images": [],
+  "equations": []
+}

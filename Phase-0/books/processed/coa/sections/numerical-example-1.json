@@ -1,0 +1,24 @@
+{
+  "section_id": "numerical-example-1",
+  "title": "Numerical Example",
+  "level": 4,
+  "chapter": "12-7 Memory Management Hardware",
+  "parent_id": "segmented-page-mapping",
+  "children": [],
+  "start_page": 480,
+  "end_page": 482,
+  "text": "A numerical example may clarify the operation of the memory management unit. Consider the 20-bit logical address specified in Fig. 12-22(a). The 4-bit segment number specifies one of 16 possible segments. The 8-bit page number can specify up to 256 pages, and the 8-bit word field implies a page size of 256 words. This configuration allows each segment to have any number of pages up to 256. The smallest possible segment will have one page or 256 words. The largest possible segment will have 256 pages, for a total of 256 \\times 256 = 64K words.\nThe physical memory shown in Fig. 12-22(b) consists of 2<sup>20</sup> words of 32 bits each. The 20-bit address is divided into two fields: a 12-bit block number and an 8-bit word number. Thus, physical memory is divided into 4096 blocks of 256 words each. A page in a logical address has a corresponding block in physical memory. Note that both the logical and physical address have 20 bits. In the absence of a memory management unit, the 20-bit address from the CPU can be used to access physical memory directly.\nConsider a program loaded into memory that requires five pages. The operating system may assign to this program segment 6 and pages 0 through 4, as shown in Fig. 12-23(a). The total logical address range for the program is from hexadecimal 60000 to 604FF. When the program is loaded into physical memory, it is distributed among five blocks in physical memory where the operating system finds empty spaces. The correspondence between each memory block and logical page number is then entered in a table as shown in\n\n[Table]\n488SegmentPageWord\n\n(a) Logical address format: 16 segments of 256 pages each, each page has 256 words\n(b) Physical address format: 4096 blocks of 256 words each, each word has 32 bits\nFigure 12-22 An example of logical and physical addresses.\nFig. 12-23(b). The information from this table is entered in the segment and page tables as shown in Fig. 12-24(a).\nNow consider the specific logical address given in Fig. 12-24. The 20-bit address is listed as a five-digit hexadecimal number. It refers to word number 7E of page 2 in segment 6. The base of segment 6 in the page table is at address 35. Segment 6 has associated with it five pages, as shown in the page table at addresses 35 through 39. Page 2 of segment 6 is at address 35 + 2 = 37. The physical memory block is found in the page table to be 019. Word 7E in block 19 gives the 20-bit physical address 0197E. Note that page 0 of segment 6 maps into block 12 and page 1 maps into block 0. The associative memory in Fig.\nFigure 12-23 Example of logical and physical memory address assignment.\n\n[Table]\nHexadecimaladdressPage number60000Page 060100Page 160200Page 260300Page 360400604FFPage 4\n\n\n[Table]\nSegmentPageBlock600012601000602019603053604A61\n\n(a) Logical address assignment\n(b) Segment-page versus memory block assignment\n\n[Table]\nLogical address (in haxadecimal)6027E",
+  "images": [
+    {
+      "path": "images/numerical-example_img_1.png",
+      "type": "figure",
+      "caption": null
+    },
+    {
+      "path": "images/numerical-example_img_2.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

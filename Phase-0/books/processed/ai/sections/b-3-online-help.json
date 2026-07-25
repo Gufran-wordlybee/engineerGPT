@@ -1,0 +1,24 @@
+{
+  "section_id": "b-3-online-help",
+  "title": "B.3 Online Help",
+  "level": 2,
+  "chapter": "B: Notes on Languages and Algorithms",
+  "parent_id": "b-notes-on-languages-and-algorithms",
+  "children": [],
+  "start_page": 1080,
+  "end_page": 1080,
+  "text": "1062\nAppendix\nB.\nNotes on Languages and Algorithms\ngenerator POWERS-OF-2() yields ints\ni ←1\nwhile true do\nyield i\ni ←2 × i\nfor p in POWERS-OF-2() do\nPRINT(p)\nFigure B.1\nExample of a generator function and its invocation within a loop.\nFigure B.1 prints the numbers 1, 2, 4, . . . , and never stops. The call to POWERS-OF-2\nreturns a generator, which in turn yields one value each time the loop code asks for the\nnext element of the collection. Even though the collection is inﬁnite, it is enumerated\none element at a time.\n• Lists: [x, y, z] denotes a list of three elements. [ﬁrst|rest] denotes a list formed by\nadding ﬁrst to the list rest. In Lisp, this is the cons function.\n• Sets: {x, y, z} denotes a set of three elements. {x : p(x)} denotes the set of all elements\nx for which p(x) is true.\n• Arrays start at 1: Unless stated otherwise, the ﬁrst index of an array is 1 as in usual\nmathematical notation, not 0, as in Java and C.\nB.3\nONLINE HELP\nMost of the algorithms in the book have been implemented in Java, Lisp, and Python at our\nonline code repository:\naima.cs.berkeley.edu\nThe same Web site includes instructions for sending comments, corrections, or suggestions\nfor improving the book, and for joining discussion lists.",
+  "images": [],
+  "equations": [
+    {
+      "path": "images/b-3-online-help_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/b-3-online-help_eq_2.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

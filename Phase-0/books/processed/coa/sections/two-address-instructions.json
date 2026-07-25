@@ -1,0 +1,13 @@
+{
+  "section_id": "two-address-instructions",
+  "title": "Two-Address Instructions",
+  "level": 4,
+  "chapter": "8-4 Instruction Formats",
+  "parent_id": "three-address-instructions",
+  "children": [],
+  "start_page": 266,
+  "end_page": 267,
+  "text": "Two-address instructions are the most common in commercial computers. Here again each address field can specify either a processor register or a memory word. The program to evaluate X = (A + B)*(C + D) is as follows:\nMOV\n R1, A\n R1 \\leftarrow M[A]\nADD\n R1, B\n R1 \\leftarrow R1 + M[B]\n R2, C\n R2 \\leftarrow M[C]\nMOV\nADD\n R2, D\n R2 \\leftarrow R2 + M[D]\nMUL\n R1,R2\n R1 \\leftarrow R1 * R2\nMOV\n X. R1\n M[X] \\leftarrow R1\nThe MOV instruction moves or transfers the operands to and from memory and processor registers. The first symbol listed in an instruction is assumed to be both a source and the destination where the result of the operation is transferred.",
+  "images": [],
+  "equations": []
+}

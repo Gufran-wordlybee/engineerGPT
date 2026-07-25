@@ -1,0 +1,21 @@
+{
+  "section_id": "21-reinforcement-learning",
+  "title": "21 Reinforcement Learning",
+  "level": 2,
+  "chapter": "V: Learning",
+  "parent_id": "v-learning",
+  "children": [
+    "21-1-introduction",
+    "21-2-passive-reinforcement-learning",
+    "21-3-active-reinforcement-learning",
+    "21-4-generalization-in-reinforcement-learning",
+    "21-5-policy-search",
+    "21-6-applications-of-reinforcement-learning",
+    "21-7-summary-bibliographical-and-historical-notes-exercises"
+  ],
+  "start_page": 848,
+  "end_page": 848,
+  "text": "21\nREINFORCEMENT\nLEARNING\nIn which we examine how an agent can learn from success and failure, from re-\nward and punishment.\n21.1\nINTRODUCTION\nChapters 18, 19, and 20 covered methods that learn functions, logical theories, and probability\nmodels from examples. In this chapter, we will study how agents can learn what to do in the\nabsence of labeled examples of what to do.\nConsider, for example, the problem of learning to play chess. A supervised learning\nagent needs to be told the correct move for each position it encounters, but such feedback is\nseldom available. In the absence of feedback from a teacher, an agent can learn a transition\nmodel for its own moves and can perhaps learn to predict the opponent’s moves, but without\nsome feedback about what is good and what is bad, the agent will have no grounds for decid-\ning which move to make. The agent needs to know that something good has happened when\nit (accidentally) checkmates the opponent, and that something bad has happened when it is\ncheckmated—or vice versa, if the game is suicide chess. This kind of feedback is called a\nreward, or reinforcement. In games like chess, the reinforcement is received only at the end\nREINFORCEMENT\nof the game. In other environments, the rewards come more frequently. In ping-pong, each\npoint scored can be considered a reward; when learning to crawl, any forward motion is an\nachievement. Our framework for agents regards the reward as part of the input percept, but\nthe agent must be “hardwired” to recognize that part as a reward rather than as just another\nsensory input. Thus, animals seem to be hardwired to recognize pain and hunger as negative\nrewards and pleasure and food intake as positive rewards. Reinforcement has been carefully\nstudied by animal psychologists for over 60 years.\nRewards were introduced in Chapter 17, where they served to deﬁne optimal policies\nin Markov decision processes (MDPs). An optimal policy is a policy that maximizes the\nexpected total reward. The task of reinforcement learning is to use observed rewards to learn\nan optimal (or nearly optimal) policy for the environment. Whereas in Chapter 17 the agent\nhas a complete model of the environment and knows the reward function, here we assume no\n830",
+  "images": [],
+  "equations": []
+}

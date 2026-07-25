@@ -1,0 +1,16 @@
+{
+  "section_id": "interprocessor-synchronization",
+  "title": "Interprocessor Synchronization",
+  "level": 2,
+  "chapter": "13-4 Interprocessor Communication and Synchronization",
+  "parent_id": "13-4-interprocessor-communication-and-synchronization",
+  "children": [
+    "mutual-exclusion-with-a-semaphore",
+    "13-5-cache-coherence"
+  ],
+  "start_page": 506,
+  "end_page": 507,
+  "text": "The instruction set of a multiprocessor contains basic instructions that are used to implement communication and synchronization between cooperating processes. Communication refers to the exchange of data between different processes. For example, parameters passed to a procedure in a different processor constitute interprocessor communication. Synchronization refers to the special case where the data used to communicate between processors is control information. Synchronization is needed to enforce the correct sequence of processes and to ensure mutually exclusive access to shared writable data.\nMultiprocessor systems usually include various mechanisms to deal with the synchronization of resources. Low-level primitives are implemented directly by the hardware. These primitives are the basic mechanisms that enforce mutual exclusion for more complex mechanisms implemented in software. A number of hardware mechanisms for mutual exclusion have been developed. One of the most popular methods is through the use of a binary semaphore.",
+  "images": [],
+  "equations": []
+}

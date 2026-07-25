@@ -1,0 +1,19 @@
+{
+  "section_id": "division-1",
+  "title": "Division",
+  "level": 4,
+  "chapter": "Pipeline and Vector Processing",
+  "parent_id": "multiplication-1",
+  "children": [],
+  "start_page": 381,
+  "end_page": 383,
+  "text": "Decimal division is similar to binary division except of course that the quotient digits may have any of the 10 values from 0 to 9. In the restoring division method, the divisor is subtracted from the dividend or partial remainder as many times as necessary until a negative remainder results. The correct remainder is then restored by adding the divisor. The digit in the quotient reflects the number of subtractions up to but excluding the one that caused the negative difference.\nThe decimal division algorithm is shown in Fig. 10-23. It is similar to the algorithm with binary data except for the way the quotient bits are formed. The dividend (or partial remainder) is shifted to the left, with its most significant digit placed in A_{\\epsilon}. The divisor is then subtracted by adding its 10's complement value. Since B_{\\epsilon} is initially cleared, its complement value is 9 as required. The carry in E determines the relative magnitude of E and E and E are E it signifies\nFigure 10-23 Flowchart for decimal division.\nthat A < B. In this case the divisor is added to restore the partial remainder and Q_L stays at 0 (inserted there during the shift). If E = 1, it signifies that A \\ge B. The quotient digit in Q_L is incremented once and the divisor subtracted again. This process is repeated until the subtraction results in a negative difference which is recognized by E being 0. When this occurs, the quotient digit is not incremented but the divisor is added to restore the positive remainder. In this way, the quotient digit is made equal to the number of times that the partial remainder \"goes\" into the divisor.\nThe partial remainder and the quotient bits are shifted once to the left and the process is repeated k times to form k quotient digits. The remainder is then found in register A and the quotient is in register Q. The value of E is neglected.",
+  "images": [
+    {
+      "path": "images/division_img_1.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

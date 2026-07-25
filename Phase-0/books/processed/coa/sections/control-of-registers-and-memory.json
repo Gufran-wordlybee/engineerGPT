@@ -1,0 +1,19 @@
+{
+  "section_id": "control-of-registers-and-memory",
+  "title": "Control of Registers and Memory",
+  "level": 1,
+  "chapter": "Control of Registers and Memory",
+  "parent_id": null,
+  "children": [],
+  "start_page": 170,
+  "end_page": 172,
+  "text": "The registers of the computer connected to a common bus system are shown in Fig. 5-4. The control inputs of the registers are LD (load), INR (increment), and CLR (clear). Suppose that we want to derive the gate structure associated with the control inputs of AR. We scan Table 5-6 to find all the statements that change the content of AR:\nR'T_0: AR \\leftarrow PC\nR'T_2: AR \\leftarrow IR(0-11)\nD'_{7}IT_{3}: AR \\leftarrow M[AR]\nRT_0: AR \\leftarrow 0\nD_{5}T_{4}: AR \\leftarrow AR + 1\nThe first three statements specify transfer of information from a register or memory to AR. The content of the source register or memory is placed on\nthe bus and the content of the bus is transferred into AR by enabling its LD control input. The fourth statement clears AR to 0. The last statement increments AR by 1. The control functions can be combined into three Boolean expressions as follows:\nLD(AR) = R'T_0 + R'T_2 + D_7'IT_3\nCLR(AR) = RT_0\nINR(AR) = D_5T_4\nwhere LD(AR) is the load input of AR, CLR(AR) is the clear input of AR, and INR(AR) is the increment input of AR. The control gate logic associated with AR is shown in Fig. 5-16.\nIn a similar fashion we can derive the control gates for the other registers as well as the logic needed to control the read and write inputs of memory. The logic gates associated with the read input of memory is derived by scanning Table 5-6 to find the statements that specify a read operation. The read operation is recognized from the symbol \\leftarrow M[AR].\nRead = R'T_1 + D_7'IT_3 + (D_0 + D_1 + D_2 + D_6)T_4\nThe output of the logic gates that implement the Boolean expression above must be connected to the read input of memory.\nFigure 5-16 Control gates associated with AR.",
+  "images": [
+    {
+      "path": "images/control-of-registers-and-memory_img_1.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

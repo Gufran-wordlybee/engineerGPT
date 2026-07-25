@@ -1,0 +1,19 @@
+{
+  "section_id": "8-2-general-register-organization",
+  "title": "8-2 General Register Organization",
+  "level": 1,
+  "chapter": "8-2 General Register Organization",
+  "parent_id": null,
+  "children": [],
+  "start_page": 250,
+  "end_page": 252,
+  "text": "In the programming examples of Chap. 6, we have shown that memory locations are needed for storing pointers, counters, return addresses, temporary results, and partial products during multiplication. Having to refer to memory locations for such applications is time consuming because memory access is the most time-consuming operation in a computer. It is more convenient and more efficient to store these intermediate values in processor registers. When a large number of registers are included in the CPU, it is most efficient to connect them through a common bus system. The registers communicate with each other not only for direct data transfers, but also while performing various microoperations. Hence it is necessary to provide a common unit that can perform all the arithmetic, logic, and shift microoperations in the processor.\nA bus organization for seven CPU registers is shown in Fig. 8-2. The output of each register is connected to two multiplexers (MUX) to form the two buses A and B. The selection lines in each multiplexer select one register or the input data for the particular bus. The A and B buses form the inputs to a\nbus system\nFigure 8-2 Register set with common ALU.\ncommon arithmetic logic unit (ALU). The operation selected in the ALU determines the arithmetic or logic microoperation that is to be performed. The result of the microoperation is available for output data and also goes into the inputs of all the registers. The register that receives the information from the output bus is selected by a decoder. The decoder activates one of the register load inputs, thus providing a transfer path between the data in the output bus and the inputs of the selected destination register.\nThe control unit that operates the CPU bus system directs the information flow through the registers and ALU by selecting the various components in the system. For example, to perform the operation\nR1 \\leftarrow R2 + R3\nthe control must provide binary selection variables to the following selector inputs:\n1. MUX A selector (SELA): to place the content of R2 into bus A.\n2. MUX B selector (SELB): to place the content of R3 into bus B.\n3. ALU operation selector (OPR): to provide the arithmetic addition A+B.\nDecoder destination selector (SELD): to transfer the content of the output bus into R1.\nThe four control selection variables are generated in the control unit and must be available at the beginning of a clock cycle. The data from the two source registers propagate through the gates in the multiplexers and the ALU, to the output bus, and into the inputs of the destination register, all during the clock cycle interval. Then, when the next clock transition occurs, the binary information from the output bus is transferred into R1. To achieve a fast response time, the ALU is constructed with high-speed circuits. The buses are implemented with multiplexers or three-state gates, as shown in Sec. 4-3.",
+  "images": [
+    {
+      "path": "images/8-2-general-register-organization_img_1.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

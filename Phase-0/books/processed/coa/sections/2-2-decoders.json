@@ -1,0 +1,23 @@
+{
+  "section_id": "2-2-decoders",
+  "title": "2-2 Decoders",
+  "level": 2,
+  "chapter": "Digital Components",
+  "parent_id": "digital-components",
+  "children": [
+    "nand-gate-decoder",
+    "decoder-expansion",
+    "encoders"
+  ],
+  "start_page": 57,
+  "end_page": 59,
+  "text": "Discrete quantities of information are represented in digital computers with binary codes. A binary code of n bits is capable of representing up to 2^n distinct elements of the coded information. A decoder is a combinational circuit that converts binary information from the n coded inputs to a maximum of 2^n unique outputs. If the n-bit coded information has unused bit combinations, the decoder may have less than 2^n outputs.\nThe decoders presented in this section are called n-to-m-line decoders, where m \\le 2^n. Their purpose is to generate the 2^n (or fewer) binary combinations of the n input variables. A decoder has n inputs and m outputs and is also referred to as an n \\times m decoder.\nThe logic diagram of a 3-to-8-line decoder is shown in Fig. 2-1. The three data inputs, A_0, A_1, and A_2, are decoded into eight outputs, each output\nECL\nMOS\nCMOS\ndecoder\nFigure 2-1 3-to-8-line decoder.\nrepresenting one of the combinations of the three binary input variables. The three inverters provide the complement of the inputs, and each of the eight AND gates generates one of the binary combination. A particular application of this decoder is a binary-to-octal conversion. The input variables represent a binary number and the outputs represent the eight digits of the octal number system. However, a 3-to-8-line decoder can be used for decoding any 3-bit code to provide eight outputs, one for each combination of the binary code.\nCommercial decoders include one or more enable inputs to control the operation of the circuit. The decoder of Fig. 2-1 has one enable input, E. The decoder is enabled when E is equal to 1 and disabled when E is equal to 0.\nThe operation of the decoder can be clarified using the truth table listed in Table 2-1. When the enable input E is equal to 0, all the outputs are equal to 0 regardless of the values of the other three data inputs. The three \\times's in the table designate don't-care conditions. When the enable input is equal to 1, the decoder operates in a normal fashion. For each possible input combination, there are seven outputs that are equal to 0 and only one that is equal to 1. The output variable whose value is equal to 1 represents the octal number equivalent of the binary number that is available in the input data lines.\nEnable input\n\n[Table]\nEnableInputsOutputsEA_2A_1A_0D_7D6D5D4D_3D2D_1D_00×××00000000100000000001100100000010101000000100101100001000110000010000110100100000111001000000111110000000\n\nTABLE 2-1 Truth Table for 3-to-8-Line Decoder",
+  "images": [
+    {
+      "path": "images/2-2-decoders_img_1.png",
+      "type": "figure",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

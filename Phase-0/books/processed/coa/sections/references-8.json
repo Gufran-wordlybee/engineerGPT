@@ -1,0 +1,15 @@
+{
+  "section_id": "references-8",
+  "title": "REFERENCES",
+  "level": 2,
+  "chapter": "Pipeline and Vector Processing",
+  "parent_id": "pipeline-and-vector-processing",
+  "children": [
+    "chapter-ten"
+  ],
+  "start_page": 338,
+  "end_page": 340,
+  "text": "Dasgupta, S., Computer Architecture: A Modern Synthesis, Vol. 2. New York: John Wiley, 1989.\nDeCegama, A. L., Parallel Processing Architecture and VLSI Hardware. Englewood Cliffs, NI: Prentice Hall, 1989.\nGibson, G. A., Computer Systems Concepts and Design. Englewood Cliffs, NJ: Prentice Hall. 1991.\nHays, J. F., Computer Architecture and Organization, 2nd ed. New York: McGraw-Hill, 1988.\nHwang, K., and F. A. Briggs, Computer Architecture and Parallel Processing. New York: McGraw-Hill, 1984.\nKain, R., Computer Architecture: Software and Hardware. Vol. 2. Englewood Cliffs, NJ: Prentice Hall, 1989.\n7. Lee, J. K. F., and A. J. Smith, \"Branch Prediction Strategies and Branch Target Buffer Design.\" Computer, Vol. 17, No. 1 (January 1984), pp. 6-22.\nLilja, D. J., \"Reducing the Branch Penalties in Pipeline Processors.\" Computer, Vol. 21, No. 7 (July 1988), pp. 47–55.\nPatterson, D. A., and J. L. Hennessy, Computer Architecture: A Quantitative Approach. San Mateo, CA: Morgan Kaufmann Publishers, 1990.\nPollard, L. H., Computer Design and Architecture. Englewood Cliffs, NJ: Prentice Hall, 1990.\nStone, H. S., High-Performance Computer Architecture, 2nd ed. Reading, MA: Addison-Wesley, 1990.\n12. Tabak, D., Multiprocessors. Englewood Cliffs, NJ: Prentice Hall, 1990.",
+  "images": [],
+  "equations": []
+}

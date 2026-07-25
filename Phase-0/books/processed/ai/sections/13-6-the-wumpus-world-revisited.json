@@ -1,0 +1,105 @@
+{
+  "section_id": "13-6-the-wumpus-world-revisited",
+  "title": "13.6 The Wumpus World Revisited",
+  "level": 3,
+  "chapter": "IV: Uncertain knowledge and reasoning",
+  "parent_id": "13-quantifying-uncertainty",
+  "children": [],
+  "start_page": 517,
+  "end_page": 520,
+  "text": "Section 13.6.\nThe Wumpus World Revisited\n499\nindependent numbers (23 = 8 entries in the table, but they must sum to 1, so 7 are indepen-\ndent). The smaller tables contain ﬁve independent numbers (for a conditional probability\ndistributions such as P(T|C there are two rows of two numbers, and each row sums to 1, so\nthat’s two independent numbers; for a prior distribution like P(C) there is only one indepen-\ndent number). Going from seven to ﬁve might not seem like a major triumph, but the point\nis that, for n symptoms that are all conditionally independent given Cavity, the size of the\nrepresentation grows as O(n) instead of O(2n). That means that conditional independence\nassertions can allow probabilistic systems to scale up; moreover, they are much more com-\nmonly available than absolute independence assertions. Conceptually, Cavity separates\nSEPARATION\nToothache and Catch because it is a direct cause of both of them. The decomposition of\nlarge probabilistic domains into weakly connected subsets through conditional independence\nis one of the most important developments in the recent history of AI.\nThe dentistry example illustrates a commonly occurring pattern in which a single cause\ndirectly inﬂuences a number of effects, all of which are conditionally independent, given the\ncause. The full joint distribution can be written as\nP(Cause, Effect1, . . . , Effectn) = P(Cause)\n\u0019\ni\nP(Effecti | Cause) .\nSuch a probability distribution is called a naive Bayes model—“naive” because it is often\nNAIVE BAYES\nused (as a simplifying assumption) in cases where the “effect” variables are not actually\nconditionally independent given the cause variable. (The naive Bayes model is sometimes\ncalled a Bayesian classiﬁer, a somewhat careless usage that has prompted true Bayesians\nto call it the idiot Bayes model.) In practice, naive Bayes systems can work surprisingly\nwell, even when the conditional independence assumption is not true. Chapter 20 describes\nmethods for learning naive Bayes distributions from observations.\n13.6\nTHE WUMPUS WORLD REVISITED\nWe can combine of the ideas in this chapter to solve probabilistic reasoning problems in the\nwumpus world. (See Chapter 7 for a complete description of the wumpus world.) Uncertainty\narises in the wumpus world because the agent’s sensors give only partial information about\nthe world. For example, Figure 13.5 shows a situation in which each of the three reachable\nsquares—[1,3], [2,2], and [3,1]—might contain a pit. Pure logical inference can conclude\nnothing about which square is most likely to be safe, so a logical agent might have to choose\nrandomly. We will see that a probabilistic agent can do much better than the logical agent.\nOur aim is to calculate the probability that each of the three squares contains a pit. (For\nthis example we ignore the wumpus and the gold.) The relevant properties of the wumpus\nworld are that (1) a pit causes breezes in all neighboring squares, and (2) each square other\nthan [1,1] contains a pit with probability 0.2. The ﬁrst step is to identify the set of random\nvariables we need:\n• As in the propositional logic case, we want one Boolean variable Pij for each square,\nwhich is true iff square [i, j] actually contains a pit.\n500\n13.\nQuantifying Uncertainty\nOK\n 1,1\n 2,1\n 3,1\n 4,1\n 1,2\n 2,2\n 3,2\n 4,2\n 1,3\n 2,3\n 3,3\n 4,3\n 1,4\n 2,4\nOK\nOK\n 3,4\n 4,4\nB\nB\n 1,1\n 2,1\n 3,1\n 4,1\n 1,2\n 2,2\n 3,2\n 4,2\n 1,3\n 2,3\n 3,3\n 4,3\n 1,4\n 2,4\n 3,4\n 4,4\nKNOWN\nFRONTIER\nQUERY\nOTHER\n(a)\n(b)\nFigure 13.5\n(a) After ﬁnding a breeze in both [1,2] and [2,1], the agent is stuck—there is\nno safe place to explore. (b) Division of the squares into Known, Frontier, and Other, for\na query about [1,3].\n• We also have Boolean variables Bij that are true iff square [i, j] is breezy; we include\nthese variables only for the observed squares—in this case, [1,1], [1,2], and [2,1].\nThe next step is to specify the full joint distribution, P(P1,1, . . . , P4,4, B1,1, B1,2, B2,1). Ap-\nplying the product rule, we have\nP(P1,1, . . . , P4,4, B1,1, B1,2, B2,1) =\nP(B1,1, B1,2, B2,1 | P1,1, . . . , P4,4)P(P1,1, . . . , P4,4) .\nThis decomposition makes it easy to see what the joint probability values should be. The\nﬁrst term is the conditional probability distribution of a breeze conﬁguration, given a pit\nconﬁguration; its values are 1 if the breezes are adjacent to the pits and 0 otherwise. The\nsecond term is the prior probability of a pit conﬁguration. Each square contains a pit with\nprobability 0.2, independently of the other squares; hence,\nP(P1,1, . . . , P4,4) =\n4,4\n\u0019\ni,j = 1,1\nP(Pi,j) .\n(13.20)\nFor a particular conﬁguration with exactly n pits, P(P1,1, . . . , P4,4) = 0.2n × 0.816−n.\nIn the situation in Figure 13.5(a), the evidence consists of the observed breeze (or its\nabsence) in each square that is visited, combined with the fact that each such square contains\nno pit. We abbreviate these facts as b = ¬b1,1 ∧b1,2 ∧b2,1 and known = ¬p1,1 ∧¬p1,2 ∧¬p2,1.\nWe are interested in answering queries such as P(P1,3 | known, b): how likely is it that [1,3]\ncontains a pit, given the observations so far?\nTo answer this query, we can follow the standard approach of Equation (13.9), namely,\nsumming over entries from the full joint distribution. Let Unknown be the set of Pi,j vari-\nSection 13.6.\nThe Wumpus World Revisited\n501\nables for squares other than the Known squares and the query square [1,3]. Then, by Equa-\ntion (13.9), we have\nP(P1,3 | known, b) = α\n\n\nunknown\nP(P1,3, unknown, known, b) .\nThe full joint probabilities have already been speciﬁed, so we are done—that is, unless we\ncare about computation.\nThere are 12 unknown squares; hence the summation contains\n212 = 4096 terms. In general, the summation grows exponentially with the number of squares.\nSurely, one might ask, aren’t the other squares irrelevant?\nHow could [4,4] affect\nwhether [1,3] has a pit? Indeed, this intuition is correct. Let Frontier be the pit variables\n(other than the query variable) that are adjacent to visited squares, in this case just [2,2] and\n[3,1]. Also, let Other be the pit variables for the other unknown squares; in this case, there are\n10 other squares, as shown in Figure 13.5(b). The key insight is that the observed breezes are\nconditionally independent of the other variables, given the known, frontier, and query vari-\nables. To use the insight, we manipulate the query formula into a form in which the breezes\nare conditioned on all the other variables, and then we apply conditional independence:\nP(P1,3 | known, b)\n= α\n\n\nunknown\nP(P1,3, known, b, unknown)\n(by Equation (13.9))\n= α\n\n\nunknown\nP(b | P1,3, known, unknown)P(P1,3, known, unknown)\n(by the product rule)\n= α\n\n\nfrontier\n\n\nother\nP(b | known, P1,3, frontier, other)P(P1,3, known, frontier, other)\n= α\n\n\nfrontier\n\n\nother\nP(b | known, P1,3, frontier)P(P1,3, known, frontier, other) ,\nwhere the ﬁnal step uses conditional independence: b is independent of other given known,\nP1,3, and frontier. Now, the ﬁrst term in this expression does not depend on the Other\nvariables, so we can move the summation inward:\nP(P1,3 | known, b)\n= α\n\n\nfrontier\nP(b | known, P1,3, frontier)\n\n\nother\nP(P1,3, known, frontier, other) .\nBy independence, as in Equation (13.20), the prior term can be factored, and then the terms\ncan be reordered:\nP(P1,3 | known, b)\n= α\n\n\nfrontier\nP(b | known, P1,3, frontier)\n\n\nother\nP(P1,3)P(known)P(frontier)P(other)\n= α P(known)P(P1,3)\n\n\nfrontier\nP(b | known, P1,3, frontier)P(frontier)\n\n\nother\nP(other)\n= α′ P(P1,3)\n\n\nfrontier\nP(b | known, P1,3, frontier)P(frontier) ,\n502\n13.\nQuantifying Uncertainty\nOK\n 1,1\n 2,1\n 3,1\n 1,2\nOK\nOK\nB\nB\nOK\n 1,1\n 2,1\n 1,2\n 2,2\nOK\nOK\nB\nB\nOK\n 1,1\n 2,1\n 3,1\n 1,2\nOK\nOK\nB\nB\n0.2 x 0.2 = 0.04\n0.2 x 0.8 = 0.16\n0.8 x 0.2 = 0.16\nOK\n 1,1\n 2,1\n 1,2\n 1,3\nOK\nOK\nB\nB\nOK\n 1,1\n 2,1\n 3,1\n 1,2\n 1,3\nOK\nOK\nB\nB\n0.2 x 0.2 = 0.04\n0.2 x 0.8 = 0.16\n(a)\n(b)\n 2,2\n 1,3\n 3,1\n 1,3\n 2,2\n 1,3\n 3,1\n 2,2\n 2,2\nFigure 13.6\nConsistent models for the frontier variables P2,2 and P3,1, showing\nP(frontier) for each model: (a) three models with P1,3 = true showing two or three pits,\nand (b) two models with P1,3 = false showing one or two pits.\nwhere the last step folds P(known) into the normalizing constant and uses the fact that\n\u0002\nother P(other) equals 1.\nNow, there are just four terms in the summation over the frontier variables P2,2 and\nP3,1. The use of independence and conditional independence has completely eliminated the\nother squares from consideration.\nNotice that the expression P(b | known, P1,3, frontier) is 1 when the frontier is consis-\ntent with the breeze observations, and 0 otherwise. Thus, for each value of P1,3, we sum over\nthe logical models for the frontier variables that are consistent with the known facts. (Com-\npare with the enumeration over models in Figure 7.5 on page 241.) The models and their\nassociated prior probabilities—P(frontier )—are shown in Figure 13.6. We have\nP(P1,3 | known, b) = α′ ⟨0.2(0.04 + 0.16 + 0.16), 0.8(0.04 + 0.16)⟩≈⟨0.31, 0.69⟩.\nThat is, [1,3] (and [3,1] by symmetry) contains a pit with roughly 31% probability. A similar\ncalculation, which the reader might wish to perform, shows that [2,2] contains a pit with\nroughly 86% probability. The wumpus agent should deﬁnitely avoid [2,2]! Note that our\nlogical agent from Chapter 7 did not know that [2,2] was worse than the other squares. Logic\ncan tell us that it is unknown whether there is a pit in [2, 2], but we need probability to tell us\nhow likely it is.\nWhat this section has shown is that even seemingly complicated problems can be for-\nmulated precisely in probability theory and solved with simple algorithms. To get efﬁcient\nsolutions, independence and conditional independence relationships can be used to simplify\nthe summations required. These relationships often correspond to our natural understanding\nof how the problem should be decomposed. In the next chapter, we develop formal represen-\ntations for such relationships as well as algorithms that operate on those representations to\nperform probabilistic inference efﬁciently.",
+  "images": [
+    {
+      "path": "images/13-6-the-wumpus-world-revisited_fig_13-5.png",
+      "type": "diagram",
+      "caption": "Figure 13.5"
+    },
+    {
+      "path": "images/13-6-the-wumpus-world-revisited_fig_13-5.png",
+      "type": "diagram",
+      "caption": "Figure 13.5"
+    },
+    {
+      "path": "images/13-6-the-wumpus-world-revisited_fig_13-6.png",
+      "type": "diagram",
+      "caption": "Figure 13.6"
+    },
+    {
+      "path": "images/13-6-the-wumpus-world-revisited_fig_13-6.png",
+      "type": "diagram",
+      "caption": "Figure 13.6"
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/13-6-the-wumpus-world-revisited_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-6-the-wumpus-world-revisited_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-6-the-wumpus-world-revisited_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-6-the-wumpus-world-revisited_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-6-the-wumpus-world-revisited_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-6-the-wumpus-world-revisited_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-6-the-wumpus-world-revisited_eq_13-20.png",
+      "type": "equation",
+      "label": "13.20"
+    },
+    {
+      "path": "images/13-6-the-wumpus-world-revisited_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-6-the-wumpus-world-revisited_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-6-the-wumpus-world-revisited_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-6-the-wumpus-world-revisited_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-6-the-wumpus-world-revisited_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-6-the-wumpus-world-revisited_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/13-6-the-wumpus-world-revisited_eq_14.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

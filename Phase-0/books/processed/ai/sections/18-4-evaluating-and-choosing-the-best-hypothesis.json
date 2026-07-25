@@ -1,0 +1,95 @@
+{
+  "section_id": "18-4-evaluating-and-choosing-the-best-hypothesis",
+  "title": "18.4 Evaluating and Choosing the Best Hypothesis",
+  "level": 3,
+  "chapter": "V: Learning",
+  "parent_id": "18-learning-from-examples",
+  "children": [],
+  "start_page": 726,
+  "end_page": 730,
+  "text": "708\n18.\nLearning from Examples\n18.4\nEVALUATING AND CHOOSING THE BEST HYPOTHESIS\nWe want to learn a hypothesis that ﬁts the future data best. To make that precise we need\nto deﬁne “future data” and “best.” We make the stationarity assumption: that there is a\nSTATIONARITY\nASSUMPTION\nprobability distribution over examples that remains stationary over time. Each example data\npoint (before we see it) is a random variable Ej whose observed value ej = (xj, yj) is sampled\nfrom that distribution, and is independent of the previous examples:\nP(Ej|Ej−1, Ej−2, . . .) = P(Ej) ,\nand each example has an identical prior probability distribution:\nP(Ej) = P(Ej−1) = P(Ej−2) = · · · .\nExamples that satisfy these assumptions are called independent and identically distributed or\ni.i.d.. An i.i.d. assumption connects the past to the future; without some such connection, all\nI.I.D.\nbets are off—the future could be anything. (We will see later that learning can still occur if\nthere are slow changes in the distribution.)\nThe next step is to deﬁne “best ﬁt.” We deﬁne the error rate of a hypothesis as the\nERROR RATE\nproportion of mistakes it makes—the proportion of times that h(x)̸ = y for an (x, y) example.\nNow, just because a hypothesis h has a low error rate on the training set does not mean that\nit will generalize well. A professor knows that an exam will not accurately evaluate students\nif they have already seen the exam questions. Similarly, to get an accurate evaluation of a\nhypothesis, we need to test it on a set of examples it has not seen yet. The simplest approach is\nthe one we have seen already: randomly split the available data into a training set from which\nthe learning algorithm produces h and a test set on which the accuracy of h is evaluated. This\nmethod, sometimes called holdout cross-validation, has the disadvantage that it fails to use\nHOLDOUT\nCROSS-VALIDATION\nall the available data; if we use half the data for the test set, then we are only training on half\nthe data, and we may get a poor hypothesis. On the other hand, if we reserve only 10% of\nthe data for the test set, then we may, by statistical chance, get a poor estimate of the actual\naccuracy.\nWe can squeeze more out of the data and still get an accurate estimate using a technique\ncalled k-fold cross-validation. The idea is that each example serves double duty—as training\nK-FOLD\nCROSS-VALIDATION\ndata and test data. First we split the data into k equal subsets. We then perform k rounds of\nlearning; on each round 1/k of the data is held out as a test set and the remaining examples\nare used as training data. The average test set score of the k rounds should then be a better\nestimate than a single score. Popular values for k are 5 and 10—enough to give an estimate\nthat is statistically likely to be accurate, at a cost of 5 to 10 times longer computation time.\nThe extreme is k = n, also known as leave-one-out cross-validation or LOOCV.\nLEAVE-ONE-OUT\nCROSS-VALIDATION\nLOOCV\nDespite the best efforts of statistical methodologists, users frequently invalidate their\nresults by inadvertently peeking at the test data. Peeking can happen like this: A learning\nPEEKING\nalgorithm has various “knobs” that can be twiddled to tune its behavior—for example, various\ndifferent criteria for choosing the next attribute in decision tree learning. The researcher\ngenerates hypotheses for various different settings of the knobs, measures their error rates on\nthe test set, and reports the error rate of the best hypothesis. Alas, peeking has occurred! The\nSection 18.4.\nEvaluating and Choosing the Best Hypothesis\n709\nreason is that the hypothesis was selected on the basis of its test set error rate, so information\nabout the test set has leaked into the learning algorithm.\nPeeking is a consequence of using test-set performance to both choose a hypothesis and\nevaluate it. The way to avoid this is to really hold the test set out—lock it away until you\nare completely done with learning and simply wish to obtain an independent evaluation of\nthe ﬁnal hypothesis. (And then, if you don’t like the results . . . you have to obtain, and lock\naway, a completely new test set if you want to go back and ﬁnd a better hypothesis.) If the\ntest set is locked away, but you still want to measure performance on unseen data as a way of\nselecting a good hypothesis, then divide the available data (without the test set) into a training\nset and a validation set. The next section shows how to use validation sets to ﬁnd a good\nVALIDATION SET\ntradeoff between hypothesis complexity and goodness of ﬁt.\n18.4.1\nModel selection: Complexity versus goodness of ﬁt\nIn Figure 18.1 (page 696) we showed that higher-degree polynomials can ﬁt the training data\nbetter, but when the degree is too high they will overﬁt, and perform poorly on validation data.\nChoosing the degree of the polynomial is an instance of the problem of model selection. You\nMODEL SELECTION\ncan think of the task of ﬁnding the best hypothesis as two tasks: model selection deﬁnes the\nhypothesis space and then optimization ﬁnds the best hypothesis within that space.\nOPTIMIZATION\nIn this section we explain how to select among models that are parameterized by size.\nFor example, with polynomials we have size = 1 for linear functions, size = 2 for quadratics,\nand so on. For decision trees, the size could be the number of nodes in the tree. In all cases\nwe want to ﬁnd the value of the size parameter that best balances underﬁtting and overﬁtting\nto give the best test set accuracy.\nAn algorithm to perform model selection and optimization is shown in Figure 18.8. It\nis a wrapper that takes a learning algorithm as an argument (DECISION-TREE-LEARNING,\nWRAPPER\nfor example). The wrapper enumerates models according to a parameter, size. For each size,\nit uses cross validation on Learner to compute the average error rate on the training and\ntest sets. We start with the smallest, simplest models (which probably underﬁt the data), and\niterate, considering more complex models at each step, until the models start to overﬁt. In\nFigure 18.9 we see typical curves: the training set error decreases monotonically (although\nthere may in general be slight random variation), while the validation set error decreases at\nﬁrst, and then increases when the model begins to overﬁt. The cross-validation procedure\npicks the value of size with the lowest validation set error; the bottom of the U-shaped curve.\nWe then generate a hypothesis of that size, using all the data (without holding out any of it).\nFinally, of course, we should evaluate the returned hypothesis on a separate test set.\nThis approach requires that the learning algorithm accept a parameter, size, and deliver\na hypothesis of that size. As we said, for decision tree learning, the size can be the number of\nnodes. We can modify DECISION-TREE-LEARNER so that it takes the number of nodes as\nan input, builds the tree breadth-ﬁrst rather than depth-ﬁrst (but at each level it still chooses\nthe highest gain attribute ﬁrst), and stops when it reaches the desired number of nodes.\n710\n18.\nLearning from Examples\nfunction CROSS-VALIDATION-WRAPPER(Learner,k,examples) returns a hypothesis\nlocal variables: errT, an array, indexed by size, storing training-set error rates\nerrV , an array, indexed by size, storing validation-set error rates\nfor size = 1 to ∞do\nerrT[size],errV [size] ←CROSS-VALIDATION(Learner, size,k, examples)\nif errT has converged then do\nbest size ←the value of size with minimum errV [size]\nreturn Learner(best size,examples)\nfunction CROSS-VALIDATION(Learner,size,k,examples) returns two values:\naverage training set error rate, average validation set error rate\nfold errT ←0; fold errV ←0\nfor fold = 1 to k do\ntraining set,validation set ←PARTITION(examples,fold,k)\nh ←Learner(size,training set)\nfold errT ←fold errT + ERROR-RATE(h,training set)\nfold errV ←fold errV +ERROR-RATE(h,validation set)\nreturn fold errT/k, fold errV /k\nFigure 18.8\nAn algorithm to select the model that has the lowest error rate on validation\ndata by building models of increasing complexity, and choosing the one with best empir-\nical error rate on validation data. Here errT means error rate on the training data, and\nerrV means error rate on the validation data. Learner(size, examples) returns a hypoth-\nesis whose complexity is set by the parameter size, and which is trained on the examples.\nPARTITION(examples, fold, k) splits examples into two subsets: a validation set of size N/k\nand a training set with all the other examples. The split is different for each value of fold.\n18.4.2\nFrom error rates to loss\nSo far, we have been trying to minimize error rate. This is clearly better than maximizing\nerror rate, but it is not the full story. Consider the problem of classifying email messages\nas spam or non-spam. It is worse to classify non-spam as spam (and thus potentially miss\nan important message) then to classify spam as non-spam (and thus suffer a few seconds of\nannoyance). So a classiﬁer with a 1% error rate, where almost all the errors were classifying\nspam as non-spam, would be better than a classiﬁer with only a 0.5% error rate, if most of\nthose errors were classifying non-spam as spam. We saw in Chapter 16 that decision-makers\nshould maximize expected utility, and utility is what learners should maximize as well. In\nmachine learning it is traditional to express utilities by means of a loss function. The loss\nLOSS FUNCTION\nfunction L(x, y, ˆy) is deﬁned as the amount of utility lost by predicting h(x) = ˆy when the\ncorrect answer is f(x) = y:\nL(x, y, ˆy) = Utility(result of using y given an input x)\n−Utility(result of using ˆy given an input x)\nSection 18.4.\nEvaluating and Choosing the Best Hypothesis\n711\n 0\n 10\n 20\n 30\n 40\n 50\n 60\n 1\n 2\n 3\n 4\n 5\n 6\n 7\n 8\n 9\n 10\nError rate\nTree size\nValidation Set Error\nTraining Set Error\nFigure 18.9\nError rates on training data (lower, dashed line) and validation data (upper,\nsolid line) for different size decision trees. We stop when the training set error rate asymp-\ntotes, and then choose the tree with minimal error on the validation set; in this case the tree\nof size 7 nodes.\nThis is the most general formulation of the loss function. Often a simpliﬁed version is used,\nL(y, ˆy), that is independent of x. We will use the simpliﬁed version for the rest of this\nchapter, which means we can’t say that it is worse to misclassify a letter from Mom than it\nis to misclassify a letter from our annoying cousin, but we can say it is 10 times worse to\nclassify non-spam as spam than vice-versa:\nL(spam, nospam) = 1,\nL(nospam, spam) = 10 .\nNote that L(y, y) is always zero; by deﬁnition there is no loss when you guess exactly right.\nFor functions with discrete outputs, we can enumerate a loss value for each possible mis-\nclassiﬁcation, but we can’t enumerate all the possibilities for real-valued data. If f(x) is\n137.035999, we would be fairly happy with h(x) = 137.036, but just how happy should we\nbe? In general small errors are better than large ones; two functions that implement that idea\nare the absolute value of the difference (called the L1 loss), and the square of the difference\n(called the L2 loss). If we are content with the idea of minimizing error rate, we can use\nthe L0/1 loss function, which has a loss of 1 for an incorrect answer and is appropriate for\ndiscrete-valued outputs:\nAbsolute value loss: L1(y, ˆy) = |y −ˆy|\nSquared error loss:\nL2(y, ˆy) = (y −ˆy)2\n0/1 loss:\nL0/1(y, ˆy) = 0 if y = ˆy, else 1\nThe learning agent can theoretically maximize its expected utility by choosing the hypoth-\nesis that minimizes expected loss over all input–output pairs it will see. It is meaningless\nto talk about this expectation without deﬁning a prior probability distribution, P(X, Y ) over\nexamples. Let E be the set of all possible input–output examples. Then the expected gener-\nalization loss for a hypothesis h (with respect to loss function L) is\nGENERALIZATION\nLOSS\n712\n18.\nLearning from Examples\nGenLossL(h) =\n\n\n(x,y)∈E\nL(y, h(x)) P(x, y) ,\nand the best hypothesis, h∗, is the one with the minimum expected generalization loss:\nh∗= argmin\nh∈H\nGenLossL(h) .\nBecause P(x, y) is not known, the learning agent can only estimate generalization loss with\nempirical loss on a set of examples, E:\nEMPIRICAL LOSS\nEmpLossL,E(h) = 1\nN\n\n\n(x,y)∈E\nL(y, h(x)) .\nThe estimated best hypothesis ˆh∗is then the one with minimum empirical loss:\nˆh∗= argmin\nh∈H\nEmpLoss L,E(h) .\nThere are four reasons why ˆh∗may differ from the true function, f: unrealizability, variance,\nnoise, and computational complexity. First, f may not be realizable—may not be in H—or\nmay be present in such a way that other hypotheses are preferred. Second, a learning algo-\nrithm will return different hypotheses for different sets of examples, even if those sets are\ndrawn from the same true function f, and those hypotheses will make different predictions\non new examples. The higher the variance among the predictions, the higher the probability\nof signiﬁcant error. Note that even when the problem is realizable, there will still be random\nvariance, but that variance decreases towards zero as the number of training examples in-\ncreases. Third, f may be nondeterministic or noisy—it may return different values for f(x)\nNOISE\neach time x occurs. By deﬁnition, noise cannot be predicted; in many cases, it arises because\nthe observed labels y are the result of attributes of the environment not listed in x. And ﬁnally,\nwhen H is complex, it can be computationally intractable to systematically search the whole\nhypothesis space. The best we can do is a local search (hill climbing or greedy search) that\nexplores only part of the space. That gives us an approximation error. Combining the sources\nof error, we’re left with an estimation of an approximation of the true function f.\nTraditional methods in statistics and the early years of machine learning concentrated\non small-scale learning, where the number of training examples ranged from dozens to the\nSMALL-SCALE\nLEARNING\nlow thousands. Here the generalization error mostly comes from the approximation error of\nnot having the true f in the hypothesis space, and from estimation error of not having enough\ntraining examples to limit variance. In recent years there has been more emphasis on large-\nscale learning, often with millions of examples. Here the generalization error is dominated\nLARGE-SCALE\nLEARNING\nby limits of computation: there is enough data and a rich enough model that we could ﬁnd an\nh that is very close to the true f, but the computation to ﬁnd it is too complex, so we settle\nfor a sub-optimal approximation.\n18.4.3\nRegularization\nIn Section 18.4.1, we saw how to do model selection with cross-validation on model size. An\nalternative approach is to search for a hypothesis that directly minimizes the weighted sum of",
+  "images": [
+    {
+      "path": "images/18-4-evaluating-and-choosing-the-best-hypothesis_fig_18-9.png",
+      "type": "diagram",
+      "caption": "Figure 18.9"
+    }
+  ],
+  "equations": [
+    {
+      "path": "images/18-4-evaluating-and-choosing-the-best-hypothesis_eq_1.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-4-evaluating-and-choosing-the-best-hypothesis_eq_2.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-4-evaluating-and-choosing-the-best-hypothesis_eq_3.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-4-evaluating-and-choosing-the-best-hypothesis_eq_4.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-4-evaluating-and-choosing-the-best-hypothesis_eq_5.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-4-evaluating-and-choosing-the-best-hypothesis_eq_6.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-4-evaluating-and-choosing-the-best-hypothesis_eq_7.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-4-evaluating-and-choosing-the-best-hypothesis_eq_8.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-4-evaluating-and-choosing-the-best-hypothesis_eq_9.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-4-evaluating-and-choosing-the-best-hypothesis_eq_10.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-4-evaluating-and-choosing-the-best-hypothesis_eq_11.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-4-evaluating-and-choosing-the-best-hypothesis_eq_12.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-4-evaluating-and-choosing-the-best-hypothesis_eq_13.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-4-evaluating-and-choosing-the-best-hypothesis_eq_14.png",
+      "type": "equation",
+      "label": null
+    },
+    {
+      "path": "images/18-4-evaluating-and-choosing-the-best-hypothesis_eq_15.png",
+      "type": "equation",
+      "label": null
+    }
+  ]
+}

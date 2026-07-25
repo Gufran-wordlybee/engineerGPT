@@ -1,0 +1,15 @@
+{
+  "section_id": "input-output-instructions",
+  "title": "Input-Output Instructions",
+  "level": 1,
+  "chapter": "Input-Output Instructions",
+  "parent_id": null,
+  "children": [
+    "program-interrupt"
+  ],
+  "start_page": 162,
+  "end_page": 163,
+  "text": "Input and output instructions are needed for transferring information to and from AC register, for checking the flag bits, and for controlling the interrupt facility. Input—output instructions have an operation code 1111 and are recognized by the control when D_7 = 1 and I = 1. The remaining bits of the instruction specify the particular operation. The control functions and microoperations for the input—output instructions are listed in Table 5-5. These instructions are executed with the clock transition associated with timing signal T_3. Each control function needs a Boolean relation D_7T_3, which we designate for convenience by the symbol p. The control function is distinguished by one of the bits in IR(6-11). By assigning the symbol B_1 to bit i of IR, all control functions\nTABLE 5-5 Input-Output Instructions\nD_7IT_3 = p (common to all input-output instructions)\nIR(i) = B_i [bit in IR(6-11) that specifies the instruction]\n SC \\leftarrow 0\n Clear SC\n p:\nINP\n pB_{11}:\n AC(0-7) \\leftarrow INPR, \\quad FGI \\leftarrow 0\n Input character\nOUT\n pB_{10}:\n OUTR \\leftarrow AC(0-7), FGO \\leftarrow 0\n Output character\nSKI\n pBo:\n If (FGI = 1) then (PC \\leftarrow PC + 1)\n Skip on input flag\nSKO\n DB_R:\n If (FGO = 1) then (PC \\leftarrow PC + 1)\n Skip on output flag\nION\n pB_7:\n IEN \\leftarrow 1\n Interrupt enable on\n IEN \\leftarrow 0\nIOF\n pB_6:\n Interrupt enable off\ncan be denoted by pB_i for i = 6 though 11. The sequence counter SC is cleared to 0 when p = D_i T_2 = 1.\nThe INP instruction transfers the input information from INPR into the eight low-order bits of AC and also clears the input flag to 0. The OUT instruction transfers the eight least significant bits of AC into the output register OUTR and clears the output flag to 0. The next two instructions in Table 5-5 check the status of the flags and cause a skip of the next instruction if the flag is 1. The instruction that is skipped will normally be a branch instruction to return and check the flag again. The branch instruction is not skipped if the flag is 0. If the flag is 1, the branch instruction is skipped and an input or output instruction is executed. (Examples of input and output programs are given in Sec. 6-8.) The last two instructions set and clear an interrupt enable flipflop IEN. The purpose of IEN is explained in conjunction with the interrupt operation.",
+  "images": [],
+  "equations": []
+}

@@ -1,0 +1,18 @@
+{
+  "section_id": "vi-communicating-perceiving-and-acting",
+  "title": "VI: Communicating, perceiving, and acting",
+  "level": 1,
+  "chapter": "V: Learning",
+  "parent_id": null,
+  "children": [
+    "22-natural-language-processing",
+    "23-natural-language-for-communication",
+    "24-perception",
+    "25-robotics"
+  ],
+  "start_page": 878,
+  "end_page": 878,
+  "text": "22\nNATURAL LANGUAGE\nPROCESSING\nIn which we see how to make use of the copious knowledge that is expressed in\nnatural language.\nHomo sapiens is set apart from other species by the capacity for language. Somewhere around\n100,000 years ago, humans learned how to speak, and about 7,000 years ago learned to write.\nAlthough chimpanzees, dolphins, and other animals have shown vocabularies of hundreds of\nsigns, only humans can reliably communicate an unbounded number of qualitatively different\nmessages on any topic using discrete signs.\nOf course, there are other attributes that are uniquely human: no other species wears\nclothes, creates representational art, or watches three hours of television a day. But when\nAlan Turing proposed his Test (see Section 1.1.1), he based it on language, not art or TV.\nThere are two main reasons why we want our computer agents to be able to process natural\nlanguages: ﬁrst, to communicate with humans, a topic we take up in Chapter 23, and second,\nto acquire information from written language, the focus of this chapter.\nThere are over a trillion pages of information on the Web, almost all of it in natural\nlanguage. An agent that wants to do knowledge acquisition needs to understand (at least\nKNOWLEDGE\nACQUISITION\npartially) the ambiguous, messy languages that humans use. We examine the problem from\nthe point of view of speciﬁc information-seeking tasks: text classiﬁcation, information re-\ntrieval, and information extraction. One common factor in addressing these tasks is the use of\nlanguage models: models that predict the probability distribution of language expressions.\nLANGUAGE MODEL\n22.1\nLANGUAGE MODELS\nFormal languages, such as the programming languages Java or Python, have precisely deﬁned\nlanguage models. A language can be deﬁned as a set of strings; “print(2 + 2)” is a\nLANGUAGE\nlegal program in the language Python, whereas “2)+(2 print” is not. Since there are an\ninﬁnite number of legal programs, they cannot be enumerated; instead they are speciﬁed by a\nset of rules called a grammar. Formal languages also have rules that deﬁne the meaning or\nGRAMMAR\nsemantics of a program; for example, the rules say that the “meaning” of “2 + 2” is 4, and\nSEMANTICS\nthe meaning of “1/0” is that an error is signaled.\n860",
+  "images": [],
+  "equations": []
+}

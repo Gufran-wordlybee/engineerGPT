@@ -1,0 +1,19 @@
+{
+  "section_id": "cover",
+  "title": "Cover\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+  "level": 1,
+  "chapter": "Cover\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+  "parent_id": null,
+  "children": [],
+  "start_page": 0,
+  "end_page": 2,
+  "text": "\nArtiﬁcial Intelligence\nA Modern Approach\nThird Edition\nPRENTICE HALL SERIES\nIN ARTIFICIAL INTELLIGENCE\nStuart Russell and Peter Norvig, Editors\nFORSYTH & PONCE\nComputer Vision: A Modern Approach\nGRAHAM\nANSI Common Lisp\nJURAFSKY & MARTIN\nSpeech and Language Processing, 2nd ed.\nNEAPOLITAN\nLearning Bayesian Networks\nRUSSELL & NORVIG\nArtiﬁcial Intelligence: A Modern Approach, 3rd ed.",
+  "images": [
+    {
+      "path": "images/cover_img_1.jpeg",
+      "type": "raster",
+      "caption": null
+    }
+  ],
+  "equations": []
+}

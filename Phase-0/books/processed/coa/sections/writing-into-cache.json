@@ -1,0 +1,15 @@
+{
+  "section_id": "writing-into-cache",
+  "title": "Writing into Cache",
+  "level": 2,
+  "chapter": "12-5 Cache Memory",
+  "parent_id": "12-5-cache-memory",
+  "children": [
+    "cache-initialization"
+  ],
+  "start_page": 469,
+  "end_page": 470,
+  "text": "An important aspect of cache organization is concerned with memory write requests. When the CPU finds a word in cache during a read operation, the main memory is not involved in the transfer. However, if the operation is a write, there are two ways that the system can proceed.\nreplacement algorithms\nwrite-through\nwrite-hack\nThe simplest and most commonly used procedure is to update main memory with every memory write operation, with cache memory being updated in parallel if it contains the word at the specified address. This is called the write-through method. This method has the advantage that main memory always contains the same data as the cache. This characteristic is important in systems with direct memory access transfers. It ensures that the data residing in main memory are valid at all times so that an I/O device communicating through DMA would receive the most recent updated data.\nThe second procedure is called the write-back method. In this method only the cache location is updated during a write operation. The location is then marked by a flag so that later when the word is removed from the cache it is copied into main memory. The reason for the write-back method is that during the time a word resides in the cache, it may be updated several times; however, as long as the word remains in the cache, it does not matter whether the copy in main memory is out of date, since requests from the word are filled from the cache. It is only when the word is displaced from the cache that an accurate copy need be rewritten into main memory. Analytical results indicate that the number of memory writes in a typical program ranges between 10 and 30 percent of the total references to memory.",
+  "images": [],
+  "equations": []
+}
