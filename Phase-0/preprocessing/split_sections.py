@@ -1,4 +1,5 @@
 """
+2.
 preprocessing.split_sections
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Splits a book PDF into section-level JSON files based on extracted TOC entries.
@@ -12,6 +13,12 @@ Now includes:
 Public API
 ----------
 split_sections(pdf_path, toc, output_dir) -> list[dict]
+
+[
+  {"level": 1, "title": "Intelligent Agents", "start_page": 51},
+  {"level": 2, "title": "Agents and Environments", "start_page": 52},
+]
+
 """
 
 from __future__ import annotations

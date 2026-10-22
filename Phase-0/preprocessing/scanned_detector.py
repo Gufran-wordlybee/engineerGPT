@@ -21,7 +21,7 @@ How it works
    - At or above threshold → **text** (real text-based pages return hundreds
      to thousands of chars).
 
-Why this is a separate file
+Why this is a separate file 
 ---------------------------
 The threshold will need tuning as you feed in more varied books (old scans,
 partially-OCR'd PDFs, books with very sparse pages, etc.). Keeping
@@ -53,39 +53,24 @@ from config.settings import (
 # ---------------------------------------------------------------------------
 
 def _select_sample_pages(total_pages: int, per_group: int = 5) -> list[int]:
-    """Pick a representative spread of page indices to sample.
-
-    Strategy: take up to ``per_group`` pages each from the beginning, middle,
-    and end of the document.  For short documents (fewer than
-    ``3 * per_group`` pages), just sample every page.
-
-    Parameters
-    ----------
-    total_pages : int
-        Total number of pages in the PDF (0-indexed internally, but this
-        value is the *count*, e.g. 200 for a 200-page book).
-    per_group : int
-        How many pages to take from each region (start / middle / end).
-        Default is 5, giving up to 15 sampled pages.
-
-    Returns
-    -------
-    list[int]
-        Sorted, deduplicated list of 0-indexed page numbers to sample.
     """
+    Parameters -
+    total_pages : int
+    per_group : int
+        How many pages to take from each(start / middle / end),defaiult 5.
+    Returns -
+    list[int]
+    """
+    # Short book — just sample every page.
     if total_pages <= per_group * 3:
-        # Short book — just sample every page.
         return list(range(total_pages))
-
-    # First `per_group` pages
+    # First section
     start_pages = list(range(per_group))
-
-    # Middle `per_group` pages, centred around the midpoint
+    # Middle section
     mid = total_pages // 2
     half = per_group // 2
     middle_pages = list(range(mid - half, mid - half + per_group))
-
-    # Last `per_group` pages
+    # Last section
     end_pages = list(range(total_pages - per_group, total_pages))
 
     # Combine, deduplicate, and sort
@@ -102,15 +87,11 @@ def _select_sample_pages(total_pages: int, per_group: int = 5) -> list[int]:
 # ---------------------------------------------------------------------------
 
 def classify_pdf(pdf_path: str) -> dict[str, Any]:
-    """Classify a PDF as ``"scanned"`` or ``"text"`` based on extractable text.
+    """ pdf is scanned or text
 
-    Parameters
-    ----------
-    pdf_path : str
-        Filesystem path to the PDF file.
-
-    Returns
-    -------
+    Parameters -
+    pdf_path : Filesystem path to the PDF file.
+    Returns-
     dict
         A result dict with:
         - ``classification`` — ``"scanned"`` or ``"text"``.
@@ -160,7 +141,7 @@ def classify_pdf(pdf_path: str) -> dict[str, Any]:
     for page_idx in sample_indices:
         page_text = doc[page_idx].get_text("text")
         # Count non-whitespace characters — whitespace alone shouldn't count
-        # as "extractable text" (some scans return a few stray spaces).
+        # as "extractable text" (some scans return a few stray spaces). 
         char_count = len(page_text.strip())
         per_page_chars.append((page_idx, char_count))
 
@@ -169,7 +150,7 @@ def classify_pdf(pdf_path: str) -> dict[str, Any]:
     # Compute average characters per sampled page
     total_chars = sum(count for _, count in per_page_chars)
     pages_sampled = len(per_page_chars)
-    avg_chars = total_chars / pages_sampled if pages_sampled > 0 else 0.0
+    avg_chars = total_chars / pages_sampled 
 
     # Classify based on the configured threshold
     #
@@ -185,7 +166,7 @@ def classify_pdf(pdf_path: str) -> dict[str, Any]:
     #       → Marker can try to use it, only re-OCR'ing where needed.
     #       → Significantly faster than full force-OCR.
     #
-    #   avg >= SCANNED_DETECTION_MIN_CHARS (default 25)
+    #   avg >= SCANNED_DETECTION_MIN_CHARS (default 25) 
     #       → "text", needs_force_ocr=False
     #       → Good text layer, use the pymupdf path instead.
     classification = (

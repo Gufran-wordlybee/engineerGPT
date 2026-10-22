@@ -1,4 +1,5 @@
 """
+1. 
 preprocessing.extract_toc
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 Extract the Table of Contents from a PDF using a 3-tier strategy:
